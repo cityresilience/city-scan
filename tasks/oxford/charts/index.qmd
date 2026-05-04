@@ -8,7 +8,11 @@ execute:
 
 ## Oxford Economics
 
-```{r setup, message=FALSE, warning=FALSE, results='hide'}
+```{r}
+#| label: setup-oxford
+#| message: false
+#| warning: false
+#| results: hide
 if (file.exists("_quarto.yml")) here::i_am("tasks/oxford/charts/index.qmd")
 if (!exists("aoi")) source(here::here("core/R/setup.R"))
 
@@ -106,7 +110,9 @@ if (in_oxford) {
 }
 ```
 
-```{r oxford-check, results='asis'}
+```{r}
+#| label: oxford-availability-check
+#| results: asis
 if (!in_oxford) {
   cat("**City is not in Oxford Economics database — skipping economic indicators.**\n\n")
 }
@@ -114,8 +120,10 @@ if (!in_oxford) {
 
 ### Population Growth (Oxford)
 
-```{r chart-oxford-pop-growth, message=FALSE, warning=FALSE}
+```{r}
 #| label: chart-oxford-pop-growth
+#| message: false
+#| warning: false
 #| results: asis
 
 if (in_oxford && nrow(pop_growth_years) > 0 && "Value" %in% names(pop_growth_years)) {
@@ -156,8 +164,10 @@ if (in_oxford && nrow(pop_growth_years) > 0 && "Value" %in% names(pop_growth_yea
 
 ### Population (Oxford)
 
-```{r chart-oxford-pop-line, message=FALSE, warning=FALSE}
+```{r}
 #| label: chart-oxford-pop-line
+#| message: false
+#| warning: false
 #| results: asis
 
 if (in_oxford && nrow(pop_growth_years) > 0 && "Value" %in% names(pop_growth_years)) {
@@ -201,8 +211,10 @@ if (in_oxford && nrow(pop_growth_years) > 0 && "Value" %in% names(pop_growth_yea
 
 ### Population Density (Oxford)
 
-```{r chart-oxford-pop-density, message=FALSE, warning=FALSE}
+```{r}
 #| label: chart-oxford-pop-density
+#| message: false
+#| warning: false
 #| results: asis
 
 # Build an all-Oxford density scatter:
@@ -280,8 +292,10 @@ if (in_oxford && nrow(density_oxford) > 0 && nrow(pop_growth_years) > 0 &&
 
 ### Population Distribution
 
-```{r chart-oxford-pop-distribution, message=FALSE, warning=FALSE}
+```{r}
 #| label: chart-oxford-pop-distribution
+#| message: false
+#| warning: false
 #| results: asis
 
 if (in_oxford && nrow(pop_dist_group) > 0) {
@@ -315,8 +329,10 @@ if (in_oxford && nrow(pop_dist_group) > 0) {
 
 ### Age Structure
 
-```{r chart-oxford-age-structure, message=FALSE, warning=FALSE}
+```{r}
 #| label: chart-oxford-age-structure
+#| message: false
+#| warning: false
 #| results: asis
 
 if (in_oxford && nrow(pop_dist_structure) > 0) {
@@ -357,8 +373,10 @@ if (in_oxford && nrow(pop_dist_structure) > 0) {
 
 ### Share of GDP, Employment, Population
 
-```{r chart-oxford-national-shares, message=FALSE, warning=FALSE}
+```{r}
 #| label: chart-oxford-national-shares
+#| message: false
+#| warning: false
 #| results: asis
 
 if (in_oxford && nrow(national_shares_long) > 0) {
@@ -394,8 +412,10 @@ if (in_oxford && nrow(national_shares_long) > 0) {
 
 ### GDP, Population, Employment Growth
 
-```{r chart-oxford-growth-tables, message=FALSE, warning=FALSE}
+```{r}
 #| label: chart-oxford-growth-tables
+#| message: false
+#| warning: false
 #| results: asis
 
 if (in_oxford) {
@@ -437,8 +457,10 @@ if (in_oxford) {
 
 ### Employment
 
-```{r chart-oxford-emp-line, message=FALSE, warning=FALSE}
+```{r}
 #| label: chart-oxford-emp-line
+#| message: false
+#| warning: false
 #| results: asis
 
 if (in_oxford && nrow(emp_longitude) > 0) {
@@ -474,8 +496,10 @@ if (in_oxford && nrow(emp_longitude) > 0) {
 
 ### GDP
 
-```{r chart-oxford-gdp-line, message=FALSE, warning=FALSE}
+```{r}
 #| label: chart-oxford-gdp-line
+#| message: false
+#| warning: false
 #| results: asis
 
 if (in_oxford && nrow(gdp_longitude) > 0) {
@@ -512,8 +536,10 @@ if (in_oxford && nrow(gdp_longitude) > 0) {
 
 ### GDP per Capita
 
-```{r chart-oxford-gdppc, message=FALSE, warning=FALSE}
+```{r}
 #| label: chart-oxford-gdppc
+#| message: false
+#| warning: false
 #| results: asis
 
 if (in_oxford && nrow(gdppc) > 0) {
@@ -547,8 +573,10 @@ if (in_oxford && nrow(gdppc) > 0) {
 
 ### GDP per Capita Over Time
 
-```{r chart-oxford-gdppc-line, message=FALSE, warning=FALSE}
+```{r}
 #| label: chart-oxford-gdppc-line
+#| message: false
+#| warning: false
 #| results: asis
 
 if (in_oxford && nrow(gdppc_longitude) > 0) {
@@ -577,8 +605,10 @@ if (in_oxford && nrow(gdppc_longitude) > 0) {
 
 ### Share of Employment by Sector
 
-```{r chart-oxford-emp-sectors, message=FALSE, warning=FALSE}
+```{r}
 #| label: chart-oxford-emp-sectors
+#| message: false
+#| warning: false
 #| results: asis
 
 if (in_oxford && nrow(emp_shares2) > 0) {
@@ -612,8 +642,10 @@ if (in_oxford && nrow(emp_shares2) > 0) {
 
 ### Share of GVA by Sector
 
-```{r chart-oxford-gva-sectors, message=FALSE, warning=FALSE}
+```{r}
 #| label: chart-oxford-gva-sectors
+#| message: false
+#| warning: false
 #| results: asis
 
 if (in_oxford && nrow(gva_shares2) > 0) {
@@ -647,8 +679,10 @@ if (in_oxford && nrow(gva_shares2) > 0) {
 
 ### Economic Inequality
 
-```{r chart-oxford-incomes-area, message=FALSE, warning=FALSE}
+```{r}
 #| label: chart-oxford-incomes-area
+#| message: false
+#| warning: false
 #| results: asis
 
 if (in_oxford && nrow(incomes) > 0) {

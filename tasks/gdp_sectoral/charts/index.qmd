@@ -10,7 +10,11 @@ execute:
 
 High GDP areas are defined as pixels above the 60th percentile of GDP values within the AOI.
 
-```{r setup, message=FALSE, warning=FALSE, results='hide'}
+```{r}
+#| label: setup-gdp-sectoral
+#| message: false
+#| warning: false
+#| results: hide
 if (file.exists("_quarto.yml")) here::i_am("tasks/gdp_sectoral/charts/index.qmd")
 if (!exists("aoi")) {
   USE_GCS <<- FALSE
@@ -18,7 +22,11 @@ if (!exists("aoi")) {
 }
 ```
 
-```{r data-loading, message=FALSE, warning=FALSE, results='hide'}
+```{r}
+#| label: data-loading-gdp-sectoral
+#| message: false
+#| warning: false
+#| results: hide
 flood_gdp_sect <- tryCatch(
   read_csv(file.path(tabular_dir, "flood_gdp_sectoral.csv"), show_col_types = FALSE),
   error = function(e) tibble())
@@ -49,7 +57,10 @@ sector_linetypes <- c(Agriculture = "solid", Industry = "dashed", Service = "dot
 
 ### River Flooding
 
-```{r river-flood, message=FALSE, warning=FALSE}
+```{r}
+#| label: chart-gdp-river-flood
+#| message: false
+#| warning: false
 #| results: asis
 ft_data <- flood_gdp_sect %>% filter(flood_type == "River", sector != "Combined")
 if (nrow(ft_data) > 0) {
@@ -63,7 +74,10 @@ if (nrow(ft_data) > 0) {
 
 ### Rainwater Flooding
 
-```{r rainwater-flood, message=FALSE, warning=FALSE}
+```{r}
+#| label: chart-gdp-rainwater-flood
+#| message: false
+#| warning: false
 #| results: asis
 ft_data <- flood_gdp_sect %>% filter(flood_type == "Rainwater", sector != "Combined")
 if (nrow(ft_data) > 0) {
@@ -77,7 +91,10 @@ if (nrow(ft_data) > 0) {
 
 ### Coastal Flooding
 
-```{r coastal-flood, message=FALSE, warning=FALSE}
+```{r}
+#| label: chart-gdp-coastal-flood
+#| message: false
+#| warning: false
 #| results: asis
 ft_data <- flood_gdp_sect %>% filter(flood_type == "Coastal", sector != "Combined")
 if (nrow(ft_data) > 0) {
@@ -95,7 +112,10 @@ Total sectoral GDP is the sum of agriculture, industry, and service GDP per pixe
 
 ### River Flooding
 
-```{r combined-river, message=FALSE, warning=FALSE}
+```{r}
+#| label: chart-gdp-combined-river-flood
+#| message: false
+#| warning: false
 #| results: asis
 ft_data <- flood_gdp_sect %>% filter(flood_type == "River", sector == "Combined")
 if (nrow(ft_data) > 0) {
@@ -121,7 +141,10 @@ if (nrow(ft_data) > 0) {
 
 ### Rainwater Flooding
 
-```{r combined-rainwater, message=FALSE, warning=FALSE}
+```{r}
+#| label: chart-gdp-combined-rainwater-flood
+#| message: false
+#| warning: false
 #| results: asis
 ft_data <- flood_gdp_sect %>% filter(flood_type == "Rainwater", sector == "Combined")
 if (nrow(ft_data) > 0) {
@@ -147,7 +170,10 @@ if (nrow(ft_data) > 0) {
 
 ### Coastal Flooding
 
-```{r combined-coastal, message=FALSE, warning=FALSE}
+```{r}
+#| label: chart-gdp-combined-coastal-flood
+#| message: false
+#| warning: false
 #| results: asis
 ft_data <- flood_gdp_sect %>% filter(flood_type == "Coastal", sector == "Combined")
 if (nrow(ft_data) > 0) {
