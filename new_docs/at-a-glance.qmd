@@ -1,0 +1,56 @@
+# City Scan at a Glance
+
+TESTING - Does it change?? 
+
+A quick reference summary of City Scan's architecture, workflow, and outputs.
+
+## Architecture Overview
+
+![City Scan Architecture](image/CRP%20LOGO.jpeg){fig-alt="High-level architecture diagram of the City Scan system." width="30%"}
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+
+## Workflow Summary
+
+```
+AOI Definition → Data Ingestion → Task Execution → Output Generation
+```
+
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.
+
+### Step-by-step
+
+1. **Define area of interest (AOI)** — provide a GeoJSON boundary file.
+2. **Configure tasks** — select which data layers to compute.
+3. **Run the scan** — execute via CLI or orchestrator script.
+4. **Review outputs** — maps, statistics, and reports are generated automatically.
+
+## Key Metrics
+
+| Metric | Typical Value |
+|---|---|
+| Setup time | < 30 minutes |
+| Scan duration | 1–6 hours |
+| Output formats | GeoTIFF, CSV, HTML report |
+| Supported cities | Unlimited |
+
+: City Scan performance at a glance {#tbl-metrics}
+
+## Tech Stack
+
+```yaml
+# Core dependencies
+python: ">=3.10"
+gee: "Google Earth Engine"
+dask: "parallel processing"
+geopandas: "vector data"
+rasterio: "raster data"
+```
+
+## Quick Links
+
+::: {.callout-note}
+- [Setting Up](setting-up.qmd) — environment and credential setup
+- [Running Your First City Scan](running-first-cityscan.qmd) — step-by-step tutorial
+- [Tasks & Data Layers](tasks-structure-overview.qmd) — full task reference
+:::

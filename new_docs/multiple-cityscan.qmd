@@ -1,0 +1,80 @@
+# Running Multiple City Scans
+
+City Scan supports batch execution across multiple cities using a single configuration file.
+
+## Overview
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Batch mode iterates over a list of city configurations, running each scan sequentially or in parallel depending on available compute resources.
+
+## Batch Configuration
+
+```yaml
+# batch_config.yml
+scan_type: batch
+output_base_dir: "outputs/"
+year: 2024
+
+cities:
+  - city: "Nairobi"
+    country: "KE"
+    aoi: "inputs/AOI/nairobi.geojson"
+
+  - city: "Kampala"
+    country: "UG"
+    aoi: "inputs/AOI/kampala.geojson"
+
+  - city: "Dar es Salaam"
+    country: "TZ"
+    aoi: "inputs/AOI/dar_es_salaam.geojson"
+```
+
+## Running the Batch
+
+```bash
+python run.py --config batch_config.yml --batch
+```
+
+Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Scans run sequentially by default. To enable parallel execution:
+
+```bash
+python run.py --config batch_config.yml --batch --workers 3
+```
+
+## Progress Tracking
+
+![Batch scan progress terminal output](cover.png){fig-alt="Terminal screenshot showing batch scan progress for three cities." width="80%"}
+
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. A progress summary is printed after all scans complete:
+
+```
+Batch complete: 3/3 cities succeeded
+  ✓ Nairobi       (58m 12s)
+  ✓ Kampala       (1h 03m 47s)
+  ✓ Dar es Salaam (1h 11m 02s)
+```
+
+## Output Structure
+
+```
+outputs/
+├── nairobi/
+│   ├── maps/
+│   ├── stats/
+│   └── report.html
+├── kampala/
+│   └── ...
+└── dar_es_salaam/
+    └── ...
+```
+
+| Parameter | Default | Description |
+|---|---|---|
+| `--workers` | `1` | Number of parallel scans |
+| `--retry` | `0` | Retry failed scans N times |
+| `--skip-existing` | `false` | Skip cities with existing outputs |
+
+: Batch run options {#tbl-batch-options}
+
+::: {.callout-warning}
+Running too many parallel workers may hit Google Earth Engine API rate limits. Start with `--workers 2` and scale up cautiously.
+:::

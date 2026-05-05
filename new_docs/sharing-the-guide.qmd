@@ -1,0 +1,97 @@
+# Sharing the Guide
+
+How to share, publish, and distribute the City Scan Cookbook with your team and stakeholders.
+
+## Rendered Formats
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. The cookbook is built with [Quarto](https://quarto.org) and can be rendered to HTML, PDF, or both.
+
+```bash
+# Render HTML (default)
+quarto render
+
+# Render PDF
+quarto render --to pdf
+
+# Render both
+quarto render --to html,pdf
+```
+
+Output is written to `_book/`.
+
+## Publishing to GitHub Pages
+
+```bash
+quarto publish gh-pages
+```
+
+Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. This command builds the book and pushes the rendered HTML to the `gh-pages` branch. The site is then accessible at:
+
+```
+https://cityresilience.github.io/city-scan/
+```
+
+## Publishing to Quarto Pub
+
+```bash
+quarto publish quarto-pub
+```
+
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. You will be prompted to sign in to your Quarto Pub account on first use.
+
+## Sharing the PDF
+
+![PDF export of the City Scan Cookbook](cover.png){fig-alt="PDF cover page of the City Scan Cookbook showing the title and World Bank branding." width="60%"}
+
+After rendering to PDF:
+
+```bash
+open _book/City-Scan-Cook-Book.pdf   # macOS
+```
+
+| Distribution Method | Audience | Notes |
+|---|---|---|
+| GitHub Pages (HTML) | Technical users | Free, auto-updates on push |
+| Quarto Pub (HTML) | General stakeholders | Free, public URL |
+| PDF via email | Partners / clients | Snapshot in time |
+| PDF on SharePoint | Internal World Bank | Behind org auth |
+
+: Guide distribution options {#tbl-distribution}
+
+## Embedding in Other Sites
+
+```html
+<!-- Embed a specific chapter as an iframe -->
+<iframe
+  src="https://cityresilience.github.io/city-scan/setting-up.html"
+  width="100%"
+  height="600px"
+  frameborder="0">
+</iframe>
+```
+
+## Keeping the Guide Up to Date
+
+```bash
+# Set up GitHub Actions to auto-publish on every push to main
+# .github/workflows/publish.yml
+```
+
+```yaml
+on:
+  push:
+    branches: [main]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: quarto-dev/quarto-actions/publish@v2
+        with:
+          target: gh-pages
+```
+
+::: {.callout-tip}
+For feedback on the guide itself, open a `documentation` issue on GitHub — see [Reporting Issues](reporting-issues.qmd).
+:::

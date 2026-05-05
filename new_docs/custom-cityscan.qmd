@@ -1,0 +1,87 @@
+# Running a Custom City Scan
+
+A custom scan lets you select specific tasks, override default parameters, and plug in additional data sources beyond the standard suite.
+
+## When to Customize
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consider a custom scan when:
+
+- You only need a subset of data layers to save time
+- You have proprietary or local data to incorporate
+- You want non-default resolution or time periods
+
+## Selecting Tasks
+
+```yaml
+# custom_config.yml
+city: "Jakarta"
+country: "ID"
+aoi: "inputs/AOI/jakarta.geojson"
+output_dir: "outputs/jakarta_custom"
+scan_type: custom
+
+tasks:
+  - population
+  - flood_risk
+  - coastal_erosion
+```
+
+## Overriding Default Parameters
+
+```yaml
+task_overrides:
+  population:
+    year: 2020
+    resolution: 100
+
+  flood_risk:
+    return_period: 50   # 50-year flood instead of 100-year
+    source: "fathom_v3"
+```
+
+Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Overrides are merged with the task defaults, so only specified fields are changed.
+
+## Adding a Custom Data Source
+
+```python
+# tasks/custom/my_sensor_data.py
+from cityscan.registry import register_task
+
+@register_task
+class MySensorDataTask:
+    name = "sensor_data"
+    inputs = ["aoi"]
+    outputs = ["sensor_data.tif"]
+
+    def run(self, config):
+        aoi = self.load_aoi(config["aoi"])
+        data = self.load_local_raster("data/sensor_grid.tif")
+        clipped = self.clip(data, aoi)
+        self.write_raster(clipped, "sensor_data.tif")
+```
+
+Then reference it in your config:
+
+```yaml
+tasks:
+  - population
+  - sensor_data   # your custom task
+```
+
+## Custom Output Directory Layout
+
+![Custom scan output structure](cover.png){fig-alt="File browser showing a custom scan output directory with selective task outputs." width="70%"}
+
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+
+| Config Key | Type | Description |
+|---|---|---|
+| `tasks` | `list[str]` | Tasks to include |
+| `task_overrides` | `dict` | Per-task parameter overrides |
+| `extra_task_dirs` | `list[str]` | Paths to custom task modules |
+
+: Custom scan configuration options {#tbl-custom-config}
+
+::: {.callout-tip}
+Use `--dry-run` to preview which tasks will execute and in what order before committing to a full run.
+:::

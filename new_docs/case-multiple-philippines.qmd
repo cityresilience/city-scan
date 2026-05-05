@@ -1,0 +1,88 @@
+# Case Study: Multiple Scans — Philippines
+
+This case study demonstrates running City Scan across multiple Philippine cities simultaneously using batch mode.
+
+## Project Context
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. The World Bank Philippines office requested City Scans for five secondary cities to support climate resilience planning. Batch mode was used to process all cities in a single run.
+
+## Cities Covered
+
+| City | Region | Population | AOI Area |
+|---|---|---|---|
+| Cebu | Central Visayas | 964,169 | 315 km² |
+| Davao | Davao Region | 1,776,949 | 2,444 km² |
+| Iloilo | Western Visayas | 457,626 | 78 km² |
+| Cagayan de Oro | Northern Mindanao | 728,402 | 488 km² |
+| Zamboanga | Zamboanga Peninsula | 977,234 | 1,483 km² |
+
+: Philippine cities included in the batch scan {#tbl-ph-cities}
+
+## Batch Configuration
+
+```yaml
+# configs/philippines_batch.yml
+scan_type: batch
+output_base_dir: "outputs/philippines"
+year: 2023
+
+cities:
+  - city: "Cebu"
+    country: "PH"
+    aoi: "inputs/AOI/cebu.geojson"
+  - city: "Davao"
+    country: "PH"
+    aoi: "inputs/AOI/davao.geojson"
+  - city: "Iloilo"
+    country: "PH"
+    aoi: "inputs/AOI/iloilo.geojson"
+  - city: "Cagayan de Oro"
+    country: "PH"
+    aoi: "inputs/AOI/cdo.geojson"
+  - city: "Zamboanga"
+    country: "PH"
+    aoi: "inputs/AOI/zamboanga.geojson"
+```
+
+## Running the Batch
+
+```bash
+python run.py --config configs/philippines_batch.yml --batch --workers 2
+```
+
+Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Two parallel workers were used to balance GEE API rate limits with execution speed. Total batch runtime was approximately 6 hours.
+
+## Key Findings Across Cities
+
+![Flood risk comparison across Philippine cities](cover.png){fig-alt="Side-by-side flood risk maps for five Philippine cities, showing high exposure in coastal areas." width="90%"}
+
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+
+### Coastal Flood Risk
+
+All five cities have significant coastal exposure. Zamboanga showed the highest percentage of built-up area within the 100-year flood extent at 23%.
+
+### Urban Heat Islands
+
+```python
+# Comparative heat island intensity (°C above rural baseline)
+heat_island = {
+    "Cebu": 3.2,
+    "Davao": 2.8,
+    "Iloilo": 2.1,
+    "Cagayan de Oro": 2.6,
+    "Zamboanga": 3.5,
+}
+```
+
+## Lessons Learned
+
+Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Key takeaways from this multi-city deployment:
+
+- Pre-validate all AOI files before starting the batch to avoid mid-run failures.
+- Use `--workers 2` as the safe default for GEE-heavy task suites.
+- Monitor GEE quota usage via the [GEE Console](https://console.cloud.google.com/earth-engine) during long runs.
+
+::: {.callout-note}
+Configuration files for all five cities are available in `configs/examples/philippines/`.
+:::

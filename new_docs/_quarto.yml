@@ -1,0 +1,59 @@
+project:
+  type: book
+
+book:
+  title: "City Scan Guide"
+  author: "World Bank - City Resilience Program"
+  date: "5/5/2026"
+  chapters:
+    - index.qmd
+    - part: "City Scan Overview"
+      chapters: 
+        - what-is-cityscan.qmd
+        - examples-cityscan.qmd
+        - at-a-glance.qmd 
+    - part: "Getting Started"
+      chapters: 
+        - setting-up.qmd
+        - running-first-cityscan.qmd
+    - part: "Tasks & Data Layers"
+      chapters: 
+        - tasks-structure-overview.qmd
+        - datalayer-references.qmd
+    - part: "Running a City Scan"
+      chapters: 
+        - standard-cityscan.qmd
+        - multiple-cityscan.qmd
+        - custom-cityscan.qmd 
+    - part: "Understanding the Repo"
+      chapters: 
+        - repo-structure.qmd
+        - task-dependency.qmd
+    - part: "Case Studies & Galleries"
+      chapters: 
+        - case-standard-rabat.qmd
+        - case-multiple-philippines.qmd
+    - part: "Collaborating"
+      chapters: 
+        - git-guide.qmd
+        - reporting-issues.qmd
+        - contributing.qmd
+        - sharing-the-guide.qmd  
+    - references.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme:
+      - cosmo
+      - brand
+    code-fold: true
+  pdf:
+    documentclass: scrreprt
+
+execute: 
+  freeze: auto
+
+
+
