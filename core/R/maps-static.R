@@ -116,15 +116,17 @@ if (!is.null(wards)) {
       y = geom(ward_centroids)[, "y"],
       label = ward_centroids$label
     )
-    plots$wards <- plot_static_layer(aoi_only = T, plot_aoi = T, plot_wards = F,
-      expansion = 1.5, zoom_adj = zoom_adjustment, aoi_stroke = list(color = "yellow", linewidth = 0.4),
-      baseplot = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/${z}/${y}/${x}.jpg",
-      captions = include_captions) +
-      geom_spatvector(data = wards, color = "white", fill = NA, linetype = "solid", linewidth = 0.25) +
-      geom_spatial_text_repel(data = ward_df, crs = "epsg:4326",
+    plots$wards <- {
+      p <- plot_static_layer(aoi_only = T, plot_aoi = T, plot_wards = F,
+        expansion = 1.5, zoom_adj = zoom_adjustment, aoi_stroke = list(color = "yellow", linewidth = 0.4),
+        baseplot = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/${z}/${y}/${x}.jpg",
+        captions = include_captions)
+      p <- gg_add(p, geom_spatvector(data = wards, color = "white", fill = NA, linetype = "solid", linewidth = 0.25))
+      gg_add(p, geom_spatial_text_repel(data = ward_df, crs = "epsg:4326",
         aes(x = x, y = y, label = label),
         size = 2.5, fontface = "bold", color = "white",
-        segment.size = 0.2, box.padding = 0.3, max.overlaps = 20)
+        segment.size = 0.2, box.padding = 0.3, max.overlaps = 20))
+    }
   }
 }
 
@@ -142,16 +144,18 @@ if (inherits(landmarks, "SpatVector")) {
       mutate(as.points(wards) %>% .[rep(c(T, F, F), nrow(.))], label = "", type = "perimeter")
       ) %>%
     mutate(x = geom(.)[,"x"], y = geom(.)[,"y"])
-  plots$landmarks <- plot_static_layer(aoi_only = T, plot_aoi = F, plot_wards = T) +
-    geom_spatial_point(data = landmarks_df, crs = "epsg:4326", aes(x = x, y = y), size = 0.25) +
-    geom_spatial_text_repel(data = landmarks_and_points_to_avoid, crs = "epsg:4326",
+  plots$landmarks <- {
+    p <- plot_static_layer(aoi_only = T, plot_aoi = F, plot_wards = T)
+    p <- gg_add(p, geom_spatial_point(data = landmarks_df, crs = "epsg:4326", aes(x = x, y = y), size = 0.25))
+    p <- gg_add(p, geom_spatial_text_repel(data = landmarks_and_points_to_avoid, crs = "epsg:4326",
       aes(
         x = x, y = y, fontface = fface, size = fsize,
         label = break_lines(label, width = 12, newline = "\n")),
       segment.size = 0.1, box.padding = 0.1, min.segment.length = 0.2, max.time = 2,
       force_pull = 0.8, max.overlaps = 40,
-      lineheight = 0.9) +
-    scale_size(range = c(1.5, 2), guide = "none")
+      lineheight = 0.9))
+    gg_add(p, scale_size(range = c(1.5, 2), guide = "none"))
+  }
   save_plot(plot = plots$landmarks, filename = "landmarks.png",
             directory = styled_maps_dir)
 }
@@ -347,6 +351,7 @@ for (script in render_custom) {
 # For Algeria, reduced time from 1,100 seconds to 1,000 seconds
 message(glue("\nSaving {length(plots)} maps to {styled_maps_dir}..."))
 for (name in names(plots)) {
+  gc(verbose = FALSE)
   message(glue("  Saving: {name}.png"), appendLF = FALSE)
   tryCatch({
     save_plot(plots[[name]], filename = glue("{name}.png"), directory = styled_maps_dir,
@@ -355,6 +360,7 @@ for (name in names(plots)) {
   },
     error = function(e) message(glue(" ✗ {e$message}"))
   )
+  plots[[name]] <- NULL
 }
 
 # See which layers weren't successfully mapped (only show for full renders)

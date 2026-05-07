@@ -72,12 +72,9 @@ plot_flooding <- function(flood_type) {
     wsf_base <- if (!is.null(plots$wsf_harmonized)) plots$wsf_harmonized else plots$wsf
     if (!is.null(wsf_base)) {
       # Modify WSF baseplot to set legend order = 2 (bottom) before adding flood
-      wsf_ordered <- wsf_base +
-        guides(fill = guide_legend(order = 2))
+      wsf_ordered <- gg_add(wsf_base, guides(fill = guide_legend(order = 2)))
       p_flood_wsf <- plot_static_layer(flood_data, yaml_key = flood_type, baseplot = wsf_ordered)
-      # Flood legend order = 1 (top)
-      p_flood_wsf <- p_flood_wsf +
-        guides(fill = guide_legend(order = 1))
+      p_flood_wsf <- gg_add(p_flood_wsf, guides(fill = guide_legend(order = 1)))
       plots[[glue("{flood_type}_wsf")]] <<- p_flood_wsf
     }
     if (!is.null(plots$infrastructure)) plots[[glue("{flood_type}_infrastructure")]] <<-
@@ -85,14 +82,13 @@ plot_flooding <- function(flood_type) {
     # Built-up area 2025 hatch overlay on flood maps
     if (exists("builtup_extent_2025") && !is.null(builtup_extent_2025)) {
       builtup_clipped <- sf::st_intersection(sf::st_as_sf(builtup_extent_2025), sf::st_as_sf(aoi))
-      plots[[glue("{flood_type}_builtup")]] <<- plots[[flood_type]] +
-        ggpattern::geom_sf_pattern(
+      p_builtup <- gg_add(plots[[flood_type]], ggpattern::geom_sf_pattern(
           data = builtup_clipped, color = NA, fill = NA,
           aes(pattern = "2025 built-up area"),
           pattern_spacing = 0.0125, pattern_fill = NA,
-          pattern_density = 0.5, pattern_size = 0.25) +
-        ggpattern::scale_pattern_manual(values = "stripe", name = "") +
-        coord_3857_bounds(static_map_bounds)
+          pattern_density = 0.5, pattern_size = 0.25))
+      p_builtup <- gg_add(p_builtup, ggpattern::scale_pattern_manual(values = "stripe", name = ""))
+      plots[[glue("{flood_type}_builtup")]] <<- gg_add(p_builtup, coord_3857_bounds(static_map_bounds))
     }
   })
 }

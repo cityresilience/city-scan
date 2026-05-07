@@ -5,13 +5,17 @@
 message("\n=== Benchmark city selection ===")
 
 # Download Oxford locations from GCS
-if (!exists("oxford_location_file") || !file.exists(oxford_location_file)) {
-  oxford_location_file <- tempfile(fileext = ".csv")
-  googleCloudStorageR::gcs_get_object("oxford-economics/oxford-locations.csv", bucket = "city-scan-global-data", saveToDisk = oxford_location_file)
+if (isTRUE(USE_GCS)) {
+  if (!exists("oxford_location_file") || !file.exists(oxford_location_file)) {
+    oxford_location_file <- tempfile(fileext = ".csv")
+    googleCloudStorageR::gcs_get_object("oxford-economics/oxford-locations.csv", bucket = "city-scan-global-data", saveToDisk = oxford_location_file)
+  }
+  oxford_locations <- readr::read_csv(oxford_location_file, col_types = "c")
+} else {
+  oxford_locations <- tibble(Location = character(), Country = character())
 }
 
 # Is city in Oxford Economics? --------------------------------------------------------------
-oxford_locations <- readr::read_csv(oxford_location_file, col_types = "c")
 oxford_locations_in_country <- dplyr::filter(oxford_locations, Country == country)
 
 # Match with or without diacritics (e.g. "Chișinău" == "Chisinau")
@@ -30,9 +34,13 @@ if (in_oxford && !(city %in% oxford_locations_in_country$Location)) {
 message(glue("{city} in Oxford Economics: {in_oxford}"))
 
 # Read only population indicator from Oxford for size-matching ---------------------------------
-if (!exists("oxford_file") || !file.exists(oxford_file)) {
-  oxford_file <- tempfile(fileext = ".csv")
-  googleCloudStorageR::gcs_get_object("oxford-economics/Oxford Global Cities Data.csv", bucket = "city-scan-global-data", saveToDisk = oxford_file)
+if (isTRUE(USE_GCS)) {
+  if (!exists("oxford_file") || !file.exists(oxford_file)) {
+    oxford_file <- tempfile(fileext = ".csv")
+    googleCloudStorageR::gcs_get_object("oxford-economics/Oxford Global Cities Data.csv", bucket = "city-scan-global-data", saveToDisk = oxford_file)
+  }
+} else {
+  oxford_file <- ""
 }
 oxford_pop <- tryCatch({
   read_csv(oxford_file,

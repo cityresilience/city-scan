@@ -282,7 +282,11 @@ def harmonize_wsf(
 
     # Clip to AOI for stats only
     aoi_dir = os.path.join(os.path.dirname(output_dir), '01-user-input', 'AOI')
-    aoi_file = glob(os.path.join(aoi_dir, '*.shp'))[0]
+    shp_candidates = [
+        f for f in glob(os.path.join(aoi_dir, '**', '*.shp'), recursive=True)
+        if '__MACOSX' not in f
+    ]
+    aoi_file = shp_candidates[0]
     aoi = gpd.read_file(aoi_file).to_crs(4326)
 
     evo_aoi = evo.rio.clip(aoi.geometry)

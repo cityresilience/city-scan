@@ -12,7 +12,8 @@ tryCatch_named("coastal_erosion_baseline", {
   coastline_file <- fuzzy_read(spatial_dir, layer_params$transect_coastline$fuzzy_string, paste)
   if (!is.na(coastline_file)) {
     coastline_sf <- st_read(coastline_file, quiet = TRUE)
-    plots$coastal_erosion_baseline <- plots$coastal_erosion_baseline +
-      geom_sf(data = coastline_sf, fill = NA, color = "grey30", linewidth = 0.3)
+    coastline_sf <- sf::st_crop(coastline_sf, sf::st_bbox(sf::st_transform(sf::st_as_sf(static_map_bounds), sf::st_crs(coastline_sf))))
+    plots$coastal_erosion_baseline <- gg_add(plots$coastal_erosion_baseline,
+      geom_sf(data = coastline_sf, fill = NA, color = "grey30", linewidth = 0.3))
   }
 })

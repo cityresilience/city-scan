@@ -1,10 +1,14 @@
 # Map Functions ----------------------------------------------------------------
 fuzzy_read <- function(dir, fuzzy_string, FUN = NULL, path = T, convert_to_vect = F, ...) {
-    file <- list.files(dir, full.names = FALSE) %>% str_subset(fuzzy_string)
+    all_items <- list.files(dir, full.names = FALSE)
+    files_only <- all_items[!dir.exists(file.path(dir, all_items))]
+    file <- files_only %>% str_subset(fuzzy_string)
 
     if (length(file) > 1) warning(paste("Too many", fuzzy_string, "files in", dir))
     if (length(file) < 1) {
-      file <- list.files(dir, recursive = T, full.names = FALSE) %>% str_subset(fuzzy_string)
+      file <- list.files(dir, recursive = T, full.names = FALSE) %>%
+        str_subset(fuzzy_string) %>%
+        .[!grepl("__MACOSX", .)]
       if (length(file) > 1 && any(grepl("\\.shp$", file, ignore.case = TRUE))) {
         file <- file[grepl("\\.shp$", file, ignore.case = TRUE)]
       }
@@ -310,6 +314,14 @@ writeVector(v_styled, fgb_path, overwrite = T, filetype = "FlatGeobuf")
   return(layer_function)
 }
 
+# ggplot2 4.0 + ggspatial conflict: S7 dispatch for ggplot objects clashes with
+# ggspatial's S3 Ops method, making p + layer return "character" instead of
+# ggplot. ggplot_add() bypasses the conflict and works reliably.
+gg_add <- function(p, x) {
+  if (is.null(x)) return(p)
+  ggplot_add(x, p)
+}
+
 plot_static_layer <- function(
     data, yaml_key, baseplot = NULL, static_map_bounds, zoom_adj = 0,
     expansion, aoi_stroke = list(color = "grey30", linewidth = 0.4),
@@ -388,33 +400,29 @@ plot_static_layer <- function(
   } else {
   # Plot geom and scales on baseplot
   baseplot <- if (is.null(baseplot) || identical(baseplot, "vector")) {
-    ggplot() +
-      geom_spatvector(data = static_map_bounds, fill = NA, color = NA) +
-      annotation_map_tile(type = "cartolight", zoom = get_zoom_level(static_map_bounds) + zoom_adj, progress = "none")
+    p <- gg_add(ggplot(), geom_spatvector(data = static_map_bounds, fill = NA, color = NA))
+    gg_add(p, annotation_map_tile(type = "cartolight", zoom = get_zoom_level(static_map_bounds) + zoom_adj, progress = "none"))
   } else if (is.character(baseplot)) {
-    ggplot() +
-      geom_spatvector(data = static_map_bounds, fill = NA, color = NA) +
-      annotation_map_tile(type = baseplot, zoom = get_zoom_level(static_map_bounds) + zoom_adj, progress = "none")
-  } else { baseplot + ggnewscale::new_scale_fill() }
-  p <- baseplot +
-    layer + 
-    annotation_north_arrow(style = north_arrow_minimal, location = "br", height = unit(1, "cm")) +
-    annotation_scale(style = "ticks", aes(unit_category = "metric", width_hint = 0.33), height = unit(0.25, "cm")) +        
-    theme_custom()
+    p <- gg_add(ggplot(), geom_spatvector(data = static_map_bounds, fill = NA, color = NA))
+    gg_add(p, annotation_map_tile(type = baseplot, zoom = get_zoom_level(static_map_bounds) + zoom_adj, progress = "none"))
+  } else { gg_add(baseplot, ggnewscale::new_scale_fill()) }
+  p <- gg_add(baseplot, layer)
+  p <- gg_add(p, annotation_north_arrow(style = north_arrow_minimal, location = "br", height = unit(1, "cm")))
+  p <- gg_add(p, annotation_scale(style = "ticks", aes(unit_category = "metric", width_hint = 0.33), height = unit(0.25, "cm")))
+  p <- gg_add(p, theme_custom())
   }
-  if (captions) p <- p + theme(legend.box.margin = margin(0, 0, 18, 12, unit = "pt"), plot.caption = element_text(hjust = 0, size = 8, color = "grey40"))
-  if (plot_roads) p <- p +
-    geom_spatvector(data = roads, aes(linewidth = road_type), color = "white") +
-    scale_linewidth_manual(values = c("Secondary" = 0.25, "Primary" = 1), guide = "none")
-  if (plot_aoi) p <- p + geom_spatvector(data = aoi, color = aoi_stroke$color, fill = NA, linetype = "solid", linewidth = 0.6)
+  if (captions) p <- gg_add(p, theme(legend.box.margin = margin(0, 0, 18, 12, unit = "pt"), plot.caption = element_text(hjust = 0, size = 8, color = "grey40")))
+  if (plot_roads) {
+    p <- gg_add(p, geom_spatvector(data = roads, aes(linewidth = road_type), color = "white"))
+    p <- gg_add(p, scale_linewidth_manual(values = c("Secondary" = 0.25, "Primary" = 1), guide = "none"))
+  }
+  if (plot_aoi) p <- gg_add(p, geom_spatvector(data = aoi, color = aoi_stroke$color, fill = NA, linetype = "solid", linewidth = 0.6))
   if (plot_wards) {
-    p <- p + geom_spatvector(data = wards, color = "grey40", fill = NA, linetype = "solid", linewidth = 0.25)
-
-    if (exists("ward_labels") && exists("ward_label_column")) p <- p + 
-      geom_text_repel(data =ward_labels, aes(label = ward_label_column, geometry = geometry),stat = "sf_coordinates", size = 2, fontface = "bold") 
-  
+    p <- gg_add(p, geom_spatvector(data = wards, color = "grey40", fill = NA, linetype = "solid", linewidth = 0.25))
+    if (exists("ward_labels") && exists("ward_label_column")) p <- gg_add(p,
+      geom_text_repel(data = ward_labels, aes(label = ward_label_column, geometry = geometry), stat = "sf_coordinates", size = 2, fontface = "bold"))
   }
-  p <- p + coord_3857_bounds(static_map_bounds)
+  p <- gg_add(p, coord_3857_bounds(static_map_bounds))
   return(p)
 }
 
@@ -429,18 +437,17 @@ add_builtup_hatch <- function(p, underlay = FALSE) {
     pattern_spacing = 0.0125, pattern_fill = NA,
     pattern_density = 0.5, pattern_size = 0.25)
   if (underlay) {
-    # Add the hatch via `+` so ggplot registers it properly, then move it to position 3
-    # (above basemap, below all data layers). Direct insertion into $layers bypasses
-    # ggplot's compute-layer setup and errors with "Problem while computing layer data".
-    p <- p + hatch_layer +
-      ggpattern::scale_pattern_manual(values = "stripe", name = "") +
-      coord_3857_bounds(static_map_bounds)
+    # Add the hatch via ggplot_add so ggplot registers it properly, then move it
+    # to position 3 (above basemap, below all data layers).
+    p <- gg_add(p, hatch_layer)
+    p <- gg_add(p, ggpattern::scale_pattern_manual(values = "stripe", name = ""))
+    p <- gg_add(p, coord_3857_bounds(static_map_bounds))
     n <- length(p$layers)
     p$layers <- append(p$layers[-n], list(p$layers[[n]]), after = 2)
   } else {
-    p <- p + hatch_layer +
-      ggpattern::scale_pattern_manual(values = "stripe", name = "") +
-      coord_3857_bounds(static_map_bounds)
+    p <- gg_add(p, hatch_layer)
+    p <- gg_add(p, ggpattern::scale_pattern_manual(values = "stripe", name = ""))
+    p <- gg_add(p, coord_3857_bounds(static_map_bounds))
   }
   p
 }
@@ -627,20 +634,34 @@ save_plot <- function(
     plot = NULL, filename, directory,
     map_height = map_height, map_width = map_width, dpi = 300,
     rel_widths = c(3, 1)) {
-  # Saves plots with set legend widths
-  plot_layout <- plot_grid(
-    plot + theme(legend.position = "none"),
-    # Before ggplot2 3.5 was get_legend(plot); still works but with warning;
-    # there are now multiple guide-boxes
-    get_plot_component(plot, "guide-box-right"),
-    rel_widths = rel_widths,
-    nrow = 1) +
-    theme(plot.background = element_rect(fill = "white", colour = NA))
-  cowplot::save_plot(
-    plot = plot_layout,
-    filename = file.path(directory, filename),
-    dpi = dpi,
-    base_height = map_height, base_width = sum(rel_widths)/rel_widths[1] * map_width)
+  # cowplot::plot_grid uses + on ggplot objects internally (via ggdraw), which
+  # breaks under ggplot2 4.0 S7/S3 dispatch conflict. Use raw grid viewports instead.
+  p_no_legend <- gg_add(plot, theme(
+    legend.position = "none",
+    plot.background = element_rect(fill = "white", colour = NA)))
+  # get_plot_component replaces deprecated get_legend for ggplot2 >= 3.5
+  legend_grob <- cowplot::get_plot_component(plot, "guide-box-right")
+
+  total_width <- sum(rel_widths) / rel_widths[1] * map_width
+  output_path <- file.path(directory, filename)
+
+  png(output_path, width = total_width, height = map_height,
+      units = "in", res = dpi, type = "cairo")
+  on.exit(dev.off())
+  grid::grid.newpage()
+  grid::pushViewport(grid::viewport(
+    layout = grid::grid.layout(
+      1, 2, widths = grid::unit(rel_widths / sum(rel_widths), "npc"))))
+
+  grid::pushViewport(grid::viewport(layout.pos.row = 1, layout.pos.col = 1))
+  print(p_no_legend, newpage = FALSE)
+  grid::popViewport()
+
+  if (!is.null(legend_grob) && inherits(legend_grob, "grob")) {
+    grid::pushViewport(grid::viewport(layout.pos.row = 1, layout.pos.col = 2))
+    grid::grid.draw(legend_grob)
+    grid::popViewport()
+  }
 }
 
 get_layer_values <- function(data) {

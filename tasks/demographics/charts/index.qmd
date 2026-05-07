@@ -8,12 +8,12 @@ execute:
 
 ## Demographics
 
-```{r setup, message=FALSE, warning=FALSE, results='hide'}
+```{r setup-demographics, message=FALSE, warning=FALSE, results='hide'}
 if (file.exists("_quarto.yml")) here::i_am("tasks/demographics/charts/index.qmd")
 if (!exists("aoi")) source(here::here("core/R/setup.R"))
 ```
 
-```{r data-loading, message=FALSE, warning=FALSE, results='hide'}
+```{r data-loading-demographics, message=FALSE, warning=FALSE, results='hide'}
 # Read demographic CSV (output of Python demographic_aggregate)
 age_file <- list.files(tabular_dir, full.names = TRUE) %>% str_subset(".*_demographics?\\.csv")
 has_age_data <- length(age_file) > 0

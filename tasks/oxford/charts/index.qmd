@@ -8,7 +8,7 @@ execute:
 
 ## Oxford Economics
 
-```{r setup, message=FALSE, warning=FALSE, results='hide'}
+```{r setup-oxford, message=FALSE, warning=FALSE, results='hide'}
 if (file.exists("_quarto.yml")) here::i_am("tasks/oxford/charts/index.qmd")
 if (!exists("aoi")) source(here::here("core/R/setup.R"))
 

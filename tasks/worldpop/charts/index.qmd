@@ -8,13 +8,13 @@ execute:
 
 ## WorldPop
 
-```{r setup, message=FALSE, warning=FALSE, results='hide'}
+```{r setup-worldpop, message=FALSE, warning=FALSE, results='hide'}
 if (file.exists("_quarto.yml")) here::i_am("tasks/worldpop/charts/index.qmd")
 if (!exists("aoi")) source(here::here("core/R/setup.R"))
 source("https://raw.githubusercontent.com/compoundrisk/monitor/databricks/src/fns/helpers.R")
 ```
 
-```{r data-loading, message=FALSE, warning=FALSE, results='hide'}
+```{r data-loading-worldpop, message=FALSE, warning=FALSE, results='hide'}
 # All data comes from CSVs produced by dataanalysis.R
 wp_ridge <- tryCatch(
   read_csv(file.path(tabular_dir, paste0(city_string, "_pop_density_pixels.csv")), show_col_types = FALSE),

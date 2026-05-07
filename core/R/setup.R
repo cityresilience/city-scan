@@ -11,6 +11,9 @@
 if (!"here" %in% installed.packages()) install.packages("here")
 library(here)
 
+# Use Cairo PNG device — the default X11 png device fails on WSL/headless Linux
+if (capabilities("cairo")) options(bitmapType = "cairo")
+
 message("\n=== Starting Setup ===")
 message("Project root: ", here())
 
@@ -179,9 +182,14 @@ if (length(country) == 0 && is.list(basic_info)) country <- basic_info$country
 
 # 6. Read AOI & wards ----------------------------------------------------------
 message("\nReading AOI and wards data...")
-# Defining layer because of bug where AOI always includes South Jakarta shapefile;
-# ideally would not need to specify like this, for greater flexibility
-aoi <- fuzzy_read(user_input_dir, "AOI", layer = city_params$AOI_shp_name) %>%
+# Use AOI_shp_name as the fuzzy string so the recursive search finds the exact
+# .shp file path, avoiding the /vsigs directory-as-datasource layer name issue.
+aoi_fuzzy <- if (!is.null(city_params$AOI_shp_name) && nzchar(city_params$AOI_shp_name)) {
+  city_params$AOI_shp_name
+} else {
+  "AOI"
+}
+aoi <- fuzzy_read(user_input_dir, aoi_fuzzy) %>%
   project("epsg:4326")
 message("AOI Ready!")
 
