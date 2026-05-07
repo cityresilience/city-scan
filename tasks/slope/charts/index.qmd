@@ -22,7 +22,7 @@ if (!exists("aoi")) {
 #| label: data-loading-slope
 #| include: false
 slope <- tryCatch({
-  read_csv(str_subset(list.files(tabular_dir, full = T), "slope.csv"), col_types = "cd") %>%
+  read_csv(file.path(tabular_dir, paste0(city_string, "_slope.csv")), col_types = "cd") %>%
     rename(Bin = 1, Count = 2) %>%
     filter(!is.na(Bin), Count > 0) %>%
     mutate(Slope = as.numeric(str_replace(Bin, "[-+].*", "")),

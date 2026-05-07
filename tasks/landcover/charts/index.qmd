@@ -22,7 +22,7 @@ if (!exists("aoi")) {
 #| label: data-loading-landcover
 #| include: false
 lc <- tryCatch({
-  read_csv(str_subset(list.files(tabular_dir, full = T), "lc.csv"), col_types = "cd") %>%
+  read_csv(file.path(tabular_dir, paste0(city_string, "_lc.csv")), col_types = "cd") %>%
     filter(!is.na(`Land Cover Type`), `Pixel Count` > 0) %>%
     mutate(Percent = `Pixel Count` / sum(`Pixel Count`)) %>%
     arrange(desc(Percent)) %>%

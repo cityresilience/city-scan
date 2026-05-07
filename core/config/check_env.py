@@ -129,12 +129,25 @@ def check_gee():
     _print_header("Google Earth Engine")
     try:
         import ee
-    except ImportError:
-        _print_check(FAIL, "earthengine-api not importable")
+        import google.auth
+    except ImportError as e:
+        _print_check(FAIL, f"{e.name} not importable")
         return False
+
+    _GEE_SCOPES = [
+        "https://www.googleapis.com/auth/earthengine",
+        "https://www.googleapis.com/auth/cloud-platform",
+    ]
+
+    def _try_init():
+        creds, detected_project = google.auth.default(scopes=_GEE_SCOPES)
+        project = os.environ.get("GEE_PROJECT", detected_project)
+        ee.Initialize(credentials=creds, project=project)
+        return project
+
     try:
-        ee.Initialize()
-        _print_check(OK, "authenticated (default project)")
+        project = _try_init()
+        _print_check(OK, f"authenticated (project={project})")
         return True
     except Exception as e:
         msg = str(e).splitlines()[0] if str(e) else type(e).__name__
@@ -145,8 +158,8 @@ def check_gee():
             result = subprocess.run(GEE_LOGIN_CMD, shell=True)
             if result.returncode == 0:
                 try:
-                    ee.Initialize()
-                    _print_check(OK, "authenticated after interactive login")
+                    project = _try_init()
+                    _print_check(OK, f"authenticated after interactive login (project={project})")
                     return True
                 except Exception as e2:
                     _print_check(FAIL, f"still failing: {e2}")

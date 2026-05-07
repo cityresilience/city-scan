@@ -1,6 +1,7 @@
 #!/usr/bin/env Rscript
-# Pre-render script: reads order.yml for section order, menu.yml for enabled tasks,
-# generates index.qmd with include directives
+# Pre-render script: reads sections.yml for section order, generates index.qmd
+# with include directives. Section gating is via sections.yml + per-task
+# charts/index.qmd existence (plus a basic_info.yml conditional for oxford).
 
 library(yaml)
 library(here)
@@ -11,7 +12,6 @@ city_root <- if (in_sc) normalizePath(here("..")) else here()
 sc_dir <- if (in_sc) here() else here("scan-calculations")
 
 order <- read_yaml(file.path(sc_dir, "sections.yml"))
-menu <- read_yaml(file.path(city_root, "01-user-input", "menu.yml"))
 city_inputs <- read_yaml(file.path(city_root, "01-user-input", "city_inputs.yml"))
 city_name <- city_inputs$city_name
 
@@ -44,11 +44,6 @@ basic_info <- if (length(basic_info_path) > 0) read_yaml(basic_info_path[1]) els
 
 n_tasks <- 0
 for (task in order$sections) {
-  # Check if task is enabled in menu (some tasks may not have a menu entry — include anyway)
-  menu_enabled <- isTRUE(menu[[task]]) || !(task %in% names(menu))
-
-  if (!menu_enabled) next
-
   # Skip oxford if city is not in Oxford Economics
   if (task == "oxford" && !isTRUE(basic_info$in_oxford)) next
 

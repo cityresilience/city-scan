@@ -6,10 +6,9 @@ The scan-calculations reference sheet is a single HTML document that combines al
 
 1. `generate-index.R` runs as a pre-render step (configured in `_quarto.yml`)
 2. It reads `sections.yml` to determine the section order
-3. It reads `menu.yml` to check which tasks are enabled
-4. For each enabled task, it checks if `tasks/{name}/charts/index.qmd` exists
-5. It generates `index.qmd` with Quarto `{{< include >}}` directives for each task
-6. Quarto renders `index.qmd` into a self-contained HTML file
+3. For each section, it checks if `tasks/{name}/charts/index.qmd` exists
+4. It generates `index.qmd` with Quarto `{{< include >}}` directives for each task
+5. Quarto renders `index.qmd` into a self-contained HTML file
 
 ## Prerequisites
 
@@ -42,7 +41,6 @@ scan-calculations/
 
 1. Create `tasks/{name}/charts/index.qmd` with your charts
 2. Add the task name to `sections.yml` in the desired position
-3. Make sure the task is enabled in `menu.yml`
 
 ## sections.yml
 
@@ -65,7 +63,7 @@ sections:
   - fwi
 ```
 
-Tasks not listed here will not appear in the report even if they have `charts/index.qmd`. Tasks listed here but disabled in `menu.yml` are skipped.
+Tasks not listed here will not appear in the report even if they have `charts/index.qmd`.
 
 ## Conditional sections
 

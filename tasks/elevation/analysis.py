@@ -237,6 +237,10 @@ def elevation_stats(
     if nodata is not None:
         elev[elev == nodata] = np.nan
 
+    # FABDEM flattens water surfaces (rivers, lakes, sea) to exactly 0.0,
+    # which leaks into the lowest bin and skews the legend. Treat as NA.
+    elev[elev == 0] = np.nan
+
     # ------------------------------------------------------------------
     # Step 2: Generate contour levels (fine resolution)
     # ------------------------------------------------------------------

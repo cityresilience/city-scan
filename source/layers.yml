@@ -16,11 +16,12 @@ template:
   stroke: 'TRUE if variable, color if static (defaults to FALSE)'
   weight: stroke weight
   suffix: NULL
-  # Potentially: NULL
   domain: NULL
-  labFormat: NULL
-  crop: crop domain to layer values - default of  
-  # resolution or resolution_factor
+  # Potentially: NULL
+  # labFormat: NULL
+  # crop: crop domain to layer values - default of resolution or resolution_factor
+
+
 # SECTION 3 DEMOGRAPHICS
 population: # <-- We refer to this as the "YAML key" and is used to match generic and manual text
   fuzzy_string: (?<!dense_)population.tif$

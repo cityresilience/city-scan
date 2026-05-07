@@ -1,52 +1,52 @@
 import os
 import ee
+import google.auth
 from core.py.log_module import setup_logger
 
 logger = setup_logger(__name__)
 
-GEE_PROJECT = os.environ.get("GEE_PROJECT", "city-scan-gee-test")
+_GEE_SCOPES = [
+    "https://www.googleapis.com/auth/earthengine",
+    "https://www.googleapis.com/auth/cloud-platform",
+]
 
 
 def _on_cloud_run():
     return os.environ.get("K_SERVICE") is not None
 
 
+def _gee_credentials():
+    """Resolve ADC with EE scopes. Supports Cloud Run SA injection,
+    GOOGLE_APPLICATION_CREDENTIALS, and local gcloud ADC."""
+    creds, detected_project = google.auth.default(scopes=_GEE_SCOPES)
+    project = os.environ.get("GEE_PROJECT", detected_project)
+    return creds, project
+
+
 def init_gee():
-    """Initialize GEE. Uses existing credentials, falls back to gcloud ADC.
+    """Initialize GEE with explicit credentials from google.auth.default().
+
+    Supports three credential tiers without hardcoding any account or project:
+      1. Cloud Run service account (ADC injected by runtime)
+      2. GOOGLE_APPLICATION_CREDENTIALS env var (service account key file)
+      3. Local gcloud ADC (created with the earthengine scope)
 
     Does NOT interactively authenticate — that would hang a task run.
-    If both tiers fail, raises with a clear instruction to run `scan --check gee`
-    as a one-time setup.
+    If resolution fails, raises with a clear instruction to run `scan --check gee`.
     """
-    # Tier 1: existing credentials
     try:
-        ee.Initialize(project=GEE_PROJECT)
-        logger.info(f"GEE initialized (project={GEE_PROJECT})")
+        creds, project = _gee_credentials()
+        ee.Initialize(credentials=creds, project=project)
+        logger.info(f"GEE initialized (project={project})")
         return
-    except Exception:
-        pass
-
-    # Tier 2: gcloud ADC. Requires ADC to have been created with the earthengine
-    # scope — otherwise gcloud will trigger a browser re-login (bad UX mid-run).
-    # See check_env.py for the one-time setup command.
-    try:
-        ee.Authenticate(auth_mode="gcloud", quiet=True, scopes=[
-            "https://www.googleapis.com/auth/earthengine",
-            "https://www.googleapis.com/auth/cloud-platform",
-        ])
-        ee.Initialize(project=GEE_PROJECT)
-        logger.info(f"GEE initialized via gcloud (project={GEE_PROJECT})")
-        return
-    except Exception:
-        pass
-
-    raise RuntimeError(
-        "GEE authentication failed. Run `scan --check gee` for a guided fix, or:\n"
-        "  gcloud auth application-default login \\\n"
-        "    --scopes=openid,https://www.googleapis.com/auth/userinfo.email,"
-        "https://www.googleapis.com/auth/cloud-platform,"
-        "https://www.googleapis.com/auth/earthengine"
-    )
+    except Exception as e:
+        raise RuntimeError(
+            f"GEE authentication failed ({e}). Run `scan --check gee` for a guided fix, or:\n"
+            "  gcloud auth application-default login \\\n"
+            "    --scopes=openid,https://www.googleapis.com/auth/userinfo.email,"
+            "https://www.googleapis.com/auth/cloud-platform,"
+            "https://www.googleapis.com/auth/earthengine"
+        ) from e
 
 
 def init_gcs():

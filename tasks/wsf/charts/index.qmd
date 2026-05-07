@@ -25,11 +25,7 @@ if (!exists("aoi")) {
 #| include: false
 # WSF Evolution — standardize to cumulative_sq_km
 wsf <- tryCatch({
-  wsf_file <- str_subset(list.files(tabular_dir, full.names = T), "(?<!flood_)wsf(?!.*(tracker|stats)).*(csv|xlsx)")
-  if (length(wsf_file) == 0) stop("No WSF file found")
-  if (str_detect(wsf_file[1], "xlsx$")) df <- read_xlsx(wsf_file[1], sheet = "WSF")
-  if (str_detect(wsf_file[1], "csv$")) df <- read_csv(wsf_file[1], col_types = "dd")
-  df %>%
+  read_csv(file.path(tabular_dir, paste0(city_string, "_wsf_evolution.csv")), col_types = "dd") %>%
     rename(year = 1) %>%
     rename(cumulative_sq_km = any_of(c("AREA_sq_km", "cumulative sq km", "cumulative_sq_km"))) %>%
     mutate(growth_pct = (cumulative_sq_km / lag(cumulative_sq_km) - 1), growth_km2 = cumulative_sq_km - lag(cumulative_sq_km))
@@ -37,11 +33,7 @@ wsf <- tryCatch({
 
 # WSF Tracker — standardize to cumulative_sq_km
 wsf_tracker <- tryCatch({
-  wsf_tracker_file <- str_subset(list.files(tabular_dir, full.names = T), "wsf_tracker.*(csv|xlsx)")
-  if (length(wsf_tracker_file) == 0) stop("No WSF tracker file found")
-  if (str_detect(wsf_tracker_file[1], "xlsx$")) df <- read_xlsx(wsf_tracker_file[1], sheet = "WSF")
-  if (str_detect(wsf_tracker_file[1], "csv$")) df <- read_csv(wsf_tracker_file[1], col_types = "cdd")
-  df %>%
+  read_csv(file.path(tabular_dir, paste0(city_string, "_wsf_tracker.csv")), col_types = "cdd") %>%
     mutate(date = if ("month" %in% names(.)) zoo::as.yearmon(paste(.data$year, .data$month, sep = "-")) else zoo::as.yearmon(.data$year)) %>%
     rename(cumulative_sq_km = any_of(c("AREA_sq_km", "cumulative sq km", "cumulative_sq_km"))) %>%
     mutate(growth_pct = (cumulative_sq_km / lag(cumulative_sq_km) - 1), growth_km2 = cumulative_sq_km - lag(cumulative_sq_km))
@@ -49,9 +41,7 @@ wsf_tracker <- tryCatch({
 
 # WSF Harmonized — read raw CSV as-is
 wsf_harm <- tryCatch({
-  wsf_harm_file <- list.files(tabular_dir, pattern = "wsf_harmonized\\.csv$", full.names = T)
-  if (length(wsf_harm_file) == 0) stop("No WSF harmonized file found")
-  read_csv(wsf_harm_file, col_types = "ddcd")
+  read_csv(file.path(tabular_dir, paste0(city_string, "_wsf_harmonized.csv")), col_types = "ddcd")
 }, error = function(e) { message("WSF Harmonized not available: ", e$message); NULL })
 ```
 

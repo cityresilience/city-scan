@@ -22,9 +22,7 @@ if (!exists("aoi")) {
 #| label: data-loading-fwi
 #| include: false
 fwi <- tryCatch({
-  fwi_file <- str_subset(list.files(tabular_dir, full = T), "fwi")
-  if (length(fwi_file) == 0) stop("No FWI file found")
-  read_csv(fwi_file, col_types = "dd")
+  read_csv(file.path(tabular_dir, paste0(city_string, "_fwi_weekly_95.csv")), col_types = "dd")
 }, error = function(e) { message("FWI not available: ", e$message); NULL })
 
 month_starts <- cumsum(c("Jan" = 31, "Feb" = 28, "Mar"= 31, "Apr" = 30, "May" = 31, "Jun" = 30,

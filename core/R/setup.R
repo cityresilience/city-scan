@@ -195,6 +195,15 @@ message("AOI Ready!")
 
 wards <- tryCatch(fuzzy_read(user_input_dir, "wards") %>% project("epsg:4326"), error = \(e) NULL)
 
-writeVector(aoi, file.path(fgb_dir, "aoi.fgb"), overwrite = T, filetype = "FlatGeobuf") 
+# Major roads — used by add_roads_underlay() to overlay the road network on
+# each map. From accessibility/filter_major_roads output. Loaded as terra
+# SpatVector to match the rest of the plotting pipeline (geom_spatvector).
+road_network <- tryCatch(
+  vect(file.path(spatial_dir, paste0(city_string, "_major_roads.gpkg")),
+       layer = "major_roads") %>%
+    project("epsg:4326"),
+  error = function(e) { message("road_network not loaded: ", e$message); NULL })
+
+writeVector(aoi, file.path(fgb_dir, "aoi.fgb"), overwrite = T, filetype = "FlatGeobuf")
 
 message("Setup complete.\n")

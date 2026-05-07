@@ -22,7 +22,7 @@ if (!exists("aoi")) {
 #| label: data-loading-elevation
 #| include: false
 elevation <- tryCatch({
-  read_csv(str_subset(list.files(tabular_dir, full = T), "elevation.csv"), col_types = "cd") %>%
+  read_csv(file.path(tabular_dir, paste0(city_string, "_elevation.csv")), col_types = "cd") %>%
     rename(Bin = 1, Count = 2) %>%
     filter(!is.na(Bin), Count > 0) %>%
     mutate(percent = Count / sum(Count),
@@ -37,12 +37,9 @@ elevation <- tryCatch({
 if (is.null(elevation) || nrow(elevation) == 0) print_text(paste_bold("No Elevation file available")) else {
 
   elevation_names <- elevation$Bin
-  elevation_colors <- c(
-    "#F2D7D3",
-    "#DCBAC5",
-    "#C59FB8",
-    "#AF84A9",
-    "#97679C") %>%
+  # Match map palette from source/layers.yml `elevation`
+  .elev_pal <- layer_params$elevation$palette %||% c("#f5c4c0", "#762175")
+  elevation_colors <- grDevices::colorRampPalette(unlist(.elev_pal))(length(elevation_names)) %>%
     setNames(elevation_names)
 
   elevation_plot <- ggdonut(elevation, "Bin", "percent", colors = elevation_colors)
