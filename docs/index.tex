@@ -132,6 +132,7 @@
 % Set default figure placement to htbp
 \def\fps@figure{htbp}
 \makeatother
+\usepackage{svg}
 
 
 
@@ -212,7 +213,7 @@
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
 \hypersetup{
-  pdftitle={City Scan Guide},
+  pdftitle={City Scan Technical Reference},
   pdfauthor={World Bank - City Resilience Program},
   colorlinks=true,
   linkcolor={blue},
@@ -222,7 +223,7 @@
   pdfcreator={LaTeX via pandoc}}
 
 
-\title{City Scan Guide}
+\title{City Scan Technical Reference}
 \author{World Bank - City Resilience Program}
 \date{2026-05-05}
 \begin{document}
@@ -236,26 +237,71 @@
 
 \bookmarksetup{startatroot}
 
-\chapter*{Preface}\label{preface}
-\addcontentsline{toc}{chapter}{Preface}
+\chapter*{Welcome}\label{welcome}
+\addcontentsline{toc}{chapter}{Welcome}
 
-\markboth{Preface}{Preface}
+\markboth{Welcome}{Welcome}
 
-This is a Quarto book.
+The City Scan is a diagnostic tool designed to equip cities with the
+early insights needed to address risk by:
 
-To learn more about Quarto books visit
-\url{https://quarto.org/docs/books}.
+\begin{itemize}
+\tightlist
+\item
+  Providing a rapid, data-driven snapshot of a city's demographic,
+  economic, climate, and risk landscape.
+\item
+  Leveraging remote sensing and geospatial analysis of any city in the
+  world, using global datasets.
+\item
+  Revealing the interaction between the urban built and natural
+  environments.
+\end{itemize}
+
+\subsection*{In this technical
+reference}\label{in-this-technical-reference}
+\addcontentsline{toc}{subsection}{In this technical reference}
+
+This reference book is a structured technical documentation to use and
+operate City Scan as a diagnostic tool. Here, you will find
+documentations on City Scan overview, getting started, running a City
+Scan, tasks and data layers, repository structure, case studies \&
+galleries, as well as contributing guides.
+
+\subsection*{About City Resilience Program
+(CRP)}\label{about-city-resilience-program-crp}
+\addcontentsline{toc}{subsection}{About City Resilience Program (CRP)}
+
+The City Resilience Program is housed within the Global Facility for
+Disaster Reduction and Recovery (GFDRR) at the World Bank. CRP is a
+global initiative supported by the Swiss State Secretariat for Economic
+Affairs, the Austrian Federal Ministry of Finance, the Italian Ministry
+of Foreign Affairs, the Italian Agency for Development Cooperation, and
+the Gates Foundation.
+
+To learn more about CRP and GFDRR visit
+\url{https://www.gfdrr.org/en/crp}.
 
 \part{City Scan Overview}
 
 \chapter{What is City Scan?}\label{what-is-city-scan}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.6\linewidth,height=\textheight,keepaspectratio,alt={High-level conceptual illustration of the City Scan system.}]{image/concept.jpg}
+
+}
+
+\caption{City Scan Concept}
+
+\end{figure}%
 
 A City Scan is a rapid geospatial assessment of a city's demographic,
 socioeconomic, climate, and risk conditions. It is a collection of maps
 and charts made from global and publicly available datasets that provide
 quick high-level insights into resilience-related topics for a city. The
 output is a package of maps, data visualizations and insights that
-integrate features of both the built and natural environments.These
+integrate features of both the built and natural environments. These
 scans are especialy useful for grounding early-stage conversations in
 geospatial data.
 
@@ -302,22 +348,6 @@ services afterward. This approach represents a significant shift from
 prior development trends, which concentrated investments on
 post-disaster reconstruction and recovery.
 
-\section{About City Resilience
-Program}\label{about-city-resilience-program}
-
-Established in June 2017 as a multi-donor initiative and partnership
-between the World Bank and the Global Facility for Disaster Reduction
-and Recovery, the City Resilience Program (CRP) empowers cities to
-invest in climate and disaster resilience. The CRP has assembled a
-diverse range of World Bank sectoral expertise as a global technical
-support system to assist cities in integrating climate change and
-disaster risk into their upstream capital investment planning and access
-the financing needed for climate-smart investments to succeed. Rather
-than trade off between competing sectoral needs, the CRP helps cities
-tackle their most pressing challenges through integrated,
-cross-sectoral, spatially-based priorities that capture the interaction
-between the natural and built environments
-
 \begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-note-color!10!white, colframe=quarto-callout-note-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
 
 For a hands-on introduction, see
@@ -327,92 +357,144 @@ For a hands-on introduction, see
 
 \chapter{City Scan Examples}\label{city-scan-examples}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. This chapter
-showcases a selection of City Scan outputs from deployments around the
-world.
+City Scan output is a collection of maps and charts made from global and
+publicly available datasets that provide quick high-level insights into
+resilience-related topics for a city. The output is a package of maps,
+data visualizations and insights that integrate features of both the
+built and natural environments. It is available as standalone images,
+compiled PDF, and interactive Quarto HTML.
 
-\section{Featured Examples}\label{featured-examples}
+\section{Example 1: Standalone Images - Dakar,
+Senegal}\label{example-1-standalone-images---dakar-senegal}
 
-Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-aliquip ex ea commodo consequat.
+This format is useful if you'd like to combine City Scan outputs with
+your own analysis. See examples from our analysis for Dakar, Senegal
 
-\subsection{Example 1: Rabat, Morocco}\label{example-1-rabat-morocco}
+\begin{figure}
 
-\begin{figure}[H]
+\begin{minipage}[t]{0.25\linewidth}
 
-{\centering \includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio,alt={City Scan land use map for Rabat, Morocco.}]{cover.png}
+\centering{
 
-}
-
-\caption{Rabat City Scan output}
-
-\end{figure}%
-
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
-dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Rabat scan configuration}
-\NormalTok{config }\OperatorTok{=}\NormalTok{ \{}
-    \StringTok{"city"}\NormalTok{: }\StringTok{"Rabat"}\NormalTok{,}
-    \StringTok{"country"}\NormalTok{: }\StringTok{"MA"}\NormalTok{,}
-    \StringTok{"aoi"}\NormalTok{: }\StringTok{"inputs/AOI/rabat.geojson"}\NormalTok{,}
-    \StringTok{"tasks"}\NormalTok{: [}\StringTok{"population"}\NormalTok{, }\StringTok{"landuse"}\NormalTok{, }\StringTok{"flood\_risk"}\NormalTok{]}
-\NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
-
-\subsection{Example 2: Metro Manila,
-Philippines}\label{example-2-metro-manila-philippines}
-
-\begin{figure}[H]
-
-{\centering \includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio,alt={City Scan population density map for Metro Manila.}]{cover.png}
+\pandocbounded{\includegraphics[keepaspectratio]{image/dakar-senegal/aoi.png}}
 
 }
 
-\caption{Metro Manila City Scan output}
+\subcaption{\label{fig-aoi}Area of interest}
+
+\end{minipage}%
+%
+\begin{minipage}[t]{0.25\linewidth}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{image/dakar-senegal/air_quality_local.png}}
+
+}
+
+\subcaption{\label{fig-airquality}local air quality}
+
+\end{minipage}%
+%
+\begin{minipage}[t]{0.25\linewidth}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{image/dakar-senegal/combined_flooding_population.png}}
+
+}
+
+\subcaption{\label{fig-floodpopulation}Population exposed to flooding}
+
+\end{minipage}%
+%
+\begin{minipage}[t]{0.25\linewidth}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{image/dakar-senegal/health_proximity.png}}
+
+}
+
+\subcaption{\label{fig-healthcare}Proximity to healthcare
+infrastructure}
+
+\end{minipage}%
+\newline
+\begin{minipage}[t]{0.25\linewidth}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{image/dakar-senegal/dakar_urban_built_up_area.png}}
+
+}
+
+\subcaption{\label{fig-builtup}Built-up area over time}
+
+\end{minipage}%
+%
+\begin{minipage}[t]{0.25\linewidth}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{image/dakar-senegal/nasa-fwi.png}}
+
+}
+
+\subcaption{\label{fig-fwi}Fire weather index}
+
+\end{minipage}%
+%
+\begin{minipage}[t]{0.25\linewidth}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{image/dakar-senegal/oxford-gdp-per-capita_line.png}}
+
+}
+
+\subcaption{\label{fig-gdppp}GDP per capita}
+
+\end{minipage}%
+%
+\begin{minipage}[t]{0.25\linewidth}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{image/dakar-senegal/world-pop-age-sex.png}}
+
+}
+
+\subcaption{\label{fig-age}Age pyramid}
+
+\end{minipage}%
+
+\caption{\label{fig-maps}Examples of maps \& charts generated by City
+Scan}
 
 \end{figure}%
 
-Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab
-illo inventore veritatis et quasi architecto beatae vitae dicta sunt
-explicabo.
+\section{Example 2: Comprehensive Analytical PDF Report - Bitung,
+Indonesia}\label{example-2-comprehensive-analytical-pdf-report---bitung-indonesia}
 
-\section{Output Gallery}\label{output-gallery}
+The generated maps and charts are compiled according to relevant themes,
+along with data interpretation and considerations. See examples below
+from our analysis in Bitung, Indonesia.
+
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-note-color!10!white, colframe=quarto-callout-note-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
+
+The final PDF output is compiled and designed via Adobe InDesign and not
+yet automatically generated by the code. Automated PDF generation will
+be part of future updates.
+
+\end{tcolorbox}
+
+\section{Example 3: Interactive HTML website - City,
+Country}\label{example-3-interactive-html-website---city-country}
 
 Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut
 fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem
 sequi nesciunt.
-
-\begin{longtable}[]{@{}llll@{}}
-\caption{City Scan deployment
-examples}\label{tbl-examples}\tabularnewline
-\toprule\noalign{}
-City & Country & Tasks Run & Year \\
-\midrule\noalign{}
-\endfirsthead
-\toprule\noalign{}
-City & Country & Tasks Run & Year \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-Rabat & Morocco & 12 & 2024 \\
-Manila & Philippines & 15 & 2024 \\
-Nairobi & Kenya & 10 & 2023 \\
-Jakarta & Indonesia & 14 & 2023 \\
-\end{longtable}
-
-\section{Interpreting Outputs}\label{interpreting-outputs}
-
-At vero eos et accusamus et iusto odio dignissimos ducimus qui
-blanditiis praesentium voluptatum deleniti atque corrupti quos dolores
-et quas molestias excepturi sint occaecati cupiditate non provident.
 
 \begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-tip-color!10!white, colframe=quarto-callout-tip-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Tip}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
 
@@ -421,109 +503,169 @@ Full case studies for Rabat and the Philippines are in
 
 \end{tcolorbox}
 
-\chapter{City Scan at a Glance}\label{city-scan-at-a-glance}
+\part{Standard Workflow}
 
-TESTING - Does it change??
+\chapter{General Workflow}\label{general-workflow}
 
-A quick reference summary of City Scan's architecture, workflow, and
-outputs.
+This chapter provides a three-part walkthrough of the City Scan repo for
+new users. The diagram below illustrates the general workflow of
+performing a standard City Scan.
 
-\section{Architecture Overview}\label{architecture-overview}
+\includegraphics[width=14.13in,height=3.15in]{at-a-glance_files/figure-latex/mermaid-figure-1.png}
 
-\begin{figure}[H]
-
-{\centering \includegraphics[width=0.3\linewidth,height=\textheight,keepaspectratio,alt={High-level architecture diagram of the City Scan system.}]{image/CRP LOGO.jpeg}
-
-}
-
-\caption{City Scan Architecture}
-
-\end{figure}%
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-veniam, quis nostrud exercitation ullamco laboris.
-
-\section{Workflow Summary}\label{workflow-summary}
-
-\begin{verbatim}
-AOI Definition → Data Ingestion → Task Execution → Output Generation
-\end{verbatim}
-
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
-dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-proident.
-
-\subsection{Step-by-step}\label{step-by-step}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  \textbf{Define area of interest (AOI)} --- provide a GeoJSON boundary
-  file.
-\item
-  \textbf{Configure tasks} --- select which data layers to compute.
-\item
-  \textbf{Run the scan} --- execute via CLI or orchestrator script.
-\item
-  \textbf{Review outputs} --- maps, statistics, and reports are
-  generated automatically.
-\end{enumerate}
-
-\section{Key Metrics}\label{key-metrics}
-
-\begin{longtable}[]{@{}ll@{}}
-\caption{City Scan performance at a
-glance}\label{tbl-metrics}\tabularnewline
-\toprule\noalign{}
-Metric & Typical Value \\
-\midrule\noalign{}
-\endfirsthead
-\toprule\noalign{}
-Metric & Typical Value \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-Setup time & \textless{} 30 minutes \\
-Scan duration & 1--6 hours \\
-Output formats & GeoTIFF, CSV, HTML report \\
-Supported cities & Unlimited \\
-\end{longtable}
-
-\section{Tech Stack}\label{tech-stack}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Core dependencies}
-\FunctionTok{python}\KeywordTok{:}\AttributeTok{ }\StringTok{"\textgreater{}=3.10"}
-\FunctionTok{gee}\KeywordTok{:}\AttributeTok{ }\StringTok{"Google Earth Engine"}
-\FunctionTok{dask}\KeywordTok{:}\AttributeTok{ }\StringTok{"parallel processing"}
-\FunctionTok{geopandas}\KeywordTok{:}\AttributeTok{ }\StringTok{"vector data"}
-\FunctionTok{rasterio}\KeywordTok{:}\AttributeTok{ }\StringTok{"raster data"}
-\end{Highlighting}
-\end{Shaded}
-
-\section{Quick Links}\label{quick-links}
+\section{Part 1. Basic Setup}\label{part-1.-basic-setup}
 
 \begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-note-color!10!white, colframe=quarto-callout-note-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
+
+See \href{setting-up.qmd}{Part 4. Getting Started/ Setup Instructions}
+for full details of prerequisites and installations
+
+\end{tcolorbox}
+
+City Scan uses multiple programming languages and software to run,
+including Git, Python, R, Quarto, and Google Cloud. The steps required
+for setups are below:
 
 \begin{itemize}
 \tightlist
 \item
-  \href{setting-up.qmd}{Setting Up} --- environment and credential setup
+  Clone the repo
 \item
-  \href{running-first-cityscan.qmd}{Running Your First City Scan} ---
-  step-by-step tutorial
+  Create conda env + activate cityscan
 \item
-  \href{tasks-structure-overview.qmd}{Tasks \& Data Layers} --- full
-  task reference
+  Installing City Scan as Python Package via
+  \texttt{pip\ install\ -e\ .} for the scan CLI
+\item
+  GCS and GEE authentication via
+  \texttt{gcloud\ auth\ application-default\ login}
+\item
+  Install Quarto
+\item
+  Run \texttt{scan\ -\/-check} to verify everything passes
 \end{itemize}
+
+\section{Part 2. Configuring Inputs}\label{part-2.-configuring-inputs}
+
+Inputs folder is where you can specify your area of interests (AOI),
+types of analysis to conduct, and certain global analysis parameters.
+
+\begin{itemize}
+\tightlist
+\item
+  Drop AOI shapefile into \texttt{inputs/AOI/}
+\item
+  Edit \texttt{inputs/city\_inputs.yml}
+\item
+  Edit \texttt{inputs/menu.yml}
+\end{itemize}
+
+\section{Part 3. Running a Scan}\label{part-3.-running-a-scan}
+
+When running a scan, we are essentially going through several phases.
+The general flow is collect → analyze → multianalysis → render.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \href{running-first-cityscan.qmd}{\textbf{Collect}} stage is
+  retrieveing specified datasets as indicated in inputs configuration
+  from various publicly available sources for the specified AOI. As an
+  output, you will retrieve TIFFs, GeoJSONs, or Geopackages in your
+  output folder.
+
+  To conduct \textbf{collect} stage, run in your terminal
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{scan} \AttributeTok{{-}{-}collect}
+\end{Highlighting}
+\end{Shaded}
+\item
+  \href{running-first-cityscan.qmd}{\textbf{Analyze}} stage is
+  conducting various analysis on a single task, such as seeing the
+  statistical distribution, applying threshold, extracting median/mean
+  values, etc. As an output, you will retrieve various CSVs in your
+  output folder.
+
+  To conduct \textbf{analyze} stage, run in your terminal
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{scan} \AttributeTok{{-}{-}analyze}
+\end{Highlighting}
+\end{Shaded}
+\item
+  Alternatively, you can \textbf{batch data collection and data analysis
+  together by looping over tasks} by running:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{scan} \AttributeTok{{-}{-}all}
+\end{Highlighting}
+\end{Shaded}
+
+  Or, you can leverage your computer memory and \textbf{parallelizing
+  data collection and data analysis together per tasks} by running:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{scan} \AttributeTok{{-}{-}all} \AttributeTok{{-}{-}parallel}
+\end{Highlighting}
+\end{Shaded}
+\end{enumerate}
+
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-warning-color!10!white, colframe=quarto-callout-warning-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-warning-color}{\faExclamationTriangle}\hspace{0.5em}{Warning}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
+
+{[}\textbf{Internal Note}{]} Perhaps in the future,
+\texttt{scan\ -\/-all} and \texttt{scan\ -\/-all\ -\/-parallel} should
+be reserved to orchestrate the whole process, including multianalysis,
+render, and scan-calculations
 
 \end{tcolorbox}
 
-\part{Getting Started}
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\item
+  \href{running-first-cityscan.qmd}{\textbf{Multianalysis}} stage is
+  performing cross-task analysis after single tasks analysis have been
+  executed. For example, this stage executes analysis of flood-exposed
+  population, which requires both flood analysis and population analysis
+  to have been conducted. To do this, run in your terminal:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{scan} \AttributeTok{{-}{-}multianalysis}
+\end{Highlighting}
+\end{Shaded}
+\item
+  \href{running-first-cityscan.qmd}{\textbf{Render}} stage is generating
+  various visualizations as results of previous stages. This includes
+  rendering maps and charts as PNGs or HTMLs.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Static maps — applies styling from source/layers.yml, writes PNGs to 03{-}render{-}output/maps/}
+\ExtensionTok{scan} \AttributeTok{{-}{-}render}\NormalTok{ maps}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Charts for a specific task — writes HTML to tasks/\{name\}/charts/index.html}
+\ExtensionTok{scan} \AttributeTok{{-}{-}render}\NormalTok{ charts elevation}
+\end{Highlighting}
+\end{Shaded}
+
+  To generate a compiled interactive quarto document and HTML of all
+  tasks, run:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{scan} \AttributeTok{{-}{-}render}\NormalTok{ scan{-}calculations}
+\end{Highlighting}
+\end{Shaded}
+\end{enumerate}
 
 \chapter{Setup Instructions}\label{setup-instructions}
 
@@ -555,7 +697,7 @@ best practices.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
-\subsection{Authentication}\label{authentication}
+\section{Authentication}\label{authentication}
 
 Authentication is managed in \texttt{core/config/}:
 
@@ -585,7 +727,7 @@ details.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
-\subsection{Git}\label{git}
+\section{Git}\label{git}
 
 Git is a version control system. It's a timewarpy quantum tool that lets
 multiple dimensions and times exist at once. It lets you keep multiple
@@ -603,16 +745,16 @@ git is not installed, see the GitHub's
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
-\subsection{Python}\label{python}
+\section{Python}\label{python}
 
 We recommend creating a python environment to run City Scan Tasks. Here
 are the options:
 
-\subsubsection{\texorpdfstring{\emph{Option 1}: Via Conda (Recommended
-for Mac, Windows,
+\subsection{\texorpdfstring{\emph{Option 1}: Via Conda (Recommended for
+Mac, Windows,
 Linux)}{Option 1: Via Conda (Recommended for Mac, Windows, Linux)}}\label{option-1-via-conda-recommended-for-mac-windows-linux}
 
-\paragraph{Step 1: Install Anaconda}\label{step-1-install-anaconda}
+\subsubsection{Step 1: Install Anaconda}\label{step-1-install-anaconda}
 
 Download and install Anaconda from the
 \href{https://www.anaconda.com/download}{official Anaconda website}:
@@ -648,7 +790,7 @@ Then close and reopen the terminal. You should see \texttt{(base)} in
 your prompt and \texttt{conda} should resolve.
 \end{quote}
 
-\paragraph{Step 2: Create and Activate the
+\subsubsection{Step 2: Create and Activate the
 Environment}\label{step-2-create-and-activate-the-environment}
 
 \begin{Shaded}
@@ -658,7 +800,7 @@ Environment}\label{step-2-create-and-activate-the-environment}
 \end{Highlighting}
 \end{Shaded}
 
-\paragraph{Step 3: Install
+\subsubsection{Step 3: Install
 Dependencies}\label{step-3-install-dependencies}
 
 \begin{Shaded}
@@ -668,7 +810,7 @@ Dependencies}\label{step-3-install-dependencies}
 \end{Highlighting}
 \end{Shaded}
 
-\paragraph{Step 4: Register Jupyter Kernel (Optional, for notebook
+\subsubsection{Step 4: Register Jupyter Kernel (Optional, for notebook
 use)}\label{step-4-register-jupyter-kernel-optional-for-notebook-use}
 
 \begin{Shaded}
@@ -677,14 +819,14 @@ use)}\label{step-4-register-jupyter-kernel-optional-for-notebook-use}
 \end{Highlighting}
 \end{Shaded}
 
-\subsubsection{\texorpdfstring{\emph{Option 2}: Via Bootstrap Script
+\subsection{\texorpdfstring{\emph{Option 2}: Via Bootstrap Script
 (Alternative Setup -- only for Mac,
 Linux)}{Option 2: Via Bootstrap Script (Alternative Setup -- only for Mac, Linux)}}\label{option-2-via-bootstrap-script-alternative-setup-only-for-mac-linux}
 
 If you prefer automated system setup or Python is not installed, use the
 bootstrap approach:
 
-\paragraph{Step 1: Clone the
+\subsubsection{Step 1: Clone the
 Repository}\label{step-1-clone-the-repository}
 
 \begin{Shaded}
@@ -694,7 +836,7 @@ Repository}\label{step-1-clone-the-repository}
 \end{Highlighting}
 \end{Shaded}
 
-\paragraph{Step 2: Run Bootstrap
+\subsubsection{Step 2: Run Bootstrap
 Script}\label{step-2-run-bootstrap-script}
 
 This script prepares your system and installs Python 3.11.8 via pyenv:
@@ -721,7 +863,7 @@ Update your shell configuration
 If pyenv is installed for the first time, restart your terminal and run
 the script again.
 
-\paragraph{Step 3: Run Setup Script}\label{step-3-run-setup-script}
+\subsubsection{Step 3: Run Setup Script}\label{step-3-run-setup-script}
 
 This script creates the virtual environment, installs dependencies, and
 registers the Jupyter kernel:
@@ -738,7 +880,7 @@ pyenv - A new virtual environment created - A Jupyter kernel registered:
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
-\subsection{R}\label{r}
+\section{R}\label{r}
 
 R is used for the maps, charts, and scan-calculations report, and also
 for several data collection tasks (earthquake, oxford, cyclones,
@@ -761,7 +903,7 @@ integration. Still, RStudio can still be useful, and can be downloaded
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
-\subsection{Quarto}\label{quarto}
+\section{Quarto}\label{quarto}
 
 Quarto is a publishing system that lets you create documents and
 websites with R, Python, JavaScript, and Julia. If you are familiar with
@@ -779,7 +921,7 @@ To install Quarto, follow the instructions at
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
-\subsection{VS Code}\label{vs-code}
+\section{VS Code}\label{vs-code}
 
 VS Code isn't strictly necessary, but it makes working with multiple
 files and filetypes much easier. It also makes working with
@@ -851,6 +993,31 @@ To install, follow the instructions at https://docs.docker.com/desktop.
 --\textgreater{}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\chapter{Inputs Configuration}\label{inputs-configuration}
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sagittis
+posuere ligula sit amet lacinia. Duis dignissim pellentesque magna,
+rhoncus congue sapien finibus mollis. Ut eu sem laoreet, vehicula ipsum
+in, convallis erat. Vestibulum magna sem, blandit pulvinar augue sit
+amet, auctor malesuada sapien. Nullam faucibus leo eget eros hendrerit,
+non laoreet ipsum lacinia. Curabitur cursus diam elit, non tempus ante
+volutpat a. Quisque hendrerit blandit purus non fringilla. Integer sit
+amet elit viverra ante dapibus semper. Vestibulum viverra rutrum enim,
+at luctus enim posuere eu. Orci varius natoque penatibus et magnis dis
+parturient montes, nascetur ridiculus mus.
+
+Nunc ac dignissim magna. Vestibulum vitae egestas elit. Proin feugiat
+leo quis ante condimentum, eu ornare mauris feugiat. Pellentesque
+habitant morbi tristique senectus et netus et malesuada fames ac turpis
+egestas. Mauris cursus laoreet ex, dignissim bibendum est posuere
+iaculis. Suspendisse et maximus elit. In fringilla gravida ornare.
+Aenean id lectus pulvinar, sagittis felis nec, rutrum risus. Nam vel
+neque eu arcu blandit fringilla et in quam. Aliquam luctus est sit amet
+vestibulum eleifend. Phasellus elementum sagittis molestie. Proin tempor
+lorem arcu, at condimentum purus volutpat eu. Fusce et pellentesque
+ligula. Pellentesque id tellus at erat luctus fringilla. Suspendisse
+potenti.
 
 \chapter{Running a Scan}\label{running-a-scan}
 
@@ -1028,6 +1195,255 @@ running \texttt{scan\ -\/-all}.
 See
 \href{../../scan-calculations/README.md}{scan-calculations/README.md}
 for details.
+
+\part{Advanced Workflow}
+
+\chapter{Running Multiple City Scans}\label{running-multiple-city-scans}
+
+City Scan supports batch execution across multiple cities using a single
+configuration file.
+
+\section{Overview}\label{overview}
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Batch mode
+iterates over a list of city configurations, running each scan
+sequentially or in parallel depending on available compute resources.
+
+\section{Batch Configuration}\label{batch-configuration}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# batch\_config.yml}
+\FunctionTok{scan\_type}\KeywordTok{:}\AttributeTok{ batch}
+\FunctionTok{output\_base\_dir}\KeywordTok{:}\AttributeTok{ }\StringTok{"outputs/"}
+\FunctionTok{year}\KeywordTok{:}\AttributeTok{ }\DecValTok{2024}
+
+\FunctionTok{cities}\KeywordTok{:}
+\AttributeTok{  }\KeywordTok{{-}}\AttributeTok{ }\FunctionTok{city}\KeywordTok{:}\AttributeTok{ }\StringTok{"Nairobi"}
+\AttributeTok{    }\FunctionTok{country}\KeywordTok{:}\AttributeTok{ }\StringTok{"KE"}
+\AttributeTok{    }\FunctionTok{aoi}\KeywordTok{:}\AttributeTok{ }\StringTok{"inputs/AOI/nairobi.geojson"}
+
+\AttributeTok{  }\KeywordTok{{-}}\AttributeTok{ }\FunctionTok{city}\KeywordTok{:}\AttributeTok{ }\StringTok{"Kampala"}
+\AttributeTok{    }\FunctionTok{country}\KeywordTok{:}\AttributeTok{ }\StringTok{"UG"}
+\AttributeTok{    }\FunctionTok{aoi}\KeywordTok{:}\AttributeTok{ }\StringTok{"inputs/AOI/kampala.geojson"}
+
+\AttributeTok{  }\KeywordTok{{-}}\AttributeTok{ }\FunctionTok{city}\KeywordTok{:}\AttributeTok{ }\StringTok{"Dar es Salaam"}
+\AttributeTok{    }\FunctionTok{country}\KeywordTok{:}\AttributeTok{ }\StringTok{"TZ"}
+\AttributeTok{    }\FunctionTok{aoi}\KeywordTok{:}\AttributeTok{ }\StringTok{"inputs/AOI/dar\_es\_salaam.geojson"}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Running the Batch}\label{running-the-batch}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{python}\NormalTok{ run.py }\AttributeTok{{-}{-}config}\NormalTok{ batch\_config.yml }\AttributeTok{{-}{-}batch}
+\end{Highlighting}
+\end{Shaded}
+
+Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Scans
+run sequentially by default. To enable parallel execution:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{python}\NormalTok{ run.py }\AttributeTok{{-}{-}config}\NormalTok{ batch\_config.yml }\AttributeTok{{-}{-}batch} \AttributeTok{{-}{-}workers}\NormalTok{ 3}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Progress Tracking}\label{progress-tracking}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio,alt={Terminal screenshot showing batch scan progress for three cities.}]{cover.png}
+
+}
+
+\caption{Batch scan progress terminal output}
+
+\end{figure}%
+
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
+dolore eu fugiat nulla pariatur. A progress summary is printed after all
+scans complete:
+
+\begin{verbatim}
+Batch complete: 3/3 cities succeeded
+  ✓ Nairobi       (58m 12s)
+  ✓ Kampala       (1h 03m 47s)
+  ✓ Dar es Salaam (1h 11m 02s)
+\end{verbatim}
+
+\section{Output Structure}\label{output-structure}
+
+\begin{verbatim}
+outputs/
+├── nairobi/
+│   ├── maps/
+│   ├── stats/
+│   └── report.html
+├── kampala/
+│   └── ...
+└── dar_es_salaam/
+    └── ...
+\end{verbatim}
+
+\begin{longtable}[]{@{}lll@{}}
+\caption{Batch run options}\label{tbl-batch-options}\tabularnewline
+\toprule\noalign{}
+Parameter & Default & Description \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Parameter & Default & Description \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{-\/-workers} & \texttt{1} & Number of parallel scans \\
+\texttt{-\/-retry} & \texttt{0} & Retry failed scans N times \\
+\texttt{-\/-skip-existing} & \texttt{false} & Skip cities with existing
+outputs \\
+\end{longtable}
+
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-warning-color!10!white, colframe=quarto-callout-warning-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-warning-color}{\faExclamationTriangle}\hspace{0.5em}{Warning}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
+
+Running too many parallel workers may hit Google Earth Engine API rate
+limits. Start with \texttt{-\/-workers\ 2} and scale up cautiously.
+
+\end{tcolorbox}
+
+\chapter{Running a Custom City Scan}\label{running-a-custom-city-scan}
+
+A custom scan lets you select specific tasks, override default
+parameters, and plug in additional data sources beyond the standard
+suite.
+
+\section{When to Customize}\label{when-to-customize}
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consider a
+custom scan when:
+
+\begin{itemize}
+\tightlist
+\item
+  You only need a subset of data layers to save time
+\item
+  You have proprietary or local data to incorporate
+\item
+  You want non-default resolution or time periods
+\end{itemize}
+
+\section{Selecting Tasks}\label{selecting-tasks}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# custom\_config.yml}
+\FunctionTok{city}\KeywordTok{:}\AttributeTok{ }\StringTok{"Jakarta"}
+\FunctionTok{country}\KeywordTok{:}\AttributeTok{ }\StringTok{"ID"}
+\FunctionTok{aoi}\KeywordTok{:}\AttributeTok{ }\StringTok{"inputs/AOI/jakarta.geojson"}
+\FunctionTok{output\_dir}\KeywordTok{:}\AttributeTok{ }\StringTok{"outputs/jakarta\_custom"}
+\FunctionTok{scan\_type}\KeywordTok{:}\AttributeTok{ custom}
+
+\FunctionTok{tasks}\KeywordTok{:}
+\AttributeTok{  }\KeywordTok{{-}}\AttributeTok{ population}
+\AttributeTok{  }\KeywordTok{{-}}\AttributeTok{ flood\_risk}
+\AttributeTok{  }\KeywordTok{{-}}\AttributeTok{ coastal\_erosion}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Overriding Default
+Parameters}\label{overriding-default-parameters}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{task\_overrides}\KeywordTok{:}
+\AttributeTok{  }\FunctionTok{population}\KeywordTok{:}
+\AttributeTok{    }\FunctionTok{year}\KeywordTok{:}\AttributeTok{ }\DecValTok{2020}
+\AttributeTok{    }\FunctionTok{resolution}\KeywordTok{:}\AttributeTok{ }\DecValTok{100}
+
+\AttributeTok{  }\FunctionTok{flood\_risk}\KeywordTok{:}
+\AttributeTok{    }\FunctionTok{return\_period}\KeywordTok{:}\AttributeTok{ }\DecValTok{50}\CommentTok{   \# 50{-}year flood instead of 100{-}year}
+\AttributeTok{    }\FunctionTok{source}\KeywordTok{:}\AttributeTok{ }\StringTok{"fathom\_v3"}
+\end{Highlighting}
+\end{Shaded}
+
+Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+Overrides are merged with the task defaults, so only specified fields
+are changed.
+
+\section{Adding a Custom Data Source}\label{adding-a-custom-data-source}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# tasks/custom/my\_sensor\_data.py}
+\ImportTok{from}\NormalTok{ cityscan.registry }\ImportTok{import}\NormalTok{ register\_task}
+
+\AttributeTok{@register\_task}
+\KeywordTok{class}\NormalTok{ MySensorDataTask:}
+\NormalTok{    name }\OperatorTok{=} \StringTok{"sensor\_data"}
+\NormalTok{    inputs }\OperatorTok{=}\NormalTok{ [}\StringTok{"aoi"}\NormalTok{]}
+\NormalTok{    outputs }\OperatorTok{=}\NormalTok{ [}\StringTok{"sensor\_data.tif"}\NormalTok{]}
+
+    \KeywordTok{def}\NormalTok{ run(}\VariableTok{self}\NormalTok{, config):}
+\NormalTok{        aoi }\OperatorTok{=} \VariableTok{self}\NormalTok{.load\_aoi(config[}\StringTok{"aoi"}\NormalTok{])}
+\NormalTok{        data }\OperatorTok{=} \VariableTok{self}\NormalTok{.load\_local\_raster(}\StringTok{"data/sensor\_grid.tif"}\NormalTok{)}
+\NormalTok{        clipped }\OperatorTok{=} \VariableTok{self}\NormalTok{.clip(data, aoi)}
+        \VariableTok{self}\NormalTok{.write\_raster(clipped, }\StringTok{"sensor\_data.tif"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Then reference it in your config:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{tasks}\KeywordTok{:}
+\AttributeTok{  }\KeywordTok{{-}}\AttributeTok{ population}
+\AttributeTok{  }\KeywordTok{{-}}\AttributeTok{ sensor\_data}\CommentTok{   \# your custom task}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Custom Output Directory
+Layout}\label{custom-output-directory-layout}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio,alt={File browser showing a custom scan output directory with selective task outputs.}]{cover.png}
+
+}
+
+\caption{Custom scan output structure}
+
+\end{figure}%
+
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
+dolore eu fugiat nulla pariatur.
+
+\begin{longtable}[]{@{}lll@{}}
+\caption{Custom scan configuration
+options}\label{tbl-custom-config}\tabularnewline
+\toprule\noalign{}
+Config Key & Type & Description \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Config Key & Type & Description \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{tasks} & \texttt{list{[}str{]}} & Tasks to include \\
+\texttt{task\_overrides} & \texttt{dict} & Per-task parameter
+overrides \\
+\texttt{extra\_task\_dirs} & \texttt{list{[}str{]}} & Paths to custom
+task modules \\
+\end{longtable}
+
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-tip-color!10!white, colframe=quarto-callout-tip-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Tip}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
+
+Use \texttt{-\/-dry-run} to preview which tasks will execute and in what
+order before committing to a full run.
+
+\end{tcolorbox}
 
 \part{Tasks \& Data Layers}
 
@@ -1375,368 +1791,6 @@ will be auto-discovered at runtime.
 
 \end{tcolorbox}
 
-\part{Running a City Scan}
-
-\chapter{Running a Standard City
-Scan}\label{running-a-standard-city-scan}
-
-A standard City Scan runs the full default task suite for a single city.
-This is the most common use case.
-
-\section{When to Use a Standard Scan}\label{when-to-use-a-standard-scan}
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Use a standard
-scan when:
-
-\begin{itemize}
-\tightlist
-\item
-  You have a clearly defined city boundary
-\item
-  You want the complete default set of \textasciitilde15 data layers
-\item
-  You are producing a one-time deliverable for a single city
-\end{itemize}
-
-\section{Configuration}\label{configuration}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# config.yml — standard scan}
-\FunctionTok{city}\KeywordTok{:}\AttributeTok{ }\StringTok{"Nairobi"}
-\FunctionTok{country}\KeywordTok{:}\AttributeTok{ }\StringTok{"KE"}
-\FunctionTok{aoi}\KeywordTok{:}\AttributeTok{ }\StringTok{"inputs/AOI/nairobi.geojson"}
-\FunctionTok{output\_dir}\KeywordTok{:}\AttributeTok{ }\StringTok{"outputs/nairobi"}
-\FunctionTok{scan\_type}\KeywordTok{:}\AttributeTok{ standard}
-\FunctionTok{year}\KeywordTok{:}\AttributeTok{ }\DecValTok{2024}
-\end{Highlighting}
-\end{Shaded}
-
-Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. No
-additional configuration is required for a standard scan --- all default
-tasks will run automatically.
-
-\section{Running the Scan}\label{running-the-scan}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\ExtensionTok{python}\NormalTok{ run.py }\AttributeTok{{-}{-}config}\NormalTok{ config.yml}
-\end{Highlighting}
-\end{Shaded}
-
-Expected runtime for a typical city (\textasciitilde500 km²):
-
-\begin{longtable}[]{@{}ll@{}}
-\caption{Estimated runtimes for a standard
-scan}\label{tbl-runtime}\tabularnewline
-\toprule\noalign{}
-Task Group & Estimated Duration \\
-\midrule\noalign{}
-\endfirsthead
-\toprule\noalign{}
-Task Group & Estimated Duration \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-Population & 2--5 min \\
-Land use \& environment & 10--20 min \\
-Infrastructure & 5--10 min \\
-Risk \& hazard & 15--30 min \\
-\textbf{Total} & \textbf{\textasciitilde1 hour} \\
-\end{longtable}
-
-\section{Reviewing Outputs}\label{reviewing-outputs}
-
-\begin{figure}[H]
-
-{\centering \includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio,alt={HTML report generated by a standard City Scan showing maps and statistics.}]{cover.png}
-
-}
-
-\caption{Standard scan output report}
-
-\end{figure}%
-
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
-dolore eu fugiat nulla pariatur. Open
-\texttt{outputs/nairobi/report.html} in a browser to view the
-interactive report.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\ExtensionTok{open}\NormalTok{ outputs/nairobi/report.html   }\CommentTok{\# macOS}
-\FunctionTok{xdg{-}open}\NormalTok{ outputs/nairobi/report.html  }\CommentTok{\# Linux}
-\end{Highlighting}
-\end{Shaded}
-
-\section{Default Task List}\label{default-task-list}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{DEFAULT\_TASKS }\OperatorTok{=}\NormalTok{ [}
-    \StringTok{"population"}\NormalTok{, }\StringTok{"population\_density"}\NormalTok{,}
-    \StringTok{"landuse"}\NormalTok{, }\StringTok{"ndvi"}\NormalTok{, }\StringTok{"ndwi"}\NormalTok{, }\StringTok{"urban\_heat"}\NormalTok{,}
-    \StringTok{"roads"}\NormalTok{, }\StringTok{"buildings"}\NormalTok{, }\StringTok{"accessibility"}\NormalTok{,}
-    \StringTok{"flood\_risk"}\NormalTok{, }\StringTok{"coastal\_erosion"}\NormalTok{, }\StringTok{"seismic"}\NormalTok{,}
-\NormalTok{]}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-note-color!10!white, colframe=quarto-callout-note-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
-
-To run scans for multiple cities at once, see
-\href{multiple-cityscan.qmd}{Multiple City Scans}.
-
-\end{tcolorbox}
-
-\chapter{Running Multiple City Scans}\label{running-multiple-city-scans}
-
-City Scan supports batch execution across multiple cities using a single
-configuration file.
-
-\section{Overview}\label{overview}
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Batch mode
-iterates over a list of city configurations, running each scan
-sequentially or in parallel depending on available compute resources.
-
-\section{Batch Configuration}\label{batch-configuration}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# batch\_config.yml}
-\FunctionTok{scan\_type}\KeywordTok{:}\AttributeTok{ batch}
-\FunctionTok{output\_base\_dir}\KeywordTok{:}\AttributeTok{ }\StringTok{"outputs/"}
-\FunctionTok{year}\KeywordTok{:}\AttributeTok{ }\DecValTok{2024}
-
-\FunctionTok{cities}\KeywordTok{:}
-\AttributeTok{  }\KeywordTok{{-}}\AttributeTok{ }\FunctionTok{city}\KeywordTok{:}\AttributeTok{ }\StringTok{"Nairobi"}
-\AttributeTok{    }\FunctionTok{country}\KeywordTok{:}\AttributeTok{ }\StringTok{"KE"}
-\AttributeTok{    }\FunctionTok{aoi}\KeywordTok{:}\AttributeTok{ }\StringTok{"inputs/AOI/nairobi.geojson"}
-
-\AttributeTok{  }\KeywordTok{{-}}\AttributeTok{ }\FunctionTok{city}\KeywordTok{:}\AttributeTok{ }\StringTok{"Kampala"}
-\AttributeTok{    }\FunctionTok{country}\KeywordTok{:}\AttributeTok{ }\StringTok{"UG"}
-\AttributeTok{    }\FunctionTok{aoi}\KeywordTok{:}\AttributeTok{ }\StringTok{"inputs/AOI/kampala.geojson"}
-
-\AttributeTok{  }\KeywordTok{{-}}\AttributeTok{ }\FunctionTok{city}\KeywordTok{:}\AttributeTok{ }\StringTok{"Dar es Salaam"}
-\AttributeTok{    }\FunctionTok{country}\KeywordTok{:}\AttributeTok{ }\StringTok{"TZ"}
-\AttributeTok{    }\FunctionTok{aoi}\KeywordTok{:}\AttributeTok{ }\StringTok{"inputs/AOI/dar\_es\_salaam.geojson"}
-\end{Highlighting}
-\end{Shaded}
-
-\section{Running the Batch}\label{running-the-batch}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\ExtensionTok{python}\NormalTok{ run.py }\AttributeTok{{-}{-}config}\NormalTok{ batch\_config.yml }\AttributeTok{{-}{-}batch}
-\end{Highlighting}
-\end{Shaded}
-
-Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Scans
-run sequentially by default. To enable parallel execution:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\ExtensionTok{python}\NormalTok{ run.py }\AttributeTok{{-}{-}config}\NormalTok{ batch\_config.yml }\AttributeTok{{-}{-}batch} \AttributeTok{{-}{-}workers}\NormalTok{ 3}
-\end{Highlighting}
-\end{Shaded}
-
-\section{Progress Tracking}\label{progress-tracking}
-
-\begin{figure}[H]
-
-{\centering \includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio,alt={Terminal screenshot showing batch scan progress for three cities.}]{cover.png}
-
-}
-
-\caption{Batch scan progress terminal output}
-
-\end{figure}%
-
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
-dolore eu fugiat nulla pariatur. A progress summary is printed after all
-scans complete:
-
-\begin{verbatim}
-Batch complete: 3/3 cities succeeded
-  ✓ Nairobi       (58m 12s)
-  ✓ Kampala       (1h 03m 47s)
-  ✓ Dar es Salaam (1h 11m 02s)
-\end{verbatim}
-
-\section{Output Structure}\label{output-structure}
-
-\begin{verbatim}
-outputs/
-├── nairobi/
-│   ├── maps/
-│   ├── stats/
-│   └── report.html
-├── kampala/
-│   └── ...
-└── dar_es_salaam/
-    └── ...
-\end{verbatim}
-
-\begin{longtable}[]{@{}lll@{}}
-\caption{Batch run options}\label{tbl-batch-options}\tabularnewline
-\toprule\noalign{}
-Parameter & Default & Description \\
-\midrule\noalign{}
-\endfirsthead
-\toprule\noalign{}
-Parameter & Default & Description \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-\texttt{-\/-workers} & \texttt{1} & Number of parallel scans \\
-\texttt{-\/-retry} & \texttt{0} & Retry failed scans N times \\
-\texttt{-\/-skip-existing} & \texttt{false} & Skip cities with existing
-outputs \\
-\end{longtable}
-
-\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-warning-color!10!white, colframe=quarto-callout-warning-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-warning-color}{\faExclamationTriangle}\hspace{0.5em}{Warning}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
-
-Running too many parallel workers may hit Google Earth Engine API rate
-limits. Start with \texttt{-\/-workers\ 2} and scale up cautiously.
-
-\end{tcolorbox}
-
-\chapter{Running a Custom City Scan}\label{running-a-custom-city-scan}
-
-A custom scan lets you select specific tasks, override default
-parameters, and plug in additional data sources beyond the standard
-suite.
-
-\section{When to Customize}\label{when-to-customize}
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consider a
-custom scan when:
-
-\begin{itemize}
-\tightlist
-\item
-  You only need a subset of data layers to save time
-\item
-  You have proprietary or local data to incorporate
-\item
-  You want non-default resolution or time periods
-\end{itemize}
-
-\section{Selecting Tasks}\label{selecting-tasks}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# custom\_config.yml}
-\FunctionTok{city}\KeywordTok{:}\AttributeTok{ }\StringTok{"Jakarta"}
-\FunctionTok{country}\KeywordTok{:}\AttributeTok{ }\StringTok{"ID"}
-\FunctionTok{aoi}\KeywordTok{:}\AttributeTok{ }\StringTok{"inputs/AOI/jakarta.geojson"}
-\FunctionTok{output\_dir}\KeywordTok{:}\AttributeTok{ }\StringTok{"outputs/jakarta\_custom"}
-\FunctionTok{scan\_type}\KeywordTok{:}\AttributeTok{ custom}
-
-\FunctionTok{tasks}\KeywordTok{:}
-\AttributeTok{  }\KeywordTok{{-}}\AttributeTok{ population}
-\AttributeTok{  }\KeywordTok{{-}}\AttributeTok{ flood\_risk}
-\AttributeTok{  }\KeywordTok{{-}}\AttributeTok{ coastal\_erosion}
-\end{Highlighting}
-\end{Shaded}
-
-\section{Overriding Default
-Parameters}\label{overriding-default-parameters}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{task\_overrides}\KeywordTok{:}
-\AttributeTok{  }\FunctionTok{population}\KeywordTok{:}
-\AttributeTok{    }\FunctionTok{year}\KeywordTok{:}\AttributeTok{ }\DecValTok{2020}
-\AttributeTok{    }\FunctionTok{resolution}\KeywordTok{:}\AttributeTok{ }\DecValTok{100}
-
-\AttributeTok{  }\FunctionTok{flood\_risk}\KeywordTok{:}
-\AttributeTok{    }\FunctionTok{return\_period}\KeywordTok{:}\AttributeTok{ }\DecValTok{50}\CommentTok{   \# 50{-}year flood instead of 100{-}year}
-\AttributeTok{    }\FunctionTok{source}\KeywordTok{:}\AttributeTok{ }\StringTok{"fathom\_v3"}
-\end{Highlighting}
-\end{Shaded}
-
-Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-Overrides are merged with the task defaults, so only specified fields
-are changed.
-
-\section{Adding a Custom Data Source}\label{adding-a-custom-data-source}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# tasks/custom/my\_sensor\_data.py}
-\ImportTok{from}\NormalTok{ cityscan.registry }\ImportTok{import}\NormalTok{ register\_task}
-
-\AttributeTok{@register\_task}
-\KeywordTok{class}\NormalTok{ MySensorDataTask:}
-\NormalTok{    name }\OperatorTok{=} \StringTok{"sensor\_data"}
-\NormalTok{    inputs }\OperatorTok{=}\NormalTok{ [}\StringTok{"aoi"}\NormalTok{]}
-\NormalTok{    outputs }\OperatorTok{=}\NormalTok{ [}\StringTok{"sensor\_data.tif"}\NormalTok{]}
-
-    \KeywordTok{def}\NormalTok{ run(}\VariableTok{self}\NormalTok{, config):}
-\NormalTok{        aoi }\OperatorTok{=} \VariableTok{self}\NormalTok{.load\_aoi(config[}\StringTok{"aoi"}\NormalTok{])}
-\NormalTok{        data }\OperatorTok{=} \VariableTok{self}\NormalTok{.load\_local\_raster(}\StringTok{"data/sensor\_grid.tif"}\NormalTok{)}
-\NormalTok{        clipped }\OperatorTok{=} \VariableTok{self}\NormalTok{.clip(data, aoi)}
-        \VariableTok{self}\NormalTok{.write\_raster(clipped, }\StringTok{"sensor\_data.tif"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-Then reference it in your config:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{tasks}\KeywordTok{:}
-\AttributeTok{  }\KeywordTok{{-}}\AttributeTok{ population}
-\AttributeTok{  }\KeywordTok{{-}}\AttributeTok{ sensor\_data}\CommentTok{   \# your custom task}
-\end{Highlighting}
-\end{Shaded}
-
-\section{Custom Output Directory
-Layout}\label{custom-output-directory-layout}
-
-\begin{figure}[H]
-
-{\centering \includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio,alt={File browser showing a custom scan output directory with selective task outputs.}]{cover.png}
-
-}
-
-\caption{Custom scan output structure}
-
-\end{figure}%
-
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
-dolore eu fugiat nulla pariatur.
-
-\begin{longtable}[]{@{}lll@{}}
-\caption{Custom scan configuration
-options}\label{tbl-custom-config}\tabularnewline
-\toprule\noalign{}
-Config Key & Type & Description \\
-\midrule\noalign{}
-\endfirsthead
-\toprule\noalign{}
-Config Key & Type & Description \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-\texttt{tasks} & \texttt{list{[}str{]}} & Tasks to include \\
-\texttt{task\_overrides} & \texttt{dict} & Per-task parameter
-overrides \\
-\texttt{extra\_task\_dirs} & \texttt{list{[}str{]}} & Paths to custom
-task modules \\
-\end{longtable}
-
-\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-tip-color!10!white, colframe=quarto-callout-tip-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Tip}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
-
-Use \texttt{-\/-dry-run} to preview which tasks will execute and in what
-order before committing to a full run.
-
-\end{tcolorbox}
-
 \part{Understanding the Repo}
 
 \chapter{Repository Structure}\label{repository-structure}
@@ -2026,7 +2080,7 @@ Rabat-Salé-Kénitra region, clipped to the primary urban core.
 \end{Highlighting}
 \end{Shaded}
 
-\section{Running the Scan}\label{running-the-scan-1}
+\section{Running the Scan}\label{running-the-scan}
 
 \begin{Shaded}
 \begin{Highlighting}[]
