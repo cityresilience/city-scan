@@ -5,6 +5,7 @@ on:
     branches: [new_docs]
     paths:
       - 'docs/**'
+      - '.github/workflows/publish-docs.yml'
   workflow_dispatch:
 
 jobs:
