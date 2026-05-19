@@ -1,56 +1,97 @@
-# City Scan at a Glance
+# General Workflow
 
-TESTING - Does it change?? 
+This chapter provides a three-part walkthrough of the City Scan repo for new users. The diagram below illustrates the general workflow of performing a standard City Scan. 
 
-A quick reference summary of City Scan's architecture, workflow, and outputs.
-
-## Architecture Overview
-
-![City Scan Architecture](image/CRP%20LOGO.jpeg){fig-alt="High-level architecture diagram of the City Scan system." width="30%"}
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
-
-## Workflow Summary
-
-```
-AOI Definition → Data Ingestion → Task Execution → Output Generation
-```
-
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.
-
-### Step-by-step
-
-1. **Define area of interest (AOI)** — provide a GeoJSON boundary file.
-2. **Configure tasks** — select which data layers to compute.
-3. **Run the scan** — execute via CLI or orchestrator script.
-4. **Review outputs** — maps, statistics, and reports are generated automatically.
-
-## Key Metrics
-
-| Metric | Typical Value |
-|---|---|
-| Setup time | < 30 minutes |
-| Scan duration | 1–6 hours |
-| Output formats | GeoTIFF, CSV, HTML report |
-| Supported cities | Unlimited |
-
-: City Scan performance at a glance {#tbl-metrics}
-
-## Tech Stack
-
-```yaml
-# Core dependencies
-python: ">=3.10"
-gee: "Google Earth Engine"
-dask: "parallel processing"
-geopandas: "vector data"
-rasterio: "raster data"
+```{mermaid}
+flowchart LR
+  A(Setup) --> B(Configuring inputs)
+  B --> C{Running Scan}
+  C --> J(scan --collect)
+  J --> K(scan --analyze)
+  C --> D(scan --all)
+  C --> E(scan --parallel)
+  D --> F(scan --multianalysis)
+  E --> F
+  K --> F
+  F --> G(scan --render maps)
+  F --> H(scan --render charts)
+  F --> I(scan --render scan-calculations)
 ```
 
-## Quick Links
-
+## Part 1. Basic Setup
 ::: {.callout-note}
-- [Setting Up](setting-up.qmd) — environment and credential setup
-- [Running Your First City Scan](running-first-cityscan.qmd) — step-by-step tutorial
-- [Tasks & Data Layers](tasks-structure-overview.qmd) — full task reference
+See [Part 4. Getting Started/ Setup Instructions](setting-up.qmd) for full details of prerequisites and installations
 :::
+
+City Scan uses multiple programming languages and software to run, including Git, Python, R, Quarto, and Google Cloud. The steps required for setups are below:
+
+- Clone the repo 
+- Create conda env + activate cityscan 
+- Installing City Scan as Python Package via `pip install -e .` for the scan CLI 
+- GCS and GEE authentication via `gcloud auth application-default login` 
+- Install Quarto 
+- Run `scan --check` to verify everything passes 
+
+## Part 2. Configuring Inputs
+Inputs folder is where you can specify your area of interests (AOI), types of analysis to conduct, and certain global analysis parameters. 
+
+- Drop AOI shapefile into `inputs/AOI/`
+- Edit `inputs/city_inputs.yml` 
+- Edit `inputs/menu.yml` 
+
+## Part 3. Running a Scan
+
+When running a scan, we are essentially going through several phases. The general flow is collect → analyze → multianalysis → render. 
+
+1. [**Collect**](running-first-cityscan.qmd) stage is retrieveing specified datasets as indicated in inputs configuration from various publicly available sources for the specified AOI. As an output, you will retrieve TIFFs, GeoJSONs, or Geopackages in your output folder. 
+
+    To conduct **collect** stage, run in your terminal
+
+    ```zsh
+    scan --collect
+    ```
+2. [**Analyze**](running-first-cityscan.qmd) stage is conducting various analysis on a single task, such as seeing the statistical distribution, applying threshold, extracting median/mean values, etc. As an output, you will retrieve various CSVs in your output folder. 
+
+     To conduct **analyze** stage, run in your terminal
+
+    ```zsh
+    scan --analyze
+    ```
+3. Alternatively, you can **batch data collection and data analysis together by looping over tasks** by running: 
+    
+    ```zsh
+    scan --all
+    ```
+    
+    Or, you can leverage your computer memory and **parallelizing data collection and data analysis together per tasks** by running: 
+    
+    ```zsh
+    scan --all --parallel
+    ```
+
+::: {.callout-warning}
+[**Internal Note**] Perhaps in the future, `scan --all` and `scan --all --parallel` should be reserved to orchestrate the whole process, including multianalysis, render, and scan-calculations
+:::
+
+4. [**Multianalysis**](running-first-cityscan.qmd) stage is performing cross-task analysis after single tasks analysis have been executed. For example, this stage executes analysis of flood-exposed population, which requires both flood analysis and population analysis to have been conducted. To do this, run in your terminal: 
+
+    ```zsh
+    scan --multianalysis
+    ```
+
+5. [**Render**](running-first-cityscan.qmd) stage is generating various visualizations as results of previous stages. This includes rendering maps and charts as PNGs or HTMLs. 
+
+    ```zsh
+    # Static maps — applies styling from source/layers.yml, writes PNGs to 03-render-output/maps/
+    scan --render maps
+    ```
+
+    ```zsh
+    # Charts for a specific task — writes HTML to tasks/{name}/charts/index.html
+    scan --render charts elevation
+    ```
+    To generate a compiled interactive quarto document and HTML of all tasks, run:
+
+    ```zsh
+    scan --render scan-calculations
+    ```

@@ -1,6 +1,16 @@
 # What is City Scan?
 
-A City Scan is a rapid geospatial assessment of a city's demographic, socioeconomic, climate, and risk conditions. It is a collection of maps and charts made from global and publicly available datasets that provide quick high-level insights into resilience-related topics for a city. The output is a package of maps, data visualizations and insights that integrate features of both the built and natural environments.These scans are especialy useful for grounding early-stage conversations in geospatial data. 
+::: {.columns}
+
+::: {.column width="30%"}
+![City Scan Concept](image/concept.jpg){fig-alt="High-level conceptual illustration of the City Scan system." width="60%"}
+:::
+
+::: {.column width="70%"}
+A City Scan is a rapid geospatial assessment of a city's demographic, socioeconomic, climate, and risk conditions. It is a collection of maps and charts made from global and publicly available datasets that provide quick high-level insights into resilience-related topics for a city. The output is a package of maps, data visualizations and insights that integrate features of both the built and natural environments. These scans are especialy useful for grounding early-stage conversations in geospatial data.
+:::
+
+::: 
 
 
 ## What can the City Scan tell me?
@@ -27,20 +37,6 @@ services afterward. This approach represents a significant shift
 from prior development trends, which concentrated investments on
 post-disaster reconstruction and recovery.
 
-## About City Resilience Program
-
-Established in June 2017 as a multi-donor initiative and partnership
-between the World Bank and the Global Facility for Disaster Reduction
-and Recovery, the City Resilience Program (CRP) empowers cities to
-invest in climate and disaster resilience. The CRP has assembled a
-diverse range of World Bank sectoral expertise as a global technical
-support system to assist cities in integrating climate change and disaster
-risk into their upstream capital investment planning and access the
-financing needed for climate-smart investments to succeed. Rather
-than trade off between competing sectoral needs, the CRP helps cities
-tackle their most pressing challenges through integrated, cross-sectoral,
-spatially-based priorities that capture the interaction between the
-natural and built environments
 
 ::: {.callout-note}
 For a hands-on introduction, see [Running Your First City Scan](running-first-cityscan.qmd).

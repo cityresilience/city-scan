@@ -1,30 +1,47 @@
 project:
   type: book
+  output-dir: new_docs
 
 book:
-  title: "City Scan Guide"
+  title: "City Scan Technical Reference"
   author: "World Bank - City Resilience Program"
   date: "5/5/2026"
+  search: true
+  repo-url: https://github.com/cityresilience/city-scan/
+  downloads: [pdf]
+  page-footer:
+    background: dark
+    left: |
+      ![](image/GFDRR_Primary Logo_White.svg){width=250px}
+    right: |
+      City Scan is a product of GFDRR - World Bank's [City Resilience Program](https://www.gfdrr.org/en/crp).
+  cover-image: image/cover.png
+  # favicon: cover.jpg
+  sidebar:
+    logo: image/CRP_LOGO.jpeg
+    style: "docked"
+    collapse-level: 1
   chapters:
     - index.qmd
     - part: "City Scan Overview"
       chapters: 
         - what-is-cityscan.qmd
         - examples-cityscan.qmd
-        - at-a-glance.qmd 
-    - part: "Getting Started"
+    - part: "Standard Workflow"
       chapters: 
+        - at-a-glance.qmd 
         - setting-up.qmd
+        - inputs-config.qmd
         - running-first-cityscan.qmd
+    - part: "Advanced Workflow"
+      chapters: 
+        - multiple-cityscan.qmd
+        - custom-cityscan.qmd 
     - part: "Tasks & Data Layers"
       chapters: 
         - tasks-structure-overview.qmd
         - datalayer-references.qmd
-    - part: "Running a City Scan"
-      chapters: 
-        - standard-cityscan.qmd
-        - multiple-cityscan.qmd
-        - custom-cityscan.qmd 
+    
     - part: "Understanding the Repo"
       chapters: 
         - repo-structure.qmd

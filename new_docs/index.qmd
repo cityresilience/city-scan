@@ -1,5 +1,15 @@
-# Preface {.unnumbered}
+# Welcome {.unnumbered}
 
-This is a Quarto book.
+The City Scan is a diagnostic tool designed to equip cities with the early insights needed to address risk by: 
 
-To learn more about Quarto books visit <https://quarto.org/docs/books>.
+- Providing a rapid, data-driven snapshot of a city’s demographic, economic, climate, and risk landscape. 
+- Leveraging remote sensing and geospatial analysis of any city in the world, using global datasets.
+- Revealing the interaction between the urban built and natural environments.
+
+### In this technical reference
+This reference book is a structured technical documentation to use and operate City Scan as a diagnostic tool. Here, you will find documentations on City Scan overview, getting started, running a City Scan, tasks and data layers, repository structure, case studies & galleries, as well as contributing guides.
+
+### About City Resilience Program (CRP)
+The City Resilience Program is housed within the Global Facility for Disaster Reduction and Recovery (GFDRR) at the World Bank. CRP is a global initiative supported by the Swiss State Secretariat for Economic Affairs,  the Austrian Federal Ministry of Finance, the Italian Ministry of Foreign Affairs, the Italian Agency for Development Cooperation, and the Gates Foundation.
+
+To learn more about CRP and GFDRR visit <https://www.gfdrr.org/en/crp>.
