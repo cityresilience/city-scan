@@ -1,6 +1,6 @@
 project:
   type: book
-  output-dir: new_docs
+  output-dir: _book
 
 book:
   title: "City Scan Technical Reference"

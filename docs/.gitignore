@@ -2,4 +2,3 @@
 **/*.quarto_ipynb
 _book/
 .quarto/
-new_docs/
