@@ -18,7 +18,7 @@ jobs:
       - uses: quarto-dev/quarto-actions/setup@v2
 
       - name: Publish to GitHub Pages
-        working-directory: new_docs
+        working-directory: docs
         run: quarto publish gh-pages --no-browser
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
