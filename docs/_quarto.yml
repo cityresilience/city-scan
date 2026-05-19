@@ -8,7 +8,6 @@ book:
   date: "5/5/2026"
   search: true
   repo-url: https://github.com/cityresilience/city-scan/
-  downloads: [pdf]
   page-footer:
     background: dark
     left: |
@@ -69,8 +68,8 @@ format:
   pdf:
     documentclass: scrreprt
 
-execute: 
-  freeze: auto
+execute:
+  freeze: true
 
 
 
