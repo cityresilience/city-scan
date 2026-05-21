@@ -6,10 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="World Bank - City Resilience Program">
-<meta name="dcterms.date" content="2026-05-05">
 
-<title>City Scan Technical Reference</title>
+<title>11&nbsp; Repository Structure – City Scan Technical Reference</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -25,6 +23,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -35,7 +68,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./what-is-cityscan.html" rel="next">
+<link href="./task-dependency.html" rel="next">
+<link href="./datalayer-references.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -86,7 +120,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Welcome</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./repo-structure.html">Understanding the Repo</a></li><li class="breadcrumb-item"><a href="./repo-structure.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Repository Structure</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -120,7 +154,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Welcome</span></a>
   </div>
 </li>
@@ -230,16 +264,16 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
  <span class="menu-text">Understanding the Repo</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./repo-structure.html" class="sidebar-item-text sidebar-link">
+  <a href="./repo-structure.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Repository Structure</span></span></a>
   </div>
 </li>
@@ -325,39 +359,30 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#welcome" id="toc-welcome" class="nav-link active" data-scroll-target="#welcome">Welcome</a>
+  <li><a href="#top-level-layout" id="toc-top-level-layout" class="nav-link active" data-scroll-target="#top-level-layout"><span class="header-section-number">11.1</span> Top-level Layout</a></li>
+  <li><a href="#core-package-cityscan" id="toc-core-package-cityscan" class="nav-link" data-scroll-target="#core-package-cityscan"><span class="header-section-number">11.2</span> Core Package: <code>cityscan/</code></a>
   <ul class="collapse">
-  <li><a href="#in-this-technical-reference" id="toc-in-this-technical-reference" class="nav-link" data-scroll-target="#in-this-technical-reference">In this technical reference</a></li>
-  <li><a href="#about-city-resilience-program-crp" id="toc-about-city-resilience-program-crp" class="nav-link" data-scroll-target="#about-city-resilience-program-crp">About City Resilience Program (CRP)</a></li>
+  <li><a href="#key-modules" id="toc-key-modules" class="nav-link" data-scroll-target="#key-modules"><span class="header-section-number">11.2.1</span> Key Modules</a></li>
   </ul></li>
+  <li><a href="#tasks-directory-tasks" id="toc-tasks-directory-tasks" class="nav-link" data-scroll-target="#tasks-directory-tasks"><span class="header-section-number">11.3</span> Tasks Directory: <code>tasks/</code></a></li>
+  <li><a href="#inputs-outputs" id="toc-inputs-outputs" class="nav-link" data-scroll-target="#inputs-outputs"><span class="header-section-number">11.4</span> Inputs &amp; Outputs</a></li>
+  <li><a href="#tests" id="toc-tests" class="nav-link" data-scroll-target="#tests"><span class="header-section-number">11.5</span> Tests</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./repo-structure.html">Understanding the Repo</a></li><li class="breadcrumb-item"><a href="./repo-structure.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Repository Structure</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">City Scan Technical Reference</h1>
+<h1 class="title"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Repository Structure</span></h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>World Bank - City Resilience Program </p>
-          </div>
-  </div>
     
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">May 5, 2026</p>
-    </div>
-  </div>
   
     
   </div>
@@ -367,26 +392,120 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-
-<section id="welcome" class="level1 unnumbered">
-<h1 class="unnumbered">Welcome</h1><p><img src="image/cover.png" title="City Scan Technical Reference" class="quarto-cover-image nolightbox img-fluid"></p>
-<p>The City Scan is a diagnostic tool designed to equip cities with the early insights needed to address risk by:</p>
-<ul>
-<li>Providing a rapid, data-driven snapshot of a city’s demographic, economic, climate, and risk landscape.</li>
-<li>Leveraging remote sensing and geospatial analysis of any city in the world, using global datasets.</li>
-<li>Revealing the interaction between the urban built and natural environments.</li>
-</ul>
-<section id="in-this-technical-reference" class="level3">
-<h3 class="anchored" data-anchor-id="in-this-technical-reference">In this technical reference</h3>
-<p>This reference book is a structured technical documentation to use and operate City Scan as a diagnostic tool. Here, you will find documentations on City Scan overview, getting started, running a City Scan, tasks and data layers, repository structure, case studies &amp; galleries, as well as contributing guides.</p>
+<p>An orientation to the City Scan codebase — what lives where and why.</p>
+<section id="top-level-layout" class="level2" data-number="11.1">
+<h2 data-number="11.1" class="anchored" data-anchor-id="top-level-layout"><span class="header-section-number">11.1</span> Top-level Layout</h2>
+<pre><code>city-scan/
+├── cityscan/          # core Python package
+├── tasks/             # task modules
+├── inputs/            # user-supplied inputs (AOI, local data)
+├── outputs/           # generated scan outputs (git-ignored)
+├── scripts/           # utility scripts
+├── tests/             # test suite
+├── docs/              # this documentation
+├── pyproject.toml     # package metadata &amp; dependencies
+├── run.py             # CLI entry point
+└── orchestrator.sh    # shell-based orchestrator (legacy)</code></pre>
 </section>
-<section id="about-city-resilience-program-crp" class="level3">
-<h3 class="anchored" data-anchor-id="about-city-resilience-program-crp">About City Resilience Program (CRP)</h3>
-<p>The City Resilience Program is housed within the Global Facility for Disaster Reduction and Recovery (GFDRR) at the World Bank. CRP is a global initiative supported by the Swiss State Secretariat for Economic Affairs, the Austrian Federal Ministry of Finance, the Italian Ministry of Foreign Affairs, the Italian Agency for Development Cooperation, and the Gates Foundation.</p>
-<p>To learn more about CRP and GFDRR visit <a href="https://www.gfdrr.org/en/crp" class="uri">https://www.gfdrr.org/en/crp</a>.</p>
-
-
+<section id="core-package-cityscan" class="level2" data-number="11.2">
+<h2 data-number="11.2" class="anchored" data-anchor-id="core-package-cityscan"><span class="header-section-number">11.2</span> Core Package: <code>cityscan/</code></h2>
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+<pre><code>cityscan/
+├── __init__.py
+├── config.py          # config loading and validation
+├── registry.py        # task registration and discovery
+├── runner.py          # task execution and dependency resolution
+├── gee.py             # Google Earth Engine helpers
+├── io.py              # file I/O utilities
+└── report.py          # HTML report generation</code></pre>
+<section id="key-modules" class="level3" data-number="11.2.1">
+<h3 data-number="11.2.1" class="anchored" data-anchor-id="key-modules"><span class="header-section-number">11.2.1</span> Key Modules</h3>
+<div id="tbl-modules" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-modules-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;11.1: Core module responsibilities
+</figcaption>
+<div aria-describedby="tbl-modules-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Module</th>
+<th>Responsibility</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>config.py</code></td>
+<td>Load and validate <code>config.yml</code></td>
+</tr>
+<tr class="even">
+<td><code>registry.py</code></td>
+<td>Discover and register task classes</td>
+</tr>
+<tr class="odd">
+<td><code>runner.py</code></td>
+<td>Resolve dependencies, schedule, and run tasks</td>
+</tr>
+<tr class="even">
+<td><code>gee.py</code></td>
+<td>Authenticate and interact with GEE</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
 </section>
+</section>
+<section id="tasks-directory-tasks" class="level2" data-number="11.3">
+<h2 data-number="11.3" class="anchored" data-anchor-id="tasks-directory-tasks"><span class="header-section-number">11.3</span> Tasks Directory: <code>tasks/</code></h2>
+<pre><code>tasks/
+├── population.py
+├── landuse.py
+├── roads.py
+├── flood_risk.py
+├── coastal_erosion.py
+└── custom/            # user-defined custom tasks</code></pre>
+<p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Each file in <code>tasks/</code> is a self-contained module that is auto-discovered by the registry at startup.</p>
+</section>
+<section id="inputs-outputs" class="level2" data-number="11.4">
+<h2 data-number="11.4" class="anchored" data-anchor-id="inputs-outputs"><span class="header-section-number">11.4</span> Inputs &amp; Outputs</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">inputs/</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">└──</span> AOI/               <span class="co"># place your GeoJSON boundary files here</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">outputs/</span>               <span class="co"># created automatically; git-ignored</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="ex">└──</span> <span class="op">&lt;</span>city_name<span class="op">&gt;</span>/</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="ex">├──</span> maps/</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="ex">├──</span> stats/</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="ex">└──</span> report.html</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="cover.png" class="img-fluid figure-img" style="width:80.0%" alt="Diagram illustrating the top-level directory structure of the City Scan repository."></p>
+<figcaption>Repository structure diagram</figcaption>
+</figure>
+</div>
+</section>
+<section id="tests" class="level2" data-number="11.5">
+<h2 data-number="11.5" class="anchored" data-anchor-id="tests"><span class="header-section-number">11.5</span> Tests</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pytest</span> tests/            <span class="co"># run the full test suite</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pytest</span> tests/unit/       <span class="co"># unit tests only</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="ex">pytest</span> tests/integration/ <span class="co"># integration tests (requires GEE)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For how tasks connect to each other, see <a href="./task-dependency.html">Task Dependency</a>.</p>
+</div>
+</div>
+
+
 </section>
 
 </main> <!-- /main -->
@@ -792,10 +911,13 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="./datalayer-references.html" class="pagination-link" aria-label="Data Layer References">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Data Layer References</span></span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./what-is-cityscan.html" class="pagination-link" aria-label="What is City Scan?">
-        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">What is City Scan?</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./task-dependency.html" class="pagination-link" aria-label="Task Dependency">
+        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Task Dependency</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

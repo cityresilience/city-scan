@@ -6,10 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="World Bank - City Resilience Program">
-<meta name="dcterms.date" content="2026-05-05">
 
-<title>City Scan Technical Reference</title>
+<title>15&nbsp; Git Guide – City Scan Technical Reference</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -25,6 +23,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -35,7 +68,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./what-is-cityscan.html" rel="next">
+<link href="./reporting-issues.html" rel="next">
+<link href="./case-multiple-philippines.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -86,7 +120,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Welcome</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./git-guide.html">Collaborating</a></li><li class="breadcrumb-item"><a href="./git-guide.html"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Git Guide</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -120,7 +154,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Welcome</span></a>
   </div>
 </li>
@@ -276,16 +310,16 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
  <span class="menu-text">Collaborating</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./git-guide.html" class="sidebar-item-text sidebar-link">
+  <a href="./git-guide.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Git Guide</span></span></a>
   </div>
 </li>
@@ -325,39 +359,30 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#welcome" id="toc-welcome" class="nav-link active" data-scroll-target="#welcome">Welcome</a>
+  <li><a href="#branching-strategy" id="toc-branching-strategy" class="nav-link active" data-scroll-target="#branching-strategy"><span class="header-section-number">15.1</span> Branching Strategy</a></li>
+  <li><a href="#cloning-the-repository" id="toc-cloning-the-repository" class="nav-link" data-scroll-target="#cloning-the-repository"><span class="header-section-number">15.2</span> Cloning the Repository</a></li>
+  <li><a href="#commit-message-conventions" id="toc-commit-message-conventions" class="nav-link" data-scroll-target="#commit-message-conventions"><span class="header-section-number">15.3</span> Commit Message Conventions</a>
   <ul class="collapse">
-  <li><a href="#in-this-technical-reference" id="toc-in-this-technical-reference" class="nav-link" data-scroll-target="#in-this-technical-reference">In this technical reference</a></li>
-  <li><a href="#about-city-resilience-program-crp" id="toc-about-city-resilience-program-crp" class="nav-link" data-scroll-target="#about-city-resilience-program-crp">About City Resilience Program (CRP)</a></li>
+  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples"><span class="header-section-number">15.3.1</span> Examples</a></li>
   </ul></li>
+  <li><a href="#pull-request-workflow" id="toc-pull-request-workflow" class="nav-link" data-scroll-target="#pull-request-workflow"><span class="header-section-number">15.4</span> Pull Request Workflow</a></li>
+  <li><a href="#keeping-your-branch-up-to-date" id="toc-keeping-your-branch-up-to-date" class="nav-link" data-scroll-target="#keeping-your-branch-up-to-date"><span class="header-section-number">15.5</span> Keeping Your Branch Up to Date</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./git-guide.html">Collaborating</a></li><li class="breadcrumb-item"><a href="./git-guide.html"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Git Guide</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">City Scan Technical Reference</h1>
+<h1 class="title"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Git Guide</span></h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>World Bank - City Resilience Program </p>
-          </div>
-  </div>
     
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">May 5, 2026</p>
-    </div>
-  </div>
   
     
   </div>
@@ -367,26 +392,131 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-
-<section id="welcome" class="level1 unnumbered">
-<h1 class="unnumbered">Welcome</h1><p><img src="image/cover.png" title="City Scan Technical Reference" class="quarto-cover-image nolightbox img-fluid"></p>
-<p>The City Scan is a diagnostic tool designed to equip cities with the early insights needed to address risk by:</p>
-<ul>
-<li>Providing a rapid, data-driven snapshot of a city’s demographic, economic, climate, and risk landscape.</li>
-<li>Leveraging remote sensing and geospatial analysis of any city in the world, using global datasets.</li>
-<li>Revealing the interaction between the urban built and natural environments.</li>
-</ul>
-<section id="in-this-technical-reference" class="level3">
-<h3 class="anchored" data-anchor-id="in-this-technical-reference">In this technical reference</h3>
-<p>This reference book is a structured technical documentation to use and operate City Scan as a diagnostic tool. Here, you will find documentations on City Scan overview, getting started, running a City Scan, tasks and data layers, repository structure, case studies &amp; galleries, as well as contributing guides.</p>
+<p>A practical Git reference for City Scan contributors, covering branching strategy, commit conventions, and common workflows.</p>
+<section id="branching-strategy" class="level2" data-number="15.1">
+<h2 data-number="15.1" class="anchored" data-anchor-id="branching-strategy"><span class="header-section-number">15.1</span> Branching Strategy</h2>
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. City Scan uses a trunk-based development model with short-lived feature branches.</p>
+<pre><code>main                    # stable, always deployable
+└── feature/&lt;name&gt;      # new features or improvements
+└── fix/&lt;name&gt;          # bug fixes
+└── docs/&lt;name&gt;         # documentation-only changes</code></pre>
 </section>
-<section id="about-city-resilience-program-crp" class="level3">
-<h3 class="anchored" data-anchor-id="about-city-resilience-program-crp">About City Resilience Program (CRP)</h3>
-<p>The City Resilience Program is housed within the Global Facility for Disaster Reduction and Recovery (GFDRR) at the World Bank. CRP is a global initiative supported by the Swiss State Secretariat for Economic Affairs, the Austrian Federal Ministry of Finance, the Italian Ministry of Foreign Affairs, the Italian Agency for Development Cooperation, and the Gates Foundation.</p>
-<p>To learn more about CRP and GFDRR visit <a href="https://www.gfdrr.org/en/crp" class="uri">https://www.gfdrr.org/en/crp</a>.</p>
-
-
+<section id="cloning-the-repository" class="level2" data-number="15.2">
+<h2 data-number="15.2" class="anchored" data-anchor-id="cloning-the-repository"><span class="header-section-number">15.2</span> Cloning the Repository</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/cityresilience/city-scan.git</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> city-scan</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout <span class="at">-b</span> feature/my-new-feature</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
+<section id="commit-message-conventions" class="level2" data-number="15.3">
+<h2 data-number="15.3" class="anchored" data-anchor-id="commit-message-conventions"><span class="header-section-number">15.3</span> Commit Message Conventions</h2>
+<p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Follow the <a href="https://www.conventionalcommits.org/">Conventional Commits</a> format:</p>
+<pre><code>&lt;type&gt;(&lt;scope&gt;): &lt;short description&gt;
+
+[optional body]
+
+[optional footer]</code></pre>
+<div id="tbl-commit-types" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-commit-types-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;15.1: Conventional commit types
+</figcaption>
+<div aria-describedby="tbl-commit-types-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Type</th>
+<th>When to Use</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>feat</code></td>
+<td>New feature or data layer</td>
+</tr>
+<tr class="even">
+<td><code>fix</code></td>
+<td>Bug fix</td>
+</tr>
+<tr class="odd">
+<td><code>docs</code></td>
+<td>Documentation changes only</td>
+</tr>
+<tr class="even">
+<td><code>refactor</code></td>
+<td>Code restructuring, no behavior change</td>
+</tr>
+<tr class="odd">
+<td><code>test</code></td>
+<td>Adding or updating tests</td>
+</tr>
+<tr class="even">
+<td><code>chore</code></td>
+<td>Maintenance (deps, CI, config)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<section id="examples" class="level3" data-number="15.3.1">
+<h3 data-number="15.3.1" class="anchored" data-anchor-id="examples"><span class="header-section-number">15.3.1</span> Examples</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"feat(tasks): add seismic hazard layer"</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"fix(gee): handle expired credentials gracefully"</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"docs(setup): clarify GEE authentication steps"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+<section id="pull-request-workflow" class="level2" data-number="15.4">
+<h2 data-number="15.4" class="anchored" data-anchor-id="pull-request-workflow"><span class="header-section-number">15.4</span> Pull Request Workflow</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Create a branch</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout <span class="at">-b</span> fix/flood-risk-clipping</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Make changes and commit</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add tasks/flood_risk.py</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"fix(tasks): correct AOI clipping in flood risk task"</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Push and open a PR</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push <span class="at">-u</span> origin fix/flood-risk-clipping</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> pr create <span class="at">--fill</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="cover.png" class="img-fluid figure-img" style="width:80.0%" alt="Screenshot of a City Scan pull request on GitHub showing the review checklist."></p>
+<figcaption>Pull request checklist on GitHub</figcaption>
+</figure>
+</div>
+</section>
+<section id="keeping-your-branch-up-to-date" class="level2" data-number="15.5">
+<h2 data-number="15.5" class="anchored" data-anchor-id="keeping-your-branch-up-to-date"><span class="header-section-number">15.5</span> Keeping Your Branch Up to Date</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> fetch origin</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> rebase origin/main</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Avoid <code>git merge main</code> into feature branches — use rebase to keep a clean linear history.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For opening issues, see <a href="./reporting-issues.html">Reporting Issues</a>. For contributing code, see <a href="./contributing.html">Contributing</a>.</p>
+</div>
+</div>
+
+
 </section>
 
 </main> <!-- /main -->
@@ -792,10 +922,13 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="./case-multiple-philippines.html" class="pagination-link" aria-label="Case Study: Multiple Scans — Philippines">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Case Study: Multiple Scans — Philippines</span></span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./what-is-cityscan.html" class="pagination-link" aria-label="What is City Scan?">
-        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">What is City Scan?</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./reporting-issues.html" class="pagination-link" aria-label="Reporting Issues">
+        <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Reporting Issues</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

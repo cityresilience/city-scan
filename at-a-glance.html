@@ -6,10 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="World Bank - City Resilience Program">
-<meta name="dcterms.date" content="2026-05-05">
 
-<title>City Scan Technical Reference</title>
+<title>3&nbsp; General Workflow – City Scan Technical Reference</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -25,6 +23,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -35,7 +68,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./what-is-cityscan.html" rel="next">
+<link href="./setting-up.html" rel="next">
+<link href="./examples-cityscan.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -73,6 +107,9 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
 
 </head>
@@ -86,7 +123,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Welcome</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./at-a-glance.html">Standard Workflow</a></li><li class="breadcrumb-item"><a href="./at-a-glance.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">General Workflow</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -120,7 +157,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Welcome</span></a>
   </div>
 </li>
@@ -149,16 +186,16 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
  <span class="menu-text">Standard Workflow</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./at-a-glance.html" class="sidebar-item-text sidebar-link">
+  <a href="./at-a-glance.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">General Workflow</span></span></a>
   </div>
 </li>
@@ -325,39 +362,25 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#welcome" id="toc-welcome" class="nav-link active" data-scroll-target="#welcome">Welcome</a>
-  <ul class="collapse">
-  <li><a href="#in-this-technical-reference" id="toc-in-this-technical-reference" class="nav-link" data-scroll-target="#in-this-technical-reference">In this technical reference</a></li>
-  <li><a href="#about-city-resilience-program-crp" id="toc-about-city-resilience-program-crp" class="nav-link" data-scroll-target="#about-city-resilience-program-crp">About City Resilience Program (CRP)</a></li>
-  </ul></li>
+  <li><a href="#part-1.-basic-setup" id="toc-part-1.-basic-setup" class="nav-link active" data-scroll-target="#part-1.-basic-setup"><span class="header-section-number">3.1</span> Part 1. Basic Setup</a></li>
+  <li><a href="#part-2.-configuring-inputs" id="toc-part-2.-configuring-inputs" class="nav-link" data-scroll-target="#part-2.-configuring-inputs"><span class="header-section-number">3.2</span> Part 2. Configuring Inputs</a></li>
+  <li><a href="#part-3.-running-a-scan" id="toc-part-3.-running-a-scan" class="nav-link" data-scroll-target="#part-3.-running-a-scan"><span class="header-section-number">3.3</span> Part 3. Running a Scan</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./at-a-glance.html">Standard Workflow</a></li><li class="breadcrumb-item"><a href="./at-a-glance.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">General Workflow</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">City Scan Technical Reference</h1>
+<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">General Workflow</span></h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>World Bank - City Resilience Program </p>
-          </div>
-  </div>
     
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">May 5, 2026</p>
-    </div>
-  </div>
   
     
   </div>
@@ -367,26 +390,106 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-
-<section id="welcome" class="level1 unnumbered">
-<h1 class="unnumbered">Welcome</h1><p><img src="image/cover.png" title="City Scan Technical Reference" class="quarto-cover-image nolightbox img-fluid"></p>
-<p>The City Scan is a diagnostic tool designed to equip cities with the early insights needed to address risk by:</p>
+<p>This chapter provides a three-part walkthrough of the City Scan repo for new users. The diagram below illustrates the general workflow of performing a standard City Scan.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  A(Setup) --&gt; B(Configuring inputs)
+  B --&gt; C{Running Scan}
+  C --&gt; J(scan --collect)
+  J --&gt; K(scan --analyze)
+  C --&gt; D(scan --all)
+  C --&gt; E(scan --parallel)
+  D --&gt; F(scan --multianalysis)
+  E --&gt; F
+  K --&gt; F
+  F --&gt; G(scan --render maps)
+  F --&gt; H(scan --render charts)
+  F --&gt; I(scan --render scan-calculations)
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<section id="part-1.-basic-setup" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="part-1.-basic-setup"><span class="header-section-number">3.1</span> Part 1. Basic Setup</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>See <a href="./setting-up.html">Part 4. Getting Started/ Setup Instructions</a> for full details of prerequisites and installations</p>
+</div>
+</div>
+<p>City Scan uses multiple programming languages and software to run, including Git, Python, R, Quarto, and Google Cloud. The steps required for setups are below:</p>
 <ul>
-<li>Providing a rapid, data-driven snapshot of a city’s demographic, economic, climate, and risk landscape.</li>
-<li>Leveraging remote sensing and geospatial analysis of any city in the world, using global datasets.</li>
-<li>Revealing the interaction between the urban built and natural environments.</li>
+<li>Clone the repo</li>
+<li>Create conda env + activate cityscan</li>
+<li>Installing City Scan as Python Package via <code>pip install -e .</code> for the scan CLI</li>
+<li>GCS and GEE authentication via <code>gcloud auth application-default login</code></li>
+<li>Install Quarto</li>
+<li>Run <code>scan --check</code> to verify everything passes</li>
 </ul>
-<section id="in-this-technical-reference" class="level3">
-<h3 class="anchored" data-anchor-id="in-this-technical-reference">In this technical reference</h3>
-<p>This reference book is a structured technical documentation to use and operate City Scan as a diagnostic tool. Here, you will find documentations on City Scan overview, getting started, running a City Scan, tasks and data layers, repository structure, case studies &amp; galleries, as well as contributing guides.</p>
 </section>
-<section id="about-city-resilience-program-crp" class="level3">
-<h3 class="anchored" data-anchor-id="about-city-resilience-program-crp">About City Resilience Program (CRP)</h3>
-<p>The City Resilience Program is housed within the Global Facility for Disaster Reduction and Recovery (GFDRR) at the World Bank. CRP is a global initiative supported by the Swiss State Secretariat for Economic Affairs, the Austrian Federal Ministry of Finance, the Italian Ministry of Foreign Affairs, the Italian Agency for Development Cooperation, and the Gates Foundation.</p>
-<p>To learn more about CRP and GFDRR visit <a href="https://www.gfdrr.org/en/crp" class="uri">https://www.gfdrr.org/en/crp</a>.</p>
+<section id="part-2.-configuring-inputs" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="part-2.-configuring-inputs"><span class="header-section-number">3.2</span> Part 2. Configuring Inputs</h2>
+<p>Inputs folder is where you can specify your area of interests (AOI), types of analysis to conduct, and certain global analysis parameters.</p>
+<ul>
+<li>Drop AOI shapefile into <code>inputs/AOI/</code></li>
+<li>Edit <code>inputs/city_inputs.yml</code></li>
+<li>Edit <code>inputs/menu.yml</code></li>
+</ul>
+</section>
+<section id="part-3.-running-a-scan" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="part-3.-running-a-scan"><span class="header-section-number">3.3</span> Part 3. Running a Scan</h2>
+<p>When running a scan, we are essentially going through several phases. The general flow is collect → analyze → multianalysis → render.</p>
+<ol type="1">
+<li><p><a href="./running-first-cityscan.html"><strong>Collect</strong></a> stage is retrieveing specified datasets as indicated in inputs configuration from various publicly available sources for the specified AOI. As an output, you will retrieve TIFFs, GeoJSONs, or Geopackages in your output folder.</p>
+<p>To conduct <strong>collect</strong> stage, run in your terminal</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode zsh code-with-copy"><code class="sourceCode zsh"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">scan</span> <span class="at">--collect</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p><a href="./running-first-cityscan.html"><strong>Analyze</strong></a> stage is conducting various analysis on a single task, such as seeing the statistical distribution, applying threshold, extracting median/mean values, etc. As an output, you will retrieve various CSVs in your output folder.</p>
+<p>To conduct <strong>analyze</strong> stage, run in your terminal</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode zsh code-with-copy"><code class="sourceCode zsh"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">scan</span> <span class="at">--analyze</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p>Alternatively, you can <strong>batch data collection and data analysis together by looping over tasks</strong> by running:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode zsh code-with-copy"><code class="sourceCode zsh"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">scan</span> <span class="at">--all</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Or, you can leverage your computer memory and <strong>parallelizing data collection and data analysis together per tasks</strong> by running:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode zsh code-with-copy"><code class="sourceCode zsh"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">scan</span> <span class="at">--all</span> <span class="at">--parallel</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+</ol>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>[<strong>Internal Note</strong>] Perhaps in the future, <code>scan --all</code> and <code>scan --all --parallel</code> should be reserved to orchestrate the whole process, including multianalysis, render, and scan-calculations</p>
+</div>
+</div>
+<ol start="4" type="1">
+<li><p><a href="./running-first-cityscan.html"><strong>Multianalysis</strong></a> stage is performing cross-task analysis after single tasks analysis have been executed. For example, this stage executes analysis of flood-exposed population, which requires both flood analysis and population analysis to have been conducted. To do this, run in your terminal:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode zsh code-with-copy"><code class="sourceCode zsh"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">scan</span> <span class="at">--multianalysis</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p><a href="./running-first-cityscan.html"><strong>Render</strong></a> stage is generating various visualizations as results of previous stages. This includes rendering maps and charts as PNGs or HTMLs.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode zsh code-with-copy"><code class="sourceCode zsh"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Static maps — applies styling from source/layers.yml, writes PNGs to 03-render-output/maps/</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">scan</span> <span class="at">--render</span> maps</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode zsh code-with-copy"><code class="sourceCode zsh"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Charts for a specific task — writes HTML to tasks/{name}/charts/index.html</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">scan</span> <span class="at">--render</span> charts elevation</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>To generate a compiled interactive quarto document and HTML of all tasks, run:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode zsh code-with-copy"><code class="sourceCode zsh"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">scan</span> <span class="at">--render</span> scan-calculations</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+</ol>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -792,10 +895,13 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="./examples-cityscan.html" class="pagination-link" aria-label="City Scan Examples">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">City Scan Examples</span></span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./what-is-cityscan.html" class="pagination-link" aria-label="What is City Scan?">
-        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">What is City Scan?</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./setting-up.html" class="pagination-link" aria-label="Setup Instructions">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Setup Instructions</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

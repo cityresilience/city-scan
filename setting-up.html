@@ -6,10 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="World Bank - City Resilience Program">
-<meta name="dcterms.date" content="2026-05-05">
 
-<title>City Scan Technical Reference</title>
+<title>4&nbsp; Setup Instructions – City Scan Technical Reference</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -25,6 +23,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -35,7 +68,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./what-is-cityscan.html" rel="next">
+<link href="./inputs-config.html" rel="next">
+<link href="./at-a-glance.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -86,7 +120,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Welcome</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./at-a-glance.html">Standard Workflow</a></li><li class="breadcrumb-item"><a href="./setting-up.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Setup Instructions</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -120,7 +154,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Welcome</span></a>
   </div>
 </li>
@@ -149,13 +183,13 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
  <span class="menu-text">Standard Workflow</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./at-a-glance.html" class="sidebar-item-text sidebar-link">
@@ -164,7 +198,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./setting-up.html" class="sidebar-item-text sidebar-link">
+  <a href="./setting-up.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Setup Instructions</span></span></a>
   </div>
 </li>
@@ -325,10 +359,18 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#welcome" id="toc-welcome" class="nav-link active" data-scroll-target="#welcome">Welcome</a>
+  <li><a href="#authentication" id="toc-authentication" class="nav-link active" data-scroll-target="#authentication"><span class="header-section-number">4.1</span> Authentication</a></li>
+  <li><a href="#git" id="toc-git" class="nav-link" data-scroll-target="#git"><span class="header-section-number">4.2</span> Git</a></li>
+  <li><a href="#python" id="toc-python" class="nav-link" data-scroll-target="#python"><span class="header-section-number">4.3</span> Python</a>
   <ul class="collapse">
-  <li><a href="#in-this-technical-reference" id="toc-in-this-technical-reference" class="nav-link" data-scroll-target="#in-this-technical-reference">In this technical reference</a></li>
-  <li><a href="#about-city-resilience-program-crp" id="toc-about-city-resilience-program-crp" class="nav-link" data-scroll-target="#about-city-resilience-program-crp">About City Resilience Program (CRP)</a></li>
+  <li><a href="#option-1-via-conda-recommended-for-mac-windows-linux" id="toc-option-1-via-conda-recommended-for-mac-windows-linux" class="nav-link" data-scroll-target="#option-1-via-conda-recommended-for-mac-windows-linux"><span class="header-section-number">4.3.1</span> <em>Option 1</em>: Via Conda (Recommended for Mac, Windows, Linux)</a></li>
+  <li><a href="#option-2-via-bootstrap-script-alternative-setup-only-for-mac-linux" id="toc-option-2-via-bootstrap-script-alternative-setup-only-for-mac-linux" class="nav-link" data-scroll-target="#option-2-via-bootstrap-script-alternative-setup-only-for-mac-linux"><span class="header-section-number">4.3.2</span> <em>Option 2</em>: Via Bootstrap Script (Alternative Setup – only for Mac, Linux)</a></li>
+  </ul></li>
+  <li><a href="#r" id="toc-r" class="nav-link" data-scroll-target="#r"><span class="header-section-number">4.4</span> R</a></li>
+  <li><a href="#quarto" id="toc-quarto" class="nav-link" data-scroll-target="#quarto"><span class="header-section-number">4.5</span> Quarto</a></li>
+  <li><a href="#vs-code" id="toc-vs-code" class="nav-link" data-scroll-target="#vs-code"><span class="header-section-number">4.6</span> VS Code</a>
+  <ul class="collapse">
+  <li><a href="#docker" id="toc-docker" class="nav-link" data-scroll-target="#docker"><span class="header-section-number">4.6.1</span> Docker</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -336,28 +378,16 @@ ul.task-list li input[type="checkbox"] {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./at-a-glance.html">Standard Workflow</a></li><li class="breadcrumb-item"><a href="./setting-up.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Setup Instructions</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">City Scan Technical Reference</h1>
+<h1 class="title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Setup Instructions</span></h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>World Bank - City Resilience Program </p>
-          </div>
-  </div>
     
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">May 5, 2026</p>
-    </div>
-  </div>
   
     
   </div>
@@ -367,23 +397,142 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-
-<section id="welcome" class="level1 unnumbered">
-<h1 class="unnumbered">Welcome</h1><p><img src="image/cover.png" title="City Scan Technical Reference" class="quarto-cover-image nolightbox img-fluid"></p>
-<p>The City Scan is a diagnostic tool designed to equip cities with the early insights needed to address risk by:</p>
+<!-- ## Required and Recommended Software -->
+<!-- For all activities, see
+- [VS Code](#vs-code) (recommended) -->
+<!-- For running a City Scan on Google Cloud, see
+- [gcloud](#gcloud) (required) -->
+<!-- To run visualizations and reports locally, you can run with [Docker](#docker) or natively. If using Docker, you will only need Docker, in addition to Git and an editor like VS Code. (The frontend script also requires gcloud, but we will add instructions that don't require it.)  -->
+<p>City Scan repo is multilangual: Python is used for data collection and analysis, R for mapping and charting, and Quarto for report compilation and web visualization.</p>
+<p>All City Scan tasks can be accessed through terminal with the required tools configured:</p>
 <ul>
-<li>Providing a rapid, data-driven snapshot of a city’s demographic, economic, climate, and risk landscape.</li>
-<li>Leveraging remote sensing and geospatial analysis of any city in the world, using global datasets.</li>
-<li>Revealing the interaction between the urban built and natural environments.</li>
+<li><a href="#git">Git</a></li>
+<li><a href="#python">Python</a></li>
+<li><a href="#r">R</a></li>
+<li><a href="#quarto">Quarto</a></li>
+<li><a href="#gcloud">gcloud</a></li>
 </ul>
-<section id="in-this-technical-reference" class="level3">
-<h3 class="anchored" data-anchor-id="in-this-technical-reference">In this technical reference</h3>
-<p>This reference book is a structured technical documentation to use and operate City Scan as a diagnostic tool. Here, you will find documentations on City Scan overview, getting started, running a City Scan, tasks and data layers, repository structure, case studies &amp; galleries, as well as contributing guides.</p>
+<p>Recommended: - <a href="#vs-code">Visual Studio Code</a></p>
+<p>The following sections describe the recommended setup configuration and best practices.</p>
+<hr>
+<section id="authentication" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="authentication"><span class="header-section-number">4.1</span> Authentication</h2>
+<p>Authentication is managed in <code>core/config/</code>:</p>
+<ul>
+<li><strong><code>auth.py</code></strong> — initializes Google Earth Engine (GEE) and Google Cloud Storage (GCS) credentials</li>
+<li><strong><code>scan.py</code></strong> — the Scan class that loads AOI, city config, and creates city output folders</li>
+<li><strong><code>paths.py</code></strong> — auto-detects input/output directories based on project structure</li>
+<li><strong><code>gdal_auth.py</code></strong> — configures GDAL for authenticated access to private GCS buckets via <code>/vsigs/</code></li>
+</ul>
+<p>Tasks that need GEE (forest, landcover, LST, NDVI, nightlight) or private GCS (WSF, fathom, landcover burn, basic info) are automatically authenticated before running. If auth fails, those tasks are skipped with a warning.</p>
+<p>See <a href="../reference/googlecloud.md">google cloud setup</a> for more details.</p>
+<hr>
 </section>
-<section id="about-city-resilience-program-crp" class="level3">
-<h3 class="anchored" data-anchor-id="about-city-resilience-program-crp">About City Resilience Program (CRP)</h3>
-<p>The City Resilience Program is housed within the Global Facility for Disaster Reduction and Recovery (GFDRR) at the World Bank. CRP is a global initiative supported by the Swiss State Secretariat for Economic Affairs, the Austrian Federal Ministry of Finance, the Italian Ministry of Foreign Affairs, the Italian Agency for Development Cooperation, and the Gates Foundation.</p>
-<p>To learn more about CRP and GFDRR visit <a href="https://www.gfdrr.org/en/crp" class="uri">https://www.gfdrr.org/en/crp</a>.</p>
+<section id="git" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="git"><span class="header-section-number">4.2</span> Git</h2>
+<p>Git is a version control system. It’s a timewarpy quantum tool that lets multiple dimensions and times exist at once. It lets you keep multiple versions of your files, and keep track of changes. It also makes it easier to collaborate with each other, as a conduit for “pulling” and “pushing” and “pulling” code from and to GitHub. Instead of downloading a repo from GitHub, you can “clone” it – which is still downloading, but with the added benefit of keeping a live connection to future changes (at your discretion).</p>
+<p>Git is already installed on most macOS and Linux systems. You can install it from <a href="https://gitforwindows.org/">Git for Windows</a>. If git is not installed, see the GitHub’s <a href="https://github.com/git-guides/install-git">git installation guide</a></p>
+<hr>
+</section>
+<section id="python" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="python"><span class="header-section-number">4.3</span> Python</h2>
+<p>We recommend creating a python environment to run City Scan Tasks. Here are the options:</p>
+<section id="option-1-via-conda-recommended-for-mac-windows-linux" class="level3" data-number="4.3.1">
+<h3 data-number="4.3.1" class="anchored" data-anchor-id="option-1-via-conda-recommended-for-mac-windows-linux"><span class="header-section-number">4.3.1</span> <em>Option 1</em>: Via Conda (Recommended for Mac, Windows, Linux)</h3>
+<section id="step-1-install-anaconda" class="level4" data-number="4.3.1.1">
+<h4 data-number="4.3.1.1" class="anchored" data-anchor-id="step-1-install-anaconda"><span class="header-section-number">4.3.1.1</span> Step 1: Install Anaconda</h4>
+<p>Download and install Anaconda from the <a href="https://www.anaconda.com/download">official Anaconda website</a>:</p>
+<ul>
+<li>Visit https://www.anaconda.com/download and select your operating system</li>
+<li>Follow the installation wizard and accept the default settings</li>
+<li>Restart your terminal after installation completes</li>
+<li>Verify installation by running: <code>conda --version</code></li>
+</ul>
+<blockquote class="blockquote">
+<p><strong>If <code>conda --version</code> returns <code>command not found</code></strong> (especially in the VS Code integrated terminal), conda was installed but not initialized for your shell. Run once:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> init zsh        <span class="co"># macOS / Linux (zsh — default on modern macOS)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> init bash       <span class="co"># Linux / older macOS / WSL</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> init powershell <span class="co"># Windows PowerShell</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Then close and reopen the terminal. You should see <code>(base)</code> in your prompt and <code>conda</code> should resolve.</p>
+</blockquote>
+</section>
+<section id="step-2-create-and-activate-the-environment" class="level4" data-number="4.3.1.2">
+<h4 data-number="4.3.1.2" class="anchored" data-anchor-id="step-2-create-and-activate-the-environment"><span class="header-section-number">4.3.1.2</span> Step 2: Create and Activate the Environment</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> create <span class="at">-n</span> cityscan python=3.11.8 <span class="at">-y</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> activate cityscan</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="step-3-install-dependencies" class="level4" data-number="4.3.1.3">
+<h4 data-number="4.3.1.3" class="anchored" data-anchor-id="step-3-install-dependencies"><span class="header-section-number">4.3.1.3</span> Step 3: Install Dependencies</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> pip install <span class="at">--upgrade</span> pip</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-r</span> requirements.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="step-4-register-jupyter-kernel-optional-for-notebook-use" class="level4" data-number="4.3.1.4">
+<h4 data-number="4.3.1.4" class="anchored" data-anchor-id="step-4-register-jupyter-kernel-optional-for-notebook-use"><span class="header-section-number">4.3.1.4</span> Step 4: Register Jupyter Kernel (Optional, for notebook use)</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> ipykernel install <span class="at">--user</span> <span class="at">--name</span> cityscan <span class="at">--display-name</span> <span class="st">"Cityscan"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+<section id="option-2-via-bootstrap-script-alternative-setup-only-for-mac-linux" class="level3" data-number="4.3.2">
+<h3 data-number="4.3.2" class="anchored" data-anchor-id="option-2-via-bootstrap-script-alternative-setup-only-for-mac-linux"><span class="header-section-number">4.3.2</span> <em>Option 2</em>: Via Bootstrap Script (Alternative Setup – only for Mac, Linux)</h3>
+<p>If you prefer automated system setup or Python is not installed, use the bootstrap approach:</p>
+<section id="step-1-clone-the-repository" class="level4" data-number="4.3.2.1">
+<h4 data-number="4.3.2.1" class="anchored" data-anchor-id="step-1-clone-the-repository"><span class="header-section-number">4.3.2.1</span> Step 1: Clone the Repository</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone <span class="at">--single-branch</span> <span class="at">--branch</span> unified https://github.com/varinaldi/city-scan-automation.git</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> city-scan-automation</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="step-2-run-bootstrap-script" class="level4" data-number="4.3.2.2">
+<h4 data-number="4.3.2.2" class="anchored" data-anchor-id="step-2-run-bootstrap-script"><span class="header-section-number">4.3.2.2</span> Step 2: Run Bootstrap Script</h4>
+<p>This script prepares your system and installs Python 3.11.8 via pyenv:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> bootstrap.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If you need to manually activate the environment later, use:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> venv/bin/activate</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Note:</strong> Review the <code>bootstrap.sh</code> script first to ensure it meets your system requirements. It will: - Install system dependencies - Install and configure pyenv - Install Python 3.11.8 - Update your shell configuration</p>
+<p>If pyenv is installed for the first time, restart your terminal and run the script again.</p>
+</section>
+<section id="step-3-run-setup-script" class="level4" data-number="4.3.2.3">
+<h4 data-number="4.3.2.3" class="anchored" data-anchor-id="step-3-run-setup-script"><span class="header-section-number">4.3.2.3</span> Step 3: Run Setup Script</h4>
+<p>This script creates the virtual environment, installs dependencies, and registers the Jupyter kernel:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> orchestrator.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>When setup is successful, you should see: - Python 3.11.8 ready via pyenv - A new virtual environment created - A Jupyter kernel registered: “Cityscan (Python 3.11)”</p>
+<hr>
+</section>
+</section>
+</section>
+<section id="r" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="r"><span class="header-section-number">4.4</span> R</h2>
+<p>R is used for the maps, charts, and scan-calculations report, and also for several data collection tasks (earthquake, oxford, cyclones, flood_events, gdp_gridded, coastal_erosion, sea_level_rise). You can download R <a href="https://cran.r-project.org/">here</a>. <strong>Use the latest stable R release</strong> (currently 4.5.x) — the repo depends on a current <code>ggplot2</code>, <code>terra</code>, <code>sf</code>, and <code>tidyterra</code> stack that won’t install cleanly on older R. If you already have R, run <code>R --version</code> and upgrade if you’re behind. To use R in VS Code, we recommend installing the <a href="https://marketplace.visualstudio.com/items?itemName=REditorSupport.r">R extension</a>: follow the instructions at the link; we also recommend installing <a href="https://github.com/randy3k/radian">radian</a>.</p>
+<p>If you have used R in the past, you likely used RStudio as your editor. For the City Scan workflow and development, we recommend VS Code as it supports multiple languages and has a better terminal and Git integration. Still, RStudio can still be useful, and can be downloaded <a href="https://posit.co/download/rstudio-desktop/">here</a>.</p>
+<hr>
+</section>
+<section id="quarto" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="quarto"><span class="header-section-number">4.5</span> Quarto</h2>
+<p>Quarto is a publishing system that lets you create documents and websites with R, Python, JavaScript, and Julia. If you are familiar with R Markdown, Jupyter notebooks, or Observable notebooks, Quarto is similar but allows for the use of multiple languages in the same document. It is used to create the City Scan reports and website.</p>
+<p>A Quarto file is a markdown document with code chunks that can be rendered into HTML, PDF, or other formats. The Python and R code is executed at the time of rendering and the output is included in the final document.</p>
+<p>To install Quarto, follow the instructions at <a href="https://quarto.org/docs/get-started/">Quarto’s installation page</a>.</p>
+<hr>
+</section>
+<section id="vs-code" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="vs-code"><span class="header-section-number">4.6</span> VS Code</h2>
+<p>VS Code isn’t strictly necessary, but it makes working with multiple files and filetypes much easier. It also makes working with <a href="#git">Git</a> much clearer. VS Code is a free code editor with an integrated terminal and near endless extensions. (If you’re coming from R, you’ve probably been using RStudio; VS Code is like RStudio but for all languages, a better terminal, easier Git integration and better handling of multiple windows. If you’re coming from Python, I’m not and don’t know what you’re probably using.)</p>
+<p>Install VS Code from <a href="https://code.visualstudio.com/Download">Visual Studio Code</a>.</p>
+<p><strong>Recommended extensions</strong> for working with this repo:</p>
+<ul>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=ms-python.python">Python</a> — Python language support</li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=REditorSupport.r">R</a> — R language support</li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=quarto.quarto">Quarto</a> — Quarto rendering + preview</li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=mechatroner.rainbow-csv">Rainbow CSV</a> — color-coded columns for the many CSVs under <code>02-process-output/tabular/</code></li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=naumovs.color-highlight">Color Highlight</a> — inline color swatches for hex codes in <code>source/layers.yml</code></li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=RandomFractalsInc.geo-data-viewer">Geo Data Viewer</a> — preview <code>.geojson</code>, <code>.shp</code>, and other vector files on a map</li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=omar2535.geotiff-viewer">GeoTIFF Viewer</a> — preview <code>.tif</code> rasters directly in the editor &lt;!– ### gcloud</li>
+</ul>
+<p>The Google Cloud SDK, gcloud, is a commmand line tool for interacting with Google Cloud Platform. It lets us download and upload files from and to Cloud Storage, run Jobs, and so forth. You can do most of these things in the browser, but gcloud is often much more convenient.</p>
+<p>The standard install instructions are <a href="https://cloud.google.com/sdk/docs/install">here</a>; slightly simpler instructions are <a href="https://cloud.google.com/sdk/docs/downloads-interactive">here</a></p>
+<section id="docker" class="level3" data-number="4.6.1">
+<h3 data-number="4.6.1" class="anchored" data-anchor-id="docker"><span class="header-section-number">4.6.1</span> Docker</h3>
+<p>Docker lets all of us, with our different devices, operating systems and softwares, pretend we all have the same setup. It lets us define and run <em>containers</em>, essentially mini virtual machines that can run anywhere Docker is installed. Docker is most important for us because it’s how we package code up to run on Google Cloud, but it’s also helpful for running code locally.</p>
+<p>With Docker, we write instructions (a Dockerfile) that define a Docker <em>image</em>. This image defines the operating system, software, libraries, and code that will … TK</p>
+<p>To install, follow the instructions at https://docs.docker.com/desktop. –&gt;</p>
+<!-- --- -->
+<hr>
 
 
 </section>
@@ -792,10 +941,13 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="./at-a-glance.html" class="pagination-link" aria-label="General Workflow">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">General Workflow</span></span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./what-is-cityscan.html" class="pagination-link" aria-label="What is City Scan?">
-        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">What is City Scan?</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./inputs-config.html" class="pagination-link" aria-label="Inputs Configuration">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Inputs Configuration</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

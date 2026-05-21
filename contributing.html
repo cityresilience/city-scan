@@ -6,10 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="World Bank - City Resilience Program">
-<meta name="dcterms.date" content="2026-05-05">
 
-<title>City Scan Technical Reference</title>
+<title>17&nbsp; Contributing – City Scan Technical Reference</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -25,6 +23,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -35,7 +68,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./what-is-cityscan.html" rel="next">
+<link href="./sharing-the-guide.html" rel="next">
+<link href="./reporting-issues.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -86,7 +120,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Welcome</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./git-guide.html">Collaborating</a></li><li class="breadcrumb-item"><a href="./contributing.html"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Contributing</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -120,7 +154,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Welcome</span></a>
   </div>
 </li>
@@ -276,13 +310,13 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
  <span class="menu-text">Collaborating</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./git-guide.html" class="sidebar-item-text sidebar-link">
@@ -297,7 +331,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./contributing.html" class="sidebar-item-text sidebar-link">
+  <a href="./contributing.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Contributing</span></span></a>
   </div>
 </li>
@@ -325,39 +359,28 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#welcome" id="toc-welcome" class="nav-link active" data-scroll-target="#welcome">Welcome</a>
-  <ul class="collapse">
-  <li><a href="#in-this-technical-reference" id="toc-in-this-technical-reference" class="nav-link" data-scroll-target="#in-this-technical-reference">In this technical reference</a></li>
-  <li><a href="#about-city-resilience-program-crp" id="toc-about-city-resilience-program-crp" class="nav-link" data-scroll-target="#about-city-resilience-program-crp">About City Resilience Program (CRP)</a></li>
-  </ul></li>
+  <li><a href="#types-of-contributions" id="toc-types-of-contributions" class="nav-link active" data-scroll-target="#types-of-contributions"><span class="header-section-number">17.1</span> Types of Contributions</a></li>
+  <li><a href="#development-setup" id="toc-development-setup" class="nav-link" data-scroll-target="#development-setup"><span class="header-section-number">17.2</span> Development Setup</a></li>
+  <li><a href="#code-style" id="toc-code-style" class="nav-link" data-scroll-target="#code-style"><span class="header-section-number">17.3</span> Code Style</a></li>
+  <li><a href="#writing-a-new-task" id="toc-writing-a-new-task" class="nav-link" data-scroll-target="#writing-a-new-task"><span class="header-section-number">17.4</span> Writing a New Task</a></li>
+  <li><a href="#pull-request-checklist" id="toc-pull-request-checklist" class="nav-link" data-scroll-target="#pull-request-checklist"><span class="header-section-number">17.5</span> Pull Request Checklist</a></li>
+  <li><a href="#review-process" id="toc-review-process" class="nav-link" data-scroll-target="#review-process"><span class="header-section-number">17.6</span> Review Process</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./git-guide.html">Collaborating</a></li><li class="breadcrumb-item"><a href="./contributing.html"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Contributing</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">City Scan Technical Reference</h1>
+<h1 class="title"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Contributing</span></h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>World Bank - City Resilience Program </p>
-          </div>
-  </div>
     
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">May 5, 2026</p>
-    </div>
-  </div>
   
     
   </div>
@@ -367,26 +390,128 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-
-<section id="welcome" class="level1 unnumbered">
-<h1 class="unnumbered">Welcome</h1><p><img src="image/cover.png" title="City Scan Technical Reference" class="quarto-cover-image nolightbox img-fluid"></p>
-<p>The City Scan is a diagnostic tool designed to equip cities with the early insights needed to address risk by:</p>
+<p>We welcome contributions to City Scan — from new data layers to documentation improvements.</p>
+<section id="types-of-contributions" class="level2" data-number="17.1">
+<h2 data-number="17.1" class="anchored" data-anchor-id="types-of-contributions"><span class="header-section-number">17.1</span> Types of Contributions</h2>
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit:</p>
 <ul>
-<li>Providing a rapid, data-driven snapshot of a city’s demographic, economic, climate, and risk landscape.</li>
-<li>Leveraging remote sensing and geospatial analysis of any city in the world, using global datasets.</li>
-<li>Revealing the interaction between the urban built and natural environments.</li>
+<li><strong>New tasks</strong> — add a data layer not currently in the suite</li>
+<li><strong>Bug fixes</strong> — resolve issues in existing tasks or infrastructure</li>
+<li><strong>Documentation</strong> — improve this cookbook</li>
+<li><strong>Tests</strong> — expand test coverage</li>
+<li><strong>Performance</strong> — optimize slow tasks or reduce GEE API calls</li>
 </ul>
-<section id="in-this-technical-reference" class="level3">
-<h3 class="anchored" data-anchor-id="in-this-technical-reference">In this technical reference</h3>
-<p>This reference book is a structured technical documentation to use and operate City Scan as a diagnostic tool. Here, you will find documentations on City Scan overview, getting started, running a City Scan, tasks and data layers, repository structure, case studies &amp; galleries, as well as contributing guides.</p>
 </section>
-<section id="about-city-resilience-program-crp" class="level3">
-<h3 class="anchored" data-anchor-id="about-city-resilience-program-crp">About City Resilience Program (CRP)</h3>
-<p>The City Resilience Program is housed within the Global Facility for Disaster Reduction and Recovery (GFDRR) at the World Bank. CRP is a global initiative supported by the Swiss State Secretariat for Economic Affairs, the Austrian Federal Ministry of Finance, the Italian Ministry of Foreign Affairs, the Italian Agency for Development Cooperation, and the Gates Foundation.</p>
-<p>To learn more about CRP and GFDRR visit <a href="https://www.gfdrr.org/en/crp" class="uri">https://www.gfdrr.org/en/crp</a>.</p>
+<section id="development-setup" class="level2" data-number="17.2">
+<h2 data-number="17.2" class="anchored" data-anchor-id="development-setup"><span class="header-section-number">17.2</span> Development Setup</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/cityresilience/city-scan.git</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> city-scan</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> venv .venv <span class="kw">&amp;&amp;</span> <span class="bu">source</span> .venv/bin/activate</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-e</span> <span class="st">".[dev]"</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">pre-commit</span> install</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. The <code>[dev]</code> extras install linting, formatting, and test tools.</p>
+</section>
+<section id="code-style" class="level2" data-number="17.3">
+<h2 data-number="17.3" class="anchored" data-anchor-id="code-style"><span class="header-section-number">17.3</span> Code Style</h2>
+<p>City Scan uses <a href="https://docs.astral.sh/ruff/">Ruff</a> for linting and formatting.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ruff</span> check .         <span class="co"># lint</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">ruff</span> format .        <span class="co"># format</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Pre-commit hooks enforce these checks on every commit. To run manually:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pre-commit</span> run <span class="at">--all-files</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="writing-a-new-task" class="level2" data-number="17.4">
+<h2 data-number="17.4" class="anchored" data-anchor-id="writing-a-new-task"><span class="header-section-number">17.4</span> Writing a New Task</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># tasks/my_new_layer.py</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> cityscan.registry <span class="im">import</span> register_task</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> cityscan.base <span class="im">import</span> BaseTask</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="at">@register_task</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> MyNewLayerTask(BaseTask):</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    name <span class="op">=</span> <span class="st">"my_new_layer"</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    description <span class="op">=</span> <span class="st">"Computes lorem ipsum data layer."</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    inputs <span class="op">=</span> [<span class="st">"aoi"</span>]</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    outputs <span class="op">=</span> [<span class="st">"my_new_layer.tif"</span>]</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    depends_on <span class="op">=</span> []</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> run(<span class="va">self</span>, config: <span class="bu">dict</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        aoi <span class="op">=</span> <span class="va">self</span>.load_aoi(config[<span class="st">"aoi"</span>])</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        result <span class="op">=</span> <span class="va">self</span>._compute(aoi)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.write_raster(result, <span class="st">"my_new_layer.tif"</span>)</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> _compute(<span class="va">self</span>, aoi):</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>        <span class="co"># implementation here</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">pass</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Add a corresponding test in <code>tests/unit/test_my_new_layer.py</code>.</p>
+</section>
+<section id="pull-request-checklist" class="level2" data-number="17.5">
+<h2 data-number="17.5" class="anchored" data-anchor-id="pull-request-checklist"><span class="header-section-number">17.5</span> Pull Request Checklist</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="cover.png" class="img-fluid figure-img" style="width:80.0%" alt="GitHub pull request showing a completed contribution checklist."></p>
+<figcaption>Pull request checklist</figcaption>
+</figure>
+</div>
+<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+<ul class="task-list">
+<li><label><input type="checkbox">Tests pass: <code>pytest tests/</code></label></li>
+<li><label><input type="checkbox">Linting passes: <code>ruff check .</code></label></li>
+<li><label><input type="checkbox">New task is registered and documented in <a href="./datalayer-references.html">Data Layer References</a></label></li>
+<li><label><input type="checkbox">PR title follows Conventional Commits format</label></li>
+<li><label><input type="checkbox">No secrets or credentials committed</label></li>
+</ul>
+</section>
+<section id="review-process" class="level2" data-number="17.6">
+<h2 data-number="17.6" class="anchored" data-anchor-id="review-process"><span class="header-section-number">17.6</span> Review Process</h2>
+<div id="tbl-review" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-review-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;17.1: Pull request review stages
+</figcaption>
+<div aria-describedby="tbl-review-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Stage</th>
+<th>Who</th>
+<th>Typical Duration</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Automated checks (CI)</td>
+<td>GitHub Actions</td>
+<td>&lt; 5 min</td>
+</tr>
+<tr class="even">
+<td>Code review</td>
+<td>Core maintainer</td>
+<td>1–3 days</td>
+</tr>
+<tr class="odd">
+<td>Merge</td>
+<td>Core maintainer</td>
+<td>After approval</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>See <a href="./git-guide.html">Git Guide</a> for branching and commit conventions.</p>
+</div>
+</div>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -792,10 +917,13 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="./reporting-issues.html" class="pagination-link" aria-label="Reporting Issues">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Reporting Issues</span></span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./what-is-cityscan.html" class="pagination-link" aria-label="What is City Scan?">
-        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">What is City Scan?</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./sharing-the-guide.html" class="pagination-link" aria-label="Sharing the Guide">
+        <span class="nav-page-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Sharing the Guide</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

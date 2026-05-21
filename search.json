@@ -1,0 +1,1068 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "City Scan Technical Reference",
+    "section": "",
+    "text": "Welcome\nThe City Scan is a diagnostic tool designed to equip cities with the early insights needed to address risk by:\n\nProviding a rapid, data-driven snapshot of a city’s demographic, economic, climate, and risk landscape.\nLeveraging remote sensing and geospatial analysis of any city in the world, using global datasets.\nRevealing the interaction between the urban built and natural environments.\n\n\nIn this technical reference\nThis reference book is a structured technical documentation to use and operate City Scan as a diagnostic tool. Here, you will find documentations on City Scan overview, getting started, running a City Scan, tasks and data layers, repository structure, case studies & galleries, as well as contributing guides.\n\n\nAbout City Resilience Program (CRP)\nThe City Resilience Program is housed within the Global Facility for Disaster Reduction and Recovery (GFDRR) at the World Bank. CRP is a global initiative supported by the Swiss State Secretariat for Economic Affairs, the Austrian Federal Ministry of Finance, the Italian Ministry of Foreign Affairs, the Italian Agency for Development Cooperation, and the Gates Foundation.\nTo learn more about CRP and GFDRR visit https://www.gfdrr.org/en/crp.",
+    "crumbs": [
+      "Welcome"
+    ]
+  },
+  {
+    "objectID": "what-is-cityscan.html",
+    "href": "what-is-cityscan.html",
+    "title": "1  What is City Scan?",
+    "section": "",
+    "text": "1.1 What can the City Scan tell me?\nThis City Scan is intended to support operational teams in building dialogue around a city’s most pressing resilience challenges. It is designed as a conversation starter rather than a specific decision making tool. Thinking spatially about how urbanization affects the resilience of various urban forces, networks, and people helps equip officials to develop risk informed investment proposals, identify opportunities and barriers to unlocking private capital, and prioritize and coordinate future investments.",
+    "crumbs": [
+      "City Scan Overview",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>What is City Scan?</span>"
+    ]
+  },
+  {
+    "objectID": "what-is-cityscan.html#guiding-questions-to-keep-in-mind",
+    "href": "what-is-cityscan.html#guiding-questions-to-keep-in-mind",
+    "title": "1  What is City Scan?",
+    "section": "1.2 Guiding questions to keep in mind",
+    "text": "1.2 Guiding questions to keep in mind\n\nHow might investment priorities differ in different parts of the city based on this data?\nWhat spatial relationships are surprising?\nWhat questions does this spatial pattern spur?\nWhere else have you worked that is reminiscent of these findings?\nWhat might be applicable from there? What might not be?",
+    "crumbs": [
+      "City Scan Overview",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>What is City Scan?</span>"
+    ]
+  },
+  {
+    "objectID": "what-is-cityscan.html#why-invest-in-urban-resilience",
+    "href": "what-is-cityscan.html#why-invest-in-urban-resilience",
+    "title": "1  What is City Scan?",
+    "section": "1.3 Why invest in urban resilience",
+    "text": "1.3 Why invest in urban resilience\nInvesting in urban resilience boosts long-term economic, social, and physical sustainability by safeguarding the gains from current developments for future generations. Greater urban resilience builds the capacity of local governments to help households, communities, and enterprises manage and avoid shocks and stresses, for example by damage-proofing infrastructure before a disaster or maintaining critical services afterward. This approach represents a significant shift from prior development trends, which concentrated investments on post-disaster reconstruction and recovery.\n\n\n\n\n\n\nNote\n\n\n\nFor a hands-on introduction, see Running Your First City Scan.",
+    "crumbs": [
+      "City Scan Overview",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>What is City Scan?</span>"
+    ]
+  },
+  {
+    "objectID": "examples-cityscan.html",
+    "href": "examples-cityscan.html",
+    "title": "2  City Scan Examples",
+    "section": "",
+    "text": "2.1 Example 1: Standalone Images - Dakar, Senegal\nCity Scan output is a collection of maps and charts made from global and publicly available datasets that provide quick high-level insights into resilience-related topics for a city. The output is a package of maps, data visualizations and insights that integrate features of both the built and natural environments. It is available as standalone images, compiled PDF, and interactive Quarto HTML.\nThis format is useful if you’d like to combine City Scan outputs with your own analysis. See examples from our analysis for Dakar, Senegal",
+    "crumbs": [
+      "City Scan Overview",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>City Scan Examples</span>"
+    ]
+  },
+  {
+    "objectID": "examples-cityscan.html#example-1-standalone-images---dakar-senegal",
+    "href": "examples-cityscan.html#example-1-standalone-images---dakar-senegal",
+    "title": "2  City Scan Examples",
+    "section": "",
+    "text": "(a) Area of interest\n\n\n\n\n\n\n\n\n\n\n\n(b) local air quality\n\n\n\n\n\n\n\n\n\n\n\n(c) Population exposed to flooding\n\n\n\n\n\n\n\n\n\n\n\n(d) Proximity to healthcare infrastructure\n\n\n\n\n\n\n\n\n\n\n\n\n\n(e) Built-up area over time\n\n\n\n\n\n\n\n\n\n\n\n(f) Fire weather index\n\n\n\n\n\n\n\n\n\n\n\n(g) GDP per capita\n\n\n\n\n\n\n\n\n\n\n\n(h) Age pyramid\n\n\n\n\n\n\n\nFigure 2.1: Examples of maps & charts generated by City Scan",
+    "crumbs": [
+      "City Scan Overview",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>City Scan Examples</span>"
+    ]
+  },
+  {
+    "objectID": "examples-cityscan.html#example-2-comprehensive-analytical-pdf-report---bitung-indonesia",
+    "href": "examples-cityscan.html#example-2-comprehensive-analytical-pdf-report---bitung-indonesia",
+    "title": "2  City Scan Examples",
+    "section": "2.2 Example 2: Comprehensive Analytical PDF Report - Bitung, Indonesia",
+    "text": "2.2 Example 2: Comprehensive Analytical PDF Report - Bitung, Indonesia\nThe generated maps and charts are compiled according to relevant themes, along with data interpretation and considerations. See examples below from our analysis in Bitung, Indonesia.\n\n\n\n\n\n\n\n\nNote\n\n\n\nThe final PDF output is compiled and designed via Adobe InDesign and not yet automatically generated by the code. Automated PDF generation will be part of future updates.",
+    "crumbs": [
+      "City Scan Overview",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>City Scan Examples</span>"
+    ]
+  },
+  {
+    "objectID": "examples-cityscan.html#example-3-interactive-html-website---city-country",
+    "href": "examples-cityscan.html#example-3-interactive-html-website---city-country",
+    "title": "2  City Scan Examples",
+    "section": "2.3 Example 3: Interactive HTML website - City, Country",
+    "text": "2.3 Example 3: Interactive HTML website - City, Country\nNemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.\n\n\n\n\n\n\nTip\n\n\n\nFull case studies for Rabat and the Philippines are in Part 6. Case Studies & Galleries.",
+    "crumbs": [
+      "City Scan Overview",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>City Scan Examples</span>"
+    ]
+  },
+  {
+    "objectID": "at-a-glance.html",
+    "href": "at-a-glance.html",
+    "title": "3  General Workflow",
+    "section": "",
+    "text": "3.1 Part 1. Basic Setup\nThis chapter provides a three-part walkthrough of the City Scan repo for new users. The diagram below illustrates the general workflow of performing a standard City Scan.\nCity Scan uses multiple programming languages and software to run, including Git, Python, R, Quarto, and Google Cloud. The steps required for setups are below:",
+    "crumbs": [
+      "Standard Workflow",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>General Workflow</span>"
+    ]
+  },
+  {
+    "objectID": "at-a-glance.html#part-1.-basic-setup",
+    "href": "at-a-glance.html#part-1.-basic-setup",
+    "title": "3  General Workflow",
+    "section": "",
+    "text": "Note\n\n\n\nSee Part 4. Getting Started/ Setup Instructions for full details of prerequisites and installations\n\n\n\n\nClone the repo\nCreate conda env + activate cityscan\nInstalling City Scan as Python Package via pip install -e . for the scan CLI\nGCS and GEE authentication via gcloud auth application-default login\nInstall Quarto\nRun scan --check to verify everything passes",
+    "crumbs": [
+      "Standard Workflow",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>General Workflow</span>"
+    ]
+  },
+  {
+    "objectID": "at-a-glance.html#part-2.-configuring-inputs",
+    "href": "at-a-glance.html#part-2.-configuring-inputs",
+    "title": "3  General Workflow",
+    "section": "3.2 Part 2. Configuring Inputs",
+    "text": "3.2 Part 2. Configuring Inputs\nInputs folder is where you can specify your area of interests (AOI), types of analysis to conduct, and certain global analysis parameters.\n\nDrop AOI shapefile into inputs/AOI/\nEdit inputs/city_inputs.yml\nEdit inputs/menu.yml",
+    "crumbs": [
+      "Standard Workflow",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>General Workflow</span>"
+    ]
+  },
+  {
+    "objectID": "at-a-glance.html#part-3.-running-a-scan",
+    "href": "at-a-glance.html#part-3.-running-a-scan",
+    "title": "3  General Workflow",
+    "section": "3.3 Part 3. Running a Scan",
+    "text": "3.3 Part 3. Running a Scan\nWhen running a scan, we are essentially going through several phases. The general flow is collect → analyze → multianalysis → render.\n\nCollect stage is retrieveing specified datasets as indicated in inputs configuration from various publicly available sources for the specified AOI. As an output, you will retrieve TIFFs, GeoJSONs, or Geopackages in your output folder.\nTo conduct collect stage, run in your terminal\nscan --collect\nAnalyze stage is conducting various analysis on a single task, such as seeing the statistical distribution, applying threshold, extracting median/mean values, etc. As an output, you will retrieve various CSVs in your output folder.\nTo conduct analyze stage, run in your terminal\nscan --analyze\nAlternatively, you can batch data collection and data analysis together by looping over tasks by running:\nscan --all\nOr, you can leverage your computer memory and parallelizing data collection and data analysis together per tasks by running:\nscan --all --parallel\n\n\n\n\n\n\n\nWarning\n\n\n\n[Internal Note] Perhaps in the future, scan --all and scan --all --parallel should be reserved to orchestrate the whole process, including multianalysis, render, and scan-calculations\n\n\n\nMultianalysis stage is performing cross-task analysis after single tasks analysis have been executed. For example, this stage executes analysis of flood-exposed population, which requires both flood analysis and population analysis to have been conducted. To do this, run in your terminal:\nscan --multianalysis\nRender stage is generating various visualizations as results of previous stages. This includes rendering maps and charts as PNGs or HTMLs.\n# Static maps — applies styling from source/layers.yml, writes PNGs to 03-render-output/maps/\nscan --render maps\n# Charts for a specific task — writes HTML to tasks/{name}/charts/index.html\nscan --render charts elevation\nTo generate a compiled interactive quarto document and HTML of all tasks, run:\nscan --render scan-calculations",
+    "crumbs": [
+      "Standard Workflow",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>General Workflow</span>"
+    ]
+  },
+  {
+    "objectID": "setting-up.html",
+    "href": "setting-up.html",
+    "title": "4  Setup Instructions",
+    "section": "",
+    "text": "4.1 Authentication\nCity Scan repo is multilangual: Python is used for data collection and analysis, R for mapping and charting, and Quarto for report compilation and web visualization.\nAll City Scan tasks can be accessed through terminal with the required tools configured:\nRecommended: - Visual Studio Code\nThe following sections describe the recommended setup configuration and best practices.\nAuthentication is managed in core/config/:\nTasks that need GEE (forest, landcover, LST, NDVI, nightlight) or private GCS (WSF, fathom, landcover burn, basic info) are automatically authenticated before running. If auth fails, those tasks are skipped with a warning.\nSee google cloud setup for more details.",
+    "crumbs": [
+      "Standard Workflow",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Setup Instructions</span>"
+    ]
+  },
+  {
+    "objectID": "setting-up.html#authentication",
+    "href": "setting-up.html#authentication",
+    "title": "4  Setup Instructions",
+    "section": "",
+    "text": "auth.py — initializes Google Earth Engine (GEE) and Google Cloud Storage (GCS) credentials\nscan.py — the Scan class that loads AOI, city config, and creates city output folders\npaths.py — auto-detects input/output directories based on project structure\ngdal_auth.py — configures GDAL for authenticated access to private GCS buckets via /vsigs/",
+    "crumbs": [
+      "Standard Workflow",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Setup Instructions</span>"
+    ]
+  },
+  {
+    "objectID": "setting-up.html#git",
+    "href": "setting-up.html#git",
+    "title": "4  Setup Instructions",
+    "section": "4.2 Git",
+    "text": "4.2 Git\nGit is a version control system. It’s a timewarpy quantum tool that lets multiple dimensions and times exist at once. It lets you keep multiple versions of your files, and keep track of changes. It also makes it easier to collaborate with each other, as a conduit for “pulling” and “pushing” and “pulling” code from and to GitHub. Instead of downloading a repo from GitHub, you can “clone” it – which is still downloading, but with the added benefit of keeping a live connection to future changes (at your discretion).\nGit is already installed on most macOS and Linux systems. You can install it from Git for Windows. If git is not installed, see the GitHub’s git installation guide",
+    "crumbs": [
+      "Standard Workflow",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Setup Instructions</span>"
+    ]
+  },
+  {
+    "objectID": "setting-up.html#python",
+    "href": "setting-up.html#python",
+    "title": "4  Setup Instructions",
+    "section": "4.3 Python",
+    "text": "4.3 Python\nWe recommend creating a python environment to run City Scan Tasks. Here are the options:\n\n4.3.1 Option 1: Via Conda (Recommended for Mac, Windows, Linux)\n\n4.3.1.1 Step 1: Install Anaconda\nDownload and install Anaconda from the official Anaconda website:\n\nVisit https://www.anaconda.com/download and select your operating system\nFollow the installation wizard and accept the default settings\nRestart your terminal after installation completes\nVerify installation by running: conda --version\n\n\nIf conda --version returns command not found (especially in the VS Code integrated terminal), conda was installed but not initialized for your shell. Run once:\nconda init zsh        # macOS / Linux (zsh — default on modern macOS)\nconda init bash       # Linux / older macOS / WSL\nconda init powershell # Windows PowerShell\nThen close and reopen the terminal. You should see (base) in your prompt and conda should resolve.\n\n\n\n4.3.1.2 Step 2: Create and Activate the Environment\nconda create -n cityscan python=3.11.8 -y\nconda activate cityscan\n\n\n4.3.1.3 Step 3: Install Dependencies\npython -m pip install --upgrade pip\npip install -r requirements.txt\n\n\n4.3.1.4 Step 4: Register Jupyter Kernel (Optional, for notebook use)\npython -m ipykernel install --user --name cityscan --display-name \"Cityscan\"\n\n\n\n4.3.2 Option 2: Via Bootstrap Script (Alternative Setup – only for Mac, Linux)\nIf you prefer automated system setup or Python is not installed, use the bootstrap approach:\n\n4.3.2.1 Step 1: Clone the Repository\ngit clone --single-branch --branch unified https://github.com/varinaldi/city-scan-automation.git\ncd city-scan-automation\n\n\n4.3.2.2 Step 2: Run Bootstrap Script\nThis script prepares your system and installs Python 3.11.8 via pyenv:\nbash bootstrap.sh\nIf you need to manually activate the environment later, use:\nsource venv/bin/activate\nNote: Review the bootstrap.sh script first to ensure it meets your system requirements. It will: - Install system dependencies - Install and configure pyenv - Install Python 3.11.8 - Update your shell configuration\nIf pyenv is installed for the first time, restart your terminal and run the script again.\n\n\n4.3.2.3 Step 3: Run Setup Script\nThis script creates the virtual environment, installs dependencies, and registers the Jupyter kernel:\nbash orchestrator.sh\nWhen setup is successful, you should see: - Python 3.11.8 ready via pyenv - A new virtual environment created - A Jupyter kernel registered: “Cityscan (Python 3.11)”",
+    "crumbs": [
+      "Standard Workflow",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Setup Instructions</span>"
+    ]
+  },
+  {
+    "objectID": "setting-up.html#r",
+    "href": "setting-up.html#r",
+    "title": "4  Setup Instructions",
+    "section": "4.4 R",
+    "text": "4.4 R\nR is used for the maps, charts, and scan-calculations report, and also for several data collection tasks (earthquake, oxford, cyclones, flood_events, gdp_gridded, coastal_erosion, sea_level_rise). You can download R here. Use the latest stable R release (currently 4.5.x) — the repo depends on a current ggplot2, terra, sf, and tidyterra stack that won’t install cleanly on older R. If you already have R, run R --version and upgrade if you’re behind. To use R in VS Code, we recommend installing the R extension: follow the instructions at the link; we also recommend installing radian.\nIf you have used R in the past, you likely used RStudio as your editor. For the City Scan workflow and development, we recommend VS Code as it supports multiple languages and has a better terminal and Git integration. Still, RStudio can still be useful, and can be downloaded here.",
+    "crumbs": [
+      "Standard Workflow",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Setup Instructions</span>"
+    ]
+  },
+  {
+    "objectID": "setting-up.html#quarto",
+    "href": "setting-up.html#quarto",
+    "title": "4  Setup Instructions",
+    "section": "4.5 Quarto",
+    "text": "4.5 Quarto\nQuarto is a publishing system that lets you create documents and websites with R, Python, JavaScript, and Julia. If you are familiar with R Markdown, Jupyter notebooks, or Observable notebooks, Quarto is similar but allows for the use of multiple languages in the same document. It is used to create the City Scan reports and website.\nA Quarto file is a markdown document with code chunks that can be rendered into HTML, PDF, or other formats. The Python and R code is executed at the time of rendering and the output is included in the final document.\nTo install Quarto, follow the instructions at Quarto’s installation page.",
+    "crumbs": [
+      "Standard Workflow",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Setup Instructions</span>"
+    ]
+  },
+  {
+    "objectID": "setting-up.html#vs-code",
+    "href": "setting-up.html#vs-code",
+    "title": "4  Setup Instructions",
+    "section": "4.6 VS Code",
+    "text": "4.6 VS Code\nVS Code isn’t strictly necessary, but it makes working with multiple files and filetypes much easier. It also makes working with Git much clearer. VS Code is a free code editor with an integrated terminal and near endless extensions. (If you’re coming from R, you’ve probably been using RStudio; VS Code is like RStudio but for all languages, a better terminal, easier Git integration and better handling of multiple windows. If you’re coming from Python, I’m not and don’t know what you’re probably using.)\nInstall VS Code from Visual Studio Code.\nRecommended extensions for working with this repo:\n\nPython — Python language support\nR — R language support\nQuarto — Quarto rendering + preview\nRainbow CSV — color-coded columns for the many CSVs under 02-process-output/tabular/\nColor Highlight — inline color swatches for hex codes in source/layers.yml\nGeo Data Viewer — preview .geojson, .shp, and other vector files on a map\nGeoTIFF Viewer — preview .tif rasters directly in the editor &lt;!– ### gcloud\n\nThe Google Cloud SDK, gcloud, is a commmand line tool for interacting with Google Cloud Platform. It lets us download and upload files from and to Cloud Storage, run Jobs, and so forth. You can do most of these things in the browser, but gcloud is often much more convenient.\nThe standard install instructions are here; slightly simpler instructions are here\n\n4.6.1 Docker\nDocker lets all of us, with our different devices, operating systems and softwares, pretend we all have the same setup. It lets us define and run containers, essentially mini virtual machines that can run anywhere Docker is installed. Docker is most important for us because it’s how we package code up to run on Google Cloud, but it’s also helpful for running code locally.\nWith Docker, we write instructions (a Dockerfile) that define a Docker image. This image defines the operating system, software, libraries, and code that will … TK\nTo install, follow the instructions at https://docs.docker.com/desktop. –&gt;",
+    "crumbs": [
+      "Standard Workflow",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Setup Instructions</span>"
+    ]
+  },
+  {
+    "objectID": "inputs-config.html",
+    "href": "inputs-config.html",
+    "title": "5  Inputs Configuration",
+    "section": "",
+    "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sagittis posuere ligula sit amet lacinia. Duis dignissim pellentesque magna, rhoncus congue sapien finibus mollis. Ut eu sem laoreet, vehicula ipsum in, convallis erat. Vestibulum magna sem, blandit pulvinar augue sit amet, auctor malesuada sapien. Nullam faucibus leo eget eros hendrerit, non laoreet ipsum lacinia. Curabitur cursus diam elit, non tempus ante volutpat a. Quisque hendrerit blandit purus non fringilla. Integer sit amet elit viverra ante dapibus semper. Vestibulum viverra rutrum enim, at luctus enim posuere eu. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.\nNunc ac dignissim magna. Vestibulum vitae egestas elit. Proin feugiat leo quis ante condimentum, eu ornare mauris feugiat. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Mauris cursus laoreet ex, dignissim bibendum est posuere iaculis. Suspendisse et maximus elit. In fringilla gravida ornare. Aenean id lectus pulvinar, sagittis felis nec, rutrum risus. Nam vel neque eu arcu blandit fringilla et in quam. Aliquam luctus est sit amet vestibulum eleifend. Phasellus elementum sagittis molestie. Proin tempor lorem arcu, at condimentum purus volutpat eu. Fusce et pellentesque ligula. Pellentesque id tellus at erat luctus fringilla. Suspendisse potenti.",
+    "crumbs": [
+      "Standard Workflow",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Inputs Configuration</span>"
+    ]
+  },
+  {
+    "objectID": "running-first-cityscan.html",
+    "href": "running-first-cityscan.html",
+    "title": "6  Running a Scan",
+    "section": "",
+    "text": "6.1 Collecting and analyzing the dataset",
+    "crumbs": [
+      "Standard Workflow",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Running a Scan</span>"
+    ]
+  },
+  {
+    "objectID": "running-first-cityscan.html#collecting-and-analyzing-the-dataset",
+    "href": "running-first-cityscan.html#collecting-and-analyzing-the-dataset",
+    "title": "6  Running a Scan",
+    "section": "",
+    "text": "6.1.1 Step 1: Configure Setup\nCity Scan uses multiple programming languages and software to run, including:\n\nGit\nPython\nR\nQuarto\nGoogle Cloud - for accessing data, see authentication details.\n\nSee setup.md for detailed instruction.\n\n\n6.1.2 Step 2: Clone the Repository\ngit clone -b unified https://github.com/varinaldi/city-scan-automation.git\ncd city-scan-automation\nInstall the scan CLI (one-time):\npip install -e .\nThis gives you the scan command as a shortcut for python -m tasks — both work interchangeably.\nVerify your environment is ready:\nscan --check\nRuns a preflight on R, Python, GEE, GCS, Quarto, and inputs. Targets a subset with e.g. scan --check r gee.\n\n\n6.1.3 Step 3: Configure Inputs\nAdjust the files in the inputs/ folder for your specific project: - Use AOI/ folder and store your AOI boundary file there - Modify city_inputs.yml and menu.yml with your analysis parameters\n\n\n6.1.4 Step 4: Running Tasks\nMake sure the Python environment is activated.\nExecuting tasks can be done from the city-scan directory or from within mnt/scan-id. General form:\nscan {TASKNAME} {FLAG}\nEach task is divided into different steps, defined by {FLAG}: - --collect runs data collection and saves outputs in 02-process-outputs/spatial or /tabular - --analyze runs data analysis and creates output CSVs in 02-process-outputs/tabular - --all runs both --collect and --analyze, reads menu.yml - --multianalysis runs cross-task analysis (currently only for fathom)\nTo run all tasks set to true in menu.yml in parallel (recommended):\nscan --all \nThis opens a Terminal UI (TUI) showing per-task progress and logs.\nWhen running the above from - city-scan root — initializes mnt/scan-id and copies all necessary folders. - For an existing scan, target it with --scan-id: scan --all --parallel --scan-id 2026-02-malta-malta - Inside mnt/scan-id — outputs files into the local 02-process-outputs/.\nTo run an individual task or a set of tasks:\n# Individual task\nscan wsf\n\n# Multiple tasks\nscan wsf population forest\nRun specific steps with {FLAG}:\n# Collect step only\nscan wsf --collect\n\n# Analyze step only for multiple tasks\nscan wsf population green --analyze\nOther available flags:\n# Show available tasks\nscan --list\n\n# Re-run using the city's existing code (no resync from root)\nscan --all -k --scan-id 2026-02-malta-malta\n\n\n6.1.5 Step 4b: Multi-analysis\nSome tasks have cross-task analysis scripts (e.g. flood exposure calculations that combine flood and WSF data). Run these after all individual tasks have completed:\nscan --all --multianalysis",
+    "crumbs": [
+      "Standard Workflow",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Running a Scan</span>"
+    ]
+  },
+  {
+    "objectID": "running-first-cityscan.html#rendering-maps-and-charts",
+    "href": "running-first-cityscan.html#rendering-maps-and-charts",
+    "title": "6  Running a Scan",
+    "section": "6.2 Rendering Maps and Charts",
+    "text": "6.2 Rendering Maps and Charts\n\n6.2.1 Step 5: Rendering Maps and Charts\nAfter data collection and analysis, generate maps and charts via the --render flag:\n# Static maps — applies styling from source/layers.yml, writes PNGs to 03-render-output/maps/\nscan --render maps --scan-id 2026-02-malta-malta\n\n# Charts for a specific task — writes HTML to tasks/{name}/charts/index.html\nscan --render charts elevation --scan-id 2026-02-malta-malta\nMaps read spatial data from 02-process-output/spatial/. Charts read CSVs from 02-process-output/tabular/.\n\n\n6.2.2 Step 6: Scan Calculations Reference Sheet\nThe scan-calculations reads sections.yml to determine section order, then assembles all per-task charts/index.qmd into a single combined HTML report:\nscan --render scan-calculations --scan-id 2026-02-malta-malta\nThe compiled report is saved to scan-calculations/scan-calculations.html.\nIf scan_calculations: True is set in menu.yml, the scan-calculations folder is automatically copied to the city folder when running scan --all.\nSee scan-calculations/README.md for details.",
+    "crumbs": [
+      "Standard Workflow",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Running a Scan</span>"
+    ]
+  },
+  {
+    "objectID": "multiple-cityscan.html",
+    "href": "multiple-cityscan.html",
+    "title": "7  Running Multiple City Scans",
+    "section": "",
+    "text": "7.1 Overview\nCity Scan supports batch execution across multiple cities using a single configuration file.\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Batch mode iterates over a list of city configurations, running each scan sequentially or in parallel depending on available compute resources.",
+    "crumbs": [
+      "Advanced Workflow",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Running Multiple City Scans</span>"
+    ]
+  },
+  {
+    "objectID": "multiple-cityscan.html#batch-configuration",
+    "href": "multiple-cityscan.html#batch-configuration",
+    "title": "7  Running Multiple City Scans",
+    "section": "7.2 Batch Configuration",
+    "text": "7.2 Batch Configuration\n# batch_config.yml\nscan_type: batch\noutput_base_dir: \"outputs/\"\nyear: 2024\n\ncities:\n  - city: \"Nairobi\"\n    country: \"KE\"\n    aoi: \"inputs/AOI/nairobi.geojson\"\n\n  - city: \"Kampala\"\n    country: \"UG\"\n    aoi: \"inputs/AOI/kampala.geojson\"\n\n  - city: \"Dar es Salaam\"\n    country: \"TZ\"\n    aoi: \"inputs/AOI/dar_es_salaam.geojson\"",
+    "crumbs": [
+      "Advanced Workflow",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Running Multiple City Scans</span>"
+    ]
+  },
+  {
+    "objectID": "multiple-cityscan.html#running-the-batch",
+    "href": "multiple-cityscan.html#running-the-batch",
+    "title": "7  Running Multiple City Scans",
+    "section": "7.3 Running the Batch",
+    "text": "7.3 Running the Batch\npython run.py --config batch_config.yml --batch\nSed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Scans run sequentially by default. To enable parallel execution:\npython run.py --config batch_config.yml --batch --workers 3",
+    "crumbs": [
+      "Advanced Workflow",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Running Multiple City Scans</span>"
+    ]
+  },
+  {
+    "objectID": "multiple-cityscan.html#progress-tracking",
+    "href": "multiple-cityscan.html#progress-tracking",
+    "title": "7  Running Multiple City Scans",
+    "section": "7.4 Progress Tracking",
+    "text": "7.4 Progress Tracking\n\n\n\nBatch scan progress terminal output\n\n\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. A progress summary is printed after all scans complete:\nBatch complete: 3/3 cities succeeded\n  ✓ Nairobi       (58m 12s)\n  ✓ Kampala       (1h 03m 47s)\n  ✓ Dar es Salaam (1h 11m 02s)",
+    "crumbs": [
+      "Advanced Workflow",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Running Multiple City Scans</span>"
+    ]
+  },
+  {
+    "objectID": "multiple-cityscan.html#output-structure",
+    "href": "multiple-cityscan.html#output-structure",
+    "title": "7  Running Multiple City Scans",
+    "section": "7.5 Output Structure",
+    "text": "7.5 Output Structure\noutputs/\n├── nairobi/\n│   ├── maps/\n│   ├── stats/\n│   └── report.html\n├── kampala/\n│   └── ...\n└── dar_es_salaam/\n    └── ...\n\n\n\nTable 7.1: Batch run options\n\n\n\n\n\nParameter\nDefault\nDescription\n\n\n\n\n--workers\n1\nNumber of parallel scans\n\n\n--retry\n0\nRetry failed scans N times\n\n\n--skip-existing\nfalse\nSkip cities with existing outputs\n\n\n\n\n\n\n\n\n\n\n\n\nWarning\n\n\n\nRunning too many parallel workers may hit Google Earth Engine API rate limits. Start with --workers 2 and scale up cautiously.",
+    "crumbs": [
+      "Advanced Workflow",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Running Multiple City Scans</span>"
+    ]
+  },
+  {
+    "objectID": "custom-cityscan.html",
+    "href": "custom-cityscan.html",
+    "title": "8  Running a Custom City Scan",
+    "section": "",
+    "text": "8.1 When to Customize\nA custom scan lets you select specific tasks, override default parameters, and plug in additional data sources beyond the standard suite.\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Consider a custom scan when:",
+    "crumbs": [
+      "Advanced Workflow",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Running a Custom City Scan</span>"
+    ]
+  },
+  {
+    "objectID": "custom-cityscan.html#when-to-customize",
+    "href": "custom-cityscan.html#when-to-customize",
+    "title": "8  Running a Custom City Scan",
+    "section": "",
+    "text": "You only need a subset of data layers to save time\nYou have proprietary or local data to incorporate\nYou want non-default resolution or time periods",
+    "crumbs": [
+      "Advanced Workflow",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Running a Custom City Scan</span>"
+    ]
+  },
+  {
+    "objectID": "custom-cityscan.html#selecting-tasks",
+    "href": "custom-cityscan.html#selecting-tasks",
+    "title": "8  Running a Custom City Scan",
+    "section": "8.2 Selecting Tasks",
+    "text": "8.2 Selecting Tasks\n# custom_config.yml\ncity: \"Jakarta\"\ncountry: \"ID\"\naoi: \"inputs/AOI/jakarta.geojson\"\noutput_dir: \"outputs/jakarta_custom\"\nscan_type: custom\n\ntasks:\n  - population\n  - flood_risk\n  - coastal_erosion",
+    "crumbs": [
+      "Advanced Workflow",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Running a Custom City Scan</span>"
+    ]
+  },
+  {
+    "objectID": "custom-cityscan.html#overriding-default-parameters",
+    "href": "custom-cityscan.html#overriding-default-parameters",
+    "title": "8  Running a Custom City Scan",
+    "section": "8.3 Overriding Default Parameters",
+    "text": "8.3 Overriding Default Parameters\ntask_overrides:\n  population:\n    year: 2020\n    resolution: 100\n\n  flood_risk:\n    return_period: 50   # 50-year flood instead of 100-year\n    source: \"fathom_v3\"\nSed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Overrides are merged with the task defaults, so only specified fields are changed.",
+    "crumbs": [
+      "Advanced Workflow",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Running a Custom City Scan</span>"
+    ]
+  },
+  {
+    "objectID": "custom-cityscan.html#adding-a-custom-data-source",
+    "href": "custom-cityscan.html#adding-a-custom-data-source",
+    "title": "8  Running a Custom City Scan",
+    "section": "8.4 Adding a Custom Data Source",
+    "text": "8.4 Adding a Custom Data Source\n# tasks/custom/my_sensor_data.py\nfrom cityscan.registry import register_task\n\n@register_task\nclass MySensorDataTask:\n    name = \"sensor_data\"\n    inputs = [\"aoi\"]\n    outputs = [\"sensor_data.tif\"]\n\n    def run(self, config):\n        aoi = self.load_aoi(config[\"aoi\"])\n        data = self.load_local_raster(\"data/sensor_grid.tif\")\n        clipped = self.clip(data, aoi)\n        self.write_raster(clipped, \"sensor_data.tif\")\nThen reference it in your config:\ntasks:\n  - population\n  - sensor_data   # your custom task",
+    "crumbs": [
+      "Advanced Workflow",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Running a Custom City Scan</span>"
+    ]
+  },
+  {
+    "objectID": "custom-cityscan.html#custom-output-directory-layout",
+    "href": "custom-cityscan.html#custom-output-directory-layout",
+    "title": "8  Running a Custom City Scan",
+    "section": "8.5 Custom Output Directory Layout",
+    "text": "8.5 Custom Output Directory Layout\n\n\n\nCustom scan output structure\n\n\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\n\n\n\nTable 8.1: Custom scan configuration options\n\n\n\n\n\nConfig Key\nType\nDescription\n\n\n\n\ntasks\nlist[str]\nTasks to include\n\n\ntask_overrides\ndict\nPer-task parameter overrides\n\n\nextra_task_dirs\nlist[str]\nPaths to custom task modules\n\n\n\n\n\n\n\n\n\n\n\n\nTip\n\n\n\nUse --dry-run to preview which tasks will execute and in what order before committing to a full run.",
+    "crumbs": [
+      "Advanced Workflow",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Running a Custom City Scan</span>"
+    ]
+  },
+  {
+    "objectID": "tasks-structure-overview.html",
+    "href": "tasks-structure-overview.html",
+    "title": "9  Tasks & Structure Overview",
+    "section": "",
+    "text": "9.1 What Is a Task?\nCity Scan is organized around modular tasks — each responsible for computing a single data layer. This chapter explains how tasks are structured and how they interact.\nLorem ipsum dolor sit amet, consectetur adipiscing elit. A task is a self-contained Python module that ingests raw data, performs spatial analysis, and writes output files. Each task is independently runnable and cacheable.",
+    "crumbs": [
+      "Tasks & Data Layers",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Tasks & Structure Overview</span>"
+    ]
+  },
+  {
+    "objectID": "tasks-structure-overview.html#what-is-a-task",
+    "href": "tasks-structure-overview.html#what-is-a-task",
+    "title": "9  Tasks & Structure Overview",
+    "section": "",
+    "text": "tasks/\n├── population.py\n├── landuse.py\n├── roads.py\n├── flood_risk.py\n└── ...",
+    "crumbs": [
+      "Tasks & Data Layers",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Tasks & Structure Overview</span>"
+    ]
+  },
+  {
+    "objectID": "tasks-structure-overview.html#task-anatomy",
+    "href": "tasks-structure-overview.html#task-anatomy",
+    "title": "9  Tasks & Structure Overview",
+    "section": "9.2 Task Anatomy",
+    "text": "9.2 Task Anatomy\n\n9.2.1 Inputs, Processing, Outputs\n# Typical task structure\nclass PopulationTask:\n    name = \"population\"\n    inputs = [\"aoi\", \"worldpop\"]\n    outputs = [\"population_density.tif\", \"pop_stats.csv\"]\n\n    def run(self, config):\n        aoi = self.load_aoi(config[\"aoi\"])\n        data = self.fetch_worldpop(aoi, config[\"year\"])\n        result = self.clip_and_resample(data, aoi)\n        self.write_outputs(result, config[\"output_dir\"])\n\n\n9.2.2 Task Metadata\nEach task declares metadata used by the orchestrator:\n\n\n\nTable 9.1: Task metadata fields\n\n\n\n\n\nField\nType\nDescription\n\n\n\n\nname\nstr\nUnique task identifier\n\n\ninputs\nlist[str]\nRequired input data sources\n\n\noutputs\nlist[str]\nFiles this task produces\n\n\ndepends_on\nlist[str]\nTasks that must run first",
+    "crumbs": [
+      "Tasks & Data Layers",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Tasks & Structure Overview</span>"
+    ]
+  },
+  {
+    "objectID": "tasks-structure-overview.html#task-categories",
+    "href": "tasks-structure-overview.html#task-categories",
+    "title": "9  Tasks & Structure Overview",
+    "section": "9.3 Task Categories",
+    "text": "9.3 Task Categories\n\n\n\nTask category overview\n\n\nSed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Tasks fall into four broad categories:\n\nPopulation — WorldPop-based density and count estimates\nEnvironment — NDVI, NDWI, land use, and urban heat\nInfrastructure — roads, buildings, and accessibility\nRisk — flood, coastal erosion, and seismic exposure",
+    "crumbs": [
+      "Tasks & Data Layers",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Tasks & Structure Overview</span>"
+    ]
+  },
+  {
+    "objectID": "tasks-structure-overview.html#execution-model",
+    "href": "tasks-structure-overview.html#execution-model",
+    "title": "9  Tasks & Structure Overview",
+    "section": "9.4 Execution Model",
+    "text": "9.4 Execution Model\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. The orchestrator resolves task dependencies and runs tasks in topological order, parallelizing independent tasks where possible.\n# Run all tasks\npython run.py --config config.yml\n\n# Run a specific task\npython run.py --config config.yml --task population\n\n\n\n\n\n\nNote\n\n\n\nSee Data Layer References for a complete list of tasks and their data sources.",
+    "crumbs": [
+      "Tasks & Data Layers",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Tasks & Structure Overview</span>"
+    ]
+  },
+  {
+    "objectID": "datalayer-references.html",
+    "href": "datalayer-references.html",
+    "title": "10  Data Layer References",
+    "section": "",
+    "text": "10.1 Population\nComplete reference for all data layers available in City Scan, including source datasets, resolution, and output descriptions.\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Population layers are derived from WorldPop and LandScan datasets.",
+    "crumbs": [
+      "Tasks & Data Layers",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Data Layer References</span>"
+    ]
+  },
+  {
+    "objectID": "datalayer-references.html#population",
+    "href": "datalayer-references.html#population",
+    "title": "10  Data Layer References",
+    "section": "",
+    "text": "Table 10.1: Population data layers\n\n\n\n\n\n\n\n\n\n\n\nTask ID\nDescription\nSource\nResolution\n\n\n\n\npopulation\nTotal population count per grid cell\nWorldPop\n100m\n\n\npopulation_density\nPeople per km²\nWorldPop\n100m\n\n\npop_growth\nAnnual population growth rate\nWorldPop (multi-year)\n100m",
+    "crumbs": [
+      "Tasks & Data Layers",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Data Layer References</span>"
+    ]
+  },
+  {
+    "objectID": "datalayer-references.html#land-use-environment",
+    "href": "datalayer-references.html#land-use-environment",
+    "title": "10  Data Layer References",
+    "section": "10.2 Land Use & Environment",
+    "text": "10.2 Land Use & Environment\n# Example: computing NDVI\ndef compute_ndvi(red_band, nir_band):\n    return (nir_band - red_band) / (nir_band + red_band)\n\n\n\nTable 10.2: Land use and environment data layers\n\n\n\n\n\n\n\n\n\n\n\nTask ID\nDescription\nSource\nResolution\n\n\n\n\nlanduse\nLand use / land cover classification\nDynamic World (GEE)\n10m\n\n\nndvi\nNormalized Difference Vegetation Index\nSentinel-2\n10m\n\n\nndwi\nNormalized Difference Water Index\nSentinel-2\n10m\n\n\nurban_heat\nLand surface temperature\nLandsat 8/9\n30m",
+    "crumbs": [
+      "Tasks & Data Layers",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Data Layer References</span>"
+    ]
+  },
+  {
+    "objectID": "datalayer-references.html#infrastructure",
+    "href": "datalayer-references.html#infrastructure",
+    "title": "10  Data Layer References",
+    "section": "10.3 Infrastructure",
+    "text": "10.3 Infrastructure\nSed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Infrastructure layers use OpenStreetMap as the primary source.\n\n\n\nTable 10.3: Infrastructure data layers\n\n\n\n\n\n\n\n\n\n\n\nTask ID\nDescription\nSource\nResolution\n\n\n\n\nroads\nRoad network density\nOpenStreetMap\nVector\n\n\nbuildings\nBuilding footprints & density\nOpenStreetMap\nVector\n\n\naccessibility\nTravel time to services\nOpenStreetMap + OTP\n100m",
+    "crumbs": [
+      "Tasks & Data Layers",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Data Layer References</span>"
+    ]
+  },
+  {
+    "objectID": "datalayer-references.html#risk-hazard",
+    "href": "datalayer-references.html#risk-hazard",
+    "title": "10  Data Layer References",
+    "section": "10.4 Risk & Hazard",
+    "text": "10.4 Risk & Hazard\n\n\n\nRisk layer visualization\n\n\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\n\n\n\nTable 10.4: Risk and hazard data layers\n\n\n\n\n\n\n\n\n\n\n\nTask ID\nDescription\nSource\nResolution\n\n\n\n\nflood_risk\n100-year flood extent\nFathom / MERIT Hydro\n90m\n\n\ncoastal_erosion\nShoreline change rate\nCoastalDEM + Sentinel-1\n30m\n\n\nseismic\nPeak ground acceleration\nGSHAP\n~10km",
+    "crumbs": [
+      "Tasks & Data Layers",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Data Layer References</span>"
+    ]
+  },
+  {
+    "objectID": "datalayer-references.html#adding-a-custom-data-layer",
+    "href": "datalayer-references.html#adding-a-custom-data-layer",
+    "title": "10  Data Layer References",
+    "section": "10.5 Adding a Custom Data Layer",
+    "text": "10.5 Adding a Custom Data Layer\n# Register a new task\nfrom cityscan.registry import register_task\n\n@register_task\nclass MyCustomTask:\n    name = \"my_custom_layer\"\n    inputs = [\"aoi\"]\n    outputs = [\"my_custom_layer.tif\"]\n\n    def run(self, config):\n        # implementation here\n        pass\n\n\n\n\n\n\nTip\n\n\n\nCustom tasks can be placed in the tasks/custom/ directory and will be auto-discovered at runtime.",
+    "crumbs": [
+      "Tasks & Data Layers",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Data Layer References</span>"
+    ]
+  },
+  {
+    "objectID": "repo-structure.html",
+    "href": "repo-structure.html",
+    "title": "11  Repository Structure",
+    "section": "",
+    "text": "11.1 Top-level Layout\nAn orientation to the City Scan codebase — what lives where and why.",
+    "crumbs": [
+      "Understanding the Repo",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Repository Structure</span>"
+    ]
+  },
+  {
+    "objectID": "repo-structure.html#top-level-layout",
+    "href": "repo-structure.html#top-level-layout",
+    "title": "11  Repository Structure",
+    "section": "",
+    "text": "city-scan/\n├── cityscan/          # core Python package\n├── tasks/             # task modules\n├── inputs/            # user-supplied inputs (AOI, local data)\n├── outputs/           # generated scan outputs (git-ignored)\n├── scripts/           # utility scripts\n├── tests/             # test suite\n├── docs/              # this documentation\n├── pyproject.toml     # package metadata & dependencies\n├── run.py             # CLI entry point\n└── orchestrator.sh    # shell-based orchestrator (legacy)",
+    "crumbs": [
+      "Understanding the Repo",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Repository Structure</span>"
+    ]
+  },
+  {
+    "objectID": "repo-structure.html#core-package-cityscan",
+    "href": "repo-structure.html#core-package-cityscan",
+    "title": "11  Repository Structure",
+    "section": "11.2 Core Package: cityscan/",
+    "text": "11.2 Core Package: cityscan/\nLorem ipsum dolor sit amet, consectetur adipiscing elit.\ncityscan/\n├── __init__.py\n├── config.py          # config loading and validation\n├── registry.py        # task registration and discovery\n├── runner.py          # task execution and dependency resolution\n├── gee.py             # Google Earth Engine helpers\n├── io.py              # file I/O utilities\n└── report.py          # HTML report generation\n\n11.2.1 Key Modules\n\n\n\nTable 11.1: Core module responsibilities\n\n\n\n\n\nModule\nResponsibility\n\n\n\n\nconfig.py\nLoad and validate config.yml\n\n\nregistry.py\nDiscover and register task classes\n\n\nrunner.py\nResolve dependencies, schedule, and run tasks\n\n\ngee.py\nAuthenticate and interact with GEE",
+    "crumbs": [
+      "Understanding the Repo",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Repository Structure</span>"
+    ]
+  },
+  {
+    "objectID": "repo-structure.html#tasks-directory-tasks",
+    "href": "repo-structure.html#tasks-directory-tasks",
+    "title": "11  Repository Structure",
+    "section": "11.3 Tasks Directory: tasks/",
+    "text": "11.3 Tasks Directory: tasks/\ntasks/\n├── population.py\n├── landuse.py\n├── roads.py\n├── flood_risk.py\n├── coastal_erosion.py\n└── custom/            # user-defined custom tasks\nSed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Each file in tasks/ is a self-contained module that is auto-discovered by the registry at startup.",
+    "crumbs": [
+      "Understanding the Repo",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Repository Structure</span>"
+    ]
+  },
+  {
+    "objectID": "repo-structure.html#inputs-outputs",
+    "href": "repo-structure.html#inputs-outputs",
+    "title": "11  Repository Structure",
+    "section": "11.4 Inputs & Outputs",
+    "text": "11.4 Inputs & Outputs\ninputs/\n└── AOI/               # place your GeoJSON boundary files here\n\noutputs/               # created automatically; git-ignored\n└── &lt;city_name&gt;/\n    ├── maps/\n    ├── stats/\n    └── report.html\n\n\n\nRepository structure diagram",
+    "crumbs": [
+      "Understanding the Repo",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Repository Structure</span>"
+    ]
+  },
+  {
+    "objectID": "repo-structure.html#tests",
+    "href": "repo-structure.html#tests",
+    "title": "11  Repository Structure",
+    "section": "11.5 Tests",
+    "text": "11.5 Tests\npytest tests/            # run the full test suite\npytest tests/unit/       # unit tests only\npytest tests/integration/ # integration tests (requires GEE)\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\n\n\n\n\n\n\nNote\n\n\n\nFor how tasks connect to each other, see Task Dependency.",
+    "crumbs": [
+      "Understanding the Repo",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Repository Structure</span>"
+    ]
+  },
+  {
+    "objectID": "task-dependency.html",
+    "href": "task-dependency.html",
+    "title": "12  Task Dependency",
+    "section": "",
+    "text": "12.1 Dependency Graph\nCity Scan tasks form a directed acyclic graph (DAG). Understanding dependencies helps you predict execution order and debug failures.\nLorem ipsum dolor sit amet, consectetur adipiscing elit. The orchestrator builds this graph at startup by reading each task’s depends_on declaration.",
+    "crumbs": [
+      "Understanding the Repo",
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>Task Dependency</span>"
+    ]
+  },
+  {
+    "objectID": "task-dependency.html#dependency-graph",
+    "href": "task-dependency.html#dependency-graph",
+    "title": "12  Task Dependency",
+    "section": "",
+    "text": "Task dependency DAG",
+    "crumbs": [
+      "Understanding the Repo",
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>Task Dependency</span>"
+    ]
+  },
+  {
+    "objectID": "task-dependency.html#how-dependencies-are-declared",
+    "href": "task-dependency.html#how-dependencies-are-declared",
+    "title": "12  Task Dependency",
+    "section": "12.2 How Dependencies Are Declared",
+    "text": "12.2 How Dependencies Are Declared\nclass AccessibilityTask:\n    name = \"accessibility\"\n    depends_on = [\"roads\", \"population\"]  # must run after these\n\n    def run(self, config):\n        roads = self.load_output(\"roads\")\n        pop   = self.load_output(\"population\")\n        # ... compute accessibility",
+    "crumbs": [
+      "Understanding the Repo",
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>Task Dependency</span>"
+    ]
+  },
+  {
+    "objectID": "task-dependency.html#execution-order-example",
+    "href": "task-dependency.html#execution-order-example",
+    "title": "12  Task Dependency",
+    "section": "12.3 Execution Order Example",
+    "text": "12.3 Execution Order Example\nFor the default task suite, the orchestrator produces the following topological order:\n1. aoi_prep\n2. population          (depends on: aoi_prep)\n3. landuse             (depends on: aoi_prep)\n4. roads               (depends on: aoi_prep)\n5. ndvi                (depends on: aoi_prep)\n6. flood_risk          (depends on: aoi_prep)\n7. accessibility       (depends on: roads, population)\n8. urban_heat          (depends on: landuse, ndvi)\n9. report              (depends on: all above)\nSed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Tasks at the same level can be parallelized.",
+    "crumbs": [
+      "Understanding the Repo",
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>Task Dependency</span>"
+    ]
+  },
+  {
+    "objectID": "task-dependency.html#dependency-table",
+    "href": "task-dependency.html#dependency-table",
+    "title": "12  Task Dependency",
+    "section": "12.4 Dependency Table",
+    "text": "12.4 Dependency Table\n\n\n\nTable 12.1: Task dependency matrix\n\n\n\n\n\nTask\nDepends On\n\n\n\n\npopulation\naoi_prep\n\n\nroads\naoi_prep\n\n\nlanduse\naoi_prep\n\n\nflood_risk\naoi_prep\n\n\naccessibility\nroads, population\n\n\nurban_heat\nlanduse, ndvi\n\n\nreport\nall tasks",
+    "crumbs": [
+      "Understanding the Repo",
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>Task Dependency</span>"
+    ]
+  },
+  {
+    "objectID": "task-dependency.html#handling-failures",
+    "href": "task-dependency.html#handling-failures",
+    "title": "12  Task Dependency",
+    "section": "12.5 Handling Failures",
+    "text": "12.5 Handling Failures\n# Resume a scan after a failed task\npython run.py --config config.yml --resume\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. With --resume, the runner skips tasks whose output files already exist and only re-runs tasks downstream of the failure point.",
+    "crumbs": [
+      "Understanding the Repo",
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>Task Dependency</span>"
+    ]
+  },
+  {
+    "objectID": "task-dependency.html#visualizing-the-dag",
+    "href": "task-dependency.html#visualizing-the-dag",
+    "title": "12  Task Dependency",
+    "section": "12.6 Visualizing the DAG",
+    "text": "12.6 Visualizing the DAG\nfrom cityscan.runner import Runner\n\nrunner = Runner.from_config(\"config.yml\")\nrunner.visualize_dag(\"dag.png\")   # saves a PNG of the dependency graph\n\n\n\n\n\n\nTip\n\n\n\nUse python run.py --dry-run --config config.yml to print the resolved execution order without running any tasks.",
+    "crumbs": [
+      "Understanding the Repo",
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>Task Dependency</span>"
+    ]
+  },
+  {
+    "objectID": "case-standard-rabat.html",
+    "href": "case-standard-rabat.html",
+    "title": "13  Case Study: Standard Scan — Rabat, Morocco",
+    "section": "",
+    "text": "13.1 City Context\nThis case study walks through a complete standard City Scan for Rabat, Morocco, demonstrating the end-to-end workflow and key findings.\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Rabat is the capital of Morocco, with a metropolitan population of approximately 1.9 million. The city faces urban growth pressures, coastal flood risk, and heat island effects.",
+    "crumbs": [
+      "Case Studies & Galleries",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>Case Study: Standard Scan — Rabat, Morocco</span>"
+    ]
+  },
+  {
+    "objectID": "case-standard-rabat.html#city-context",
+    "href": "case-standard-rabat.html#city-context",
+    "title": "13  Case Study: Standard Scan — Rabat, Morocco",
+    "section": "",
+    "text": "Table 13.1: Rabat scan metadata\n\n\n\n\n\nAttribute\nValue\n\n\n\n\nCountry\nMorocco\n\n\nPopulation\n~1.9 million\n\n\nArea (AOI)\n~117 km²\n\n\nScan date\nMarch 2024\n\n\nTasks run\n14",
+    "crumbs": [
+      "Case Studies & Galleries",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>Case Study: Standard Scan — Rabat, Morocco</span>"
+    ]
+  },
+  {
+    "objectID": "case-standard-rabat.html#aoi-definition",
+    "href": "case-standard-rabat.html#aoi-definition",
+    "title": "13  Case Study: Standard Scan — Rabat, Morocco",
+    "section": "13.2 AOI Definition",
+    "text": "13.2 AOI Definition\n\n\n\nRabat area of interest\n\n\nSed do eiusmod tempor incididunt ut labore et dolore magna aliqua. The AOI was defined using the official administrative boundary of the Rabat-Salé-Kénitra region, clipped to the primary urban core.\n# AOI file used\ninputs/AOI/rabat_urban_core.geojson",
+    "crumbs": [
+      "Case Studies & Galleries",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>Case Study: Standard Scan — Rabat, Morocco</span>"
+    ]
+  },
+  {
+    "objectID": "case-standard-rabat.html#running-the-scan",
+    "href": "case-standard-rabat.html#running-the-scan",
+    "title": "13  Case Study: Standard Scan — Rabat, Morocco",
+    "section": "13.3 Running the Scan",
+    "text": "13.3 Running the Scan\npython run.py --config configs/rabat.yml\n# configs/rabat.yml\ncity: \"Rabat\"\ncountry: \"MA\"\naoi: \"inputs/AOI/rabat_urban_core.geojson\"\noutput_dir: \"outputs/rabat\"\nyear: 2024\nscan_type: standard",
+    "crumbs": [
+      "Case Studies & Galleries",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>Case Study: Standard Scan — Rabat, Morocco</span>"
+    ]
+  },
+  {
+    "objectID": "case-standard-rabat.html#key-findings",
+    "href": "case-standard-rabat.html#key-findings",
+    "title": "13  Case Study: Standard Scan — Rabat, Morocco",
+    "section": "13.4 Key Findings",
+    "text": "13.4 Key Findings\n\n13.4.1 Population Distribution\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Population is concentrated in the Agdal and Hassan neighborhoods, with density exceeding 15,000 people/km².\n\n\n\nRabat population density map\n\n\n\n\n13.4.2 Flood Risk\nExcepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Approximately 8% of the built environment falls within the 100-year flood extent, concentrated along the Bouregreg River corridor.\n\n\n13.4.3 Land Use\n# Summary statistics from outputs/rabat/stats/landuse_stats.csv\nlanduse_summary = {\n    \"Urban/Built-up\": 62.3,\n    \"Vegetation\": 18.7,\n    \"Bare soil\": 11.4,\n    \"Water\": 7.6,\n}",
+    "crumbs": [
+      "Case Studies & Galleries",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>Case Study: Standard Scan — Rabat, Morocco</span>"
+    ]
+  },
+  {
+    "objectID": "case-standard-rabat.html#outputs",
+    "href": "case-standard-rabat.html#outputs",
+    "title": "13  Case Study: Standard Scan — Rabat, Morocco",
+    "section": "13.5 Outputs",
+    "text": "13.5 Outputs\nAll scan outputs are available at outputs/rabat/. The interactive report can be viewed at outputs/rabat/report.html.\n\n\n\n\n\n\nNote\n\n\n\nFor a multi-city batch scan case study, see Case Study: Multiple Scans — Philippines.",
+    "crumbs": [
+      "Case Studies & Galleries",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>Case Study: Standard Scan — Rabat, Morocco</span>"
+    ]
+  },
+  {
+    "objectID": "case-multiple-philippines.html",
+    "href": "case-multiple-philippines.html",
+    "title": "14  Case Study: Multiple Scans — Philippines",
+    "section": "",
+    "text": "14.1 Project Context\nThis case study demonstrates running City Scan across multiple Philippine cities simultaneously using batch mode.\nLorem ipsum dolor sit amet, consectetur adipiscing elit. The World Bank Philippines office requested City Scans for five secondary cities to support climate resilience planning. Batch mode was used to process all cities in a single run.",
+    "crumbs": [
+      "Case Studies & Galleries",
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Case Study: Multiple Scans — Philippines</span>"
+    ]
+  },
+  {
+    "objectID": "case-multiple-philippines.html#cities-covered",
+    "href": "case-multiple-philippines.html#cities-covered",
+    "title": "14  Case Study: Multiple Scans — Philippines",
+    "section": "14.2 Cities Covered",
+    "text": "14.2 Cities Covered\n\n\n\nTable 14.1: Philippine cities included in the batch scan\n\n\n\n\n\nCity\nRegion\nPopulation\nAOI Area\n\n\n\n\nCebu\nCentral Visayas\n964,169\n315 km²\n\n\nDavao\nDavao Region\n1,776,949\n2,444 km²\n\n\nIloilo\nWestern Visayas\n457,626\n78 km²\n\n\nCagayan de Oro\nNorthern Mindanao\n728,402\n488 km²\n\n\nZamboanga\nZamboanga Peninsula\n977,234\n1,483 km²",
+    "crumbs": [
+      "Case Studies & Galleries",
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Case Study: Multiple Scans — Philippines</span>"
+    ]
+  },
+  {
+    "objectID": "case-multiple-philippines.html#batch-configuration",
+    "href": "case-multiple-philippines.html#batch-configuration",
+    "title": "14  Case Study: Multiple Scans — Philippines",
+    "section": "14.3 Batch Configuration",
+    "text": "14.3 Batch Configuration\n# configs/philippines_batch.yml\nscan_type: batch\noutput_base_dir: \"outputs/philippines\"\nyear: 2023\n\ncities:\n  - city: \"Cebu\"\n    country: \"PH\"\n    aoi: \"inputs/AOI/cebu.geojson\"\n  - city: \"Davao\"\n    country: \"PH\"\n    aoi: \"inputs/AOI/davao.geojson\"\n  - city: \"Iloilo\"\n    country: \"PH\"\n    aoi: \"inputs/AOI/iloilo.geojson\"\n  - city: \"Cagayan de Oro\"\n    country: \"PH\"\n    aoi: \"inputs/AOI/cdo.geojson\"\n  - city: \"Zamboanga\"\n    country: \"PH\"\n    aoi: \"inputs/AOI/zamboanga.geojson\"",
+    "crumbs": [
+      "Case Studies & Galleries",
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Case Study: Multiple Scans — Philippines</span>"
+    ]
+  },
+  {
+    "objectID": "case-multiple-philippines.html#running-the-batch",
+    "href": "case-multiple-philippines.html#running-the-batch",
+    "title": "14  Case Study: Multiple Scans — Philippines",
+    "section": "14.4 Running the Batch",
+    "text": "14.4 Running the Batch\npython run.py --config configs/philippines_batch.yml --batch --workers 2\nSed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Two parallel workers were used to balance GEE API rate limits with execution speed. Total batch runtime was approximately 6 hours.",
+    "crumbs": [
+      "Case Studies & Galleries",
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Case Study: Multiple Scans — Philippines</span>"
+    ]
+  },
+  {
+    "objectID": "case-multiple-philippines.html#key-findings-across-cities",
+    "href": "case-multiple-philippines.html#key-findings-across-cities",
+    "title": "14  Case Study: Multiple Scans — Philippines",
+    "section": "14.5 Key Findings Across Cities",
+    "text": "14.5 Key Findings Across Cities\n\n\n\nFlood risk comparison across Philippine cities\n\n\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\n\n14.5.1 Coastal Flood Risk\nAll five cities have significant coastal exposure. Zamboanga showed the highest percentage of built-up area within the 100-year flood extent at 23%.\n\n\n14.5.2 Urban Heat Islands\n# Comparative heat island intensity (°C above rural baseline)\nheat_island = {\n    \"Cebu\": 3.2,\n    \"Davao\": 2.8,\n    \"Iloilo\": 2.1,\n    \"Cagayan de Oro\": 2.6,\n    \"Zamboanga\": 3.5,\n}",
+    "crumbs": [
+      "Case Studies & Galleries",
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Case Study: Multiple Scans — Philippines</span>"
+    ]
+  },
+  {
+    "objectID": "case-multiple-philippines.html#lessons-learned",
+    "href": "case-multiple-philippines.html#lessons-learned",
+    "title": "14  Case Study: Multiple Scans — Philippines",
+    "section": "14.6 Lessons Learned",
+    "text": "14.6 Lessons Learned\nExcepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Key takeaways from this multi-city deployment:\n\nPre-validate all AOI files before starting the batch to avoid mid-run failures.\nUse --workers 2 as the safe default for GEE-heavy task suites.\nMonitor GEE quota usage via the GEE Console during long runs.\n\n\n\n\n\n\n\nNote\n\n\n\nConfiguration files for all five cities are available in configs/examples/philippines/.",
+    "crumbs": [
+      "Case Studies & Galleries",
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Case Study: Multiple Scans — Philippines</span>"
+    ]
+  },
+  {
+    "objectID": "git-guide.html",
+    "href": "git-guide.html",
+    "title": "15  Git Guide",
+    "section": "",
+    "text": "15.1 Branching Strategy\nA practical Git reference for City Scan contributors, covering branching strategy, commit conventions, and common workflows.\nLorem ipsum dolor sit amet, consectetur adipiscing elit. City Scan uses a trunk-based development model with short-lived feature branches.",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Git Guide</span>"
+    ]
+  },
+  {
+    "objectID": "git-guide.html#branching-strategy",
+    "href": "git-guide.html#branching-strategy",
+    "title": "15  Git Guide",
+    "section": "",
+    "text": "main                    # stable, always deployable\n└── feature/&lt;name&gt;      # new features or improvements\n└── fix/&lt;name&gt;          # bug fixes\n└── docs/&lt;name&gt;         # documentation-only changes",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Git Guide</span>"
+    ]
+  },
+  {
+    "objectID": "git-guide.html#cloning-the-repository",
+    "href": "git-guide.html#cloning-the-repository",
+    "title": "15  Git Guide",
+    "section": "15.2 Cloning the Repository",
+    "text": "15.2 Cloning the Repository\ngit clone https://github.com/cityresilience/city-scan.git\ncd city-scan\ngit checkout -b feature/my-new-feature",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Git Guide</span>"
+    ]
+  },
+  {
+    "objectID": "git-guide.html#commit-message-conventions",
+    "href": "git-guide.html#commit-message-conventions",
+    "title": "15  Git Guide",
+    "section": "15.3 Commit Message Conventions",
+    "text": "15.3 Commit Message Conventions\nSed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Follow the Conventional Commits format:\n&lt;type&gt;(&lt;scope&gt;): &lt;short description&gt;\n\n[optional body]\n\n[optional footer]\n\n\n\nTable 15.1: Conventional commit types\n\n\n\n\n\nType\nWhen to Use\n\n\n\n\nfeat\nNew feature or data layer\n\n\nfix\nBug fix\n\n\ndocs\nDocumentation changes only\n\n\nrefactor\nCode restructuring, no behavior change\n\n\ntest\nAdding or updating tests\n\n\nchore\nMaintenance (deps, CI, config)\n\n\n\n\n\n\n\n15.3.1 Examples\ngit commit -m \"feat(tasks): add seismic hazard layer\"\ngit commit -m \"fix(gee): handle expired credentials gracefully\"\ngit commit -m \"docs(setup): clarify GEE authentication steps\"",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Git Guide</span>"
+    ]
+  },
+  {
+    "objectID": "git-guide.html#pull-request-workflow",
+    "href": "git-guide.html#pull-request-workflow",
+    "title": "15  Git Guide",
+    "section": "15.4 Pull Request Workflow",
+    "text": "15.4 Pull Request Workflow\n# 1. Create a branch\ngit checkout -b fix/flood-risk-clipping\n\n# 2. Make changes and commit\ngit add tasks/flood_risk.py\ngit commit -m \"fix(tasks): correct AOI clipping in flood risk task\"\n\n# 3. Push and open a PR\ngit push -u origin fix/flood-risk-clipping\ngh pr create --fill\n\n\n\nPull request checklist on GitHub",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Git Guide</span>"
+    ]
+  },
+  {
+    "objectID": "git-guide.html#keeping-your-branch-up-to-date",
+    "href": "git-guide.html#keeping-your-branch-up-to-date",
+    "title": "15  Git Guide",
+    "section": "15.5 Keeping Your Branch Up to Date",
+    "text": "15.5 Keeping Your Branch Up to Date\ngit fetch origin\ngit rebase origin/main\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\n\n\n\n\n\n\nWarning\n\n\n\nAvoid git merge main into feature branches — use rebase to keep a clean linear history.\n\n\n\n\n\n\n\n\nNote\n\n\n\nFor opening issues, see Reporting Issues. For contributing code, see Contributing.",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Git Guide</span>"
+    ]
+  },
+  {
+    "objectID": "reporting-issues.html",
+    "href": "reporting-issues.html",
+    "title": "16  Reporting Issues",
+    "section": "",
+    "text": "16.1 Where to Report\nHow to report bugs, request features, and ask questions about City Scan.\nLorem ipsum dolor sit amet, consectetur adipiscing elit. All issues are tracked on the GitHub repository:",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Reporting Issues</span>"
+    ]
+  },
+  {
+    "objectID": "reporting-issues.html#where-to-report",
+    "href": "reporting-issues.html#where-to-report",
+    "title": "16  Reporting Issues",
+    "section": "",
+    "text": "GitHub Issues: https://github.com/cityresilience/city-scan/issues",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Reporting Issues</span>"
+    ]
+  },
+  {
+    "objectID": "reporting-issues.html#before-you-open-an-issue",
+    "href": "reporting-issues.html#before-you-open-an-issue",
+    "title": "16  Reporting Issues",
+    "section": "16.2 Before You Open an Issue",
+    "text": "16.2 Before You Open an Issue\nSed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Before filing a new issue, please:\n\nSearch existing issues — your problem may already be reported or fixed.\nCheck the documentation — especially Setting Up for environment problems.\nReproduce the issue — confirm it happens on a clean install.",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Reporting Issues</span>"
+    ]
+  },
+  {
+    "objectID": "reporting-issues.html#bug-reports",
+    "href": "reporting-issues.html#bug-reports",
+    "title": "16  Reporting Issues",
+    "section": "16.3 Bug Reports",
+    "text": "16.3 Bug Reports\nUse the Bug Report template when something is broken. Include:\n## Description\nA clear description of what went wrong.\n\n## Steps to Reproduce\n1. Run `python run.py --config config.yml`\n2. Observe error in `outputs/city/scan.log`\n\n## Expected Behavior\nThe scan should complete successfully.\n\n## Actual Behavior\nTask `flood_risk` fails with `KeyError: 'return_period'`.\n\n## Environment\n- OS: macOS 14.4\n- Python: 3.11.6\n- City Scan version: 0.9.2",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Reporting Issues</span>"
+    ]
+  },
+  {
+    "objectID": "reporting-issues.html#feature-requests",
+    "href": "reporting-issues.html#feature-requests",
+    "title": "16  Reporting Issues",
+    "section": "16.4 Feature Requests",
+    "text": "16.4 Feature Requests\nUse the Feature Request template to propose new data layers, CLI options, or workflow improvements.\n\n\n\nGitHub issue tracker showing a mix of bug reports and feature requests",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Reporting Issues</span>"
+    ]
+  },
+  {
+    "objectID": "reporting-issues.html#sharing-log-files",
+    "href": "reporting-issues.html#sharing-log-files",
+    "title": "16  Reporting Issues",
+    "section": "16.5 Sharing Log Files",
+    "text": "16.5 Sharing Log Files\n# Find your scan log\ncat outputs/&lt;city&gt;/scan.log\n\n# Or attach the whole log to the issue\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Redact any sensitive paths or credentials before sharing logs.",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Reporting Issues</span>"
+    ]
+  },
+  {
+    "objectID": "reporting-issues.html#issue-labels",
+    "href": "reporting-issues.html#issue-labels",
+    "title": "16  Reporting Issues",
+    "section": "16.6 Issue Labels",
+    "text": "16.6 Issue Labels\n\n\n\nTable 16.1: GitHub issue labels\n\n\n\n\n\nLabel\nMeaning\n\n\n\n\nbug\nConfirmed defect\n\n\nenhancement\nNew feature or improvement\n\n\ndocumentation\nDocs gap or correction\n\n\ngood first issue\nSuitable for new contributors\n\n\nhelp wanted\nMaintainers welcome external PRs\n\n\n\n\n\n\n\n\n\n\n\n\nTip\n\n\n\nFor quick questions, open a Discussion instead of an issue — discussions are better for open-ended conversations.",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Reporting Issues</span>"
+    ]
+  },
+  {
+    "objectID": "contributing.html",
+    "href": "contributing.html",
+    "title": "17  Contributing",
+    "section": "",
+    "text": "17.1 Types of Contributions\nWe welcome contributions to City Scan — from new data layers to documentation improvements.\nLorem ipsum dolor sit amet, consectetur adipiscing elit:",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Contributing</span>"
+    ]
+  },
+  {
+    "objectID": "contributing.html#types-of-contributions",
+    "href": "contributing.html#types-of-contributions",
+    "title": "17  Contributing",
+    "section": "",
+    "text": "New tasks — add a data layer not currently in the suite\nBug fixes — resolve issues in existing tasks or infrastructure\nDocumentation — improve this cookbook\nTests — expand test coverage\nPerformance — optimize slow tasks or reduce GEE API calls",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Contributing</span>"
+    ]
+  },
+  {
+    "objectID": "contributing.html#development-setup",
+    "href": "contributing.html#development-setup",
+    "title": "17  Contributing",
+    "section": "17.2 Development Setup",
+    "text": "17.2 Development Setup\ngit clone https://github.com/cityresilience/city-scan.git\ncd city-scan\npython -m venv .venv && source .venv/bin/activate\npip install -e \".[dev]\"\npre-commit install\nSed do eiusmod tempor incididunt ut labore et dolore magna aliqua. The [dev] extras install linting, formatting, and test tools.",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Contributing</span>"
+    ]
+  },
+  {
+    "objectID": "contributing.html#code-style",
+    "href": "contributing.html#code-style",
+    "title": "17  Contributing",
+    "section": "17.3 Code Style",
+    "text": "17.3 Code Style\nCity Scan uses Ruff for linting and formatting.\nruff check .         # lint\nruff format .        # format\nPre-commit hooks enforce these checks on every commit. To run manually:\npre-commit run --all-files",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Contributing</span>"
+    ]
+  },
+  {
+    "objectID": "contributing.html#writing-a-new-task",
+    "href": "contributing.html#writing-a-new-task",
+    "title": "17  Contributing",
+    "section": "17.4 Writing a New Task",
+    "text": "17.4 Writing a New Task\n# tasks/my_new_layer.py\nfrom cityscan.registry import register_task\nfrom cityscan.base import BaseTask\n\n@register_task\nclass MyNewLayerTask(BaseTask):\n    name = \"my_new_layer\"\n    description = \"Computes lorem ipsum data layer.\"\n    inputs = [\"aoi\"]\n    outputs = [\"my_new_layer.tif\"]\n    depends_on = []\n\n    def run(self, config: dict) -&gt; None:\n        aoi = self.load_aoi(config[\"aoi\"])\n        result = self._compute(aoi)\n        self.write_raster(result, \"my_new_layer.tif\")\n\n    def _compute(self, aoi):\n        # implementation here\n        pass\nAdd a corresponding test in tests/unit/test_my_new_layer.py.",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Contributing</span>"
+    ]
+  },
+  {
+    "objectID": "contributing.html#pull-request-checklist",
+    "href": "contributing.html#pull-request-checklist",
+    "title": "17  Contributing",
+    "section": "17.5 Pull Request Checklist",
+    "text": "17.5 Pull Request Checklist\n\n\n\nPull request checklist\n\n\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\n\nTests pass: pytest tests/\nLinting passes: ruff check .\nNew task is registered and documented in Data Layer References\nPR title follows Conventional Commits format\nNo secrets or credentials committed",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Contributing</span>"
+    ]
+  },
+  {
+    "objectID": "contributing.html#review-process",
+    "href": "contributing.html#review-process",
+    "title": "17  Contributing",
+    "section": "17.6 Review Process",
+    "text": "17.6 Review Process\n\n\n\nTable 17.1: Pull request review stages\n\n\n\n\n\nStage\nWho\nTypical Duration\n\n\n\n\nAutomated checks (CI)\nGitHub Actions\n&lt; 5 min\n\n\nCode review\nCore maintainer\n1–3 days\n\n\nMerge\nCore maintainer\nAfter approval\n\n\n\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nSee Git Guide for branching and commit conventions.",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Contributing</span>"
+    ]
+  },
+  {
+    "objectID": "sharing-the-guide.html",
+    "href": "sharing-the-guide.html",
+    "title": "18  Sharing the Guide",
+    "section": "",
+    "text": "18.1 Rendered Formats\nHow to share, publish, and distribute the City Scan Cookbook with your team and stakeholders.\nLorem ipsum dolor sit amet, consectetur adipiscing elit. The cookbook is built with Quarto and can be rendered to HTML, PDF, or both.\nOutput is written to _book/.",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>18</span>  <span class='chapter-title'>Sharing the Guide</span>"
+    ]
+  },
+  {
+    "objectID": "sharing-the-guide.html#rendered-formats",
+    "href": "sharing-the-guide.html#rendered-formats",
+    "title": "18  Sharing the Guide",
+    "section": "",
+    "text": "# Render HTML (default)\nquarto render\n\n# Render PDF\nquarto render --to pdf\n\n# Render both\nquarto render --to html,pdf",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>18</span>  <span class='chapter-title'>Sharing the Guide</span>"
+    ]
+  },
+  {
+    "objectID": "sharing-the-guide.html#publishing-to-github-pages",
+    "href": "sharing-the-guide.html#publishing-to-github-pages",
+    "title": "18  Sharing the Guide",
+    "section": "18.2 Publishing to GitHub Pages",
+    "text": "18.2 Publishing to GitHub Pages\nquarto publish gh-pages\nSed do eiusmod tempor incididunt ut labore et dolore magna aliqua. This command builds the book and pushes the rendered HTML to the gh-pages branch. The site is then accessible at:\nhttps://cityresilience.github.io/city-scan/",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>18</span>  <span class='chapter-title'>Sharing the Guide</span>"
+    ]
+  },
+  {
+    "objectID": "sharing-the-guide.html#publishing-to-quarto-pub",
+    "href": "sharing-the-guide.html#publishing-to-quarto-pub",
+    "title": "18  Sharing the Guide",
+    "section": "18.3 Publishing to Quarto Pub",
+    "text": "18.3 Publishing to Quarto Pub\nquarto publish quarto-pub\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. You will be prompted to sign in to your Quarto Pub account on first use.",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>18</span>  <span class='chapter-title'>Sharing the Guide</span>"
+    ]
+  },
+  {
+    "objectID": "sharing-the-guide.html#sharing-the-pdf",
+    "href": "sharing-the-guide.html#sharing-the-pdf",
+    "title": "18  Sharing the Guide",
+    "section": "18.4 Sharing the PDF",
+    "text": "18.4 Sharing the PDF\n\n\n\nPDF export of the City Scan Cookbook\n\n\nAfter rendering to PDF:\nopen _book/City-Scan-Cook-Book.pdf   # macOS\n\n\n\nTable 18.1: Guide distribution options\n\n\n\n\n\nDistribution Method\nAudience\nNotes\n\n\n\n\nGitHub Pages (HTML)\nTechnical users\nFree, auto-updates on push\n\n\nQuarto Pub (HTML)\nGeneral stakeholders\nFree, public URL\n\n\nPDF via email\nPartners / clients\nSnapshot in time\n\n\nPDF on SharePoint\nInternal World Bank\nBehind org auth",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>18</span>  <span class='chapter-title'>Sharing the Guide</span>"
+    ]
+  },
+  {
+    "objectID": "sharing-the-guide.html#embedding-in-other-sites",
+    "href": "sharing-the-guide.html#embedding-in-other-sites",
+    "title": "18  Sharing the Guide",
+    "section": "18.5 Embedding in Other Sites",
+    "text": "18.5 Embedding in Other Sites\n&lt;!-- Embed a specific chapter as an iframe --&gt;\n&lt;iframe\n  src=\"https://cityresilience.github.io/city-scan/setting-up.html\"\n  width=\"100%\"\n  height=\"600px\"\n  frameborder=\"0\"&gt;\n&lt;/iframe&gt;",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>18</span>  <span class='chapter-title'>Sharing the Guide</span>"
+    ]
+  },
+  {
+    "objectID": "sharing-the-guide.html#keeping-the-guide-up-to-date",
+    "href": "sharing-the-guide.html#keeping-the-guide-up-to-date",
+    "title": "18  Sharing the Guide",
+    "section": "18.6 Keeping the Guide Up to Date",
+    "text": "18.6 Keeping the Guide Up to Date\n# Set up GitHub Actions to auto-publish on every push to main\n# .github/workflows/publish.yml\non:\n  push:\n    branches: [main]\n\njobs:\n  publish:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: quarto-dev/quarto-actions/publish@v2\n        with:\n          target: gh-pages\n\n\n\n\n\n\nTip\n\n\n\nFor feedback on the guide itself, open a documentation issue on GitHub — see Reporting Issues.",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>18</span>  <span class='chapter-title'>Sharing the Guide</span>"
+    ]
+  }
+]

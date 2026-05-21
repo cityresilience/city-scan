@@ -6,10 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="World Bank - City Resilience Program">
-<meta name="dcterms.date" content="2026-05-05">
 
-<title>City Scan Technical Reference</title>
+<title>2&nbsp; City Scan Examples – City Scan Technical Reference</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -35,7 +33,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./what-is-cityscan.html" rel="next">
+<link href="./at-a-glance.html" rel="next">
+<link href="./what-is-cityscan.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -46,6 +45,9 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap-b95cbf176b21d35b97d826ad6b6af685.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -86,7 +88,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Welcome</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./what-is-cityscan.html">City Scan Overview</a></li><li class="breadcrumb-item"><a href="./examples-cityscan.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">City Scan Examples</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -120,19 +122,19 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Welcome</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
  <span class="menu-text">City Scan Overview</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./what-is-cityscan.html" class="sidebar-item-text sidebar-link">
@@ -141,7 +143,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./examples-cityscan.html" class="sidebar-item-text sidebar-link">
+  <a href="./examples-cityscan.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">City Scan Examples</span></span></a>
   </div>
 </li>
@@ -325,39 +327,25 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#welcome" id="toc-welcome" class="nav-link active" data-scroll-target="#welcome">Welcome</a>
-  <ul class="collapse">
-  <li><a href="#in-this-technical-reference" id="toc-in-this-technical-reference" class="nav-link" data-scroll-target="#in-this-technical-reference">In this technical reference</a></li>
-  <li><a href="#about-city-resilience-program-crp" id="toc-about-city-resilience-program-crp" class="nav-link" data-scroll-target="#about-city-resilience-program-crp">About City Resilience Program (CRP)</a></li>
-  </ul></li>
+  <li><a href="#example-1-standalone-images---dakar-senegal" id="toc-example-1-standalone-images---dakar-senegal" class="nav-link active" data-scroll-target="#example-1-standalone-images---dakar-senegal"><span class="header-section-number">2.1</span> Example 1: Standalone Images - Dakar, Senegal</a></li>
+  <li><a href="#example-2-comprehensive-analytical-pdf-report---bitung-indonesia" id="toc-example-2-comprehensive-analytical-pdf-report---bitung-indonesia" class="nav-link" data-scroll-target="#example-2-comprehensive-analytical-pdf-report---bitung-indonesia"><span class="header-section-number">2.2</span> Example 2: Comprehensive Analytical PDF Report - Bitung, Indonesia</a></li>
+  <li><a href="#example-3-interactive-html-website---city-country" id="toc-example-3-interactive-html-website---city-country" class="nav-link" data-scroll-target="#example-3-interactive-html-website---city-country"><span class="header-section-number">2.3</span> Example 3: Interactive HTML website - City, Country</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./what-is-cityscan.html">City Scan Overview</a></li><li class="breadcrumb-item"><a href="./examples-cityscan.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">City Scan Examples</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">City Scan Technical Reference</h1>
+<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">City Scan Examples</span></h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>World Bank - City Resilience Program </p>
-          </div>
-  </div>
     
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">May 5, 2026</p>
-    </div>
-  </div>
   
     
   </div>
@@ -367,26 +355,157 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-
-<section id="welcome" class="level1 unnumbered">
-<h1 class="unnumbered">Welcome</h1><p><img src="image/cover.png" title="City Scan Technical Reference" class="quarto-cover-image nolightbox img-fluid"></p>
-<p>The City Scan is a diagnostic tool designed to equip cities with the early insights needed to address risk by:</p>
-<ul>
-<li>Providing a rapid, data-driven snapshot of a city’s demographic, economic, climate, and risk landscape.</li>
-<li>Leveraging remote sensing and geospatial analysis of any city in the world, using global datasets.</li>
-<li>Revealing the interaction between the urban built and natural environments.</li>
-</ul>
-<section id="in-this-technical-reference" class="level3">
-<h3 class="anchored" data-anchor-id="in-this-technical-reference">In this technical reference</h3>
-<p>This reference book is a structured technical documentation to use and operate City Scan as a diagnostic tool. Here, you will find documentations on City Scan overview, getting started, running a City Scan, tasks and data layers, repository structure, case studies &amp; galleries, as well as contributing guides.</p>
+<p>City Scan output is a collection of maps and charts made from global and publicly available datasets that provide quick high-level insights into resilience-related topics for a city. The output is a package of maps, data visualizations and insights that integrate features of both the built and natural environments. It is available as standalone images, compiled PDF, and interactive Quarto HTML.</p>
+<section id="example-1-standalone-images---dakar-senegal" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="example-1-standalone-images---dakar-senegal"><span class="header-section-number">2.1</span> Example 1: Standalone Images - Dakar, Senegal</h2>
+<p>This format is useful if you’d like to combine City Scan outputs with your own analysis. See examples from our analysis for Dakar, Senegal</p>
+<div id="fig-maps" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-maps-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-maps" style="flex-basis: 25.0%;justify-content: flex-start;">
+<div id="fig-aoi" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-aoi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/dakar-senegal/aoi.png" class="lightbox" data-gallery="fig-maps" title="Figure&nbsp;2.1&nbsp;(a): Area of interest"><img src="image/dakar-senegal/aoi.png" class="img-fluid figure-img" data-ref-parent="fig-maps"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-aoi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Area of interest
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-maps" style="flex-basis: 25.0%;justify-content: flex-start;">
+<div id="fig-airquality" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-airquality-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/dakar-senegal/air_quality_local.png" class="lightbox" data-gallery="fig-maps" title="Figure&nbsp;2.1&nbsp;(b): local air quality"><img src="image/dakar-senegal/air_quality_local.png" class="img-fluid figure-img" data-ref-parent="fig-maps"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-airquality-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) local air quality
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-maps" style="flex-basis: 25.0%;justify-content: flex-start;">
+<div id="fig-floodpopulation" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-floodpopulation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/dakar-senegal/combined_flooding_population.png" class="lightbox" data-gallery="fig-maps" title="Figure&nbsp;2.1&nbsp;(c): Population exposed to flooding"><img src="image/dakar-senegal/combined_flooding_population.png" class="img-fluid figure-img" data-ref-parent="fig-maps"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-floodpopulation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) Population exposed to flooding
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-maps" style="flex-basis: 25.0%;justify-content: flex-start;">
+<div id="fig-healthcare" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-healthcare-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/dakar-senegal/health_proximity.png" class="lightbox" data-gallery="fig-maps" title="Figure&nbsp;2.1&nbsp;(d): Proximity to healthcare infrastructure"><img src="image/dakar-senegal/health_proximity.png" class="img-fluid figure-img" data-ref-parent="fig-maps"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-healthcare-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(d) Proximity to healthcare infrastructure
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-maps" style="flex-basis: 25.0%;justify-content: flex-start;">
+<div id="fig-builtup" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-builtup-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/dakar-senegal/dakar_urban_built_up_area.png" class="lightbox" data-gallery="fig-maps" title="Figure&nbsp;2.1&nbsp;(e): Built-up area over time"><img src="image/dakar-senegal/dakar_urban_built_up_area.png" class="img-fluid figure-img" data-ref-parent="fig-maps"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-builtup-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(e) Built-up area over time
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-maps" style="flex-basis: 25.0%;justify-content: flex-start;">
+<div id="fig-fwi" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fwi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/dakar-senegal/nasa-fwi.png" class="lightbox" data-gallery="fig-maps" title="Figure&nbsp;2.1&nbsp;(f): Fire weather index"><img src="image/dakar-senegal/nasa-fwi.png" class="img-fluid figure-img" data-ref-parent="fig-maps"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fwi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(f) Fire weather index
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-maps" style="flex-basis: 25.0%;justify-content: flex-start;">
+<div id="fig-gdppp" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-gdppp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/dakar-senegal/oxford-gdp-per-capita_line.png" class="lightbox" data-gallery="fig-maps" title="Figure&nbsp;2.1&nbsp;(g): GDP per capita"><img src="image/dakar-senegal/oxford-gdp-per-capita_line.png" class="img-fluid figure-img" data-ref-parent="fig-maps"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-gdppp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(g) GDP per capita
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-maps" style="flex-basis: 25.0%;justify-content: flex-start;">
+<div id="fig-age" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-age-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/dakar-senegal/world-pop-age-sex.png" class="lightbox" data-gallery="fig-maps" title="Figure&nbsp;2.1&nbsp;(h): Age pyramid"><img src="image/dakar-senegal/world-pop-age-sex.png" class="img-fluid figure-img" data-ref-parent="fig-maps"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-age-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(h) Age pyramid
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-maps-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.1: Examples of maps &amp; charts generated by City Scan
+</figcaption>
+</figure>
+</div>
 </section>
-<section id="about-city-resilience-program-crp" class="level3">
-<h3 class="anchored" data-anchor-id="about-city-resilience-program-crp">About City Resilience Program (CRP)</h3>
-<p>The City Resilience Program is housed within the Global Facility for Disaster Reduction and Recovery (GFDRR) at the World Bank. CRP is a global initiative supported by the Swiss State Secretariat for Economic Affairs, the Austrian Federal Ministry of Finance, the Italian Ministry of Foreign Affairs, the Italian Agency for Development Cooperation, and the Gates Foundation.</p>
-<p>To learn more about CRP and GFDRR visit <a href="https://www.gfdrr.org/en/crp" class="uri">https://www.gfdrr.org/en/crp</a>.</p>
-
-
+<section id="example-2-comprehensive-analytical-pdf-report---bitung-indonesia" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="example-2-comprehensive-analytical-pdf-report---bitung-indonesia"><span class="header-section-number">2.2</span> Example 2: Comprehensive Analytical PDF Report - Bitung, Indonesia</h2>
+<p>The generated maps and charts are compiled according to relevant themes, along with data interpretation and considerations. See examples below from our analysis in Bitung, Indonesia.</p>
+<iframe src="https://drive.google.com/file/d/1FOiUzZbEoM1a4WXs-JLG18iQoEDzdalW/preview?usp=sharing" width="100%" height="600px" allow="autoplay">
+</iframe>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The final PDF output is compiled and designed via Adobe InDesign and not yet automatically generated by the code. Automated PDF generation will be part of future updates.</p>
+</div>
+</div>
 </section>
+<section id="example-3-interactive-html-website---city-country" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="example-3-interactive-html-website---city-country"><span class="header-section-number">2.3</span> Example 3: Interactive HTML website - City, Country</h2>
+<p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Full case studies for Rabat and the Philippines are in <a href="./case-standard-rabat.html">Part 6. Case Studies &amp; Galleries</a>.</p>
+</div>
+</div>
+
+
 </section>
 
 </main> <!-- /main -->
@@ -792,10 +911,13 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="./what-is-cityscan.html" class="pagination-link" aria-label="What is City Scan?">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">What is City Scan?</span></span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./what-is-cityscan.html" class="pagination-link" aria-label="What is City Scan?">
-        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">What is City Scan?</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./at-a-glance.html" class="pagination-link" aria-label="General Workflow">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">General Workflow</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -813,6 +935,38 @@ ul.task-list li input[type="checkbox"] {
 </div>
   </div>
 </footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 
