@@ -1,0 +1,136 @@
+# Editing This Reference
+
+A step-by-step guide for team members who want to update or extend this technical reference. Covers the editing workflow, branch conventions, and how to publish changes to GitHub Pages.
+
+## Prerequisites
+
+- **Quarto** installed ([quarto.org](https://quarto.org/docs/get-started/))
+- **Git** installed and authenticated with GitHub
+- Write access to the [`cityresilience/city-scan`](https://github.com/cityresilience/city-scan) repository
+
+## Repository Structure
+
+Documentation lives in the `docs/` folder of the main `city-scan` repository. Each page is a Quarto Markdown file (`.qmd`):
+
+```
+city-scan/
+└── docs/
+    ├── _quarto.yml         # book structure and settings
+    ├── index.qmd           # landing page
+    ├── *.qmd               # one file per chapter
+    ├── references.bib      # bibliography
+    └── image/              # shared images
+```
+
+The compiled website is published to the `gh-pages` branch and served at `https://cityresilience.github.io/city-scan/`.
+
+## Editing Workflow
+
+### 1. Switch to `new_docs`
+
+All documentation edits happen on `new_docs` — never commit directly to `main` or `gh-pages`.
+
+```bash
+git checkout new_docs
+git pull origin new_docs      # always pull latest before editing
+```
+
+### 2. Edit `.qmd` files
+
+Open the relevant `.qmd` file in `docs/` and edit it. Quarto Markdown is standard Markdown with optional callouts, cross-references, code blocks, and diagrams.
+
+To preview changes live in your browser:
+
+```bash
+cd docs
+quarto preview
+```
+
+This starts a local server (usually at `http://localhost:4848`) that hot-reloads as you save.
+
+### 3. Add a new page (optional)
+
+1. Create a new `.qmd` file in `docs/`, e.g. `docs/my-new-page.qmd`
+2. Start the file with an H1 heading: `# My New Page`
+3. Register it in `docs/_quarto.yml` under the appropriate `part:` section:
+
+```yaml
+- part: "Collaborating"
+  chapters:
+    - editing-this-reference.qmd
+    - my-new-page.qmd
+```
+
+### 4. Commit and push to `new_docs`
+
+```bash
+# Stage only docs source files — never stage docs/_book/
+git add docs/my-new-page.qmd docs/_quarto.yml
+git commit -m "docs: add page on <topic>"
+git push origin new_docs
+```
+
+::: {.callout-warning}
+Do **not** stage or commit anything inside `docs/_book/`. That folder contains compiled site output and is excluded by `docs/.gitignore`. Committing it to `new_docs` will bloat the repository with binary files.
+:::
+
+## Publishing Workflow
+
+Once edits are committed to `new_docs`, publish to GitHub Pages from the `docs/` directory:
+
+```bash
+cd docs
+quarto publish gh-pages
+```
+
+Quarto will:
+
+1. Re-render only changed pages (`freeze: true` skips unchanged code outputs)
+2. Commit the compiled site to the local `gh-pages` branch
+3. Push `gh-pages` to `origin` — GitHub Pages auto-deploys within ~1 minute
+
+When prompted:
+```
+Update site at https://cityresilience.github.io/city-scan/? (Y/n)
+```
+Type `Y` and press Enter.
+
+::: {.callout-note}
+**First-time setup on a new machine:** If you get an `HTTP 400` error during the push step, run this once from the repo root, then re-publish:
+
+```bash
+git config http.postBuffer 524288000
+```
+
+This increases the git push buffer to 500 MB, which is needed for the initial upload of all site assets.
+:::
+
+## Branch Overview
+
+| Branch | Purpose | Who touches it |
+|---|---|---|
+| `main` | Stable code and configuration | Maintainers via PR |
+| `new_docs` | Documentation source (`.qmd` files) | Editors directly |
+| `gh-pages` | Compiled website — managed by Quarto | **Never edit manually** |
+
+## Quick Reference
+
+```bash
+# Pull latest docs before editing
+git checkout new_docs && git pull origin new_docs
+
+# Start local preview
+cd docs && quarto preview
+
+# Commit documentation edits (from repo root)
+git add docs/<changed-files>
+git commit -m "docs: <short description>"
+git push origin new_docs
+
+# Publish to GitHub Pages (from docs/)
+cd docs && quarto publish gh-pages
+```
+
+::: {.callout-note}
+For reporting content issues or suggesting structural changes, see [Reporting Issues](reporting-issues.qmd). For contributing to the codebase itself, see [Contributing](contributing.qmd).
+:::

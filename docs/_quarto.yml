@@ -50,11 +50,12 @@ book:
         - case-standard-rabat.qmd
         - case-multiple-philippines.qmd
     - part: "Collaborating"
-      chapters: 
+      chapters:
         - git-guide.qmd
         - reporting-issues.qmd
         - contributing.qmd
-        - sharing-the-guide.qmd  
+        - sharing-the-guide.qmd
+        - editing-this-reference.qmd
     - references.qmd
 
 bibliography: references.bib
