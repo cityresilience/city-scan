@@ -23,6 +23,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -325,8 +360,29 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#city_inputs.yml" id="toc-city_inputs.yml" class="nav-link active" data-scroll-target="#city_inputs.yml"><span class="header-section-number">5.1</span> <code>city_inputs.yml</code></a>
+  <ul class="collapse">
+  <li><a href="#identification" id="toc-identification" class="nav-link" data-scroll-target="#identification"><span class="header-section-number">5.1.1</span> Identification</a></li>
+  <li><a href="#time-ranges" id="toc-time-ranges" class="nav-link" data-scroll-target="#time-ranges"><span class="header-section-number">5.1.2</span> Time ranges</a></li>
+  <li><a href="#accessibility-osm_query-isochrone" id="toc-accessibility-osm_query-isochrone" class="nav-link" data-scroll-target="#accessibility-osm_query-isochrone"><span class="header-section-number">5.1.3</span> Accessibility (<code>osm_query</code> + <code>isochrone</code>)</a></li>
+  <li><a href="#flood-flood" id="toc-flood-flood" class="nav-link" data-scroll-target="#flood-flood"><span class="header-section-number">5.1.4</span> Flood (<code>flood</code>)</a></li>
+  <li><a href="#benchmarks-benchmark_-bm_cities_-nearby_countries" id="toc-benchmarks-benchmark_-bm_cities_-nearby_countries" class="nav-link" data-scroll-target="#benchmarks-benchmark_-bm_cities_-nearby_countries"><span class="header-section-number">5.1.5</span> Benchmarks (<code>benchmark_*</code>, <code>bm_cities_*</code>, <code>nearby_countries</code>)</a></li>
+  </ul></li>
+  <li><a href="#multi_inputs.yml" id="toc-multi_inputs.yml" class="nav-link" data-scroll-target="#multi_inputs.yml"><span class="header-section-number">5.2</span> <code>multi_inputs.yml</code></a>
+  <ul class="collapse">
+  <li><a href="#mode-a-per-city-aoi-folders" id="toc-mode-a-per-city-aoi-folders" class="nav-link" data-scroll-target="#mode-a-per-city-aoi-folders"><span class="header-section-number">5.2.1</span> Mode A: per-city AOI folders</a></li>
+  <li><a href="#mode-b-multipolygon-file" id="toc-mode-b-multipolygon-file" class="nav-link" data-scroll-target="#mode-b-multipolygon-file"><span class="header-section-number">5.2.2</span> Mode B: multipolygon file</a></li>
+  <li><a href="#mode-b-filter" id="toc-mode-b-filter" class="nav-link" data-scroll-target="#mode-b-filter"><span class="header-section-number">5.2.3</span> Mode B + filter</a></li>
+  <li><a href="#shared-settings" id="toc-shared-settings" class="nav-link" data-scroll-target="#shared-settings"><span class="header-section-number">5.2.4</span> Shared settings</a></li>
+  </ul></li>
+  <li><a href="#menu.yml" id="toc-menu.yml" class="nav-link" data-scroll-target="#menu.yml"><span class="header-section-number">5.3</span> <code>menu.yml</code></a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -350,10 +406,280 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sagittis posuere ligula sit amet lacinia. Duis dignissim pellentesque magna, rhoncus congue sapien finibus mollis. Ut eu sem laoreet, vehicula ipsum in, convallis erat. Vestibulum magna sem, blandit pulvinar augue sit amet, auctor malesuada sapien. Nullam faucibus leo eget eros hendrerit, non laoreet ipsum lacinia. Curabitur cursus diam elit, non tempus ante volutpat a. Quisque hendrerit blandit purus non fringilla. Integer sit amet elit viverra ante dapibus semper. Vestibulum viverra rutrum enim, at luctus enim posuere eu. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
-<p>Nunc ac dignissim magna. Vestibulum vitae egestas elit. Proin feugiat leo quis ante condimentum, eu ornare mauris feugiat. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Mauris cursus laoreet ex, dignissim bibendum est posuere iaculis. Suspendisse et maximus elit. In fringilla gravida ornare. Aenean id lectus pulvinar, sagittis felis nec, rutrum risus. Nam vel neque eu arcu blandit fringilla et in quam. Aliquam luctus est sit amet vestibulum eleifend. Phasellus elementum sagittis molestie. Proin tempor lorem arcu, at condimentum purus volutpat eu. Fusce et pellentesque ligula. Pellentesque id tellus at erat luctus fringilla. Suspendisse potenti.</p>
+<p>The <code>inputs/</code> folder controls everything about a scan: which city, which AOI, which tasks run, and the parameters for each task.</p>
+<p>Three YAML files drive the pipeline:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>File</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>city_inputs.yml</code></td>
+<td>Single-city config: city name, AOI, year ranges, flood/accessibility/benchmark params</td>
+</tr>
+<tr class="even">
+<td><code>multi_inputs.yml</code></td>
+<td>Multi-city batch config: list of cities (or a multipolygon file) + shared settings</td>
+</tr>
+<tr class="odd">
+<td><code>menu.yml</code></td>
+<td>Per-task on/off toggles</td>
+</tr>
+</tbody>
+</table>
+<p>Templates live in <code>templates/</code>. Copy them to <code>inputs/</code> and edit before running.</p>
+<hr>
+<section id="city_inputs.yml" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="city_inputs.yml"><span class="header-section-number">5.1</span> <code>city_inputs.yml</code></h2>
+<section id="identification" class="level3" data-number="5.1.1">
+<h3 data-number="5.1.1" class="anchored" data-anchor-id="identification"><span class="header-section-number">5.1.1</span> Identification</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>city_name</code></td>
+<td>string</td>
+<td>Display name. Spaces and accents OK (<code>Lobito Corridor</code>, <code>Lüderitz</code>). Used for outputs, labels, and slugified scan_id.</td>
+</tr>
+<tr class="even">
+<td><code>AOI_shp_name</code></td>
+<td>string (optional)</td>
+<td>Stem of the AOI shapefile in <code>inputs/AOI/</code> (no extension). If omitted, AOI is auto-detected from UCDB / OSM / 5km buffer around the city centroid.</td>
+</tr>
+<tr class="odd">
+<td><code>prev_run_date</code></td>
+<td>string <code>YYYY-MM</code> (optional)</td>
+<td>Reuse a previous scan folder. Default: <code>null</code> (creates fresh <code>mnt/{YYYY-MM}-{country}-{city}/</code>).</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="time-ranges" class="level3" data-number="5.1.2">
+<h3 data-number="5.1.2" class="anchored" data-anchor-id="time-ranges"><span class="header-section-number">5.1.2</span> Time ranges</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>first_year</code></td>
+<td>int</td>
+<td>Start year for LST and time-series tasks. Sentinel-2 / Landsat data available from 2013-03-18.</td>
+</tr>
+<tr class="even">
+<td><code>last_year</code></td>
+<td>int</td>
+<td>End year for the same.</td>
+</tr>
+<tr class="odd">
+<td><code>fwi_first_year</code></td>
+<td>int</td>
+<td>Start year for Fire Weather Index.</td>
+</tr>
+<tr class="even">
+<td><code>fwi_last_year</code></td>
+<td>int</td>
+<td>End year for FWI.</td>
+</tr>
+<tr class="odd">
+<td><code>demographics_year</code></td>
+<td>int (optional)</td>
+<td>WorldPop R2025A year (2015–2030). Default: current year.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="accessibility-osm_query-isochrone" class="level3" data-number="5.1.3">
+<h3 data-number="5.1.3" class="anchored" data-anchor-id="accessibility-osm_query-isochrone"><span class="header-section-number">5.1.3</span> Accessibility (<code>osm_query</code> + <code>isochrone</code>)</h3>
+<p>OSM POI categories to fetch and walking-distance buffers for each.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">osm_query</span><span class="kw">:</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">schools</span><span class="kw">:</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">amenity</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">school</span><span class="kw">,</span><span class="at"> kindergarten</span><span class="kw">,</span><span class="at"> university</span><span class="kw">,</span><span class="at"> college</span><span class="kw">]</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">health</span><span class="kw">:</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">amenity</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">clinic</span><span class="kw">,</span><span class="at"> hospital</span><span class="kw">,</span><span class="at"> health</span><span class="kw">]</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">police</span><span class="kw">:</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">amenity</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">police</span><span class="kw">]</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">fire</span><span class="kw">:</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">amenity</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">fire_station</span><span class="kw">]</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">isochrone</span><span class="kw">:</span><span class="co">  # meters</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">schools</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="dv">800</span><span class="kw">,</span><span class="at"> </span><span class="dv">1600</span><span class="kw">,</span><span class="at"> </span><span class="dv">2400</span><span class="kw">]</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">health</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="dv">1000</span><span class="kw">,</span><span class="at"> </span><span class="dv">2000</span><span class="kw">,</span><span class="at"> </span><span class="dv">3000</span><span class="kw">]</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">accessibility_buffer</span><span class="kw">:</span><span class="at"> </span><span class="dv">5</span><span class="co">   # % of AOI bounds to buffer for capturing amenities just outside the AOI</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="flood-flood" class="level3" data-number="5.1.4">
+<h3 data-number="5.1.4" class="anchored" data-anchor-id="flood-flood"><span class="header-section-number">5.1.4</span> Flood (<code>flood</code>)</h3>
+<p>Drives the Fathom flood analysis.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">flood</span><span class="kw">:</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">threshold</span><span class="kw">:</span><span class="at"> </span><span class="dv">15</span><span class="co">           # cm — minimum depth to count as flooded</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">year</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="dv">2020</span><span class="kw">,</span><span class="at"> </span><span class="dv">2050</span><span class="kw">,</span><span class="at"> </span><span class="dv">2100</span><span class="kw">]</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">ssp</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="dv">2</span><span class="kw">,</span><span class="at"> </span><span class="dv">5</span><span class="kw">]</span><span class="co">             # available: 1, 2, 3, 5</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">return_period</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="dv">10</span><span class="kw">,</span><span class="at"> </span><span class="dv">100</span><span class="kw">,</span><span class="at"> </span><span class="dv">1000</span><span class="kw">]</span><span class="co">   # available: 5, 10, 20, 50, 100, 200, 500, 1000</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="benchmarks-benchmark_-bm_cities_-nearby_countries" class="level3" data-number="5.1.5">
+<h3 data-number="5.1.5" class="anchored" data-anchor-id="benchmarks-benchmark_-bm_cities_-nearby_countries"><span class="header-section-number">5.1.5</span> Benchmarks (<code>benchmark_*</code>, <code>bm_cities_*</code>, <code>nearby_countries</code>)</h3>
+<p>Controls which cities to benchmark against for population/Oxford comparisons.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Key</th>
+<th>Values</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>benchmark_mode</code></td>
+<td><code>sibling</code> / <code>oxford</code> / <code>auto</code> (default)</td>
+<td><code>sibling</code> = only sibling scans; <code>oxford</code> = only Oxford auto-detect; <code>auto</code> = both.</td>
+</tr>
+<tr class="even">
+<td><code>bm_cities_manual</code></td>
+<td>list of city names</td>
+<td>Explicit benchmark cities. Resolved as sibling → Oxford → backup, in that order.</td>
+</tr>
+<tr class="odd">
+<td><code>benchmark_backup</code></td>
+<td><code>citypopulation</code> / <code>worldpop_ucdb</code> / <code>null</code></td>
+<td>Fallback for manual cities not found as sibling or Oxford.</td>
+</tr>
+<tr class="even">
+<td><code>nearby_countries</code></td>
+<td>pipe-separated country names</td>
+<td>Filter for Oxford auto-detect (only relevant when mode includes Oxford).</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+</section>
+<section id="multi_inputs.yml" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="multi_inputs.yml"><span class="header-section-number">5.2</span> <code>multi_inputs.yml</code></h2>
+<p>Same fields as <code>city_inputs.yml</code> plus the cities/multipolygon list. Two modes — use one (or combine, see below).</p>
+<section id="mode-a-per-city-aoi-folders" class="level3" data-number="5.2.1">
+<h3 data-number="5.2.1" class="anchored" data-anchor-id="mode-a-per-city-aoi-folders"><span class="header-section-number">5.2.1</span> Mode A: per-city AOI folders</h3>
+<p>Each city has its own <code>inputs/AOI/{city_name}/</code> folder with a <code>.shp</code>. Wards auto-detected from <code>inputs/AOI/{city_name}_wards/</code> if present.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cities</span><span class="kw">:</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">city_name</span><span class="kw">:</span><span class="at"> Windhoek</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">city_name</span><span class="kw">:</span><span class="at"> Swakopmund</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">city_name</span><span class="kw">:</span><span class="at"> Walvis Bay</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">city_name</span><span class="kw">:</span><span class="at"> Lüderitz</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">city_name</span><span class="kw">:</span><span class="at"> Aus</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Per-city overrides supported:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cities</span><span class="kw">:</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">city_name</span><span class="kw">:</span><span class="at"> Windhoek</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">first_year</span><span class="kw">:</span><span class="at"> </span><span class="dv">2010</span><span class="co">      # overrides the shared first_year for this city only</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">city_name</span><span class="kw">:</span><span class="at"> Aus</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="mode-b-multipolygon-file" class="level3" data-number="5.2.2">
+<h3 data-number="5.2.2" class="anchored" data-anchor-id="mode-b-multipolygon-file"><span class="header-section-number">5.2.2</span> Mode B: multipolygon file</h3>
+<p>A single vector file (GPKG, SHP, GeoJSON) where each row is a city. AOIs are auto-extracted to <code>inputs/AOI/{city_slug}/</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">multipolygon</span><span class="kw">:</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">file</span><span class="kw">:</span><span class="at"> inputs/AOI/lobito_corridor_cities.gpkg</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">name_column</span><span class="kw">:</span><span class="at"> GC_UCN_MAI_2025</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="mode-b-filter" class="level3" data-number="5.2.3">
+<h3 data-number="5.2.3" class="anchored" data-anchor-id="mode-b-filter"><span class="header-section-number">5.2.3</span> Mode B + filter</h3>
+<p>Combine <code>multipolygon:</code> with a <code>cities:</code> list to extract all AOIs but only run a subset.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">multipolygon</span><span class="kw">:</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">file</span><span class="kw">:</span><span class="at"> inputs/AOI/lobito_corridor_cities.gpkg</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">name_column</span><span class="kw">:</span><span class="at"> GC_UCN_MAI_2025</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cities</span><span class="kw">:</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">city_name</span><span class="kw">:</span><span class="at"> Sakania</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">city_name</span><span class="kw">:</span><span class="at"> Lukuni</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If a name in <code>cities:</code> isn’t found in the multipolygon file, the run errors out.</p>
+</section>
+<section id="shared-settings" class="level3" data-number="5.2.4">
+<h3 data-number="5.2.4" class="anchored" data-anchor-id="shared-settings"><span class="header-section-number">5.2.4</span> Shared settings</h3>
+<p>All other <code>city_inputs.yml</code> keys (flood, accessibility, FWI, year ranges, benchmark_*) work identically here and apply to every city in the list.</p>
+<hr>
+</section>
+</section>
+<section id="menu.yml" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="menu.yml"><span class="header-section-number">5.3</span> <code>menu.yml</code></h2>
+<p>Per-task on/off. Set <code>True</code> to run, <code>False</code> to skip. Tasks not listed default to <code>False</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">accessibility</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">air_quality</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">basic_info</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">buildings</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">burned_area</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="fu">coastal_erosion</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cyclones</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">demographics</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="fu">earthquake</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="fu">elevation</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="fu">flood_coastal</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="fu">flood_fluvial</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="fu">flood_pluvial</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="fu">flood_comb</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="fu">flood_events</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="fu">forest</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="fu">fwi</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="fu">ghs_builtup</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="fu">ghs_population</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="fu">green</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="fu">gdp_gridded</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="fu">gdp_sectoral</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="fu">groundwater</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="fu">landcover</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="fu">landcover_burn</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="fu">landslide</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="fu">liquefaction</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="fu">lst_summer</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="fu">lst_winter</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="fu">ndmi</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a><span class="fu">nightlight</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="fu">oxford</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a><span class="fu">population</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="fu">rwi</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a><span class="fu">sea_level_rise</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a><span class="fu">seismic_hazard</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a><span class="fu">slope</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a><span class="fu">solar</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a><span class="fu">water_risk</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a><span class="fu">wsf</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Compilation</span></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a><span class="fu">scan_calculations</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Notes:</strong> - <code>population</code> = WorldPop. To use GHSL instead, set <code>population: False</code> and <code>ghs_population: True</code>. - <code>slope</code> is derived from <code>elevation</code>. If you toggle <code>slope: True</code>, also enable <code>elevation: True</code> (unless the elevation raster is already on GCS). - <code>scan_calculations: True</code> triggers the combined HTML report after all tasks finish. The folder is auto-copied to the city directory.</p>
+<p>See <code>templates/menu.yml</code> and <code>tasks/</code> for the canonical task list.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

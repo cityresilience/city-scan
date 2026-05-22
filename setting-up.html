@@ -479,7 +479,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="step-3-clone-the-repository" class="level2" data-number="4.3">
 <h2 data-number="4.3" class="anchored" data-anchor-id="step-3-clone-the-repository"><span class="header-section-number">4.3</span> Step 3 — Clone the Repository</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/cityresilience/city-scan</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> city-scan</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> city-scan</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># switch to unified branch</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> switch unified</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>All subsequent steps assume you are inside the <code>city-scan/</code> directory.</p>
 <hr>
 </section>
@@ -488,8 +491,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>City Scan requires Python 3.11. Choose one of the two options below.</p>
 <section id="option-a-conda-recommended-mac-windows-linux" class="level3" data-number="4.4.1">
 <h3 data-number="4.4.1" class="anchored" data-anchor-id="option-a-conda-recommended-mac-windows-linux"><span class="header-section-number">4.4.1</span> Option A: Conda (Recommended — Mac, Windows, Linux)</h3>
-<section id="a-1.-install-anaconda" class="level4" data-number="4.4.1.1">
-<h4 data-number="4.4.1.1" class="anchored" data-anchor-id="a-1.-install-anaconda"><span class="header-section-number">4.4.1.1</span> 4A-1. Install Anaconda</h4>
+<section id="a-1.-install-anaconda" class="level4">
+<h4 class="anchored" data-anchor-id="a-1.-install-anaconda">4A-1. Install Anaconda</h4>
 <p>Download and install from <a href="https://www.anaconda.com/download">anaconda.com/download</a>. Accept the default settings and restart your terminal after installation.</p>
 <p>Verify:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -514,18 +517,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="a-2.-create-and-activate-the-environment" class="level4" data-number="4.4.1.2">
-<h4 data-number="4.4.1.2" class="anchored" data-anchor-id="a-2.-create-and-activate-the-environment"><span class="header-section-number">4.4.1.2</span> 4A-2. Create and Activate the Environment</h4>
+<section id="a-2.-create-and-activate-the-environment" class="level4">
+<h4 class="anchored" data-anchor-id="a-2.-create-and-activate-the-environment">4A-2. Create and Activate the Environment</h4>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> create <span class="at">-n</span> cityscan python=3.11.8 <span class="at">-y</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> activate cityscan</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="a-3.-install-city-scan" class="level4" data-number="4.4.1.3">
-<h4 data-number="4.4.1.3" class="anchored" data-anchor-id="a-3.-install-city-scan"><span class="header-section-number">4.4.1.3</span> 4A-3. Install City Scan</h4>
+<section id="a-3.-install-city-scan-requirements" class="level4">
+<h4 class="anchored" data-anchor-id="a-3.-install-city-scan-requirements">4A-3. Install City Scan &amp; requirements</h4>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> pip install <span class="at">--upgrade</span> pip</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-e</span> .</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-e</span> .</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-r</span> requirements.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="a-4.-register-jupyter-kernel-optional" class="level4" data-number="4.4.1.4">
-<h4 data-number="4.4.1.4" class="anchored" data-anchor-id="a-4.-register-jupyter-kernel-optional"><span class="header-section-number">4.4.1.4</span> 4A-4. Register Jupyter Kernel (Optional)</h4>
+<section id="a-4.-register-jupyter-kernel-optional" class="level4">
+<h4 class="anchored" data-anchor-id="a-4.-register-jupyter-kernel-optional">4A-4. Register Jupyter Kernel (Optional)</h4>
 <p>Only needed if you plan to use Jupyter notebooks:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> ipykernel install <span class="at">--user</span> <span class="at">--name</span> cityscan <span class="at">--display-name</span> <span class="st">"Cityscan"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
@@ -534,8 +538,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="option-b-bootstrap-script-mac-and-linux-only" class="level3" data-number="4.4.2">
 <h3 data-number="4.4.2" class="anchored" data-anchor-id="option-b-bootstrap-script-mac-and-linux-only"><span class="header-section-number">4.4.2</span> Option B: Bootstrap Script (Mac and Linux only)</h3>
 <p>Use this option if you prefer automated system setup or do not have Python installed.</p>
-<section id="b-1.-run-the-bootstrap-script" class="level4" data-number="4.4.2.1">
-<h4 data-number="4.4.2.1" class="anchored" data-anchor-id="b-1.-run-the-bootstrap-script"><span class="header-section-number">4.4.2.1</span> 4B-1. Run the Bootstrap Script</h4>
+<section id="b-1.-run-the-bootstrap-script" class="level4">
+<h4 class="anchored" data-anchor-id="b-1.-run-the-bootstrap-script">4B-1. Run the Bootstrap Script</h4>
 <p>This installs Python 3.11.8 via pyenv and prepares your system:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> bootstrap.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -552,8 +556,8 @@ Note
 </div>
 </div>
 </section>
-<section id="b-2.-run-the-setup-script" class="level4" data-number="4.4.2.2">
-<h4 data-number="4.4.2.2" class="anchored" data-anchor-id="b-2.-run-the-setup-script"><span class="header-section-number">4.4.2.2</span> 4B-2. Run the Setup Script</h4>
+<section id="b-2.-run-the-setup-script" class="level4">
+<h4 class="anchored" data-anchor-id="b-2.-run-the-setup-script">4B-2. Run the Setup Script</h4>
 <p>Creates the virtual environment, installs dependencies, and registers the Jupyter kernel:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> orchestrator.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>When successful, you will see:</p>

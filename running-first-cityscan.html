@@ -23,6 +23,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -330,18 +365,18 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#collecting-and-analyzing-the-dataset" id="toc-collecting-and-analyzing-the-dataset" class="nav-link active" data-scroll-target="#collecting-and-analyzing-the-dataset"><span class="header-section-number">6.1</span> Collecting and analyzing the dataset</a>
+  <li><a href="#running-tasks" id="toc-running-tasks" class="nav-link active" data-scroll-target="#running-tasks"><span class="header-section-number">6.1</span> Running Tasks</a>
   <ul class="collapse">
-  <li><a href="#step-1-configure-setup" id="toc-step-1-configure-setup" class="nav-link" data-scroll-target="#step-1-configure-setup"><span class="header-section-number">6.1.1</span> Step 1: Configure Setup</a></li>
-  <li><a href="#step-2-clone-the-repository" id="toc-step-2-clone-the-repository" class="nav-link" data-scroll-target="#step-2-clone-the-repository"><span class="header-section-number">6.1.2</span> Step 2: Clone the Repository</a></li>
-  <li><a href="#step-3-configure-inputs" id="toc-step-3-configure-inputs" class="nav-link" data-scroll-target="#step-3-configure-inputs"><span class="header-section-number">6.1.3</span> Step 3: Configure Inputs</a></li>
-  <li><a href="#step-4-running-tasks" id="toc-step-4-running-tasks" class="nav-link" data-scroll-target="#step-4-running-tasks"><span class="header-section-number">6.1.4</span> Step 4: Running Tasks</a></li>
-  <li><a href="#step-4b-multi-analysis" id="toc-step-4b-multi-analysis" class="nav-link" data-scroll-target="#step-4b-multi-analysis"><span class="header-section-number">6.1.5</span> Step 4b: Multi-analysis</a></li>
+  <li><a href="#running-all-tasks" id="toc-running-all-tasks" class="nav-link" data-scroll-target="#running-all-tasks"><span class="header-section-number">6.1.1</span> Running All Tasks</a></li>
+  <li><a href="#running-individual-or-multiple-tasks" id="toc-running-individual-or-multiple-tasks" class="nav-link" data-scroll-target="#running-individual-or-multiple-tasks"><span class="header-section-number">6.1.2</span> Running Individual or Multiple Tasks</a></li>
+  <li><a href="#other-useful-flags" id="toc-other-useful-flags" class="nav-link" data-scroll-target="#other-useful-flags"><span class="header-section-number">6.1.3</span> Other Useful Flags</a></li>
   </ul></li>
-  <li><a href="#rendering-maps-and-charts" id="toc-rendering-maps-and-charts" class="nav-link" data-scroll-target="#rendering-maps-and-charts"><span class="header-section-number">6.2</span> Rendering Maps and Charts</a>
+  <li><a href="#multi-analysis" id="toc-multi-analysis" class="nav-link" data-scroll-target="#multi-analysis"><span class="header-section-number">6.2</span> Multi-analysis</a></li>
+  <li><a href="#rendering-maps-and-charts" id="toc-rendering-maps-and-charts" class="nav-link" data-scroll-target="#rendering-maps-and-charts"><span class="header-section-number">6.3</span> Rendering Maps and Charts</a>
   <ul class="collapse">
-  <li><a href="#step-5-rendering-maps-and-charts" id="toc-step-5-rendering-maps-and-charts" class="nav-link" data-scroll-target="#step-5-rendering-maps-and-charts"><span class="header-section-number">6.2.1</span> Step 5: Rendering Maps and Charts</a></li>
-  <li><a href="#step-6-scan-calculations-reference-sheet" id="toc-step-6-scan-calculations-reference-sheet" class="nav-link" data-scroll-target="#step-6-scan-calculations-reference-sheet"><span class="header-section-number">6.2.2</span> Step 6: Scan Calculations Reference Sheet</a></li>
+  <li><a href="#maps" id="toc-maps" class="nav-link" data-scroll-target="#maps"><span class="header-section-number">6.3.1</span> Maps</a></li>
+  <li><a href="#charts" id="toc-charts" class="nav-link" data-scroll-target="#charts"><span class="header-section-number">6.3.2</span> Charts</a></li>
+  <li><a href="#scan-calculations-reference-sheet" id="toc-scan-calculations-reference-sheet" class="nav-link" data-scroll-target="#scan-calculations-reference-sheet"><span class="header-section-number">6.3.3</span> Scan Calculations Reference Sheet</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -368,89 +403,168 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="collecting-and-analyzing-the-dataset" class="level2" data-number="6.1">
-<h2 data-number="6.1" class="anchored" data-anchor-id="collecting-and-analyzing-the-dataset"><span class="header-section-number">6.1</span> Collecting and analyzing the dataset</h2>
-<section id="step-1-configure-setup" class="level3" data-number="6.1.1">
-<h3 data-number="6.1.1" class="anchored" data-anchor-id="step-1-configure-setup"><span class="header-section-number">6.1.1</span> Step 1: Configure Setup</h3>
-<p>City Scan uses multiple programming languages and software to run, including:</p>
-<ul>
-<li><a href="setup.md#git">Git</a></li>
-<li><a href="setup.md#python">Python</a></li>
-<li><a href="setup.md#r">R</a></li>
-<li><a href="setup.md#quarto">Quarto</a></li>
-<li><a href="setup.md#gcloud">Google Cloud</a> - for accessing data, see <a href="../reference/googlecloud.md">authentication</a> details.</li>
-</ul>
-<p>See <a href="setup.md">setup.md</a> for detailed instruction.</p>
-</section>
-<section id="step-2-clone-the-repository" class="level3" data-number="6.1.2">
-<h3 data-number="6.1.2" class="anchored" data-anchor-id="step-2-clone-the-repository"><span class="header-section-number">6.1.2</span> Step 2: Clone the Repository</h3>
-<pre><code>git clone -b unified https://github.com/varinaldi/city-scan-automation.git
-cd city-scan-automation</code></pre>
-<p>Install the <code>scan</code> CLI (one-time):</p>
-<pre><code>pip install -e .</code></pre>
-<p>This gives you the <code>scan</code> command as a shortcut for <code>python -m tasks</code> — both work interchangeably.</p>
-<p>Verify your environment is ready:</p>
-<pre><code>scan --check</code></pre>
-<p>Runs a preflight on R, Python, GEE, GCS, Quarto, and inputs. Targets a subset with e.g.&nbsp;<code>scan --check r gee</code>.</p>
-</section>
-<section id="step-3-configure-inputs" class="level3" data-number="6.1.3">
-<h3 data-number="6.1.3" class="anchored" data-anchor-id="step-3-configure-inputs"><span class="header-section-number">6.1.3</span> Step 3: Configure Inputs</h3>
-<p>Adjust the files in the <code>inputs/</code> folder for your specific project: - Use <code>AOI/</code> folder and store your AOI boundary file there - Modify <code>city_inputs.yml</code> and <code>menu.yml</code> with your analysis parameters</p>
-</section>
-<section id="step-4-running-tasks" class="level3" data-number="6.1.4">
-<h3 data-number="6.1.4" class="anchored" data-anchor-id="step-4-running-tasks"><span class="header-section-number">6.1.4</span> Step 4: Running Tasks</h3>
-<p><em>Make sure the Python environment is activated</em>.</p>
-<p>Executing tasks can be done from the <code>city-scan</code> directory or from within <code>mnt/scan-id</code>. General form:</p>
-<pre><code>scan {TASKNAME} {FLAG}</code></pre>
-<p>Each task is divided into different steps, defined by <code>{FLAG}</code>: - <strong><code>--collect</code></strong> runs data collection and saves outputs in <code>02-process-outputs/spatial</code> or <code>/tabular</code> - <strong><code>--analyze</code></strong> runs data analysis and creates output CSVs in <code>02-process-outputs/tabular</code> - <strong><code>--all</code></strong> runs both <strong><code>--collect</code></strong> and <strong><code>--analyze</code></strong>, reads <code>menu.yml</code> - <strong><code>--multianalysis</code></strong> runs cross-task analysis (currently only for fathom)</p>
-<p>To run all tasks set to true in <code>menu.yml</code> in parallel (recommended):</p>
-<pre><code>scan --all </code></pre>
+<section id="running-tasks" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="running-tasks"><span class="header-section-number">6.1</span> Running Tasks</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Activate the <code>cityscan</code> Python environment before running any <code>scan</code> commands.</p>
+</div>
+</div>
+<p>Tasks are run from the <code>city-scan</code> directory or from within <code>mnt/scan-id</code> using the general form:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">scan</span> {TASKNAME} {FLAG}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>What is a scan-id?</strong> It is an automatically generated string with the format <code>yyyy-mm-country-city</code> (e.g.&nbsp;<code>2026-02-malta-malta</code>). It is good practice to always specify the scan-id explicitly when running <code>scan</code> commands.</p>
+</div>
+</div>
+<p>Each task is divided into steps defined by <code>{FLAG}</code>:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Flag</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>--collect</code></td>
+<td>Runs data collection; saves outputs to <code>02-process-outputs/spatial/</code> or <code>/tabular/</code></td>
+</tr>
+<tr class="even">
+<td><code>--analyze</code></td>
+<td>Runs data analysis; creates output CSVs in <code>02-process-outputs/tabular/</code></td>
+</tr>
+<tr class="odd">
+<td><code>--all</code></td>
+<td>Runs both <code>--collect</code> and <code>--analyze</code> for all tasks enabled in <code>menu.yml</code></td>
+</tr>
+<tr class="even">
+<td><code>--multianalysis</code></td>
+<td>Runs cross-task analysis (currently flood exposure)</td>
+</tr>
+</tbody>
+</table>
+<section id="running-all-tasks" class="level3" data-number="6.1.1">
+<h3 data-number="6.1.1" class="anchored" data-anchor-id="running-all-tasks"><span class="header-section-number">6.1.1</span> Running All Tasks</h3>
+<p>To run all tasks enabled in <code>menu.yml</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">scan</span> <span class="at">--all</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>This opens a Terminal UI (TUI) showing per-task progress and logs.</p>
-<p>When running the above from - <strong><code>city-scan</code></strong> root — initializes <code>mnt/scan-id</code> and copies all necessary folders. - For an existing scan, target it with <code>--scan-id</code>: <code>scan --all --parallel --scan-id 2026-02-malta-malta</code> - Inside <strong><code>mnt/scan-id</code></strong> — outputs files into the local <code>02-process-outputs/</code>.</p>
-<p>To run an individual task or a set of tasks:</p>
-<pre><code># Individual task
-scan wsf
-
-# Multiple tasks
-scan wsf population forest</code></pre>
-<p>Run specific steps with <code>{FLAG}</code>:</p>
-<pre><code># Collect step only
-scan wsf --collect
-
-# Analyze step only for multiple tasks
-scan wsf population green --analyze</code></pre>
-<p>Other available flags:</p>
-<pre><code># Show available tasks
-scan --list
-
-# Re-run using the city's existing code (no resync from root)
-scan --all -k --scan-id 2026-02-malta-malta</code></pre>
+<p>Behavior depends on where you run it from:</p>
+<ul>
+<li><strong>From <code>city-scan/</code> root</strong> — initializes <code>mnt/scan-id</code> and copies all necessary folders</li>
+<li><strong>From inside <code>mnt/scan-id</code></strong> — writes outputs into the local <code>02-process-outputs/</code></li>
+</ul>
+<p>To target an existing scan by ID:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">scan</span> <span class="at">--all</span> <span class="at">--parallel</span> <span class="at">--scan-id</span> 2026-02-malta-malta</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>You will see something like this in your terminal when running in parallel:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">manila</span>  manila  ✓0  ⟳4  ⏳32  ✗0</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a> <span class="ex">⟳</span>  accessibility      collect  INFO <span class="kw">|</span> <span class="ex">tasks.accessibility.collection</span> <span class="kw">|</span> <span class="ex">Downloading</span> all     37s                             </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a> <span class="ex">⟳</span>  air_quality        collect  INFO <span class="kw">|</span> <span class="ex">tasks.air_quality.collection</span> <span class="kw">|</span> <span class="ex">AOI</span> CRS: EPSG:432     37s</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a> <span class="ex">⟳</span>  basic_info         collect  city-scan-gee-test                                37s</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a> <span class="ex">⏳</span> buildings                   waiting <span class="er">(</span><span class="ex">osm</span><span class="kw">)</span>                                        </span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a> <span class="ex">⟳</span>  burned_area        collect  INFO <span class="kw">|</span> <span class="ex">tasks.burned_area.collection</span> <span class="kw">|</span> <span class="ex">Starting</span> burned a     37s</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a> <span class="ex">⏳</span> coastal_erosion             waiting <span class="er">(</span><span class="ex">default</span><span class="kw">)</span>                                    </span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a> <span class="ex">⏳</span> cyclones                    waiting <span class="er">(</span><span class="ex">default</span><span class="kw">)</span>                                    </span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a> <span class="ex">⏳</span> demographics                waiting <span class="er">(</span><span class="ex">default</span><span class="kw">)</span>                                    </span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a> <span class="ex">⏳</span> earthquake                  waiting <span class="er">(</span><span class="ex">default</span><span class="kw">)</span>                                    </span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a> <span class="ex">⏳</span> elevation                   waiting <span class="er">(</span><span class="ex">gcs</span><span class="kw">)</span>                                        </span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a> <span class="ex">⏳</span> wsf                         waiting <span class="er">(</span><span class="ex">gcs</span><span class="kw">)</span>                                        </span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a> <span class="ex">⏳</span> oxford                      waiting <span class="er">(</span><span class="ex">default</span><span class="kw">)</span>                                    </span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a> <span class="ex">⏳</span> worldpop                    waiting <span class="er">(</span><span class="ex">default</span><span class="kw">)</span>                                    </span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a> <span class="ex">⏳</span> fathom                      waiting <span class="er">(</span><span class="ex">gcs</span><span class="kw">)</span>                                        </span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a> <span class="ex">⏳</span> flood_events                waiting <span class="er">(</span><span class="ex">default</span><span class="kw">)</span>                                    </span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a> <span class="ex">⏳</span> forest                      waiting <span class="er">(</span><span class="ex">gee</span><span class="kw">)</span>                                        </span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a> <span class="ex">⏳</span> fwi                         waiting <span class="er">(</span><span class="ex">default</span><span class="kw">)</span>                                    </span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a> <span class="ex">⏳</span> gdp_gridded                 waiting <span class="er">(</span><span class="ex">default</span><span class="kw">)</span>                                    </span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a> <span class="ex">⏳</span> gdp_sectoral                waiting <span class="er">(</span><span class="ex">default</span><span class="kw">)</span>                                    </span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a> <span class="ex">⏳</span> ghs_builtup                 waiting <span class="er">(</span><span class="ex">default</span><span class="kw">)</span>                                    </span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a> <span class="ex">[↑↓]</span> select  <span class="pp">[</span><span class="ss">Enter</span><span class="pp">]</span> log  <span class="pp">[</span><span class="ss">q</span><span class="pp">]</span> quit</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a> <span class="ex">[↑↓]</span> scroll  <span class="pp">[</span><span class="ss">Esc</span><span class="pp">]</span> back  <span class="pp">[</span><span class="ss">q</span><span class="pp">]</span> quit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="step-4b-multi-analysis" class="level3" data-number="6.1.5">
-<h3 data-number="6.1.5" class="anchored" data-anchor-id="step-4b-multi-analysis"><span class="header-section-number">6.1.5</span> Step 4b: Multi-analysis</h3>
-<p>Some tasks have cross-task analysis scripts (e.g.&nbsp;flood exposure calculations that combine flood and WSF data). Run these after all individual tasks have completed:</p>
-<pre><code>scan --all --multianalysis</code></pre>
+<section id="running-individual-or-multiple-tasks" class="level3" data-number="6.1.2">
+<h3 data-number="6.1.2" class="anchored" data-anchor-id="running-individual-or-multiple-tasks"><span class="header-section-number">6.1.2</span> Running Individual or Multiple Tasks</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Single task</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">scan</span> wsf</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Multiple tasks</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="ex">scan</span> wsf population forest</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>To run a specific step for one or more tasks:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Collect only</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">scan</span> wsf <span class="at">--collect</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Analyze only, multiple tasks</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="ex">scan</span> wsf population green <span class="at">--analyze</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="other-useful-flags" class="level3" data-number="6.1.3">
+<h3 data-number="6.1.3" class="anchored" data-anchor-id="other-useful-flags"><span class="header-section-number">6.1.3</span> Other Useful Flags</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># List all available tasks</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">scan</span> <span class="at">--list</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Re-run using the city's existing code (no resync from root)</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="ex">scan</span> <span class="at">--all</span> <span class="at">-k</span> <span class="at">--scan-id</span> 2026-02-malta-malta</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
 </section>
 </section>
-<section id="rendering-maps-and-charts" class="level2" data-number="6.2">
-<h2 data-number="6.2" class="anchored" data-anchor-id="rendering-maps-and-charts"><span class="header-section-number">6.2</span> Rendering Maps and Charts</h2>
-<section id="step-5-rendering-maps-and-charts" class="level3" data-number="6.2.1">
-<h3 data-number="6.2.1" class="anchored" data-anchor-id="step-5-rendering-maps-and-charts"><span class="header-section-number">6.2.1</span> Step 5: Rendering Maps and Charts</h3>
-<p>After data collection and analysis, generate maps and charts via the <code>--render</code> flag:</p>
-<pre><code># Static maps — applies styling from source/layers.yml, writes PNGs to 03-render-output/maps/
-scan --render maps --scan-id 2026-02-malta-malta
-
-# Charts for a specific task — writes HTML to tasks/{name}/charts/index.html
-scan --render charts elevation --scan-id 2026-02-malta-malta</code></pre>
-<p>Maps read spatial data from <code>02-process-output/spatial/</code>. Charts read CSVs from <code>02-process-output/tabular/</code>.</p>
+<section id="multi-analysis" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="multi-analysis"><span class="header-section-number">6.2</span> Multi-analysis</h2>
+<p>Some tasks have cross-task analysis scripts — for example, flood-exposure calculations that combine flood and WSF outputs. Run these after all individual tasks have completed:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">scan</span> <span class="at">--all</span> <span class="at">--multianalysis</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
 </section>
-<section id="step-6-scan-calculations-reference-sheet" class="level3" data-number="6.2.2">
-<h3 data-number="6.2.2" class="anchored" data-anchor-id="step-6-scan-calculations-reference-sheet"><span class="header-section-number">6.2.2</span> Step 6: Scan Calculations Reference Sheet</h3>
-<p>The <code>scan-calculations</code> reads <code>sections.yml</code> to determine section order, then assembles all per-task <code>charts/index.qmd</code> into a single combined HTML report:</p>
-<pre><code>scan --render scan-calculations --scan-id 2026-02-malta-malta</code></pre>
+<section id="rendering-maps-and-charts" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="rendering-maps-and-charts"><span class="header-section-number">6.3</span> Rendering Maps and Charts</h2>
+<p>After data collection and analysis, generate visualizations using the <code>--render</code> flag.</p>
+<section id="maps" class="level3" data-number="6.3.1">
+<h3 data-number="6.3.1" class="anchored" data-anchor-id="maps"><span class="header-section-number">6.3.1</span> Maps</h3>
+<p>Applies styling from <code>source/layers.yml</code> and writes PNGs to <code>03-render-output/maps/</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">scan</span> <span class="at">--render</span> maps <span class="at">--scan-id</span> 2026-02-malta-malta</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Maps read spatial data from <code>02-process-output/spatial/</code>.</p>
+</section>
+<section id="charts" class="level3" data-number="6.3.2">
+<h3 data-number="6.3.2" class="anchored" data-anchor-id="charts"><span class="header-section-number">6.3.2</span> Charts</h3>
+<p>Writes an HTML file to <code>tasks/{name}/charts/index.html</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">scan</span> <span class="at">--render</span> charts elevation <span class="at">--scan-id</span> 2026-02-malta-malta</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Charts read CSVs from <code>02-process-output/tabular/</code>.</p>
+</section>
+<section id="scan-calculations-reference-sheet" class="level3" data-number="6.3.3">
+<h3 data-number="6.3.3" class="anchored" data-anchor-id="scan-calculations-reference-sheet"><span class="header-section-number">6.3.3</span> Scan Calculations Reference Sheet</h3>
+<p>The <code>scan-calculations</code> render reads <code>sections.yml</code> to determine section order, then assembles all per-task <code>charts/index.qmd</code> files into a single combined HTML report:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">scan</span> <span class="at">--render</span> scan-calculations <span class="at">--scan-id</span> 2026-02-malta-malta</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The compiled report is saved to <code>scan-calculations/scan-calculations.html</code>.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <p>If <code>scan_calculations: True</code> is set in <code>menu.yml</code>, the scan-calculations folder is automatically copied to the city folder when running <code>scan --all</code>.</p>
 <p>See <a href="../../scan-calculations/README.md">scan-calculations/README.md</a> for details.</p>
+</div>
+</div>
 
 
 </section>
