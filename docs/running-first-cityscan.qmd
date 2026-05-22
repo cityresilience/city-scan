@@ -1,136 +1,157 @@
 # Running a Scan
 
-## Collecting and analyzing the dataset
-### Step 1: Configure Setup
+## Running Tasks
 
-City Scan uses multiple programming languages and software to run, including:
+::: {.callout-note}
+Activate the `cityscan` Python environment before running any `scan` commands.
+:::
 
-- [Git](setup.md#git)
-- [Python](setup.md#python)
-- [R](setup.md#r)
-- [Quarto](setup.md#quarto)
-- [Google Cloud](setup.md#gcloud) - for accessing data, see [authentication](../reference/googlecloud.md) details.
+Tasks are run from the `city-scan` directory or from within `mnt/scan-id` using the general form:
 
-
-See [setup.md](setup.md) for detailed instruction.
-
-
-### Step 2: Clone the Repository
-
-```
-git clone -b unified https://github.com/varinaldi/city-scan-automation.git
-cd city-scan-automation
-```
-
-Install the `scan` CLI (one-time):
-```
-pip install -e .
-```
-This gives you the `scan` command as a shortcut for `python -m tasks` — both work interchangeably.
-
-Verify your environment is ready:
-```
-scan --check
-```
-Runs a preflight on R, Python, GEE, GCS, Quarto, and inputs. Targets a subset with e.g. `scan --check r gee`.
-
-
-### Step 3: Configure Inputs
-
-Adjust the files in the `inputs/` folder for your specific project:
-- Use `AOI/` folder and store your AOI boundary file there
-- Modify `city_inputs.yml` and `menu.yml` with your analysis parameters
-
-### Step 4: Running Tasks
-
-*Make sure the Python environment is activated*.
-
-Executing tasks can be done from the `city-scan` directory or from within `mnt/scan-id`. General form:
-```
+```bash
 scan {TASKNAME} {FLAG}
 ```
 
-Each task is divided into different steps, defined by `{FLAG}`:
-- **`--collect`** runs data collection and saves outputs in `02-process-outputs/spatial` or `/tabular`
-- **`--analyze`** runs data analysis and creates output CSVs in `02-process-outputs/tabular`
-- **`--all`** runs both **`--collect`** and **`--analyze`**, reads `menu.yml`
-- **`--multianalysis`** runs cross-task analysis (currently only for fathom)
+::: {.callout-note}
+**What is a scan-id?** It is an automatically generated string with the format `yyyy-mm-country-city` (e.g. `2026-02-malta-malta`). It is good practice to always specify the scan-id explicitly when running `scan` commands.
+:::
 
-To run all tasks set to true in `menu.yml` in parallel (recommended):
+Each task is divided into steps defined by `{FLAG}`:
+
+| Flag | What it does |
+|---|---|
+| `--collect` | Runs data collection; saves outputs to `02-process-outputs/spatial/` or `/tabular/` |
+| `--analyze` | Runs data analysis; creates output CSVs in `02-process-outputs/tabular/` |
+| `--all` | Runs both `--collect` and `--analyze` for all tasks enabled in `menu.yml` |
+| `--multianalysis` | Runs cross-task analysis (currently flood exposure) |
+
+### Running All Tasks
+
+To run all tasks enabled in `menu.yml`:
+
+```bash
+scan --all
 ```
-scan --all 
-```
+
 This opens a Terminal UI (TUI) showing per-task progress and logs.
 
-When running the above from
-- **`city-scan`** root — initializes `mnt/scan-id` and copies all necessary folders.
-- For an existing scan, target it with `--scan-id`:
-    ```
-    scan --all --parallel --scan-id 2026-02-malta-malta
-    ```
-- Inside **`mnt/scan-id`** — outputs files into the local `02-process-outputs/`.
+Behavior depends on where you run it from:
 
+- **From `city-scan/` root** — initializes `mnt/scan-id` and copies all necessary folders
+- **From inside `mnt/scan-id`** — writes outputs into the local `02-process-outputs/`
 
-To run an individual task or a set of tasks:
+To target an existing scan by ID:
+
+```bash
+scan --all --parallel --scan-id 2026-02-malta-malta
 ```
-# Individual task
+
+You will see something like this in your terminal when running in parallel: 
+
+```bash
+manila  manila  ✓0  ⟳4  ⏳32  ✗0
+ ⟳  accessibility      collect  INFO | tasks.accessibility.collection | Downloading all     37s                             
+ ⟳  air_quality        collect  INFO | tasks.air_quality.collection | AOI CRS: EPSG:432     37s
+ ⟳  basic_info         collect  city-scan-gee-test                                37s
+ ⏳ buildings                   waiting (osm)                                        
+ ⟳  burned_area        collect  INFO | tasks.burned_area.collection | Starting burned a     37s
+ ⏳ coastal_erosion             waiting (default)                                    
+ ⏳ cyclones                    waiting (default)                                    
+ ⏳ demographics                waiting (default)                                    
+ ⏳ earthquake                  waiting (default)                                    
+ ⏳ elevation                   waiting (gcs)                                        
+ ⏳ wsf                         waiting (gcs)                                        
+ ⏳ oxford                      waiting (default)                                    
+ ⏳ worldpop                    waiting (default)                                    
+ ⏳ fathom                      waiting (gcs)                                        
+ ⏳ flood_events                waiting (default)                                    
+ ⏳ forest                      waiting (gee)                                        
+ ⏳ fwi                         waiting (default)                                    
+ ⏳ gdp_gridded                 waiting (default)                                    
+ ⏳ gdp_sectoral                waiting (default)                                    
+ ⏳ ghs_builtup                 waiting (default)                                    
+ [↑↓] select  [Enter] log  [q] quit
+ [↑↓] scroll  [Esc] back  [q] quit
+```
+
+### Running Individual or Multiple Tasks
+
+```bash
+# Single task
 scan wsf
 
 # Multiple tasks
 scan wsf population forest
 ```
 
-Run specific steps with `{FLAG}`:
-```
-# Collect step only
+To run a specific step for one or more tasks:
+
+```bash
+# Collect only
 scan wsf --collect
 
-# Analyze step only for multiple tasks
+# Analyze only, multiple tasks
 scan wsf population green --analyze
 ```
 
-Other available flags:
-```
-# Show available tasks
+### Other Useful Flags
+
+```bash
+# List all available tasks
 scan --list
 
 # Re-run using the city's existing code (no resync from root)
 scan --all -k --scan-id 2026-02-malta-malta
 ```
 
-### Step 4b: Multi-analysis
+---
 
-Some tasks have cross-task analysis scripts (e.g. flood exposure calculations that combine flood and WSF data). Run these after all individual tasks have completed:
-```
+## Multi-analysis
+
+Some tasks have cross-task analysis scripts — for example, flood-exposure calculations that combine flood and WSF outputs. Run these after all individual tasks have completed:
+
+```bash
 scan --all --multianalysis
 ```
 
+---
+
 ## Rendering Maps and Charts
 
-### Step 5: Rendering Maps and Charts
+After data collection and analysis, generate visualizations using the `--render` flag.
 
-After data collection and analysis, generate maps and charts via the `--render` flag:
+### Maps
 
-```
-# Static maps — applies styling from source/layers.yml, writes PNGs to 03-render-output/maps/
+Applies styling from `source/layers.yml` and writes PNGs to `03-render-output/maps/`:
+
+```bash
 scan --render maps --scan-id 2026-02-malta-malta
+```
 
-# Charts for a specific task — writes HTML to tasks/{name}/charts/index.html
+Maps read spatial data from `02-process-output/spatial/`.
+
+### Charts
+
+Writes an HTML file to `tasks/{name}/charts/index.html`:
+
+```bash
 scan --render charts elevation --scan-id 2026-02-malta-malta
 ```
 
-Maps read spatial data from `02-process-output/spatial/`. Charts read CSVs from `02-process-output/tabular/`.
+Charts read CSVs from `02-process-output/tabular/`.
 
-### Step 6: Scan Calculations Reference Sheet
+### Scan Calculations Reference Sheet
 
-The `scan-calculations` reads `sections.yml` to determine section order, then assembles all per-task `charts/index.qmd` into a single combined HTML report:
+The `scan-calculations` render reads `sections.yml` to determine section order, then assembles all per-task `charts/index.qmd` files into a single combined HTML report:
 
-```
+```bash
 scan --render scan-calculations --scan-id 2026-02-malta-malta
 ```
 
 The compiled report is saved to `scan-calculations/scan-calculations.html`.
 
+::: {.callout-note}
 If `scan_calculations: True` is set in `menu.yml`, the scan-calculations folder is automatically copied to the city folder when running `scan --all`.
 
 See [scan-calculations/README.md](../../scan-calculations/README.md) for details.
+:::

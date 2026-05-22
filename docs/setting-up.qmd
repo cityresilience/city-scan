@@ -54,6 +54,9 @@ If not installed, follow the [GitHub Git installation guide](https://github.com/
 ```bash
 git clone https://github.com/cityresilience/city-scan
 cd city-scan
+
+# switch to unified branch
+git switch unified
 ```
 
 All subsequent steps assume you are inside the `city-scan/` directory.
@@ -97,11 +100,12 @@ conda create -n cityscan python=3.11.8 -y
 conda activate cityscan
 ```
 
-#### 4A-3. Install City Scan
+#### 4A-3. Install City Scan & requirements
 
 ```bash
 python -m pip install --upgrade pip
 pip install -e .
+pip install -r requirements.txt
 ```
 
 #### 4A-4. Register Jupyter Kernel (Optional)

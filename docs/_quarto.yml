@@ -66,8 +66,10 @@ format:
       - cosmo
       - brand
     code-fold: true
+    number-depth: 3
   pdf:
     documentclass: scrreprt
+    number-depth: 3
 
 execute:
   freeze: true
