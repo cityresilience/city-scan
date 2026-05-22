@@ -1,206 +1,291 @@
-# Setup Instructions 
+# Setup Instructions
 
-<!-- ## Required and Recommended Software -->
+City Scan is multilingual: Python handles data collection and analysis, R generates maps and charts, and Quarto compiles reports and web visualizations. The `scan` CLI ties it all together.
 
-<!-- For all activities, see
-- [VS Code](#vs-code) (recommended) -->
+Work through the sections below in order. The checklist from [General Workflow](at-a-glance.qmd):
 
-<!-- For running a City Scan on Google Cloud, see
-- [gcloud](#gcloud) (required) -->
-
-<!-- To run visualizations and reports locally, you can run with [Docker](#docker) or natively. If using Docker, you will only need Docker, in addition to Git and an editor like VS Code. (The frontend script also requires gcloud, but we will add instructions that don't require it.)  -->
-
-City Scan repo is multilangual: Python is used for data collection and analysis, R for mapping and charting, and Quarto for report compilation and web visualization. 
-
-All City Scan tasks can be accessed through terminal with the required tools configured:
-
-- [Git](#git)
-- [Python](#python) 
-- [R](#r)
-- [Quarto](#quarto)
-- [gcloud](#gcloud) 
-
-Recommended:
-- [Visual Studio Code]( #vs-code)
-
-
-The following sections describe the recommended setup configuration and best practices.
+- [ ] Install prerequisites (VS Code, Git, Python, R, Quarto, gcloud)
+- [ ] Clone the repository
+- [ ] Create and activate the `cityscan` conda environment
+- [ ] Install City Scan as a Python package via `pip install -e .`
+- [ ] Authenticate with GCS and GEE
+- [ ] Run `scan --check` to verify everything passes
 
 ---
 
-## Authentication
+## Step 1 — VS Code (Recommended)
 
-Authentication is managed in `core/config/`:
+VS Code is a free code editor with an integrated terminal and Git UI. It handles Python, R, and Quarto in the same window, which makes the City Scan workflow much smoother.
 
-- **`auth.py`** — initializes Google Earth Engine (GEE) and Google Cloud Storage (GCS) credentials
-- **`scan.py`** — the Scan class that loads AOI, city config, and creates city output folders
-- **`paths.py`** — auto-detects input/output directories based on project structure
-- **`gdal_auth.py`** — configures GDAL for authenticated access to private GCS buckets via `/vsigs/`
+Install from [code.visualstudio.com](https://code.visualstudio.com/Download).
 
-Tasks that need GEE (forest, landcover, LST, NDVI, nightlight) or private GCS (WSF, fathom, landcover burn, basic info) are automatically authenticated before running. If auth fails, those tasks are skipped with a warning.
+**Recommended extensions** — install from the Extensions panel (`Ctrl+Shift+X` / `⌘⇧X`):
 
-See [google cloud setup](../reference/googlecloud.md) for more details.
+| Extension | Purpose |
+|---|---|
+| [Python](https://marketplace.visualstudio.com/items?itemName=ms-python.python) | Python language support and environment selection |
+| [R](https://marketplace.visualstudio.com/items?itemName=REditorSupport.r) | R language support |
+| [Quarto](https://marketplace.visualstudio.com/items?itemName=quarto.quarto) | Quarto rendering and preview |
+| [Rainbow CSV](https://marketplace.visualstudio.com/items?itemName=mechatroner.rainbow-csv) | Color-coded columns for CSVs under `02-process-output/tabular/` |
+| [Color Highlight](https://marketplace.visualstudio.com/items?itemName=naumovs.color-highlight) | Inline color swatches for hex codes in `source/layers.yml` |
+| [Geo Data Viewer](https://marketplace.visualstudio.com/items?itemName=RandomFractalsInc.geo-data-viewer) | Preview `.geojson` and `.shp` files on a map |
+| [GeoTIFF Viewer](https://marketplace.visualstudio.com/items?itemName=omar2535.geotiff-viewer) | Preview `.tif` rasters directly in the editor |
 
-
---- 
-
-## Git
-
-Git is a version control system. It's a timewarpy quantum tool that lets multiple dimensions and times exist at once. It lets you keep multiple versions of your files, and keep track of changes. It also makes it easier to collaborate with each other, as a conduit for "pulling" and "pushing" and "pulling" code from and to GitHub. Instead of downloading a repo from GitHub, you can "clone" it – which is still downloading, but with the added benefit of keeping a live connection to future changes (at your discretion). 
-
-Git is already installed on most macOS and Linux systems. You can install it from [Git for Windows](https://gitforwindows.org/). If git is not installed, see the GitHub's [git installation guide](https://github.com/git-guides/install-git)
-
+The following steps require you to use the terminal. In VS Code topbar, go to `Terminal > New Terminal`
 
 ---
 
-## Python
+## Step 2 — Git
 
-We recommend creating a python environment to run City Scan Tasks. Here are the options:
+Git is a version control system that tracks changes and enables collaboration through GitHub. It is required to clone the repository and stay up to date with changes.
 
+Git is pre-installed on most macOS and Linux systems. Verify with:
 
-### *Option 1*: Via Conda (Recommended for Mac, Windows, Linux)
+```bash
+git --version
+```
 
-#### Step 1: Install Anaconda
+If not installed, follow the [GitHub Git installation guide](https://github.com/git-guides/install-git). Windows users can use [Git for Windows](https://gitforwindows.org/).
 
- Download and install Anaconda from the [official Anaconda website](https://www.anaconda.com/download): 
+---
 
-- Visit https://www.anaconda.com/download and select your operating system
-- Follow the installation wizard and accept the default settings
-- Restart your terminal after installation completes
-- Verify installation by running: `conda --version`
+## Step 3 — Clone the Repository
 
-> **If `conda --version` returns `command not found`** (especially in the VS Code integrated terminal), conda was installed but not initialized for your shell. Run once:
-> ```bash
-> conda init zsh        # macOS / Linux (zsh — default on modern macOS)
-> conda init bash       # Linux / older macOS / WSL
-> conda init powershell # Windows PowerShell
-> ```
-> Then close and reopen the terminal. You should see `(base)` in your prompt and `conda` should resolve.
+```bash
+git clone https://github.com/cityresilience/city-scan
+cd city-scan
+```
 
+All subsequent steps assume you are inside the `city-scan/` directory.
 
-#### Step 2: Create and Activate the Environment
+---
+
+## Step 4 — Python Environment
+
+City Scan requires Python 3.11. Choose one of the two options below.
+
+### Option A: Conda (Recommended — Mac, Windows, Linux)
+
+#### 4A-1. Install Anaconda
+
+Download and install from [anaconda.com/download](https://www.anaconda.com/download). Accept the default settings and restart your terminal after installation.
+
+Verify:
+
+```bash
+conda --version
+```
+
+::: {.callout-tip collapse="true"}
+#### `conda: command not found` after install?
+
+Conda was installed but not initialized for your shell. Run the appropriate command once:
+
+```bash
+conda init zsh        # macOS / Linux with zsh (default on modern macOS)
+conda init bash       # Linux / older macOS / WSL
+conda init powershell # Windows PowerShell
+```
+
+Close and reopen the terminal. You should see `(base)` in your prompt.
+:::
+
+#### 4A-2. Create and Activate the Environment
 
 ```bash
 conda create -n cityscan python=3.11.8 -y
 conda activate cityscan
 ```
 
-#### Step 3: Install Dependencies
+#### 4A-3. Install City Scan
 
 ```bash
 python -m pip install --upgrade pip
-pip install -r requirements.txt
+pip install -e .
 ```
 
-#### Step 4: Register Jupyter Kernel (Optional, for notebook use)
+#### 4A-4. Register Jupyter Kernel (Optional)
+
+Only needed if you plan to use Jupyter notebooks:
 
 ```bash
 python -m ipykernel install --user --name cityscan --display-name "Cityscan"
 ```
 
+---
 
+### Option B: Bootstrap Script (Mac and Linux only)
 
+Use this option if you prefer automated system setup or do not have Python installed.
 
-### *Option 2*: Via Bootstrap Script (Alternative Setup -- only for Mac, Linux)
+#### 4B-1. Run the Bootstrap Script
 
-If you prefer automated system setup or Python is not installed, use the bootstrap approach:
-
-#### Step 1: Clone the Repository
-
-```bash
-git clone --single-branch --branch unified https://github.com/varinaldi/city-scan-automation.git
-cd city-scan-automation
-```
-
-#### Step 2: Run Bootstrap Script
-
-This script prepares your system and installs Python 3.11.8 via pyenv:
+This installs Python 3.11.8 via pyenv and prepares your system:
 
 ```bash
 bash bootstrap.sh
 ```
 
-If you need to manually activate the environment later, use:
+::: {.callout-note}
+Review `bootstrap.sh` before running. It installs system dependencies, pyenv, and Python 3.11.8, and updates your shell configuration. If pyenv is being installed for the first time, restart your terminal and run the script again.
+:::
 
-```bash
-source venv/bin/activate
-```
+#### 4B-2. Run the Setup Script
 
-**Note:** Review the `bootstrap.sh` script first to ensure it meets your system requirements. It will:
-- Install system dependencies
-- Install and configure pyenv
-- Install Python 3.11.8
-- Update your shell configuration
-
-If pyenv is installed for the first time, restart your terminal and run the script again.
-
-#### Step 3: Run Setup Script
-
-This script creates the virtual environment, installs dependencies, and registers the Jupyter kernel:
+Creates the virtual environment, installs dependencies, and registers the Jupyter kernel:
 
 ```bash
 bash orchestrator.sh
 ```
 
-When setup is successful, you should see:
+When successful, you will see:
+
 - Python 3.11.8 ready via pyenv
 - A new virtual environment created
 - A Jupyter kernel registered: "Cityscan (Python 3.11)"
 
+To activate the environment manually later:
+
+```bash
+source venv/bin/activate
+```
 
 ---
 
-## R
+## Step 5 — R
 
-R is used for the maps, charts, and scan-calculations report, and also for several data collection tasks (earthquake, oxford, cyclones, flood_events, gdp_gridded, coastal_erosion, sea_level_rise). You can download R [here](https://cran.r-project.org/). **Use the latest stable R release** (currently 4.5.x) — the repo depends on a current `ggplot2`, `terra`, `sf`, and `tidyterra` stack that won't install cleanly on older R. If you already have R, run `R --version` and upgrade if you're behind. To use R in VS Code, we recommend installing the [R extension](https://marketplace.visualstudio.com/items?itemName=REditorSupport.r): follow the instructions at the link; we also recommend installing [radian](https://github.com/randy3k/radian).
+R is used for maps, charts, and the scan-calculations report, and also for several data collection tasks (earthquake, Oxford, cyclones, flood events, GDP gridded, coastal erosion, sea level rise).
 
-If you have used R in the past, you likely used RStudio as your editor. For the City Scan workflow and development, we recommend VS Code as it supports multiple languages and has a better terminal and Git integration. Still, RStudio can still be useful, and can be downloaded [here](https://posit.co/download/rstudio-desktop/).
+Download the **latest stable R release** (4.5.x or newer) from [cran.r-project.org](https://cran.r-project.org/). The repo depends on a current `ggplot2`, `terra`, `sf`, and `tidyterra` stack that will not install cleanly on older R versions.
 
----
+Verify:
 
-## Quarto
+```bash
+R --version
+```
 
-Quarto is a publishing system that lets you create documents and websites with R, Python, JavaScript, and Julia. If you are familiar with R Markdown, Jupyter notebooks, or Observable notebooks, Quarto is similar but allows for the use of multiple languages in the same document. It is used to create the City Scan reports and website.
+**R in VS Code:** Install the [R extension](https://marketplace.visualstudio.com/items?itemName=REditorSupport.r) and, optionally, [radian](https://github.com/randy3k/radian) for a richer R console experience.
 
-A Quarto file is a markdown document with code chunks that can be rendered into HTML, PDF, or other formats. The Python and R code is executed at the time of rendering and the output is included in the final document.
-
-To install Quarto, follow the instructions at [Quarto's installation page](https://quarto.org/docs/get-started/).
-
----
-
-## VS Code
-
-VS Code isn't strictly necessary, but it makes working with multiple files and filetypes much easier. It also makes working with [Git](#git) much clearer. VS Code is a free code editor with an integrated terminal and near endless extensions. (If you're coming from R, you've probably been using RStudio; VS Code is like RStudio but for all languages, a better terminal, easier Git integration and better handling of multiple windows. If you're coming from Python, I'm not and don't know what you're probably using.)
-
-Install VS Code from [Visual Studio Code](https://code.visualstudio.com/Download).
-
-**Recommended extensions** for working with this repo:
-
-- [Python](https://marketplace.visualstudio.com/items?itemName=ms-python.python) — Python language support
-- [R](https://marketplace.visualstudio.com/items?itemName=REditorSupport.r) — R language support
-- [Quarto](https://marketplace.visualstudio.com/items?itemName=quarto.quarto) — Quarto rendering + preview
-- [Rainbow CSV](https://marketplace.visualstudio.com/items?itemName=mechatroner.rainbow-csv) — color-coded columns for the many CSVs under `02-process-output/tabular/`
-- [Color Highlight](https://marketplace.visualstudio.com/items?itemName=naumovs.color-highlight) — inline color swatches for hex codes in `source/layers.yml`
-- [Geo Data Viewer](https://marketplace.visualstudio.com/items?itemName=RandomFractalsInc.geo-data-viewer) — preview `.geojson`, `.shp`, and other vector files on a map
-- [GeoTIFF Viewer](https://marketplace.visualstudio.com/items?itemName=omar2535.geotiff-viewer) — preview `.tif` rasters directly in the editor
-<!-- 
-### gcloud
-
-The Google Cloud SDK, gcloud, is a commmand line tool for interacting with Google Cloud Platform. It lets us download and upload files from and to Cloud Storage, run Jobs, and so forth. You can do most of these things in the browser, but gcloud is often much more convenient.
-
-The standard install instructions are [here](https://cloud.google.com/sdk/docs/install); slightly simpler instructions are [here](https://cloud.google.com/sdk/docs/downloads-interactive)
-
-### Docker
-
-Docker lets all of us, with our different devices, operating systems and softwares, pretend we all have the same setup. It lets us define and run *containers*, essentially mini virtual machines that can run anywhere Docker is installed. Docker is most important for us because it's how we package code up to run on Google Cloud, but it's also helpful for running code locally.
-
-With Docker, we write instructions (a Dockerfile) that define a Docker *image*. This image defines the operating system, software, libraries, and code that will … TK
-
-To install, follow the instructions at https://docs.docker.com/desktop. -->
-
-
-
-<!-- --- -->
+::: {.callout-note}
+RStudio works fine for R-specific work and can be downloaded from [posit.co](https://posit.co/download/rstudio-desktop/). For the full City Scan workflow (Python + R + terminal), VS Code is recommended.
+:::
 
 ---
 
+## Step 6 — Quarto
+
+Quarto is the publishing system used to compile City Scan reports and the web visualization. It supports Python, R, JavaScript, and Julia in the same document.
+
+Install from [quarto.org/docs/get-started](https://quarto.org/docs/get-started/).
+
+Verify:
+
+```bash
+quarto check
+```
+
+---
+
+## Step 7 — Google Cloud (gcloud)
+
+City Scan uses Google Cloud for two services:
+
+- **Google Earth Engine (GEE)** — satellite imagery and geospatial analysis
+- **Google Cloud Storage (GCS)** — private data buckets (`city-scan-global-data`, `city-scan-gcs-data`)
+
+If you do not yet have access to these resources, contact the project lead to be added to the Google Cloud project.
+
+### 7-1. Install gcloud CLI
+
+Download and install from [cloud.google.com/sdk/docs/install](https://cloud.google.com/sdk/docs/install). After installation, initialize the SDK:
+
+```bash
+gcloud init
+```
+
+Verify:
+
+```bash
+gcloud --version
+```
+
+### 7-2. Authenticate
+
+```bash
+gcloud auth application-default login
+```
+
+This opens a browser window to complete the OAuth flow. Credentials are stored locally and picked up automatically by City Scan:
+
+- **macOS / Linux**: `~/.config/gcloud/application_default_credentials.json`
+- **Windows**: `%APPDATA%\gcloud\application_default_credentials.json`
+
+### 7-3. Set GEE Project (Optional)
+
+The default GEE project is `city-scan-gee-test`. To override:
+
+```bash
+export GEE_PROJECT=your-project-id
+```
+
+### 7-4. Verify Cloud Access
+
+```bash
+# Check GEE
+python -c "import ee; ee.Initialize(); print('GEE OK')"
+
+# Check GCS
+gcloud storage ls gs://city-scan-global-public/ --limit=1
+```
+
+### How Authentication Works in City Scan
+
+Authentication is managed in `core/config/`:
+
+| File | Role |
+|---|---|
+| `auth.py` | Initializes GEE and GCS credentials |
+| `scan.py` | Loads AOI, city config, and creates output folders |
+| `paths.py` | Auto-detects input/output directories |
+| `gdal_auth.py` | Configures GDAL for access to private GCS buckets via `/vsigs/` |
+
+Tasks that require GEE (forest, landcover, LST, NDVI, nightlight) or private GCS (WSF, fathom, landcover burn, basic info) are authenticated automatically. If authentication fails, those tasks are skipped with a warning.
+
+::: {.callout-warning}
+Never commit credentials or JSON key files to the repository. Treat them like passwords.
+:::
+
+### Granting Access to a New Team Member
+
+1. Go to [IAM & Admin](https://console.cloud.google.com/iam-admin/) in the Google Cloud Console
+2. Click **Grant access**
+3. Enter the new user's Gmail address under **New principals**
+4. Assign the role **Editor**
+5. Click **Save**
+
+The new user then runs the following to authenticate locally:
+
+```bash
+gcloud auth login
+gcloud auth application-default login
+```
+
+### Troubleshooting
+
+| Symptom | Fix |
+|---|---|
+| GEE auth fails | Re-run `gcloud auth application-default login` |
+| GCS 403 / 404 error | Confirm the account has the **Storage Object Viewer** role on the relevant bucket |
+| "GCS credentials not found" | Check that `~/.config/gcloud/application_default_credentials.json` exists |
+
+---
+
+## Step 8 — Verify Setup
+
+Run the built-in check from the repo root:
+
+```bash
+scan --check
+```
+
+This verifies that Python dependencies, R packages, Quarto, and cloud credentials are all in place. Fix any reported issues before running a scan.

@@ -25,7 +25,7 @@ See [Part 4. Getting Started/ Setup Instructions](setting-up.qmd) for full detai
 
 City Scan uses multiple programming languages and software to run, including Git, Python, R, Quarto, and Google Cloud. The steps required for setups are below:
 
-- Clone the repo 
+- Clone the repo  `https://github.com/cityresilience/city-scan`
 - Create conda env + activate cityscan 
 - Installing City Scan as Python Package via `pip install -e .` for the scan CLI 
 - GCS and GEE authentication via `gcloud auth application-default login` 
