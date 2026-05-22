@@ -365,19 +365,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#authentication" id="toc-authentication" class="nav-link active" data-scroll-target="#authentication"><span class="header-section-number">4.1</span> Authentication</a></li>
-  <li><a href="#git" id="toc-git" class="nav-link" data-scroll-target="#git"><span class="header-section-number">4.2</span> Git</a></li>
-  <li><a href="#python" id="toc-python" class="nav-link" data-scroll-target="#python"><span class="header-section-number">4.3</span> Python</a>
+  <li><a href="#step-1-vs-code-recommended" id="toc-step-1-vs-code-recommended" class="nav-link active" data-scroll-target="#step-1-vs-code-recommended"><span class="header-section-number">4.1</span> Step 1 — VS Code (Recommended)</a></li>
+  <li><a href="#step-2-git" id="toc-step-2-git" class="nav-link" data-scroll-target="#step-2-git"><span class="header-section-number">4.2</span> Step 2 — Git</a></li>
+  <li><a href="#step-3-clone-the-repository" id="toc-step-3-clone-the-repository" class="nav-link" data-scroll-target="#step-3-clone-the-repository"><span class="header-section-number">4.3</span> Step 3 — Clone the Repository</a></li>
+  <li><a href="#step-4-python-environment" id="toc-step-4-python-environment" class="nav-link" data-scroll-target="#step-4-python-environment"><span class="header-section-number">4.4</span> Step 4 — Python Environment</a>
   <ul class="collapse">
-  <li><a href="#option-1-via-conda-recommended-for-mac-windows-linux" id="toc-option-1-via-conda-recommended-for-mac-windows-linux" class="nav-link" data-scroll-target="#option-1-via-conda-recommended-for-mac-windows-linux"><span class="header-section-number">4.3.1</span> <em>Option 1</em>: Via Conda (Recommended for Mac, Windows, Linux)</a></li>
-  <li><a href="#option-2-via-bootstrap-script-alternative-setup-only-for-mac-linux" id="toc-option-2-via-bootstrap-script-alternative-setup-only-for-mac-linux" class="nav-link" data-scroll-target="#option-2-via-bootstrap-script-alternative-setup-only-for-mac-linux"><span class="header-section-number">4.3.2</span> <em>Option 2</em>: Via Bootstrap Script (Alternative Setup – only for Mac, Linux)</a></li>
+  <li><a href="#option-a-conda-recommended-mac-windows-linux" id="toc-option-a-conda-recommended-mac-windows-linux" class="nav-link" data-scroll-target="#option-a-conda-recommended-mac-windows-linux"><span class="header-section-number">4.4.1</span> Option A: Conda (Recommended — Mac, Windows, Linux)</a></li>
+  <li><a href="#option-b-bootstrap-script-mac-and-linux-only" id="toc-option-b-bootstrap-script-mac-and-linux-only" class="nav-link" data-scroll-target="#option-b-bootstrap-script-mac-and-linux-only"><span class="header-section-number">4.4.2</span> Option B: Bootstrap Script (Mac and Linux only)</a></li>
   </ul></li>
-  <li><a href="#r" id="toc-r" class="nav-link" data-scroll-target="#r"><span class="header-section-number">4.4</span> R</a></li>
-  <li><a href="#quarto" id="toc-quarto" class="nav-link" data-scroll-target="#quarto"><span class="header-section-number">4.5</span> Quarto</a></li>
-  <li><a href="#vs-code" id="toc-vs-code" class="nav-link" data-scroll-target="#vs-code"><span class="header-section-number">4.6</span> VS Code</a>
+  <li><a href="#step-5-r" id="toc-step-5-r" class="nav-link" data-scroll-target="#step-5-r"><span class="header-section-number">4.5</span> Step 5 — R</a></li>
+  <li><a href="#step-6-quarto" id="toc-step-6-quarto" class="nav-link" data-scroll-target="#step-6-quarto"><span class="header-section-number">4.6</span> Step 6 — Quarto</a></li>
+  <li><a href="#step-7-google-cloud-gcloud" id="toc-step-7-google-cloud-gcloud" class="nav-link" data-scroll-target="#step-7-google-cloud-gcloud"><span class="header-section-number">4.7</span> Step 7 — Google Cloud (gcloud)</a>
   <ul class="collapse">
-  <li><a href="#docker" id="toc-docker" class="nav-link" data-scroll-target="#docker"><span class="header-section-number">4.6.1</span> Docker</a></li>
+  <li><a href="#install-gcloud-cli" id="toc-install-gcloud-cli" class="nav-link" data-scroll-target="#install-gcloud-cli"><span class="header-section-number">4.7.1</span> 7-1. Install gcloud CLI</a></li>
+  <li><a href="#authenticate" id="toc-authenticate" class="nav-link" data-scroll-target="#authenticate"><span class="header-section-number">4.7.2</span> 7-2. Authenticate</a></li>
+  <li><a href="#set-gee-project-optional" id="toc-set-gee-project-optional" class="nav-link" data-scroll-target="#set-gee-project-optional"><span class="header-section-number">4.7.3</span> 7-3. Set GEE Project (Optional)</a></li>
+  <li><a href="#verify-cloud-access" id="toc-verify-cloud-access" class="nav-link" data-scroll-target="#verify-cloud-access"><span class="header-section-number">4.7.4</span> 7-4. Verify Cloud Access</a></li>
+  <li><a href="#how-authentication-works-in-city-scan" id="toc-how-authentication-works-in-city-scan" class="nav-link" data-scroll-target="#how-authentication-works-in-city-scan"><span class="header-section-number">4.7.5</span> How Authentication Works in City Scan</a></li>
+  <li><a href="#granting-access-to-a-new-team-member" id="toc-granting-access-to-a-new-team-member" class="nav-link" data-scroll-target="#granting-access-to-a-new-team-member"><span class="header-section-number">4.7.6</span> Granting Access to a New Team Member</a></li>
+  <li><a href="#troubleshooting" id="toc-troubleshooting" class="nav-link" data-scroll-target="#troubleshooting"><span class="header-section-number">4.7.7</span> Troubleshooting</a></li>
   </ul></li>
+  <li><a href="#step-8-verify-setup" id="toc-step-8-verify-setup" class="nav-link" data-scroll-target="#step-8-verify-setup"><span class="header-section-number">4.8</span> Step 8 — Verify Setup</a></li>
   </ul>
 </nav>
     </div>
@@ -403,145 +411,329 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<!-- ## Required and Recommended Software -->
-<!-- For all activities, see
-- [VS Code](#vs-code) (recommended) -->
-<!-- For running a City Scan on Google Cloud, see
-- [gcloud](#gcloud) (required) -->
-<!-- To run visualizations and reports locally, you can run with [Docker](#docker) or natively. If using Docker, you will only need Docker, in addition to Git and an editor like VS Code. (The frontend script also requires gcloud, but we will add instructions that don't require it.)  -->
-<p>City Scan repo is multilangual: Python is used for data collection and analysis, R for mapping and charting, and Quarto for report compilation and web visualization.</p>
-<p>All City Scan tasks can be accessed through terminal with the required tools configured:</p>
-<ul>
-<li><a href="#git">Git</a></li>
-<li><a href="#python">Python</a></li>
-<li><a href="#r">R</a></li>
-<li><a href="#quarto">Quarto</a></li>
-<li><a href="#gcloud">gcloud</a></li>
+<p>City Scan is multilingual: Python handles data collection and analysis, R generates maps and charts, and Quarto compiles reports and web visualizations. The <code>scan</code> CLI ties it all together.</p>
+<p>Work through the sections below in order. The checklist from <a href="./at-a-glance.html">General Workflow</a>:</p>
+<ul class="task-list">
+<li><label><input type="checkbox">Install prerequisites (VS Code, Git, Python, R, Quarto, gcloud)</label></li>
+<li><label><input type="checkbox">Clone the repository</label></li>
+<li><label><input type="checkbox">Create and activate the <code>cityscan</code> conda environment</label></li>
+<li><label><input type="checkbox">Install City Scan as a Python package via <code>pip install -e .</code></label></li>
+<li><label><input type="checkbox">Authenticate with GCS and GEE</label></li>
+<li><label><input type="checkbox">Run <code>scan --check</code> to verify everything passes</label></li>
 </ul>
-<p>Recommended: - <a href="#vs-code">Visual Studio Code</a></p>
-<p>The following sections describe the recommended setup configuration and best practices.</p>
 <hr>
-<section id="authentication" class="level2" data-number="4.1">
-<h2 data-number="4.1" class="anchored" data-anchor-id="authentication"><span class="header-section-number">4.1</span> Authentication</h2>
+<section id="step-1-vs-code-recommended" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="step-1-vs-code-recommended"><span class="header-section-number">4.1</span> Step 1 — VS Code (Recommended)</h2>
+<p>VS Code is a free code editor with an integrated terminal and Git UI. It handles Python, R, and Quarto in the same window, which makes the City Scan workflow much smoother.</p>
+<p>Install from <a href="https://code.visualstudio.com/Download">code.visualstudio.com</a>.</p>
+<p><strong>Recommended extensions</strong> — install from the Extensions panel (<code>Ctrl+Shift+X</code> / <code>⌘⇧X</code>):</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Extension</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="https://marketplace.visualstudio.com/items?itemName=ms-python.python">Python</a></td>
+<td>Python language support and environment selection</td>
+</tr>
+<tr class="even">
+<td><a href="https://marketplace.visualstudio.com/items?itemName=REditorSupport.r">R</a></td>
+<td>R language support</td>
+</tr>
+<tr class="odd">
+<td><a href="https://marketplace.visualstudio.com/items?itemName=quarto.quarto">Quarto</a></td>
+<td>Quarto rendering and preview</td>
+</tr>
+<tr class="even">
+<td><a href="https://marketplace.visualstudio.com/items?itemName=mechatroner.rainbow-csv">Rainbow CSV</a></td>
+<td>Color-coded columns for CSVs under <code>02-process-output/tabular/</code></td>
+</tr>
+<tr class="odd">
+<td><a href="https://marketplace.visualstudio.com/items?itemName=naumovs.color-highlight">Color Highlight</a></td>
+<td>Inline color swatches for hex codes in <code>source/layers.yml</code></td>
+</tr>
+<tr class="even">
+<td><a href="https://marketplace.visualstudio.com/items?itemName=RandomFractalsInc.geo-data-viewer">Geo Data Viewer</a></td>
+<td>Preview <code>.geojson</code> and <code>.shp</code> files on a map</td>
+</tr>
+<tr class="odd">
+<td><a href="https://marketplace.visualstudio.com/items?itemName=omar2535.geotiff-viewer">GeoTIFF Viewer</a></td>
+<td>Preview <code>.tif</code> rasters directly in the editor</td>
+</tr>
+</tbody>
+</table>
+<p>The following steps require you to use the terminal. In VS Code topbar, go to <code>Terminal &gt; New Terminal</code></p>
+<hr>
+</section>
+<section id="step-2-git" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="step-2-git"><span class="header-section-number">4.2</span> Step 2 — Git</h2>
+<p>Git is a version control system that tracks changes and enables collaboration through GitHub. It is required to clone the repository and stay up to date with changes.</p>
+<p>Git is pre-installed on most macOS and Linux systems. Verify with:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If not installed, follow the <a href="https://github.com/git-guides/install-git">GitHub Git installation guide</a>. Windows users can use <a href="https://gitforwindows.org/">Git for Windows</a>.</p>
+<hr>
+</section>
+<section id="step-3-clone-the-repository" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="step-3-clone-the-repository"><span class="header-section-number">4.3</span> Step 3 — Clone the Repository</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/cityresilience/city-scan</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> city-scan</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>All subsequent steps assume you are inside the <code>city-scan/</code> directory.</p>
+<hr>
+</section>
+<section id="step-4-python-environment" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="step-4-python-environment"><span class="header-section-number">4.4</span> Step 4 — Python Environment</h2>
+<p>City Scan requires Python 3.11. Choose one of the two options below.</p>
+<section id="option-a-conda-recommended-mac-windows-linux" class="level3" data-number="4.4.1">
+<h3 data-number="4.4.1" class="anchored" data-anchor-id="option-a-conda-recommended-mac-windows-linux"><span class="header-section-number">4.4.1</span> Option A: Conda (Recommended — Mac, Windows, Linux)</h3>
+<section id="a-1.-install-anaconda" class="level4" data-number="4.4.1.1">
+<h4 data-number="4.4.1.1" class="anchored" data-anchor-id="a-1.-install-anaconda"><span class="header-section-number">4.4.1.1</span> 4A-1. Install Anaconda</h4>
+<p>Download and install from <a href="https://www.anaconda.com/download">anaconda.com/download</a>. Accept the default settings and restart your terminal after installation.</p>
+<p>Verify:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span><code>conda: command not found</code> after install?
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Conda was installed but not initialized for your shell. Run the appropriate command once:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> init zsh        <span class="co"># macOS / Linux with zsh (default on modern macOS)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> init bash       <span class="co"># Linux / older macOS / WSL</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> init powershell <span class="co"># Windows PowerShell</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Close and reopen the terminal. You should see <code>(base)</code> in your prompt.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="a-2.-create-and-activate-the-environment" class="level4" data-number="4.4.1.2">
+<h4 data-number="4.4.1.2" class="anchored" data-anchor-id="a-2.-create-and-activate-the-environment"><span class="header-section-number">4.4.1.2</span> 4A-2. Create and Activate the Environment</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> create <span class="at">-n</span> cityscan python=3.11.8 <span class="at">-y</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> activate cityscan</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="a-3.-install-city-scan" class="level4" data-number="4.4.1.3">
+<h4 data-number="4.4.1.3" class="anchored" data-anchor-id="a-3.-install-city-scan"><span class="header-section-number">4.4.1.3</span> 4A-3. Install City Scan</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> pip install <span class="at">--upgrade</span> pip</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-e</span> .</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="a-4.-register-jupyter-kernel-optional" class="level4" data-number="4.4.1.4">
+<h4 data-number="4.4.1.4" class="anchored" data-anchor-id="a-4.-register-jupyter-kernel-optional"><span class="header-section-number">4.4.1.4</span> 4A-4. Register Jupyter Kernel (Optional)</h4>
+<p>Only needed if you plan to use Jupyter notebooks:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> ipykernel install <span class="at">--user</span> <span class="at">--name</span> cityscan <span class="at">--display-name</span> <span class="st">"Cityscan"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="option-b-bootstrap-script-mac-and-linux-only" class="level3" data-number="4.4.2">
+<h3 data-number="4.4.2" class="anchored" data-anchor-id="option-b-bootstrap-script-mac-and-linux-only"><span class="header-section-number">4.4.2</span> Option B: Bootstrap Script (Mac and Linux only)</h3>
+<p>Use this option if you prefer automated system setup or do not have Python installed.</p>
+<section id="b-1.-run-the-bootstrap-script" class="level4" data-number="4.4.2.1">
+<h4 data-number="4.4.2.1" class="anchored" data-anchor-id="b-1.-run-the-bootstrap-script"><span class="header-section-number">4.4.2.1</span> 4B-1. Run the Bootstrap Script</h4>
+<p>This installs Python 3.11.8 via pyenv and prepares your system:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> bootstrap.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Review <code>bootstrap.sh</code> before running. It installs system dependencies, pyenv, and Python 3.11.8, and updates your shell configuration. If pyenv is being installed for the first time, restart your terminal and run the script again.</p>
+</div>
+</div>
+</section>
+<section id="b-2.-run-the-setup-script" class="level4" data-number="4.4.2.2">
+<h4 data-number="4.4.2.2" class="anchored" data-anchor-id="b-2.-run-the-setup-script"><span class="header-section-number">4.4.2.2</span> 4B-2. Run the Setup Script</h4>
+<p>Creates the virtual environment, installs dependencies, and registers the Jupyter kernel:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> orchestrator.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>When successful, you will see:</p>
+<ul>
+<li>Python 3.11.8 ready via pyenv</li>
+<li>A new virtual environment created</li>
+<li>A Jupyter kernel registered: “Cityscan (Python 3.11)”</li>
+</ul>
+<p>To activate the environment manually later:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> venv/bin/activate</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+</section>
+<section id="step-5-r" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="step-5-r"><span class="header-section-number">4.5</span> Step 5 — R</h2>
+<p>R is used for maps, charts, and the scan-calculations report, and also for several data collection tasks (earthquake, Oxford, cyclones, flood events, GDP gridded, coastal erosion, sea level rise).</p>
+<p>Download the <strong>latest stable R release</strong> (4.5.x or newer) from <a href="https://cran.r-project.org/">cran.r-project.org</a>. The repo depends on a current <code>ggplot2</code>, <code>terra</code>, <code>sf</code>, and <code>tidyterra</code> stack that will not install cleanly on older R versions.</p>
+<p>Verify:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">R</span> <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>R in VS Code:</strong> Install the <a href="https://marketplace.visualstudio.com/items?itemName=REditorSupport.r">R extension</a> and, optionally, <a href="https://github.com/randy3k/radian">radian</a> for a richer R console experience.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>RStudio works fine for R-specific work and can be downloaded from <a href="https://posit.co/download/rstudio-desktop/">posit.co</a>. For the full City Scan workflow (Python + R + terminal), VS Code is recommended.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="step-6-quarto" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="step-6-quarto"><span class="header-section-number">4.6</span> Step 6 — Quarto</h2>
+<p>Quarto is the publishing system used to compile City Scan reports and the web visualization. It supports Python, R, JavaScript, and Julia in the same document.</p>
+<p>Install from <a href="https://quarto.org/docs/get-started/">quarto.org/docs/get-started</a>.</p>
+<p>Verify:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> check</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="step-7-google-cloud-gcloud" class="level2" data-number="4.7">
+<h2 data-number="4.7" class="anchored" data-anchor-id="step-7-google-cloud-gcloud"><span class="header-section-number">4.7</span> Step 7 — Google Cloud (gcloud)</h2>
+<p>City Scan uses Google Cloud for two services:</p>
+<ul>
+<li><strong>Google Earth Engine (GEE)</strong> — satellite imagery and geospatial analysis</li>
+<li><strong>Google Cloud Storage (GCS)</strong> — private data buckets (<code>city-scan-global-data</code>, <code>city-scan-gcs-data</code>)</li>
+</ul>
+<p>If you do not yet have access to these resources, contact the project lead to be added to the Google Cloud project.</p>
+<section id="install-gcloud-cli" class="level3" data-number="4.7.1">
+<h3 data-number="4.7.1" class="anchored" data-anchor-id="install-gcloud-cli"><span class="header-section-number">4.7.1</span> 7-1. Install gcloud CLI</h3>
+<p>Download and install from <a href="https://cloud.google.com/sdk/docs/install">cloud.google.com/sdk/docs/install</a>. After installation, initialize the SDK:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gcloud</span> init</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Verify:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gcloud</span> <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="authenticate" class="level3" data-number="4.7.2">
+<h3 data-number="4.7.2" class="anchored" data-anchor-id="authenticate"><span class="header-section-number">4.7.2</span> 7-2. Authenticate</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gcloud</span> auth application-default login</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This opens a browser window to complete the OAuth flow. Credentials are stored locally and picked up automatically by City Scan:</p>
+<ul>
+<li><strong>macOS / Linux</strong>: <code>~/.config/gcloud/application_default_credentials.json</code></li>
+<li><strong>Windows</strong>: <code>%APPDATA%\gcloud\application_default_credentials.json</code></li>
+</ul>
+</section>
+<section id="set-gee-project-optional" class="level3" data-number="4.7.3">
+<h3 data-number="4.7.3" class="anchored" data-anchor-id="set-gee-project-optional"><span class="header-section-number">4.7.3</span> 7-3. Set GEE Project (Optional)</h3>
+<p>The default GEE project is <code>city-scan-gee-test</code>. To override:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">GEE_PROJECT</span><span class="op">=</span>your-project-id</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="verify-cloud-access" class="level3" data-number="4.7.4">
+<h3 data-number="4.7.4" class="anchored" data-anchor-id="verify-cloud-access"><span class="header-section-number">4.7.4</span> 7-4. Verify Cloud Access</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check GEE</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-c</span> <span class="st">"import ee; ee.Initialize(); print('GEE OK')"</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Check GCS</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="ex">gcloud</span> storage ls gs://city-scan-global-public/ <span class="at">--limit</span><span class="op">=</span>1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="how-authentication-works-in-city-scan" class="level3" data-number="4.7.5">
+<h3 data-number="4.7.5" class="anchored" data-anchor-id="how-authentication-works-in-city-scan"><span class="header-section-number">4.7.5</span> How Authentication Works in City Scan</h3>
 <p>Authentication is managed in <code>core/config/</code>:</p>
-<ul>
-<li><strong><code>auth.py</code></strong> — initializes Google Earth Engine (GEE) and Google Cloud Storage (GCS) credentials</li>
-<li><strong><code>scan.py</code></strong> — the Scan class that loads AOI, city config, and creates city output folders</li>
-<li><strong><code>paths.py</code></strong> — auto-detects input/output directories based on project structure</li>
-<li><strong><code>gdal_auth.py</code></strong> — configures GDAL for authenticated access to private GCS buckets via <code>/vsigs/</code></li>
-</ul>
-<p>Tasks that need GEE (forest, landcover, LST, NDVI, nightlight) or private GCS (WSF, fathom, landcover burn, basic info) are automatically authenticated before running. If auth fails, those tasks are skipped with a warning.</p>
-<p>See <a href="../reference/googlecloud.md">google cloud setup</a> for more details.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>File</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>auth.py</code></td>
+<td>Initializes GEE and GCS credentials</td>
+</tr>
+<tr class="even">
+<td><code>scan.py</code></td>
+<td>Loads AOI, city config, and creates output folders</td>
+</tr>
+<tr class="odd">
+<td><code>paths.py</code></td>
+<td>Auto-detects input/output directories</td>
+</tr>
+<tr class="even">
+<td><code>gdal_auth.py</code></td>
+<td>Configures GDAL for access to private GCS buckets via <code>/vsigs/</code></td>
+</tr>
+</tbody>
+</table>
+<p>Tasks that require GEE (forest, landcover, LST, NDVI, nightlight) or private GCS (WSF, fathom, landcover burn, basic info) are authenticated automatically. If authentication fails, those tasks are skipped with a warning.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Never commit credentials or JSON key files to the repository. Treat them like passwords.</p>
+</div>
+</div>
+</section>
+<section id="granting-access-to-a-new-team-member" class="level3" data-number="4.7.6">
+<h3 data-number="4.7.6" class="anchored" data-anchor-id="granting-access-to-a-new-team-member"><span class="header-section-number">4.7.6</span> Granting Access to a New Team Member</h3>
+<ol type="1">
+<li>Go to <a href="https://console.cloud.google.com/iam-admin/">IAM &amp; Admin</a> in the Google Cloud Console</li>
+<li>Click <strong>Grant access</strong></li>
+<li>Enter the new user’s Gmail address under <strong>New principals</strong></li>
+<li>Assign the role <strong>Editor</strong></li>
+<li>Click <strong>Save</strong></li>
+</ol>
+<p>The new user then runs the following to authenticate locally:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gcloud</span> auth login</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="ex">gcloud</span> auth application-default login</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="troubleshooting" class="level3" data-number="4.7.7">
+<h3 data-number="4.7.7" class="anchored" data-anchor-id="troubleshooting"><span class="header-section-number">4.7.7</span> Troubleshooting</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Symptom</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>GEE auth fails</td>
+<td>Re-run <code>gcloud auth application-default login</code></td>
+</tr>
+<tr class="even">
+<td>GCS 403 / 404 error</td>
+<td>Confirm the account has the <strong>Storage Object Viewer</strong> role on the relevant bucket</td>
+</tr>
+<tr class="odd">
+<td>“GCS credentials not found”</td>
+<td>Check that <code>~/.config/gcloud/application_default_credentials.json</code> exists</td>
+</tr>
+</tbody>
+</table>
 <hr>
 </section>
-<section id="git" class="level2" data-number="4.2">
-<h2 data-number="4.2" class="anchored" data-anchor-id="git"><span class="header-section-number">4.2</span> Git</h2>
-<p>Git is a version control system. It’s a timewarpy quantum tool that lets multiple dimensions and times exist at once. It lets you keep multiple versions of your files, and keep track of changes. It also makes it easier to collaborate with each other, as a conduit for “pulling” and “pushing” and “pulling” code from and to GitHub. Instead of downloading a repo from GitHub, you can “clone” it – which is still downloading, but with the added benefit of keeping a live connection to future changes (at your discretion).</p>
-<p>Git is already installed on most macOS and Linux systems. You can install it from <a href="https://gitforwindows.org/">Git for Windows</a>. If git is not installed, see the GitHub’s <a href="https://github.com/git-guides/install-git">git installation guide</a></p>
-<hr>
 </section>
-<section id="python" class="level2" data-number="4.3">
-<h2 data-number="4.3" class="anchored" data-anchor-id="python"><span class="header-section-number">4.3</span> Python</h2>
-<p>We recommend creating a python environment to run City Scan Tasks. Here are the options:</p>
-<section id="option-1-via-conda-recommended-for-mac-windows-linux" class="level3" data-number="4.3.1">
-<h3 data-number="4.3.1" class="anchored" data-anchor-id="option-1-via-conda-recommended-for-mac-windows-linux"><span class="header-section-number">4.3.1</span> <em>Option 1</em>: Via Conda (Recommended for Mac, Windows, Linux)</h3>
-<section id="step-1-install-anaconda" class="level4" data-number="4.3.1.1">
-<h4 data-number="4.3.1.1" class="anchored" data-anchor-id="step-1-install-anaconda"><span class="header-section-number">4.3.1.1</span> Step 1: Install Anaconda</h4>
-<p>Download and install Anaconda from the <a href="https://www.anaconda.com/download">official Anaconda website</a>:</p>
-<ul>
-<li>Visit https://www.anaconda.com/download and select your operating system</li>
-<li>Follow the installation wizard and accept the default settings</li>
-<li>Restart your terminal after installation completes</li>
-<li>Verify installation by running: <code>conda --version</code></li>
-</ul>
-<blockquote class="blockquote">
-<p><strong>If <code>conda --version</code> returns <code>command not found</code></strong> (especially in the VS Code integrated terminal), conda was installed but not initialized for your shell. Run once:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> init zsh        <span class="co"># macOS / Linux (zsh — default on modern macOS)</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> init bash       <span class="co"># Linux / older macOS / WSL</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> init powershell <span class="co"># Windows PowerShell</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Then close and reopen the terminal. You should see <code>(base)</code> in your prompt and <code>conda</code> should resolve.</p>
-</blockquote>
-</section>
-<section id="step-2-create-and-activate-the-environment" class="level4" data-number="4.3.1.2">
-<h4 data-number="4.3.1.2" class="anchored" data-anchor-id="step-2-create-and-activate-the-environment"><span class="header-section-number">4.3.1.2</span> Step 2: Create and Activate the Environment</h4>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> create <span class="at">-n</span> cityscan python=3.11.8 <span class="at">-y</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> activate cityscan</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="step-3-install-dependencies" class="level4" data-number="4.3.1.3">
-<h4 data-number="4.3.1.3" class="anchored" data-anchor-id="step-3-install-dependencies"><span class="header-section-number">4.3.1.3</span> Step 3: Install Dependencies</h4>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> pip install <span class="at">--upgrade</span> pip</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-r</span> requirements.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="step-4-register-jupyter-kernel-optional-for-notebook-use" class="level4" data-number="4.3.1.4">
-<h4 data-number="4.3.1.4" class="anchored" data-anchor-id="step-4-register-jupyter-kernel-optional-for-notebook-use"><span class="header-section-number">4.3.1.4</span> Step 4: Register Jupyter Kernel (Optional, for notebook use)</h4>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> ipykernel install <span class="at">--user</span> <span class="at">--name</span> cityscan <span class="at">--display-name</span> <span class="st">"Cityscan"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-</section>
-<section id="option-2-via-bootstrap-script-alternative-setup-only-for-mac-linux" class="level3" data-number="4.3.2">
-<h3 data-number="4.3.2" class="anchored" data-anchor-id="option-2-via-bootstrap-script-alternative-setup-only-for-mac-linux"><span class="header-section-number">4.3.2</span> <em>Option 2</em>: Via Bootstrap Script (Alternative Setup – only for Mac, Linux)</h3>
-<p>If you prefer automated system setup or Python is not installed, use the bootstrap approach:</p>
-<section id="step-1-clone-the-repository" class="level4" data-number="4.3.2.1">
-<h4 data-number="4.3.2.1" class="anchored" data-anchor-id="step-1-clone-the-repository"><span class="header-section-number">4.3.2.1</span> Step 1: Clone the Repository</h4>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone <span class="at">--single-branch</span> <span class="at">--branch</span> unified https://github.com/varinaldi/city-scan-automation.git</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> city-scan-automation</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="step-2-run-bootstrap-script" class="level4" data-number="4.3.2.2">
-<h4 data-number="4.3.2.2" class="anchored" data-anchor-id="step-2-run-bootstrap-script"><span class="header-section-number">4.3.2.2</span> Step 2: Run Bootstrap Script</h4>
-<p>This script prepares your system and installs Python 3.11.8 via pyenv:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> bootstrap.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>If you need to manually activate the environment later, use:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> venv/bin/activate</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>Note:</strong> Review the <code>bootstrap.sh</code> script first to ensure it meets your system requirements. It will: - Install system dependencies - Install and configure pyenv - Install Python 3.11.8 - Update your shell configuration</p>
-<p>If pyenv is installed for the first time, restart your terminal and run the script again.</p>
-</section>
-<section id="step-3-run-setup-script" class="level4" data-number="4.3.2.3">
-<h4 data-number="4.3.2.3" class="anchored" data-anchor-id="step-3-run-setup-script"><span class="header-section-number">4.3.2.3</span> Step 3: Run Setup Script</h4>
-<p>This script creates the virtual environment, installs dependencies, and registers the Jupyter kernel:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> orchestrator.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>When setup is successful, you should see: - Python 3.11.8 ready via pyenv - A new virtual environment created - A Jupyter kernel registered: “Cityscan (Python 3.11)”</p>
-<hr>
-</section>
-</section>
-</section>
-<section id="r" class="level2" data-number="4.4">
-<h2 data-number="4.4" class="anchored" data-anchor-id="r"><span class="header-section-number">4.4</span> R</h2>
-<p>R is used for the maps, charts, and scan-calculations report, and also for several data collection tasks (earthquake, oxford, cyclones, flood_events, gdp_gridded, coastal_erosion, sea_level_rise). You can download R <a href="https://cran.r-project.org/">here</a>. <strong>Use the latest stable R release</strong> (currently 4.5.x) — the repo depends on a current <code>ggplot2</code>, <code>terra</code>, <code>sf</code>, and <code>tidyterra</code> stack that won’t install cleanly on older R. If you already have R, run <code>R --version</code> and upgrade if you’re behind. To use R in VS Code, we recommend installing the <a href="https://marketplace.visualstudio.com/items?itemName=REditorSupport.r">R extension</a>: follow the instructions at the link; we also recommend installing <a href="https://github.com/randy3k/radian">radian</a>.</p>
-<p>If you have used R in the past, you likely used RStudio as your editor. For the City Scan workflow and development, we recommend VS Code as it supports multiple languages and has a better terminal and Git integration. Still, RStudio can still be useful, and can be downloaded <a href="https://posit.co/download/rstudio-desktop/">here</a>.</p>
-<hr>
-</section>
-<section id="quarto" class="level2" data-number="4.5">
-<h2 data-number="4.5" class="anchored" data-anchor-id="quarto"><span class="header-section-number">4.5</span> Quarto</h2>
-<p>Quarto is a publishing system that lets you create documents and websites with R, Python, JavaScript, and Julia. If you are familiar with R Markdown, Jupyter notebooks, or Observable notebooks, Quarto is similar but allows for the use of multiple languages in the same document. It is used to create the City Scan reports and website.</p>
-<p>A Quarto file is a markdown document with code chunks that can be rendered into HTML, PDF, or other formats. The Python and R code is executed at the time of rendering and the output is included in the final document.</p>
-<p>To install Quarto, follow the instructions at <a href="https://quarto.org/docs/get-started/">Quarto’s installation page</a>.</p>
-<hr>
-</section>
-<section id="vs-code" class="level2" data-number="4.6">
-<h2 data-number="4.6" class="anchored" data-anchor-id="vs-code"><span class="header-section-number">4.6</span> VS Code</h2>
-<p>VS Code isn’t strictly necessary, but it makes working with multiple files and filetypes much easier. It also makes working with <a href="#git">Git</a> much clearer. VS Code is a free code editor with an integrated terminal and near endless extensions. (If you’re coming from R, you’ve probably been using RStudio; VS Code is like RStudio but for all languages, a better terminal, easier Git integration and better handling of multiple windows. If you’re coming from Python, I’m not and don’t know what you’re probably using.)</p>
-<p>Install VS Code from <a href="https://code.visualstudio.com/Download">Visual Studio Code</a>.</p>
-<p><strong>Recommended extensions</strong> for working with this repo:</p>
-<ul>
-<li><a href="https://marketplace.visualstudio.com/items?itemName=ms-python.python">Python</a> — Python language support</li>
-<li><a href="https://marketplace.visualstudio.com/items?itemName=REditorSupport.r">R</a> — R language support</li>
-<li><a href="https://marketplace.visualstudio.com/items?itemName=quarto.quarto">Quarto</a> — Quarto rendering + preview</li>
-<li><a href="https://marketplace.visualstudio.com/items?itemName=mechatroner.rainbow-csv">Rainbow CSV</a> — color-coded columns for the many CSVs under <code>02-process-output/tabular/</code></li>
-<li><a href="https://marketplace.visualstudio.com/items?itemName=naumovs.color-highlight">Color Highlight</a> — inline color swatches for hex codes in <code>source/layers.yml</code></li>
-<li><a href="https://marketplace.visualstudio.com/items?itemName=RandomFractalsInc.geo-data-viewer">Geo Data Viewer</a> — preview <code>.geojson</code>, <code>.shp</code>, and other vector files on a map</li>
-<li><a href="https://marketplace.visualstudio.com/items?itemName=omar2535.geotiff-viewer">GeoTIFF Viewer</a> — preview <code>.tif</code> rasters directly in the editor &lt;!– ### gcloud</li>
-</ul>
-<p>The Google Cloud SDK, gcloud, is a commmand line tool for interacting with Google Cloud Platform. It lets us download and upload files from and to Cloud Storage, run Jobs, and so forth. You can do most of these things in the browser, but gcloud is often much more convenient.</p>
-<p>The standard install instructions are <a href="https://cloud.google.com/sdk/docs/install">here</a>; slightly simpler instructions are <a href="https://cloud.google.com/sdk/docs/downloads-interactive">here</a></p>
-<section id="docker" class="level3" data-number="4.6.1">
-<h3 data-number="4.6.1" class="anchored" data-anchor-id="docker"><span class="header-section-number">4.6.1</span> Docker</h3>
-<p>Docker lets all of us, with our different devices, operating systems and softwares, pretend we all have the same setup. It lets us define and run <em>containers</em>, essentially mini virtual machines that can run anywhere Docker is installed. Docker is most important for us because it’s how we package code up to run on Google Cloud, but it’s also helpful for running code locally.</p>
-<p>With Docker, we write instructions (a Dockerfile) that define a Docker <em>image</em>. This image defines the operating system, software, libraries, and code that will … TK</p>
-<p>To install, follow the instructions at https://docs.docker.com/desktop. –&gt;</p>
-<!-- --- -->
-<hr>
+<section id="step-8-verify-setup" class="level2" data-number="4.8">
+<h2 data-number="4.8" class="anchored" data-anchor-id="step-8-verify-setup"><span class="header-section-number">4.8</span> Step 8 — Verify Setup</h2>
+<p>Run the built-in check from the repo root:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">scan</span> <span class="at">--check</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This verifies that Python dependencies, R packages, Quarto, and cloud credentials are all in place. Fix any reported issues before running a scan.</p>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
