@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>8&nbsp; Running a Custom City Scan – City Scan Technical Reference</title>
+<title>8&nbsp; Customizing Maps and Charts – City Scan Technical Reference</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -120,7 +120,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./multiple-cityscan.html">Advanced Workflow</a></li><li class="breadcrumb-item"><a href="./custom-cityscan.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Running a Custom City Scan</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./multiple-cityscan.html">Advanced Workflow</a></li><li class="breadcrumb-item"><a href="./custom-cityscan.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Customizing Maps and Charts</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -228,13 +228,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./multiple-cityscan.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Running Multiple City Scans</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Running Multiple Cities</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./custom-cityscan.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Running a Custom City Scan</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Customizing Maps and Charts</span></span></a>
   </div>
 </li>
       </ul>
@@ -365,20 +365,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#when-to-customize" id="toc-when-to-customize" class="nav-link active" data-scroll-target="#when-to-customize"><span class="header-section-number">8.1</span> When to Customize</a></li>
-  <li><a href="#selecting-tasks" id="toc-selecting-tasks" class="nav-link" data-scroll-target="#selecting-tasks"><span class="header-section-number">8.2</span> Selecting Tasks</a></li>
-  <li><a href="#overriding-default-parameters" id="toc-overriding-default-parameters" class="nav-link" data-scroll-target="#overriding-default-parameters"><span class="header-section-number">8.3</span> Overriding Default Parameters</a></li>
-  <li><a href="#adding-a-custom-data-source" id="toc-adding-a-custom-data-source" class="nav-link" data-scroll-target="#adding-a-custom-data-source"><span class="header-section-number">8.4</span> Adding a Custom Data Source</a></li>
-  <li><a href="#custom-output-directory-layout" id="toc-custom-output-directory-layout" class="nav-link" data-scroll-target="#custom-output-directory-layout"><span class="header-section-number">8.5</span> Custom Output Directory Layout</a></li>
+  <li><a href="#part-1-maps" id="toc-part-1-maps" class="nav-link active" data-scroll-target="#part-1-maps"><span class="header-section-number">8.1</span> Part 1: Maps</a>
+  <ul class="collapse">
+  <li><a href="#how-map-rendering-works" id="toc-how-map-rendering-works" class="nav-link" data-scroll-target="#how-map-rendering-works"><span class="header-section-number">8.1.1</span> How map rendering works</a></li>
+  <li><a href="#changing-how-a-layer-looks-sourcelayers.yml" id="toc-changing-how-a-layer-looks-sourcelayers.yml" class="nav-link" data-scroll-target="#changing-how-a-layer-looks-sourcelayers.yml"><span class="header-section-number">8.1.2</span> Changing how a layer looks — <code>source/layers.yml</code></a></li>
+  <li><a href="#changing-which-layers-a-task-renders-taskstaskmaps.yml" id="toc-changing-which-layers-a-task-renders-taskstaskmaps.yml" class="nav-link" data-scroll-target="#changing-which-layers-a-task-renders-taskstaskmaps.yml"><span class="header-section-number">8.1.3</span> Changing which layers a task renders — <code>tasks/{task}/maps.yml</code></a></li>
+  <li><a href="#adding-a-custom-map-script" id="toc-adding-a-custom-map-script" class="nav-link" data-scroll-target="#adding-a-custom-map-script"><span class="header-section-number">8.1.4</span> Adding a custom map script</a></li>
+  </ul></li>
+  <li><a href="#part-2-charts" id="toc-part-2-charts" class="nav-link" data-scroll-target="#part-2-charts"><span class="header-section-number">8.2</span> Part 2: Charts</a>
+  <ul class="collapse">
+  <li><a href="#how-chart-rendering-works" id="toc-how-chart-rendering-works" class="nav-link" data-scroll-target="#how-chart-rendering-works"><span class="header-section-number">8.2.1</span> How chart rendering works</a></li>
+  <li><a href="#file-structure" id="toc-file-structure" class="nav-link" data-scroll-target="#file-structure"><span class="header-section-number">8.2.2</span> File structure</a></li>
+  <li><a href="#anatomy-of-a-chart-document" id="toc-anatomy-of-a-chart-document" class="nav-link" data-scroll-target="#anatomy-of-a-chart-document"><span class="header-section-number">8.2.3</span> Anatomy of a chart document</a></li>
+  <li><a href="#objects-available-in-chart-documents" id="toc-objects-available-in-chart-documents" class="nav-link" data-scroll-target="#objects-available-in-chart-documents"><span class="header-section-number">8.2.4</span> Objects available in chart documents</a></li>
+  <li><a href="#adding-a-new-section-to-an-existing-chart" id="toc-adding-a-new-section-to-an-existing-chart" class="nav-link" data-scroll-target="#adding-a-new-section-to-an-existing-chart"><span class="header-section-number">8.2.5</span> Adding a new section to an existing chart</a></li>
+  <li><a href="#creating-a-chart-for-a-new-task" id="toc-creating-a-chart-for-a-new-task" class="nav-link" data-scroll-target="#creating-a-chart-for-a-new-task"><span class="header-section-number">8.2.6</span> Creating a chart for a new task</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./multiple-cityscan.html">Advanced Workflow</a></li><li class="breadcrumb-item"><a href="./custom-cityscan.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Running a Custom City Scan</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./multiple-cityscan.html">Advanced Workflow</a></li><li class="breadcrumb-item"><a href="./custom-cityscan.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Customizing Maps and Charts</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Running a Custom City Scan</span></h1>
+<h1 class="title"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Customizing Maps and Charts</span></h1>
 </div>
 
 
@@ -395,122 +406,363 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>A custom scan lets you select specific tasks, override default parameters, and plug in additional data sources beyond the standard suite.</p>
-<section id="when-to-customize" class="level2" data-number="8.1">
-<h2 data-number="8.1" class="anchored" data-anchor-id="when-to-customize"><span class="header-section-number">8.1</span> When to Customize</h2>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consider a custom scan when:</p>
+<p>City Scan produces two kinds of visual outputs: static map PNGs (one per data layer) and interactive HTML chart reports (one per task). Both are customizable without touching the core pipeline — maps through YAML config files, charts through Quarto documents.</p>
+<hr>
+<section id="part-1-maps" class="level2" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="part-1-maps"><span class="header-section-number">8.1</span> Part 1: Maps</h2>
+<section id="how-map-rendering-works" class="level3" data-number="8.1.1">
+<h3 data-number="8.1.1" class="anchored" data-anchor-id="how-map-rendering-works"><span class="header-section-number">8.1.1</span> How map rendering works</h3>
+<p>Running <code>scan --render maps --scan-id {id}</code> executes <code>core/R/maps-static.R</code>, which reads two config files and renders one PNG per layer into <code>03-render-output/maps/</code>:</p>
 <ul>
-<li>You only need a subset of data layers to save time</li>
-<li>You have proprietary or local data to incorporate</li>
-<li>You want non-default resolution or time periods</li>
+<li><strong><code>source/layers.yml</code></strong> — the global style library. Each entry defines a <em>yaml_key</em> (e.g.&nbsp;<code>population</code>) with its title, palette, breaks, and other visual settings.</li>
+<li><strong><code>tasks/{task}/maps.yml</code></strong> — per-task config. Declares which yaml_keys this task contributes, whether to aggregate raster pixels into hexbins, and whether custom R scripts are needed.</li>
 </ul>
+<p>The renderer matches each yaml_key to a file in <code>02-process-output/spatial/</code> using the <code>fuzzy_string</code> pattern, then applies the style settings to produce the map.</p>
+<hr>
 </section>
-<section id="selecting-tasks" class="level2" data-number="8.2">
-<h2 data-number="8.2" class="anchored" data-anchor-id="selecting-tasks"><span class="header-section-number">8.2</span> Selecting Tasks</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># custom_config.yml</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">city</span><span class="kw">:</span><span class="at"> </span><span class="st">"Jakarta"</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">country</span><span class="kw">:</span><span class="at"> </span><span class="st">"ID"</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">aoi</span><span class="kw">:</span><span class="at"> </span><span class="st">"inputs/AOI/jakarta.geojson"</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">output_dir</span><span class="kw">:</span><span class="at"> </span><span class="st">"outputs/jakarta_custom"</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">scan_type</span><span class="kw">:</span><span class="at"> custom</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">tasks</span><span class="kw">:</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> population</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> flood_risk</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> coastal_erosion</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="overriding-default-parameters" class="level2" data-number="8.3">
-<h2 data-number="8.3" class="anchored" data-anchor-id="overriding-default-parameters"><span class="header-section-number">8.3</span> Overriding Default Parameters</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">task_overrides</span><span class="kw">:</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">population</span><span class="kw">:</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">year</span><span class="kw">:</span><span class="at"> </span><span class="dv">2020</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">resolution</span><span class="kw">:</span><span class="at"> </span><span class="dv">100</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">flood_risk</span><span class="kw">:</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">return_period</span><span class="kw">:</span><span class="at"> </span><span class="dv">50</span><span class="co">   # 50-year flood instead of 100-year</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">source</span><span class="kw">:</span><span class="at"> </span><span class="st">"fathom_v3"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Overrides are merged with the task defaults, so only specified fields are changed.</p>
-</section>
-<section id="adding-a-custom-data-source" class="level2" data-number="8.4">
-<h2 data-number="8.4" class="anchored" data-anchor-id="adding-a-custom-data-source"><span class="header-section-number">8.4</span> Adding a Custom Data Source</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># tasks/custom/my_sensor_data.py</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> cityscan.registry <span class="im">import</span> register_task</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="at">@register_task</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> MySensorDataTask:</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    name <span class="op">=</span> <span class="st">"sensor_data"</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    inputs <span class="op">=</span> [<span class="st">"aoi"</span>]</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    outputs <span class="op">=</span> [<span class="st">"sensor_data.tif"</span>]</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> run(<span class="va">self</span>, config):</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        aoi <span class="op">=</span> <span class="va">self</span>.load_aoi(config[<span class="st">"aoi"</span>])</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        data <span class="op">=</span> <span class="va">self</span>.load_local_raster(<span class="st">"data/sensor_grid.tif"</span>)</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        clipped <span class="op">=</span> <span class="va">self</span>.clip(data, aoi)</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.write_raster(clipped, <span class="st">"sensor_data.tif"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Then reference it in your config:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tasks</span><span class="kw">:</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> population</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> sensor_data</span><span class="co">   # your custom task</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="custom-output-directory-layout" class="level2" data-number="8.5">
-<h2 data-number="8.5" class="anchored" data-anchor-id="custom-output-directory-layout"><span class="header-section-number">8.5</span> Custom Output Directory Layout</h2>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="cover.png" class="img-fluid figure-img" style="width:70.0%" alt="File browser showing a custom scan output directory with selective task outputs."></p>
-<figcaption>Custom scan output structure</figcaption>
-</figure>
-</div>
-<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
-<div id="tbl-custom-config" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-custom-config-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;8.1: Custom scan configuration options
-</figcaption>
-<div aria-describedby="tbl-custom-config-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<section id="changing-how-a-layer-looks-sourcelayers.yml" class="level3" data-number="8.1.2">
+<h3 data-number="8.1.2" class="anchored" data-anchor-id="changing-how-a-layer-looks-sourcelayers.yml"><span class="header-section-number">8.1.2</span> Changing how a layer looks — <code>source/layers.yml</code></h3>
+<p>This is the file to edit when you want to change colors, legend labels, title text, or binning for any existing layer.</p>
+<p>Each entry is keyed by a short identifier (the <em>yaml_key</em>) that the rest of the system uses to refer to that layer:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">population</span><span class="kw">:</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">fuzzy_string</span><span class="kw">:</span><span class="at"> (?&lt;!dense_)population.tif$</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">'Population density'</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">subtitle</span><span class="kw">:</span><span class="at"> </span><span class="st">'Number of persons per 10,000 m&lt;sup&gt;2&lt;/sup&gt;'</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">palette</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="st">'#ECEB72'</span><span class="kw">,</span><span class="at"> </span><span class="st">'#8E3933'</span><span class="kw">]</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">bins</span><span class="kw">:</span><span class="at"> </span><span class="dv">5</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">basemap</span><span class="kw">:</span><span class="at"> </span><span class="st">'satellite'</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">group_id</span><span class="kw">:</span><span class="at"> Population density</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The fields you are most likely to modify:</p>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
 <thead>
 <tr class="header">
-<th>Config Key</th>
-<th>Type</th>
-<th>Description</th>
+<th>Field</th>
+<th>What it controls</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>tasks</code></td>
-<td><code>list[str]</code></td>
-<td>Tasks to include</td>
+<td><code>title</code></td>
+<td>Main legend header</td>
 </tr>
 <tr class="even">
-<td><code>task_overrides</code></td>
-<td><code>dict</code></td>
-<td>Per-task parameter overrides</td>
+<td><code>subtitle</code></td>
+<td>Secondary legend text (supports HTML)</td>
 </tr>
 <tr class="odd">
-<td><code>extra_task_dirs</code></td>
-<td><code>list[str]</code></td>
-<td>Paths to custom task modules</td>
+<td><code>palette</code></td>
+<td>List of hex colors from low to high value</td>
+</tr>
+<tr class="even">
+<td><code>bins</code></td>
+<td>Number of equal-interval bins (alternative to explicit <code>breaks</code>)</td>
+</tr>
+<tr class="odd">
+<td><code>breaks</code></td>
+<td>Explicit cut points including limits; for categorical maps, the factor levels</td>
+</tr>
+<tr class="even">
+<td><code>labels</code></td>
+<td>Human-readable label for each bin (must match the number of intervals)</td>
+</tr>
+<tr class="odd">
+<td><code>oob</code></td>
+<td>Out-of-bounds handling — <code>censor</code> clips values outside the range</td>
+</tr>
+<tr class="even">
+<td><code>suffix</code></td>
+<td>Unit string appended to legend values (e.g.&nbsp;<code>°C</code>, <code>%</code>)</td>
+</tr>
+<tr class="odd">
+<td><code>factor: TRUE</code></td>
+<td>Forces categorical (discrete) rendering</td>
 </tr>
 </tbody>
 </table>
-</div>
-</figure>
-</div>
-<div class="callout callout-style-default callout-tip callout-titled">
+<p><strong>Example:</strong> Change the flood return period labels from short codes to plain English:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fluvial</span><span class="kw">:</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">'Fluvial flood return period'</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">labels</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="st">'1-in-1,000 year'</span><span class="kw">,</span><span class="at"> </span><span class="st">'1-in-100 year'</span><span class="kw">,</span><span class="at"> </span><span class="st">'1-in-10 year'</span><span class="kw">]</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">palette</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="st">'#A7BCEE'</span><span class="kw">,</span><span class="at"> </span><span class="st">'#1B35C4'</span><span class="kw">]</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">breaks</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="dv">0</span><span class="kw">,</span><span class="at"> </span><span class="fl">.11</span><span class="kw">,</span><span class="at"> </span><span class="fl">1.1</span><span class="kw">,</span><span class="at"> </span><span class="fl">10.1</span><span class="kw">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Use <code>--dry-run</code> to preview which tasks will execute and in what order before committing to a full run.</p>
+<p>The <code>fuzzy_string</code> field is a regex used to find the data file in <code>02-process-output/spatial/</code>. Only change it if the task’s output filename has changed.</p>
 </div>
 </div>
+<hr>
+</section>
+<section id="changing-which-layers-a-task-renders-taskstaskmaps.yml" class="level3" data-number="8.1.3">
+<h3 data-number="8.1.3" class="anchored" data-anchor-id="changing-which-layers-a-task-renders-taskstaskmaps.yml"><span class="header-section-number">8.1.3</span> Changing which layers a task renders — <code>tasks/{task}/maps.yml</code></h3>
+<p>Each task folder contains a <code>maps.yml</code> that tells the renderer what to do with that task’s outputs. The simplest form is just a list of yaml_keys:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># tasks/slope/maps.yml</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">layers</span><span class="kw">:</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> slope</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>More options are available when you need aggregation, dependencies, or custom scripts:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>layers:</code></td>
+<td>List of yaml_keys this task contributes (must exist in <code>layers.yml</code>)</td>
+</tr>
+<tr class="even">
+<td><code>aggregate_fun:</code></td>
+<td>How to aggregate raster pixels per cell — <code>mean</code>, <code>sum</code>, <code>median</code>, <code>min</code>, <code>max</code></td>
+</tr>
+<tr class="odd">
+<td><code>aggregate_mode:</code></td>
+<td>Aggregation grid type — <code>hexbin</code>, <code>resample</code>, <code>h3</code>, or <code>none</code></td>
+</tr>
+<tr class="even">
+<td><code>aggregate_size:</code></td>
+<td>Target cell size in meters</td>
+</tr>
+<tr class="odd">
+<td><code>smoothing:</code></td>
+<td>Pre-smoothing before rendering — <code>method: gaussian/median/modal</code>, <code>window:</code>, <code>sigma:</code></td>
+</tr>
+<tr class="even">
+<td><code>depends:</code></td>
+<td>Other tasks whose layers must be rendered too (used by custom scripts)</td>
+</tr>
+<tr class="odd">
+<td><code>custom:</code></td>
+<td>List of R script paths (from repo root) for non-standard maps</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Aggregation example</strong> — population rendered as summed hexbins:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># tasks/worldpop/maps.yml</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">layers</span><span class="kw">:</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> population</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">aggregate_fun</span><span class="kw">:</span><span class="at"> sum</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Dependencies and custom scripts</strong> — flood maps that need built-up and population overlays:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># tasks/fathom/maps.yml</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">layers</span><span class="kw">:</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> fluvial</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> pluvial</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> coastal</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> combined_flooding</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">depends</span><span class="kw">:</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> worldpop</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> wsf</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> accessibility</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="fu">custom</span><span class="kw">:</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> core/R/map-flooding.R</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <code>depends:</code> entries ensure that those tasks’ standard layers are also rendered (so the custom script can read them). The <code>custom:</code> script then reads from <code>spatial_dir</code> and assembles whatever composite map it needs.</p>
+<hr>
+</section>
+<section id="adding-a-custom-map-script" class="level3" data-number="8.1.4">
+<h3 data-number="8.1.4" class="anchored" data-anchor-id="adding-a-custom-map-script"><span class="header-section-number">8.1.4</span> Adding a custom map script</h3>
+<p>Use a custom script when the standard pipeline — one raster, one style — isn’t enough. Common cases: overlaying two data sources, combining flood layers with a built-up hatch, or rendering a temporal sequence.</p>
+<p><strong>Pattern:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># core/R/map-deforestation.R</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>forest <span class="ot">&lt;-</span> <span class="fu">fuzzy_read</span>(spatial_dir, <span class="st">"forest_cover"</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>deforest <span class="ot">&lt;-</span> <span class="fu">fuzzy_read</span>(spatial_dir, <span class="st">"deforestation"</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">plot_static_layer</span>(<span class="at">data =</span> deforest, <span class="at">yaml_key =</span> <span class="st">"deforest"</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">plot_aoi =</span> <span class="cn">TRUE</span>, <span class="at">plot_wards =</span> <span class="sc">!</span><span class="fu">is.null</span>(wards)) <span class="sc">+</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_spatraster</span>(<span class="at">data =</span> forest, <span class="at">fill =</span> <span class="st">"#8CC056"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="fu">save_plot</span>(p, <span class="at">filename =</span> <span class="st">"forest_deforest.png"</span>, <span class="at">directory =</span> styled_maps_dir)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Key functions available (loaded by <code>maps-static.R</code>):</p>
+<ul>
+<li><code>fuzzy_read(dir, pattern)</code> — find and read a file by partial name or regex</li>
+<li><code>plot_static_layer(data, yaml_key, ...)</code> — create a styled ggplot using <code>layers.yml</code> settings</li>
+<li><code>save_plot(plot, filename, directory)</code> — save with consistent legend layout and dimensions</li>
+<li><code>add_builtup_hatch(plot, underlay = FALSE)</code> — overlay a 2025 built-up area hatch pattern; set <code>underlay = TRUE</code> to place it beneath point layers</li>
+</ul>
+<p>Hook the script into the task by adding it to <code>maps.yml</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># tasks/forest/maps.yml</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">layers</span><span class="kw">:</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> forest</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> deforest</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">custom</span><span class="kw">:</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> core/R/map-deforestation.R</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>To render only this task’s maps without re-rendering everything:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">scan</span> forest <span class="at">--render</span> maps <span class="at">--scan-id</span> 2026-04-namibia-windhoek</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="part-2-charts" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="part-2-charts"><span class="header-section-number">8.2</span> Part 2: Charts</h2>
+<section id="how-chart-rendering-works" class="level3" data-number="8.2.1">
+<h3 data-number="8.2.1" class="anchored" data-anchor-id="how-chart-rendering-works"><span class="header-section-number">8.2.1</span> How chart rendering works</h3>
+<p>Each task can have a <code>charts/</code> folder containing a Quarto document. Running:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">scan</span> <span class="at">--render</span> charts {task} <span class="at">--scan-id</span> {id}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>renders <code>tasks/{task}/charts/index.qmd</code> into an HTML file. All chart files across tasks are then assembled into a single combined report by:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">scan</span> <span class="at">--render</span> scan-calculations <span class="at">--scan-id</span> {id}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The order of tasks in that report is controlled by <code>scan-calculations/sections.yml</code>.</p>
+<hr>
+</section>
+<section id="file-structure" class="level3" data-number="8.2.2">
+<h3 data-number="8.2.2" class="anchored" data-anchor-id="file-structure"><span class="header-section-number">8.2.2</span> File structure</h3>
+<p>A chart folder needs two files:</p>
+<pre><code>tasks/{task}/charts/
+  index.qmd      # the chart document
+  _quarto.yml    # Quarto project config — copy from any other task</code></pre>
+<p>The <code>_quarto.yml</code> is nearly identical across all tasks:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">project</span><span class="kw">:</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">type</span><span class="kw">:</span><span class="at"> default</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">render</span><span class="kw">:</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> index.qmd</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">html</span><span class="kw">:</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">theme</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">default</span><span class="kw">,</span><span class="at"> ../../../source/pagedtable-fix.scss</span><span class="kw">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Copy this from an existing task and change nothing. The <code>pagedtable-fix.scss</code> file applies Bootstrap 5 table styling fixes automatically.</p>
+<hr>
+</section>
+<section id="anatomy-of-a-chart-document" class="level3" data-number="8.2.3">
+<h3 data-number="8.2.3" class="anchored" data-anchor-id="anatomy-of-a-chart-document"><span class="header-section-number">8.2.3</span> Anatomy of a chart document</h3>
+<p>Every <code>index.qmd</code> has the same four parts. Here is the elevation chart broken down piece by piece.</p>
+<p><strong>1. YAML frontmatter</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">df-print</span><span class="kw">:</span><span class="at"> paged</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">execute</span><span class="kw">:</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">echo</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">warning</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">message</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>df-print: paged</code> enables <code>print_paged_df()</code> for interactive HTML tables. The execute options suppress code, warnings, and messages from appearing in the rendered output.</p>
+<p><strong>2. Section header</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">## Elevation</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Each chart section starts with a <code>##</code> header. This becomes the section title in the combined scan-calculations report, so keep it short and descriptive.</p>
+<p><strong>3. Setup chunk</strong> (hidden, runs once)</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup-elevation</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(<span class="st">"_quarto.yml"</span>)) here<span class="sc">::</span><span class="fu">i_am</span>(<span class="st">"tasks/elevation/charts/index.qmd"</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">exists</span>(<span class="st">"aoi"</span>)) {</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  USE_GCS <span class="ot">&lt;&lt;-</span> <span class="cn">FALSE</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"core/R/setup.R"</span>))</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>here::i_am()</code> anchors the project root so <code>here()</code> resolves correctly when rendering from inside the <code>charts/</code> folder — without it, <code>here()</code> points to the charts folder instead of the city root. The <code>source(setup.R)</code> call loads all libraries and creates the shared objects listed in the table below. The <code>if (!exists("aoi"))</code> guard prevents re-running setup when rendering via scan-calculations, which sources this file into an already-loaded session.</p>
+<p><strong>4. Data-loading chunk</strong> (hidden)</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: data-loading-elevation</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>elevation <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>({</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read_csv</span>(<span class="fu">str_subset</span>(<span class="fu">list.files</span>(tabular_dir, <span class="at">full =</span> T), <span class="st">"elevation.csv"</span>),</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">col_types =</span> <span class="st">"cd"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">Bin =</span> <span class="dv">1</span>, <span class="at">Count =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Bin), Count <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">percent =</span> Count <span class="sc">/</span> <span class="fu">sum</span>(Count),</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>           <span class="at">Bin =</span> <span class="fu">factor</span>(Bin, <span class="at">levels =</span> Bin))</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>}, <span class="at">error =</span> <span class="cf">function</span>(e) { <span class="fu">message</span>(<span class="st">"elevation not available: "</span>, e<span class="sc">$</span>message); <span class="cn">NULL</span> })</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Wrap all data loading in <code>tryCatch</code> — if the CSV doesn’t exist yet, the variable is set to <code>NULL</code> and the chart section is skipped gracefully rather than crashing the render. Note the explicit <code>factor(..., levels = Bin)</code> call: factor levels are lost in CSV round-trips and must be restored after reading.</p>
+<p><strong>5. Chart chunk</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: elevation-chart</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| results: asis</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">is.null</span>(elevation) <span class="sc">||</span> <span class="fu">nrow</span>(elevation) <span class="sc">==</span> <span class="dv">0</span>) {</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print_text</span>(<span class="fu">paste_bold</span>(<span class="st">"No elevation data available"</span>))</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  elevation_plot <span class="ot">&lt;-</span> <span class="fu">ggdonut</span>(elevation, <span class="st">"Bin"</span>, <span class="st">"percent"</span>,</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">colors =</span> <span class="fu">c</span>(<span class="st">"#F2D7D3"</span>, <span class="st">"#DCBAC5"</span>, <span class="st">"#C59FB8"</span>, <span class="st">"#AF84A9"</span>, <span class="st">"#97679C"</span>))</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(elevation_plot)</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print_paged_df</span>(elevation)</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Always guard against empty data before plotting. Use plain <code>print()</code> for ggplots — <code>ggplot2 &gt;= 4.0</code> removed <code>:::print.ggplot()</code>. The <code>cat("\n\n")</code> after <code>print()</code> is required to prevent subsequent text from rendering beside the plot. <code>print_paged_df()</code> renders a paginated HTML table.</p>
+<hr>
+</section>
+<section id="objects-available-in-chart-documents" class="level3" data-number="8.2.4">
+<h3 data-number="8.2.4" class="anchored" data-anchor-id="objects-available-in-chart-documents"><span class="header-section-number">8.2.4</span> Objects available in chart documents</h3>
+<p>After <code>source(setup.R)</code> runs, these objects are available in every chart:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Object</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>tabular_dir</code></td>
+<td>Path to <code>02-process-output/tabular/</code> — read CSVs from here</td>
+</tr>
+<tr class="even">
+<td><code>spatial_dir</code></td>
+<td>Path to <code>02-process-output/spatial/</code> — read shapefiles/rasters from here</td>
+</tr>
+<tr class="odd">
+<td><code>city_params</code></td>
+<td>Parsed <code>city_inputs.yml</code> as a list</td>
+</tr>
+<tr class="even">
+<td><code>city</code></td>
+<td>City name, title case</td>
+</tr>
+<tr class="odd">
+<td><code>country</code></td>
+<td>Country name, title case</td>
+</tr>
+<tr class="even">
+<td><code>aoi</code></td>
+<td>City boundary as a <code>SpatVector</code> (EPSG:4326)</td>
+</tr>
+<tr class="odd">
+<td><code>wards</code></td>
+<td>Wards boundary, or <code>NULL</code> if not present</td>
+</tr>
+<tr class="even">
+<td><code>layer_params</code></td>
+<td>Parsed <code>source/layers.yml</code> — use for palettes/breaks in charts</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="adding-a-new-section-to-an-existing-chart" class="level3" data-number="8.2.5">
+<h3 data-number="8.2.5" class="anchored" data-anchor-id="adding-a-new-section-to-an-existing-chart"><span class="header-section-number">8.2.5</span> Adding a new section to an existing chart</h3>
+<p>Open the task’s <code>index.qmd</code> and add a new <code>##</code> section following the same pattern:</p>
+<ol type="1">
+<li>Load the CSV from <code>tabular_dir</code> in a hidden chunk with a <code>tryCatch</code> guard</li>
+<li>Add a <code>## Section Title</code> header</li>
+<li>Build the ggplot in a <code>results: asis</code> chunk</li>
+<li>Call <code>print(plot)</code>, then <code>cat("\n\n")</code>, then <code>print_paged_df(df)</code> if a table is also needed</li>
+</ol>
+<hr>
+</section>
+<section id="creating-a-chart-for-a-new-task" class="level3" data-number="8.2.6">
+<h3 data-number="8.2.6" class="anchored" data-anchor-id="creating-a-chart-for-a-new-task"><span class="header-section-number">8.2.6</span> Creating a chart for a new task</h3>
+<ol type="1">
+<li><p>Create <code>tasks/{task}/charts/</code></p></li>
+<li><p>Copy <code>_quarto.yml</code> from any existing task (e.g.&nbsp;<code>tasks/solar/charts/_quarto.yml</code>)</p></li>
+<li><p>Create <code>index.qmd</code> using the boilerplate structure above — adjust the <code>here::i_am()</code> path and the CSV filename</p></li>
+<li><p>Render to check output:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">scan</span> <span class="at">--render</span> charts {task} <span class="at">--scan-id</span> {id}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p>To include this task in the combined scan-calculations report, add it to <code>scan-calculations/sections.yml</code> in the appropriate position</p></li>
+</ol>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -916,8 +1168,8 @@ Tip
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./multiple-cityscan.html" class="pagination-link" aria-label="Running Multiple City Scans">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Running Multiple City Scans</span></span>
+      <a href="./multiple-cityscan.html" class="pagination-link" aria-label="Running Multiple Cities">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Running Multiple Cities</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

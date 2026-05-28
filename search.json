@@ -320,122 +320,100 @@
   {
     "objectID": "multiple-cityscan.html",
     "href": "multiple-cityscan.html",
-    "title": "7  Running Multiple City Scans",
+    "title": "7  Running Multiple Cities",
     "section": "",
-    "text": "7.1 Overview\nCity Scan supports batch execution across multiple cities using a single configuration file.\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Batch mode iterates over a list of city configurations, running each scan sequentially or in parallel depending on available compute resources.",
+    "text": "7.1 Option A: Separate AOI Folders\nWhile a single-city run processes one city at a time, the --multicity flag lets you queue a list of cities and run them sequentially from a shared configuration file. Setup is similar, but inputs are organized per city rather than in a flat folder.\nThere are two ways to provide city boundaries for a multi-city run. Both use the same inputs/multi_inputs.yml config file and the same scan --all --multicity command.\nBest when you already have individual shapefiles per city.",
     "crumbs": [
       "Advanced Workflow",
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Running Multiple City Scans</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Running Multiple Cities</span>"
     ]
   },
   {
-    "objectID": "multiple-cityscan.html#batch-configuration",
-    "href": "multiple-cityscan.html#batch-configuration",
-    "title": "7  Running Multiple City Scans",
-    "section": "7.2 Batch Configuration",
-    "text": "7.2 Batch Configuration\n# batch_config.yml\nscan_type: batch\noutput_base_dir: \"outputs/\"\nyear: 2024\n\ncities:\n  - city: \"Nairobi\"\n    country: \"KE\"\n    aoi: \"inputs/AOI/nairobi.geojson\"\n\n  - city: \"Kampala\"\n    country: \"UG\"\n    aoi: \"inputs/AOI/kampala.geojson\"\n\n  - city: \"Dar es Salaam\"\n    country: \"TZ\"\n    aoi: \"inputs/AOI/dar_es_salaam.geojson\"",
+    "objectID": "multiple-cityscan.html#option-a-separate-aoi-folders",
+    "href": "multiple-cityscan.html#option-a-separate-aoi-folders",
+    "title": "7  Running Multiple Cities",
+    "section": "",
+    "text": "7.1.1 Step 1. Create inputs/multi_inputs.yml\nThis file follows the same structure as city_inputs.yml, with a cities: list added at the top.\ncities:\n  - city_name: Windhoek\n  - city_name: Swakopmund\n  - city_name: Walvis Bay\n  - city_name: Lüderitz\n  - city_name: Aus\n\n# Shared settings — same fields as city_inputs.yml\nfirst_year: 2015\nlast_year: 2026\n\nflood:\n  threshold: 15\n  year: [2020]\n  return_period: [10, 100, 1000]\n\n# ... accessibility, FWI, etc.\nAll settings outside the cities: list are shared across every city. You can override any shared setting for a specific city by adding it under that city’s entry:\ncities:\n  - city_name: Windhoek\n    first_year: 2010    # overrides the shared first_year for Windhoek only\n  - city_name: Aus\n\n\n7.1.2 Step 2. Organize AOI files by city\nEach city needs its own subfolder under inputs/AOI/. Place the shapefile and its companion files (.dbf, .prj, .shx) inside that subfolder:\ninputs/AOI/\n  Windhoek/\n    Windhoek_geoboundaries.shp\n    Windhoek_geoboundaries.dbf\n    ...\n  Swakopmund/\n    Swakopmund.shp\n    ...\n  Walvis_Bay/\n    walvis_buffer_hull_1000m.shp\n    ...\nIf a city has ward boundaries, place them in a sibling folder named {city_name}_wards/:\ninputs/AOI/\n  Windhoek/\n    Windhoek_geoboundaries.shp\n    ...\n  Windhoek_wards/\n    Windhoek_wards_geoboundaries.shp\n    ...\nWards are auto-detected — no extra configuration needed.\n\n\n7.1.3 Step 3. Edit inputs/menu.yml\nThe same menu.yml is used for all cities. Enable or disable tasks there as usual.",
     "crumbs": [
       "Advanced Workflow",
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Running Multiple City Scans</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Running Multiple Cities</span>"
     ]
   },
   {
-    "objectID": "multiple-cityscan.html#running-the-batch",
-    "href": "multiple-cityscan.html#running-the-batch",
-    "title": "7  Running Multiple City Scans",
-    "section": "7.3 Running the Batch",
-    "text": "7.3 Running the Batch\npython run.py --config batch_config.yml --batch\nSed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Scans run sequentially by default. To enable parallel execution:\npython run.py --config batch_config.yml --batch --workers 3",
+    "objectID": "multiple-cityscan.html#option-b-multipolygon-file",
+    "href": "multiple-cityscan.html#option-b-multipolygon-file",
+    "title": "7  Running Multiple Cities",
+    "section": "7.2 Option B: Multipolygon File",
+    "text": "7.2 Option B: Multipolygon File\nBest when all city boundaries are already in a single vector file (GPKG, SHP, or GeoJSON), with one row per city. AOI shapefiles are extracted automatically from the file into inputs/AOI/{city_slug}/ — you don’t need to prepare them manually.\n\n7.2.1 Step 1. Create inputs/multi_inputs.yml\nInstead of organizing AOIs into subfolders, point to the multipolygon file and specify which column holds the city names:\nmultipolygon:\n  file: inputs/AOI/lobito_corridor_cities.gpkg\n  name_column: GC_UCN_MAI_2025\n\n# Shared settings — same as Option A\nfirst_year: 2015\nlast_year: 2026\n\nflood:\n  threshold: 15\n  year: [2020]\n  return_period: [10, 100, 1000]\nBy default, all cities in the file are processed. To run only a subset, add a cities: list — all AOIs are still extracted, but only the listed cities are scanned:\nmultipolygon:\n  file: inputs/AOI/lobito_corridor_cities.gpkg\n  name_column: GC_UCN_MAI_2025\n\ncities:\n  - city_name: Sakania\n  - city_name: Lukuni\n\n\n\n\n\n\nNote\n\n\n\nIf a city listed under cities: is not found in the multipolygon file, an error is raised.\n\n\n\n\n7.2.2 Step 2. Edit inputs/menu.yml\nSame as Option A — one shared menu.yml for all cities.",
     "crumbs": [
       "Advanced Workflow",
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Running Multiple City Scans</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Running Multiple Cities</span>"
     ]
   },
   {
-    "objectID": "multiple-cityscan.html#progress-tracking",
-    "href": "multiple-cityscan.html#progress-tracking",
-    "title": "7  Running Multiple City Scans",
-    "section": "7.4 Progress Tracking",
-    "text": "7.4 Progress Tracking\n\n\n\nBatch scan progress terminal output\n\n\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. A progress summary is printed after all scans complete:\nBatch complete: 3/3 cities succeeded\n  ✓ Nairobi       (58m 12s)\n  ✓ Kampala       (1h 03m 47s)\n  ✓ Dar es Salaam (1h 11m 02s)",
+    "objectID": "multiple-cityscan.html#running",
+    "href": "multiple-cityscan.html#running",
+    "title": "7  Running Multiple Cities",
+    "section": "7.3 Running",
+    "text": "7.3 Running\nscan --all --multicity\nCities are always processed sequentially. All other flags work as expected:\nscan --all --multicity --parallel      # parallel tasks within each city\nscan --all --multicity --collect       # collect step only, all cities\nscan wsf fathom --multicity            # specific tasks for all cities\nscan --all --multicity --upload        # upload to GCS after each task\n\n# Render for all cities\nscan --render maps --multicity \nscan --render scan-calculations --multicity\n\n\n\n\n\n\nNote\n\n\n\n--parallel applies to tasks within each city, not across cities. Cities themselves always run one at a time.",
     "crumbs": [
       "Advanced Workflow",
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Running Multiple City Scans</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Running Multiple Cities</span>"
+    ]
+  },
+  {
+    "objectID": "multiple-cityscan.html#what-happens-under-the-hood",
+    "href": "multiple-cityscan.html#what-happens-under-the-hood",
+    "title": "7  Running Multiple Cities",
+    "section": "7.4 What Happens Under the Hood",
+    "text": "7.4 What Happens Under the Hood\nFor each city in the list, the scan runner:\n\nExtracts the city’s AOI — either from a {city_name}/ subfolder in inputs/AOI/ (Option A) or from the multipolygon file (Option B, which writes shapefiles to inputs/AOI/{city_slug}/)\nAuto-detects the .shp file inside that subfolder\nGenerates a city_inputs.yml combining shared settings, any city-specific overrides, the detected AOI_shp_name, and a bm_cities_manual list populated with the other cities\nWrites that city_inputs.yml to inputs/ and runs scan as a subprocess\nThe normal single-city flow takes over: creates mnt/{scan_id}/, copies AOI and wards files flat into 01-user-input/, and runs the enabled tasks\nMoves on to the next city",
+    "crumbs": [
+      "Advanced Workflow",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Running Multiple Cities</span>"
     ]
   },
   {
     "objectID": "multiple-cityscan.html#output-structure",
     "href": "multiple-cityscan.html#output-structure",
-    "title": "7  Running Multiple City Scans",
+    "title": "7  Running Multiple Cities",
     "section": "7.5 Output Structure",
-    "text": "7.5 Output Structure\noutputs/\n├── nairobi/\n│   ├── maps/\n│   ├── stats/\n│   └── report.html\n├── kampala/\n│   └── ...\n└── dar_es_salaam/\n    └── ...\n\n\n\nTable 7.1: Batch run options\n\n\n\n\n\nParameter\nDefault\nDescription\n\n\n\n\n--workers\n1\nNumber of parallel scans\n\n\n--retry\n0\nRetry failed scans N times\n\n\n--skip-existing\nfalse\nSkip cities with existing outputs\n\n\n\n\n\n\n\n\n\n\n\n\nWarning\n\n\n\nRunning too many parallel workers may hit Google Earth Engine API rate limits. Start with --workers 2 and scale up cautiously.",
+    "text": "7.5 Output Structure\nEach city produces its own self-contained folder under mnt/:\nmnt/\n  2026-04-namibia-windhoek/\n  2026-04-namibia-swakopmund/\n  2026-04-namibia-walvis_bay/\n  2026-04-namibia-luderitz/\n  2026-04-namibia-aus/\nThe bm_cities_manual field links each city to its siblings, enabling cross-city population comparisons in the worldpop analysis.",
     "crumbs": [
       "Advanced Workflow",
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Running Multiple City Scans</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Running Multiple Cities</span>"
     ]
   },
   {
     "objectID": "custom-cityscan.html",
     "href": "custom-cityscan.html",
-    "title": "8  Running a Custom City Scan",
+    "title": "8  Customizing Maps and Charts",
     "section": "",
-    "text": "8.1 When to Customize\nA custom scan lets you select specific tasks, override default parameters, and plug in additional data sources beyond the standard suite.\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Consider a custom scan when:",
+    "text": "8.1 Part 1: Maps\nCity Scan produces two kinds of visual outputs: static map PNGs (one per data layer) and interactive HTML chart reports (one per task). Both are customizable without touching the core pipeline — maps through YAML config files, charts through Quarto documents.",
     "crumbs": [
       "Advanced Workflow",
-      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Running a Custom City Scan</span>"
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Customizing Maps and Charts</span>"
     ]
   },
   {
-    "objectID": "custom-cityscan.html#when-to-customize",
-    "href": "custom-cityscan.html#when-to-customize",
-    "title": "8  Running a Custom City Scan",
+    "objectID": "custom-cityscan.html#part-1-maps",
+    "href": "custom-cityscan.html#part-1-maps",
+    "title": "8  Customizing Maps and Charts",
     "section": "",
-    "text": "You only need a subset of data layers to save time\nYou have proprietary or local data to incorporate\nYou want non-default resolution or time periods",
+    "text": "8.1.1 How map rendering works\nRunning scan --render maps --scan-id {id} executes core/R/maps-static.R, which reads two config files and renders one PNG per layer into 03-render-output/maps/:\n\nsource/layers.yml — the global style library. Each entry defines a yaml_key (e.g. population) with its title, palette, breaks, and other visual settings.\ntasks/{task}/maps.yml — per-task config. Declares which yaml_keys this task contributes, whether to aggregate raster pixels into hexbins, and whether custom R scripts are needed.\n\nThe renderer matches each yaml_key to a file in 02-process-output/spatial/ using the fuzzy_string pattern, then applies the style settings to produce the map.\n\n\n\n8.1.2 Changing how a layer looks — source/layers.yml\nThis is the file to edit when you want to change colors, legend labels, title text, or binning for any existing layer.\nEach entry is keyed by a short identifier (the yaml_key) that the rest of the system uses to refer to that layer:\npopulation:\n  fuzzy_string: (?&lt;!dense_)population.tif$\n  title: 'Population density'\n  subtitle: 'Number of persons per 10,000 m&lt;sup&gt;2&lt;/sup&gt;'\n  palette: ['#ECEB72', '#8E3933']\n  bins: 5\n  basemap: 'satellite'\n  group_id: Population density\nThe fields you are most likely to modify:\n\n\n\n\n\n\n\nField\nWhat it controls\n\n\n\n\ntitle\nMain legend header\n\n\nsubtitle\nSecondary legend text (supports HTML)\n\n\npalette\nList of hex colors from low to high value\n\n\nbins\nNumber of equal-interval bins (alternative to explicit breaks)\n\n\nbreaks\nExplicit cut points including limits; for categorical maps, the factor levels\n\n\nlabels\nHuman-readable label for each bin (must match the number of intervals)\n\n\noob\nOut-of-bounds handling — censor clips values outside the range\n\n\nsuffix\nUnit string appended to legend values (e.g. °C, %)\n\n\nfactor: TRUE\nForces categorical (discrete) rendering\n\n\n\nExample: Change the flood return period labels from short codes to plain English:\nfluvial:\n  title: 'Fluvial flood return period'\n  labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']\n  palette: ['#A7BCEE', '#1B35C4']\n  breaks: [0, .11, 1.1, 10.1]\n\n\n\n\n\n\nNote\n\n\n\nThe fuzzy_string field is a regex used to find the data file in 02-process-output/spatial/. Only change it if the task’s output filename has changed.\n\n\n\n\n\n8.1.3 Changing which layers a task renders — tasks/{task}/maps.yml\nEach task folder contains a maps.yml that tells the renderer what to do with that task’s outputs. The simplest form is just a list of yaml_keys:\n# tasks/slope/maps.yml\nlayers:\n  - slope\nMore options are available when you need aggregation, dependencies, or custom scripts:\n\n\n\n\n\n\n\nField\nWhat it does\n\n\n\n\nlayers:\nList of yaml_keys this task contributes (must exist in layers.yml)\n\n\naggregate_fun:\nHow to aggregate raster pixels per cell — mean, sum, median, min, max\n\n\naggregate_mode:\nAggregation grid type — hexbin, resample, h3, or none\n\n\naggregate_size:\nTarget cell size in meters\n\n\nsmoothing:\nPre-smoothing before rendering — method: gaussian/median/modal, window:, sigma:\n\n\ndepends:\nOther tasks whose layers must be rendered too (used by custom scripts)\n\n\ncustom:\nList of R script paths (from repo root) for non-standard maps\n\n\n\nAggregation example — population rendered as summed hexbins:\n# tasks/worldpop/maps.yml\nlayers:\n  - population\naggregate_fun: sum\nDependencies and custom scripts — flood maps that need built-up and population overlays:\n# tasks/fathom/maps.yml\nlayers:\n  - fluvial\n  - pluvial\n  - coastal\n  - combined_flooding\ndepends:\n  - worldpop\n  - wsf\n  - accessibility\ncustom:\n  - core/R/map-flooding.R\nThe depends: entries ensure that those tasks’ standard layers are also rendered (so the custom script can read them). The custom: script then reads from spatial_dir and assembles whatever composite map it needs.\n\n\n\n8.1.4 Adding a custom map script\nUse a custom script when the standard pipeline — one raster, one style — isn’t enough. Common cases: overlaying two data sources, combining flood layers with a built-up hatch, or rendering a temporal sequence.\nPattern:\n# core/R/map-deforestation.R\nforest &lt;- fuzzy_read(spatial_dir, \"forest_cover\")\ndeforest &lt;- fuzzy_read(spatial_dir, \"deforestation\")\n\np &lt;- plot_static_layer(data = deforest, yaml_key = \"deforest\",\n  plot_aoi = TRUE, plot_wards = !is.null(wards)) +\n  geom_spatraster(data = forest, fill = \"#8CC056\", alpha = 0.5)\n\nsave_plot(p, filename = \"forest_deforest.png\", directory = styled_maps_dir)\nKey functions available (loaded by maps-static.R):\n\nfuzzy_read(dir, pattern) — find and read a file by partial name or regex\nplot_static_layer(data, yaml_key, ...) — create a styled ggplot using layers.yml settings\nsave_plot(plot, filename, directory) — save with consistent legend layout and dimensions\nadd_builtup_hatch(plot, underlay = FALSE) — overlay a 2025 built-up area hatch pattern; set underlay = TRUE to place it beneath point layers\n\nHook the script into the task by adding it to maps.yml:\n# tasks/forest/maps.yml\nlayers:\n  - forest\n  - deforest\ncustom:\n  - core/R/map-deforestation.R\nTo render only this task’s maps without re-rendering everything:\nscan forest --render maps --scan-id 2026-04-namibia-windhoek",
     "crumbs": [
       "Advanced Workflow",
-      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Running a Custom City Scan</span>"
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Customizing Maps and Charts</span>"
     ]
   },
   {
-    "objectID": "custom-cityscan.html#selecting-tasks",
-    "href": "custom-cityscan.html#selecting-tasks",
-    "title": "8  Running a Custom City Scan",
-    "section": "8.2 Selecting Tasks",
-    "text": "8.2 Selecting Tasks\n# custom_config.yml\ncity: \"Jakarta\"\ncountry: \"ID\"\naoi: \"inputs/AOI/jakarta.geojson\"\noutput_dir: \"outputs/jakarta_custom\"\nscan_type: custom\n\ntasks:\n  - population\n  - flood_risk\n  - coastal_erosion",
+    "objectID": "custom-cityscan.html#part-2-charts",
+    "href": "custom-cityscan.html#part-2-charts",
+    "title": "8  Customizing Maps and Charts",
+    "section": "8.2 Part 2: Charts",
+    "text": "8.2 Part 2: Charts\n\n8.2.1 How chart rendering works\nEach task can have a charts/ folder containing a Quarto document. Running:\nscan --render charts {task} --scan-id {id}\nrenders tasks/{task}/charts/index.qmd into an HTML file. All chart files across tasks are then assembled into a single combined report by:\nscan --render scan-calculations --scan-id {id}\nThe order of tasks in that report is controlled by scan-calculations/sections.yml.\n\n\n\n8.2.2 File structure\nA chart folder needs two files:\ntasks/{task}/charts/\n  index.qmd      # the chart document\n  _quarto.yml    # Quarto project config — copy from any other task\nThe _quarto.yml is nearly identical across all tasks:\nproject:\n  type: default\n  render:\n    - index.qmd\n\nformat:\n  html:\n    theme: [default, ../../../source/pagedtable-fix.scss]\nCopy this from an existing task and change nothing. The pagedtable-fix.scss file applies Bootstrap 5 table styling fixes automatically.\n\n\n\n8.2.3 Anatomy of a chart document\nEvery index.qmd has the same four parts. Here is the elevation chart broken down piece by piece.\n1. YAML frontmatter\n---\ndf-print: paged\nexecute:\n  echo: false\n  warning: false\n  message: false\n---\ndf-print: paged enables print_paged_df() for interactive HTML tables. The execute options suppress code, warnings, and messages from appearing in the rendered output.\n2. Section header\n## Elevation\nEach chart section starts with a ## header. This becomes the section title in the combined scan-calculations report, so keep it short and descriptive.\n3. Setup chunk (hidden, runs once)\n#| label: setup-elevation\n#| include: false\nif (file.exists(\"_quarto.yml\")) here::i_am(\"tasks/elevation/charts/index.qmd\")\nif (!exists(\"aoi\")) {\n  USE_GCS &lt;&lt;- FALSE\n  source(here::here(\"core/R/setup.R\"))\n}\nhere::i_am() anchors the project root so here() resolves correctly when rendering from inside the charts/ folder — without it, here() points to the charts folder instead of the city root. The source(setup.R) call loads all libraries and creates the shared objects listed in the table below. The if (!exists(\"aoi\")) guard prevents re-running setup when rendering via scan-calculations, which sources this file into an already-loaded session.\n4. Data-loading chunk (hidden)\n#| label: data-loading-elevation\n#| include: false\nelevation &lt;- tryCatch({\n  read_csv(str_subset(list.files(tabular_dir, full = T), \"elevation.csv\"),\n           col_types = \"cd\") %&gt;%\n    rename(Bin = 1, Count = 2) %&gt;%\n    filter(!is.na(Bin), Count &gt; 0) %&gt;%\n    mutate(percent = Count / sum(Count),\n           Bin = factor(Bin, levels = Bin))\n}, error = function(e) { message(\"elevation not available: \", e$message); NULL })\nWrap all data loading in tryCatch — if the CSV doesn’t exist yet, the variable is set to NULL and the chart section is skipped gracefully rather than crashing the render. Note the explicit factor(..., levels = Bin) call: factor levels are lost in CSV round-trips and must be restored after reading.\n5. Chart chunk\n#| label: elevation-chart\n#| results: asis\nif (is.null(elevation) || nrow(elevation) == 0) {\n  print_text(paste_bold(\"No elevation data available\"))\n} else {\n  elevation_plot &lt;- ggdonut(elevation, \"Bin\", \"percent\",\n    colors = c(\"#F2D7D3\", \"#DCBAC5\", \"#C59FB8\", \"#AF84A9\", \"#97679C\"))\n\n  print(elevation_plot)\n  cat(\"\\n\\n\")\n\n  print_paged_df(elevation)\n}\nAlways guard against empty data before plotting. Use plain print() for ggplots — ggplot2 &gt;= 4.0 removed :::print.ggplot(). The cat(\"\\n\\n\") after print() is required to prevent subsequent text from rendering beside the plot. print_paged_df() renders a paginated HTML table.\n\n\n\n8.2.4 Objects available in chart documents\nAfter source(setup.R) runs, these objects are available in every chart:\n\n\n\n\n\n\n\nObject\nContents\n\n\n\n\ntabular_dir\nPath to 02-process-output/tabular/ — read CSVs from here\n\n\nspatial_dir\nPath to 02-process-output/spatial/ — read shapefiles/rasters from here\n\n\ncity_params\nParsed city_inputs.yml as a list\n\n\ncity\nCity name, title case\n\n\ncountry\nCountry name, title case\n\n\naoi\nCity boundary as a SpatVector (EPSG:4326)\n\n\nwards\nWards boundary, or NULL if not present\n\n\nlayer_params\nParsed source/layers.yml — use for palettes/breaks in charts\n\n\n\n\n\n\n8.2.5 Adding a new section to an existing chart\nOpen the task’s index.qmd and add a new ## section following the same pattern:\n\nLoad the CSV from tabular_dir in a hidden chunk with a tryCatch guard\nAdd a ## Section Title header\nBuild the ggplot in a results: asis chunk\nCall print(plot), then cat(\"\\n\\n\"), then print_paged_df(df) if a table is also needed\n\n\n\n\n8.2.6 Creating a chart for a new task\n\nCreate tasks/{task}/charts/\nCopy _quarto.yml from any existing task (e.g. tasks/solar/charts/_quarto.yml)\nCreate index.qmd using the boilerplate structure above — adjust the here::i_am() path and the CSV filename\nRender to check output:\nscan --render charts {task} --scan-id {id}\nTo include this task in the combined scan-calculations report, add it to scan-calculations/sections.yml in the appropriate position",
     "crumbs": [
       "Advanced Workflow",
-      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Running a Custom City Scan</span>"
-    ]
-  },
-  {
-    "objectID": "custom-cityscan.html#overriding-default-parameters",
-    "href": "custom-cityscan.html#overriding-default-parameters",
-    "title": "8  Running a Custom City Scan",
-    "section": "8.3 Overriding Default Parameters",
-    "text": "8.3 Overriding Default Parameters\ntask_overrides:\n  population:\n    year: 2020\n    resolution: 100\n\n  flood_risk:\n    return_period: 50   # 50-year flood instead of 100-year\n    source: \"fathom_v3\"\nSed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Overrides are merged with the task defaults, so only specified fields are changed.",
-    "crumbs": [
-      "Advanced Workflow",
-      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Running a Custom City Scan</span>"
-    ]
-  },
-  {
-    "objectID": "custom-cityscan.html#adding-a-custom-data-source",
-    "href": "custom-cityscan.html#adding-a-custom-data-source",
-    "title": "8  Running a Custom City Scan",
-    "section": "8.4 Adding a Custom Data Source",
-    "text": "8.4 Adding a Custom Data Source\n# tasks/custom/my_sensor_data.py\nfrom cityscan.registry import register_task\n\n@register_task\nclass MySensorDataTask:\n    name = \"sensor_data\"\n    inputs = [\"aoi\"]\n    outputs = [\"sensor_data.tif\"]\n\n    def run(self, config):\n        aoi = self.load_aoi(config[\"aoi\"])\n        data = self.load_local_raster(\"data/sensor_grid.tif\")\n        clipped = self.clip(data, aoi)\n        self.write_raster(clipped, \"sensor_data.tif\")\nThen reference it in your config:\ntasks:\n  - population\n  - sensor_data   # your custom task",
-    "crumbs": [
-      "Advanced Workflow",
-      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Running a Custom City Scan</span>"
-    ]
-  },
-  {
-    "objectID": "custom-cityscan.html#custom-output-directory-layout",
-    "href": "custom-cityscan.html#custom-output-directory-layout",
-    "title": "8  Running a Custom City Scan",
-    "section": "8.5 Custom Output Directory Layout",
-    "text": "8.5 Custom Output Directory Layout\n\n\n\nCustom scan output structure\n\n\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\n\n\n\nTable 8.1: Custom scan configuration options\n\n\n\n\n\nConfig Key\nType\nDescription\n\n\n\n\ntasks\nlist[str]\nTasks to include\n\n\ntask_overrides\ndict\nPer-task parameter overrides\n\n\nextra_task_dirs\nlist[str]\nPaths to custom task modules\n\n\n\n\n\n\n\n\n\n\n\n\nTip\n\n\n\nUse --dry-run to preview which tasks will execute and in what order before committing to a full run.",
-    "crumbs": [
-      "Advanced Workflow",
-      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Running a Custom City Scan</span>"
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Customizing Maps and Charts</span>"
     ]
   },
   {

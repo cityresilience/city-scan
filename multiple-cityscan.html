@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>7&nbsp; Running Multiple City Scans – City Scan Technical Reference</title>
+<title>7&nbsp; Running Multiple Cities – City Scan Technical Reference</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -120,7 +120,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./multiple-cityscan.html">Advanced Workflow</a></li><li class="breadcrumb-item"><a href="./multiple-cityscan.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Running Multiple City Scans</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./multiple-cityscan.html">Advanced Workflow</a></li><li class="breadcrumb-item"><a href="./multiple-cityscan.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Running Multiple Cities</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -228,13 +228,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./multiple-cityscan.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Running Multiple City Scans</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Running Multiple Cities</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./custom-cityscan.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Running a Custom City Scan</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Customizing Maps and Charts</span></span></a>
   </div>
 </li>
       </ul>
@@ -365,10 +365,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview"><span class="header-section-number">7.1</span> Overview</a></li>
-  <li><a href="#batch-configuration" id="toc-batch-configuration" class="nav-link" data-scroll-target="#batch-configuration"><span class="header-section-number">7.2</span> Batch Configuration</a></li>
-  <li><a href="#running-the-batch" id="toc-running-the-batch" class="nav-link" data-scroll-target="#running-the-batch"><span class="header-section-number">7.3</span> Running the Batch</a></li>
-  <li><a href="#progress-tracking" id="toc-progress-tracking" class="nav-link" data-scroll-target="#progress-tracking"><span class="header-section-number">7.4</span> Progress Tracking</a></li>
+  <li><a href="#option-a-separate-aoi-folders" id="toc-option-a-separate-aoi-folders" class="nav-link active" data-scroll-target="#option-a-separate-aoi-folders"><span class="header-section-number">7.1</span> Option A: Separate AOI Folders</a>
+  <ul class="collapse">
+  <li><a href="#step-1.-create-inputsmulti_inputs.yml" id="toc-step-1.-create-inputsmulti_inputs.yml" class="nav-link" data-scroll-target="#step-1.-create-inputsmulti_inputs.yml"><span class="header-section-number">7.1.1</span> Step 1. Create <code>inputs/multi_inputs.yml</code></a></li>
+  <li><a href="#step-2.-organize-aoi-files-by-city" id="toc-step-2.-organize-aoi-files-by-city" class="nav-link" data-scroll-target="#step-2.-organize-aoi-files-by-city"><span class="header-section-number">7.1.2</span> Step 2. Organize AOI files by city</a></li>
+  <li><a href="#step-3.-edit-inputsmenu.yml" id="toc-step-3.-edit-inputsmenu.yml" class="nav-link" data-scroll-target="#step-3.-edit-inputsmenu.yml"><span class="header-section-number">7.1.3</span> Step 3. Edit <code>inputs/menu.yml</code></a></li>
+  </ul></li>
+  <li><a href="#option-b-multipolygon-file" id="toc-option-b-multipolygon-file" class="nav-link" data-scroll-target="#option-b-multipolygon-file"><span class="header-section-number">7.2</span> Option B: Multipolygon File</a>
+  <ul class="collapse">
+  <li><a href="#step-1.-create-inputsmulti_inputs.yml-1" id="toc-step-1.-create-inputsmulti_inputs.yml-1" class="nav-link" data-scroll-target="#step-1.-create-inputsmulti_inputs.yml-1"><span class="header-section-number">7.2.1</span> Step 1. Create <code>inputs/multi_inputs.yml</code></a></li>
+  <li><a href="#step-2.-edit-inputsmenu.yml" id="toc-step-2.-edit-inputsmenu.yml" class="nav-link" data-scroll-target="#step-2.-edit-inputsmenu.yml"><span class="header-section-number">7.2.2</span> Step 2. Edit <code>inputs/menu.yml</code></a></li>
+  </ul></li>
+  <li><a href="#running" id="toc-running" class="nav-link" data-scroll-target="#running"><span class="header-section-number">7.3</span> Running</a></li>
+  <li><a href="#what-happens-under-the-hood" id="toc-what-happens-under-the-hood" class="nav-link" data-scroll-target="#what-happens-under-the-hood"><span class="header-section-number">7.4</span> What Happens Under the Hood</a></li>
   <li><a href="#output-structure" id="toc-output-structure" class="nav-link" data-scroll-target="#output-structure"><span class="header-section-number">7.5</span> Output Structure</a></li>
   </ul>
 </nav>
@@ -376,9 +385,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./multiple-cityscan.html">Advanced Workflow</a></li><li class="breadcrumb-item"><a href="./multiple-cityscan.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Running Multiple City Scans</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./multiple-cityscan.html">Advanced Workflow</a></li><li class="breadcrumb-item"><a href="./multiple-cityscan.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Running Multiple Cities</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Running Multiple City Scans</span></h1>
+<h1 class="title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Running Multiple Cities</span></h1>
 </div>
 
 
@@ -395,110 +404,163 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>City Scan supports batch execution across multiple cities using a single configuration file.</p>
-<section id="overview" class="level2" data-number="7.1">
-<h2 data-number="7.1" class="anchored" data-anchor-id="overview"><span class="header-section-number">7.1</span> Overview</h2>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Batch mode iterates over a list of city configurations, running each scan sequentially or in parallel depending on available compute resources.</p>
+<p>While a single-city run processes one city at a time, the <code>--multicity</code> flag lets you queue a list of cities and run them sequentially from a shared configuration file. Setup is similar, but inputs are organized per city rather than in a flat folder.</p>
+<p>There are two ways to provide city boundaries for a multi-city run. Both use the same <code>inputs/multi_inputs.yml</code> config file and the same <code>scan --all --multicity</code> command.</p>
+<section id="option-a-separate-aoi-folders" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="option-a-separate-aoi-folders"><span class="header-section-number">7.1</span> Option A: Separate AOI Folders</h2>
+<p>Best when you already have individual shapefiles per city.</p>
+<section id="step-1.-create-inputsmulti_inputs.yml" class="level3" data-number="7.1.1">
+<h3 data-number="7.1.1" class="anchored" data-anchor-id="step-1.-create-inputsmulti_inputs.yml"><span class="header-section-number">7.1.1</span> Step 1. Create <code>inputs/multi_inputs.yml</code></h3>
+<p>This file follows the same structure as <code>city_inputs.yml</code>, with a <code>cities:</code> list added at the top.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cities</span><span class="kw">:</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">city_name</span><span class="kw">:</span><span class="at"> Windhoek</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">city_name</span><span class="kw">:</span><span class="at"> Swakopmund</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">city_name</span><span class="kw">:</span><span class="at"> Walvis Bay</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">city_name</span><span class="kw">:</span><span class="at"> Lüderitz</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">city_name</span><span class="kw">:</span><span class="at"> Aus</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Shared settings — same fields as city_inputs.yml</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">first_year</span><span class="kw">:</span><span class="at"> </span><span class="dv">2015</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">last_year</span><span class="kw">:</span><span class="at"> </span><span class="dv">2026</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">flood</span><span class="kw">:</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">threshold</span><span class="kw">:</span><span class="at"> </span><span class="dv">15</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">year</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="dv">2020</span><span class="kw">]</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">return_period</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="dv">10</span><span class="kw">,</span><span class="at"> </span><span class="dv">100</span><span class="kw">,</span><span class="at"> </span><span class="dv">1000</span><span class="kw">]</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># ... accessibility, FWI, etc.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>All settings outside the <code>cities:</code> list are shared across every city. You can override any shared setting for a specific city by adding it under that city’s entry:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cities</span><span class="kw">:</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">city_name</span><span class="kw">:</span><span class="at"> Windhoek</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">first_year</span><span class="kw">:</span><span class="at"> </span><span class="dv">2010</span><span class="co">    # overrides the shared first_year for Windhoek only</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">city_name</span><span class="kw">:</span><span class="at"> Aus</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="batch-configuration" class="level2" data-number="7.2">
-<h2 data-number="7.2" class="anchored" data-anchor-id="batch-configuration"><span class="header-section-number">7.2</span> Batch Configuration</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># batch_config.yml</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">scan_type</span><span class="kw">:</span><span class="at"> batch</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">output_base_dir</span><span class="kw">:</span><span class="at"> </span><span class="st">"outputs/"</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">year</span><span class="kw">:</span><span class="at"> </span><span class="dv">2024</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cities</span><span class="kw">:</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">city</span><span class="kw">:</span><span class="at"> </span><span class="st">"Nairobi"</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">country</span><span class="kw">:</span><span class="at"> </span><span class="st">"KE"</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">aoi</span><span class="kw">:</span><span class="at"> </span><span class="st">"inputs/AOI/nairobi.geojson"</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">city</span><span class="kw">:</span><span class="at"> </span><span class="st">"Kampala"</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">country</span><span class="kw">:</span><span class="at"> </span><span class="st">"UG"</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">aoi</span><span class="kw">:</span><span class="at"> </span><span class="st">"inputs/AOI/kampala.geojson"</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">city</span><span class="kw">:</span><span class="at"> </span><span class="st">"Dar es Salaam"</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">country</span><span class="kw">:</span><span class="at"> </span><span class="st">"TZ"</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">aoi</span><span class="kw">:</span><span class="at"> </span><span class="st">"inputs/AOI/dar_es_salaam.geojson"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="step-2.-organize-aoi-files-by-city" class="level3" data-number="7.1.2">
+<h3 data-number="7.1.2" class="anchored" data-anchor-id="step-2.-organize-aoi-files-by-city"><span class="header-section-number">7.1.2</span> Step 2. Organize AOI files by city</h3>
+<p>Each city needs its own subfolder under <code>inputs/AOI/</code>. Place the shapefile and its companion files (<code>.dbf</code>, <code>.prj</code>, <code>.shx</code>) inside that subfolder:</p>
+<pre><code>inputs/AOI/
+  Windhoek/
+    Windhoek_geoboundaries.shp
+    Windhoek_geoboundaries.dbf
+    ...
+  Swakopmund/
+    Swakopmund.shp
+    ...
+  Walvis_Bay/
+    walvis_buffer_hull_1000m.shp
+    ...</code></pre>
+<p>If a city has ward boundaries, place them in a sibling folder named <code>{city_name}_wards/</code>:</p>
+<pre><code>inputs/AOI/
+  Windhoek/
+    Windhoek_geoboundaries.shp
+    ...
+  Windhoek_wards/
+    Windhoek_wards_geoboundaries.shp
+    ...</code></pre>
+<p>Wards are auto-detected — no extra configuration needed.</p>
 </section>
-<section id="running-the-batch" class="level2" data-number="7.3">
-<h2 data-number="7.3" class="anchored" data-anchor-id="running-the-batch"><span class="header-section-number">7.3</span> Running the Batch</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> run.py <span class="at">--config</span> batch_config.yml <span class="at">--batch</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Scans run sequentially by default. To enable parallel execution:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> run.py <span class="at">--config</span> batch_config.yml <span class="at">--batch</span> <span class="at">--workers</span> 3</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="step-3.-edit-inputsmenu.yml" class="level3" data-number="7.1.3">
+<h3 data-number="7.1.3" class="anchored" data-anchor-id="step-3.-edit-inputsmenu.yml"><span class="header-section-number">7.1.3</span> Step 3. Edit <code>inputs/menu.yml</code></h3>
+<p>The same <code>menu.yml</code> is used for all cities. Enable or disable tasks there as usual.</p>
+<hr>
 </section>
-<section id="progress-tracking" class="level2" data-number="7.4">
-<h2 data-number="7.4" class="anchored" data-anchor-id="progress-tracking"><span class="header-section-number">7.4</span> Progress Tracking</h2>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="cover.png" class="img-fluid figure-img" style="width:80.0%" alt="Terminal screenshot showing batch scan progress for three cities."></p>
-<figcaption>Batch scan progress terminal output</figcaption>
-</figure>
-</div>
-<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. A progress summary is printed after all scans complete:</p>
-<pre><code>Batch complete: 3/3 cities succeeded
-  ✓ Nairobi       (58m 12s)
-  ✓ Kampala       (1h 03m 47s)
-  ✓ Dar es Salaam (1h 11m 02s)</code></pre>
 </section>
-<section id="output-structure" class="level2" data-number="7.5">
-<h2 data-number="7.5" class="anchored" data-anchor-id="output-structure"><span class="header-section-number">7.5</span> Output Structure</h2>
-<pre><code>outputs/
-├── nairobi/
-│   ├── maps/
-│   ├── stats/
-│   └── report.html
-├── kampala/
-│   └── ...
-└── dar_es_salaam/
-    └── ...</code></pre>
-<div id="tbl-batch-options" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-batch-options-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;7.1: Batch run options
-</figcaption>
-<div aria-describedby="tbl-batch-options-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Parameter</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>--workers</code></td>
-<td><code>1</code></td>
-<td>Number of parallel scans</td>
-</tr>
-<tr class="even">
-<td><code>--retry</code></td>
-<td><code>0</code></td>
-<td>Retry failed scans N times</td>
-</tr>
-<tr class="odd">
-<td><code>--skip-existing</code></td>
-<td><code>false</code></td>
-<td>Skip cities with existing outputs</td>
-</tr>
-</tbody>
-</table>
-</div>
-</figure>
-</div>
-<div class="callout callout-style-default callout-warning callout-titled">
+<section id="option-b-multipolygon-file" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="option-b-multipolygon-file"><span class="header-section-number">7.2</span> Option B: Multipolygon File</h2>
+<p>Best when all city boundaries are already in a single vector file (GPKG, SHP, or GeoJSON), with one row per city. AOI shapefiles are extracted automatically from the file into <code>inputs/AOI/{city_slug}/</code> — you don’t need to prepare them manually.</p>
+<section id="step-1.-create-inputsmulti_inputs.yml-1" class="level3" data-number="7.2.1">
+<h3 data-number="7.2.1" class="anchored" data-anchor-id="step-1.-create-inputsmulti_inputs.yml-1"><span class="header-section-number">7.2.1</span> Step 1. Create <code>inputs/multi_inputs.yml</code></h3>
+<p>Instead of organizing AOIs into subfolders, point to the multipolygon file and specify which column holds the city names:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">multipolygon</span><span class="kw">:</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">file</span><span class="kw">:</span><span class="at"> inputs/AOI/lobito_corridor_cities.gpkg</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">name_column</span><span class="kw">:</span><span class="at"> GC_UCN_MAI_2025</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Shared settings — same as Option A</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">first_year</span><span class="kw">:</span><span class="at"> </span><span class="dv">2015</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">last_year</span><span class="kw">:</span><span class="at"> </span><span class="dv">2026</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">flood</span><span class="kw">:</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">threshold</span><span class="kw">:</span><span class="at"> </span><span class="dv">15</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">year</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="dv">2020</span><span class="kw">]</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">return_period</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="dv">10</span><span class="kw">,</span><span class="at"> </span><span class="dv">100</span><span class="kw">,</span><span class="at"> </span><span class="dv">1000</span><span class="kw">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>By default, all cities in the file are processed. To run only a subset, add a <code>cities:</code> list — all AOIs are still extracted, but only the listed cities are scanned:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">multipolygon</span><span class="kw">:</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">file</span><span class="kw">:</span><span class="at"> inputs/AOI/lobito_corridor_cities.gpkg</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">name_column</span><span class="kw">:</span><span class="at"> GC_UCN_MAI_2025</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cities</span><span class="kw">:</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">city_name</span><span class="kw">:</span><span class="at"> Sakania</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">city_name</span><span class="kw">:</span><span class="at"> Lukuni</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Warning
+Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Running too many parallel workers may hit Google Earth Engine API rate limits. Start with <code>--workers 2</code> and scale up cautiously.</p>
+<p>If a city listed under <code>cities:</code> is not found in the multipolygon file, an error is raised.</p>
 </div>
 </div>
+</section>
+<section id="step-2.-edit-inputsmenu.yml" class="level3" data-number="7.2.2">
+<h3 data-number="7.2.2" class="anchored" data-anchor-id="step-2.-edit-inputsmenu.yml"><span class="header-section-number">7.2.2</span> Step 2. Edit <code>inputs/menu.yml</code></h3>
+<p>Same as Option A — one shared <code>menu.yml</code> for all cities.</p>
+<hr>
+</section>
+</section>
+<section id="running" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="running"><span class="header-section-number">7.3</span> Running</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">scan</span> <span class="at">--all</span> <span class="at">--multicity</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Cities are always processed sequentially. All other flags work as expected:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">scan</span> <span class="at">--all</span> <span class="at">--multicity</span> <span class="at">--parallel</span>      <span class="co"># parallel tasks within each city</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">scan</span> <span class="at">--all</span> <span class="at">--multicity</span> <span class="at">--collect</span>       <span class="co"># collect step only, all cities</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="ex">scan</span> wsf fathom <span class="at">--multicity</span>            <span class="co"># specific tasks for all cities</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="ex">scan</span> <span class="at">--all</span> <span class="at">--multicity</span> <span class="at">--upload</span>        <span class="co"># upload to GCS after each task</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Render for all cities</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="ex">scan</span> <span class="at">--render</span> maps <span class="at">--multicity</span> </span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="ex">scan</span> <span class="at">--render</span> scan-calculations <span class="at">--multicity</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>--parallel</code> applies to tasks <em>within</em> each city, not across cities. Cities themselves always run one at a time.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="what-happens-under-the-hood" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="what-happens-under-the-hood"><span class="header-section-number">7.4</span> What Happens Under the Hood</h2>
+<p>For each city in the list, the scan runner:</p>
+<ol type="1">
+<li>Extracts the city’s AOI — either from a <code>{city_name}/</code> subfolder in <code>inputs/AOI/</code> (Option A) or from the multipolygon file (Option B, which writes shapefiles to <code>inputs/AOI/{city_slug}/</code>)</li>
+<li>Auto-detects the <code>.shp</code> file inside that subfolder</li>
+<li>Generates a <code>city_inputs.yml</code> combining shared settings, any city-specific overrides, the detected <code>AOI_shp_name</code>, and a <code>bm_cities_manual</code> list populated with the other cities</li>
+<li>Writes that <code>city_inputs.yml</code> to <code>inputs/</code> and runs <code>scan</code> as a subprocess</li>
+<li>The normal single-city flow takes over: creates <code>mnt/{scan_id}/</code>, copies AOI and wards files flat into <code>01-user-input/</code>, and runs the enabled tasks</li>
+<li>Moves on to the next city</li>
+</ol>
+<hr>
+</section>
+<section id="output-structure" class="level2" data-number="7.5">
+<h2 data-number="7.5" class="anchored" data-anchor-id="output-structure"><span class="header-section-number">7.5</span> Output Structure</h2>
+<p>Each city produces its own self-contained folder under <code>mnt/</code>:</p>
+<pre><code>mnt/
+  2026-04-namibia-windhoek/
+  2026-04-namibia-swakopmund/
+  2026-04-namibia-walvis_bay/
+  2026-04-namibia-luderitz/
+  2026-04-namibia-aus/</code></pre>
+<p>The <code>bm_cities_manual</code> field links each city to its siblings, enabling cross-city population comparisons in the <code>worldpop</code> analysis.</p>
 
 
 </section>
@@ -911,8 +973,8 @@ Warning
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./custom-cityscan.html" class="pagination-link" aria-label="Running a Custom City Scan">
-        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Running a Custom City Scan</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./custom-cityscan.html" class="pagination-link" aria-label="Customizing Maps and Charts">
+        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Customizing Maps and Charts</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
