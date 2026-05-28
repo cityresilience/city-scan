@@ -1,80 +1,178 @@
-# Running Multiple City Scans
+# Running Multiple Cities
 
-City Scan supports batch execution across multiple cities using a single configuration file.
+While a single-city run processes one city at a time, the `--multicity` flag lets you queue a list of cities and run them sequentially from a shared configuration file. Setup is similar, but inputs are organized per city rather than in a flat folder.
 
-## Overview
+There are two ways to provide city boundaries for a multi-city run. Both use the same `inputs/multi_inputs.yml` config file and the same `scan --all --multicity` command.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Batch mode iterates over a list of city configurations, running each scan sequentially or in parallel depending on available compute resources.
+## Option A: Separate AOI Folders
 
-## Batch Configuration
+Best when you already have individual shapefiles per city.
+
+### Step 1. Create `inputs/multi_inputs.yml`
+
+This file follows the same structure as `city_inputs.yml`, with a `cities:` list added at the top.
 
 ```yaml
-# batch_config.yml
-scan_type: batch
-output_base_dir: "outputs/"
-year: 2024
+cities:
+  - city_name: Windhoek
+  - city_name: Swakopmund
+  - city_name: Walvis Bay
+  - city_name: Lüderitz
+  - city_name: Aus
+
+# Shared settings — same fields as city_inputs.yml
+first_year: 2015
+last_year: 2026
+
+flood:
+  threshold: 15
+  year: [2020]
+  return_period: [10, 100, 1000]
+
+# ... accessibility, FWI, etc.
+```
+
+All settings outside the `cities:` list are shared across every city. You can override any shared setting for a specific city by adding it under that city's entry:
+
+```yaml
+cities:
+  - city_name: Windhoek
+    first_year: 2010    # overrides the shared first_year for Windhoek only
+  - city_name: Aus
+```
+
+### Step 2. Organize AOI files by city
+
+Each city needs its own subfolder under `inputs/AOI/`. Place the shapefile and its companion files (`.dbf`, `.prj`, `.shx`) inside that subfolder:
+
+```
+inputs/AOI/
+  Windhoek/
+    Windhoek_geoboundaries.shp
+    Windhoek_geoboundaries.dbf
+    ...
+  Swakopmund/
+    Swakopmund.shp
+    ...
+  Walvis_Bay/
+    walvis_buffer_hull_1000m.shp
+    ...
+```
+
+If a city has ward boundaries, place them in a sibling folder named `{city_name}_wards/`:
+
+```
+inputs/AOI/
+  Windhoek/
+    Windhoek_geoboundaries.shp
+    ...
+  Windhoek_wards/
+    Windhoek_wards_geoboundaries.shp
+    ...
+```
+
+Wards are auto-detected — no extra configuration needed.
+
+### Step 3. Edit `inputs/menu.yml`
+
+The same `menu.yml` is used for all cities. Enable or disable tasks there as usual.
+
+---
+
+## Option B: Multipolygon File
+
+Best when all city boundaries are already in a single vector file (GPKG, SHP, or GeoJSON), with one row per city. AOI shapefiles are extracted automatically from the file into `inputs/AOI/{city_slug}/` — you don't need to prepare them manually.
+
+### Step 1. Create `inputs/multi_inputs.yml`
+
+Instead of organizing AOIs into subfolders, point to the multipolygon file and specify which column holds the city names:
+
+```yaml
+multipolygon:
+  file: inputs/AOI/lobito_corridor_cities.gpkg
+  name_column: GC_UCN_MAI_2025
+
+# Shared settings — same as Option A
+first_year: 2015
+last_year: 2026
+
+flood:
+  threshold: 15
+  year: [2020]
+  return_period: [10, 100, 1000]
+```
+
+By default, all cities in the file are processed. To run only a subset, add a `cities:` list — all AOIs are still extracted, but only the listed cities are scanned:
+
+```yaml
+multipolygon:
+  file: inputs/AOI/lobito_corridor_cities.gpkg
+  name_column: GC_UCN_MAI_2025
 
 cities:
-  - city: "Nairobi"
-    country: "KE"
-    aoi: "inputs/AOI/nairobi.geojson"
-
-  - city: "Kampala"
-    country: "UG"
-    aoi: "inputs/AOI/kampala.geojson"
-
-  - city: "Dar es Salaam"
-    country: "TZ"
-    aoi: "inputs/AOI/dar_es_salaam.geojson"
+  - city_name: Sakania
+  - city_name: Lukuni
 ```
 
-## Running the Batch
+::: {.callout-note}
+If a city listed under `cities:` is not found in the multipolygon file, an error is raised.
+:::
+
+### Step 2. Edit `inputs/menu.yml`
+
+Same as Option A — one shared `menu.yml` for all cities.
+
+---
+
+## Running
 
 ```bash
-python run.py --config batch_config.yml --batch
+scan --all --multicity
 ```
 
-Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Scans run sequentially by default. To enable parallel execution:
+Cities are always processed sequentially. All other flags work as expected:
 
 ```bash
-python run.py --config batch_config.yml --batch --workers 3
+scan --all --multicity --parallel      # parallel tasks within each city
+scan --all --multicity --collect       # collect step only, all cities
+scan wsf fathom --multicity            # specific tasks for all cities
+scan --all --multicity --upload        # upload to GCS after each task
+
+# Render for all cities
+scan --render maps --multicity 
+scan --render scan-calculations --multicity
 ```
 
-## Progress Tracking
+::: {.callout-note}
+`--parallel` applies to tasks *within* each city, not across cities. Cities themselves always run one at a time.
+:::
 
-![Batch scan progress terminal output](cover.png){fig-alt="Terminal screenshot showing batch scan progress for three cities." width="80%"}
+---
 
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. A progress summary is printed after all scans complete:
+## What Happens Under the Hood
 
-```
-Batch complete: 3/3 cities succeeded
-  ✓ Nairobi       (58m 12s)
-  ✓ Kampala       (1h 03m 47s)
-  ✓ Dar es Salaam (1h 11m 02s)
-```
+For each city in the list, the scan runner:
+
+1. Extracts the city's AOI — either from a `{city_name}/` subfolder in `inputs/AOI/` (Option A) or from the multipolygon file (Option B, which writes shapefiles to `inputs/AOI/{city_slug}/`)
+2. Auto-detects the `.shp` file inside that subfolder
+3. Generates a `city_inputs.yml` combining shared settings, any city-specific overrides, the detected `AOI_shp_name`, and a `bm_cities_manual` list populated with the other cities
+4. Writes that `city_inputs.yml` to `inputs/` and runs `scan` as a subprocess
+5. The normal single-city flow takes over: creates `mnt/{scan_id}/`, copies AOI and wards files flat into `01-user-input/`, and runs the enabled tasks
+6. Moves on to the next city
+
+---
 
 ## Output Structure
 
+Each city produces its own self-contained folder under `mnt/`:
+
 ```
-outputs/
-├── nairobi/
-│   ├── maps/
-│   ├── stats/
-│   └── report.html
-├── kampala/
-│   └── ...
-└── dar_es_salaam/
-    └── ...
+mnt/
+  2026-04-namibia-windhoek/
+  2026-04-namibia-swakopmund/
+  2026-04-namibia-walvis_bay/
+  2026-04-namibia-luderitz/
+  2026-04-namibia-aus/
 ```
 
-| Parameter | Default | Description |
-|---|---|---|
-| `--workers` | `1` | Number of parallel scans |
-| `--retry` | `0` | Retry failed scans N times |
-| `--skip-existing` | `false` | Skip cities with existing outputs |
-
-: Batch run options {#tbl-batch-options}
-
-::: {.callout-warning}
-Running too many parallel workers may hit Google Earth Engine API rate limits. Start with `--workers 2` and scale up cautiously.
-:::
+The `bm_cities_manual` field links each city to its siblings, enabling cross-city population comparisons in the `worldpop` analysis.

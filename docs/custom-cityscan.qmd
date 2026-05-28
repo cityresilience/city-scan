@@ -1,87 +1,328 @@
-# Running a Custom City Scan
+# Customizing Maps and Charts
 
-A custom scan lets you select specific tasks, override default parameters, and plug in additional data sources beyond the standard suite.
+City Scan produces two kinds of visual outputs: static map PNGs (one per data layer) and interactive HTML chart reports (one per task). Both are customizable without touching the core pipeline — maps through YAML config files, charts through Quarto documents.
 
-## When to Customize
+---
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consider a custom scan when:
+## Part 1: Maps
 
-- You only need a subset of data layers to save time
-- You have proprietary or local data to incorporate
-- You want non-default resolution or time periods
+### How map rendering works
 
-## Selecting Tasks
+Running `scan --render maps --scan-id {id}` executes `core/R/maps-static.R`, which reads two config files and renders one PNG per layer into `03-render-output/maps/`:
 
-```yaml
-# custom_config.yml
-city: "Jakarta"
-country: "ID"
-aoi: "inputs/AOI/jakarta.geojson"
-output_dir: "outputs/jakarta_custom"
-scan_type: custom
+- **`source/layers.yml`** — the global style library. Each entry defines a *yaml_key* (e.g. `population`) with its title, palette, breaks, and other visual settings.
+- **`tasks/{task}/maps.yml`** — per-task config. Declares which yaml_keys this task contributes, whether to aggregate raster pixels into hexbins, and whether custom R scripts are needed.
 
-tasks:
-  - population
-  - flood_risk
-  - coastal_erosion
-```
+The renderer matches each yaml_key to a file in `02-process-output/spatial/` using the `fuzzy_string` pattern, then applies the style settings to produce the map.
 
-## Overriding Default Parameters
+---
+
+### Changing how a layer looks — `source/layers.yml`
+
+This is the file to edit when you want to change colors, legend labels, title text, or binning for any existing layer.
+
+Each entry is keyed by a short identifier (the *yaml_key*) that the rest of the system uses to refer to that layer:
 
 ```yaml
-task_overrides:
-  population:
-    year: 2020
-    resolution: 100
-
-  flood_risk:
-    return_period: 50   # 50-year flood instead of 100-year
-    source: "fathom_v3"
+population:
+  fuzzy_string: (?<!dense_)population.tif$
+  title: 'Population density'
+  subtitle: 'Number of persons per 10,000 m<sup>2</sup>'
+  palette: ['#ECEB72', '#8E3933']
+  bins: 5
+  basemap: 'satellite'
+  group_id: Population density
 ```
 
-Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Overrides are merged with the task defaults, so only specified fields are changed.
+The fields you are most likely to modify:
 
-## Adding a Custom Data Source
+| Field | What it controls |
+|---|---|
+| `title` | Main legend header |
+| `subtitle` | Secondary legend text (supports HTML) |
+| `palette` | List of hex colors from low to high value |
+| `bins` | Number of equal-interval bins (alternative to explicit `breaks`) |
+| `breaks` | Explicit cut points including limits; for categorical maps, the factor levels |
+| `labels` | Human-readable label for each bin (must match the number of intervals) |
+| `oob` | Out-of-bounds handling — `censor` clips values outside the range |
+| `suffix` | Unit string appended to legend values (e.g. `°C`, `%`) |
+| `factor: TRUE` | Forces categorical (discrete) rendering |
 
-```python
-# tasks/custom/my_sensor_data.py
-from cityscan.registry import register_task
-
-@register_task
-class MySensorDataTask:
-    name = "sensor_data"
-    inputs = ["aoi"]
-    outputs = ["sensor_data.tif"]
-
-    def run(self, config):
-        aoi = self.load_aoi(config["aoi"])
-        data = self.load_local_raster("data/sensor_grid.tif")
-        clipped = self.clip(data, aoi)
-        self.write_raster(clipped, "sensor_data.tif")
-```
-
-Then reference it in your config:
+**Example:** Change the flood return period labels from short codes to plain English:
 
 ```yaml
-tasks:
-  - population
-  - sensor_data   # your custom task
+fluvial:
+  title: 'Fluvial flood return period'
+  labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+  palette: ['#A7BCEE', '#1B35C4']
+  breaks: [0, .11, 1.1, 10.1]
 ```
 
-## Custom Output Directory Layout
-
-![Custom scan output structure](cover.png){fig-alt="File browser showing a custom scan output directory with selective task outputs." width="70%"}
-
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-
-| Config Key | Type | Description |
-|---|---|---|
-| `tasks` | `list[str]` | Tasks to include |
-| `task_overrides` | `dict` | Per-task parameter overrides |
-| `extra_task_dirs` | `list[str]` | Paths to custom task modules |
-
-: Custom scan configuration options {#tbl-custom-config}
-
-::: {.callout-tip}
-Use `--dry-run` to preview which tasks will execute and in what order before committing to a full run.
+::: {.callout-note}
+The `fuzzy_string` field is a regex used to find the data file in `02-process-output/spatial/`. Only change it if the task's output filename has changed.
 :::
+
+---
+
+### Changing which layers a task renders — `tasks/{task}/maps.yml`
+
+Each task folder contains a `maps.yml` that tells the renderer what to do with that task's outputs. The simplest form is just a list of yaml_keys:
+
+```yaml
+# tasks/slope/maps.yml
+layers:
+  - slope
+```
+
+More options are available when you need aggregation, dependencies, or custom scripts:
+
+| Field | What it does |
+|---|---|
+| `layers:` | List of yaml_keys this task contributes (must exist in `layers.yml`) |
+| `aggregate_fun:` | How to aggregate raster pixels per cell — `mean`, `sum`, `median`, `min`, `max` |
+| `aggregate_mode:` | Aggregation grid type — `hexbin`, `resample`, `h3`, or `none` |
+| `aggregate_size:` | Target cell size in meters |
+| `smoothing:` | Pre-smoothing before rendering — `method: gaussian/median/modal`, `window:`, `sigma:` |
+| `depends:` | Other tasks whose layers must be rendered too (used by custom scripts) |
+| `custom:` | List of R script paths (from repo root) for non-standard maps |
+
+**Aggregation example** — population rendered as summed hexbins:
+
+```yaml
+# tasks/worldpop/maps.yml
+layers:
+  - population
+aggregate_fun: sum
+```
+
+**Dependencies and custom scripts** — flood maps that need built-up and population overlays:
+
+```yaml
+# tasks/fathom/maps.yml
+layers:
+  - fluvial
+  - pluvial
+  - coastal
+  - combined_flooding
+depends:
+  - worldpop
+  - wsf
+  - accessibility
+custom:
+  - core/R/map-flooding.R
+```
+
+The `depends:` entries ensure that those tasks' standard layers are also rendered (so the custom script can read them). The `custom:` script then reads from `spatial_dir` and assembles whatever composite map it needs.
+
+---
+
+### Adding a custom map script
+
+Use a custom script when the standard pipeline — one raster, one style — isn't enough. Common cases: overlaying two data sources, combining flood layers with a built-up hatch, or rendering a temporal sequence.
+
+**Pattern:**
+
+```r
+# core/R/map-deforestation.R
+forest <- fuzzy_read(spatial_dir, "forest_cover")
+deforest <- fuzzy_read(spatial_dir, "deforestation")
+
+p <- plot_static_layer(data = deforest, yaml_key = "deforest",
+  plot_aoi = TRUE, plot_wards = !is.null(wards)) +
+  geom_spatraster(data = forest, fill = "#8CC056", alpha = 0.5)
+
+save_plot(p, filename = "forest_deforest.png", directory = styled_maps_dir)
+```
+
+Key functions available (loaded by `maps-static.R`):
+
+- `fuzzy_read(dir, pattern)` — find and read a file by partial name or regex
+- `plot_static_layer(data, yaml_key, ...)` — create a styled ggplot using `layers.yml` settings
+- `save_plot(plot, filename, directory)` — save with consistent legend layout and dimensions
+- `add_builtup_hatch(plot, underlay = FALSE)` — overlay a 2025 built-up area hatch pattern; set `underlay = TRUE` to place it beneath point layers
+
+Hook the script into the task by adding it to `maps.yml`:
+
+```yaml
+# tasks/forest/maps.yml
+layers:
+  - forest
+  - deforest
+custom:
+  - core/R/map-deforestation.R
+```
+
+To render only this task's maps without re-rendering everything:
+
+```bash
+scan forest --render maps --scan-id 2026-04-namibia-windhoek
+```
+
+---
+
+## Part 2: Charts
+
+### How chart rendering works
+
+Each task can have a `charts/` folder containing a Quarto document. Running:
+
+```bash
+scan --render charts {task} --scan-id {id}
+```
+
+renders `tasks/{task}/charts/index.qmd` into an HTML file. All chart files across tasks are then assembled into a single combined report by:
+
+```bash
+scan --render scan-calculations --scan-id {id}
+```
+
+The order of tasks in that report is controlled by `scan-calculations/sections.yml`.
+
+---
+
+### File structure
+
+A chart folder needs two files:
+
+```
+tasks/{task}/charts/
+  index.qmd      # the chart document
+  _quarto.yml    # Quarto project config — copy from any other task
+```
+
+The `_quarto.yml` is nearly identical across all tasks:
+
+```yaml
+project:
+  type: default
+  render:
+    - index.qmd
+
+format:
+  html:
+    theme: [default, ../../../source/pagedtable-fix.scss]
+```
+
+Copy this from an existing task and change nothing. The `pagedtable-fix.scss` file applies Bootstrap 5 table styling fixes automatically.
+
+---
+
+### Anatomy of a chart document
+
+Every `index.qmd` has the same four parts. Here is the elevation chart broken down piece by piece.
+
+**1. YAML frontmatter**
+
+```yaml
+---
+df-print: paged
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+```
+
+`df-print: paged` enables `print_paged_df()` for interactive HTML tables. The execute options suppress code, warnings, and messages from appearing in the rendered output.
+
+**2. Section header**
+
+```markdown
+## Elevation
+```
+
+Each chart section starts with a `##` header. This becomes the section title in the combined scan-calculations report, so keep it short and descriptive.
+
+**3. Setup chunk** (hidden, runs once)
+
+```r
+#| label: setup-elevation
+#| include: false
+if (file.exists("_quarto.yml")) here::i_am("tasks/elevation/charts/index.qmd")
+if (!exists("aoi")) {
+  USE_GCS <<- FALSE
+  source(here::here("core/R/setup.R"))
+}
+```
+
+`here::i_am()` anchors the project root so `here()` resolves correctly when rendering from inside the `charts/` folder — without it, `here()` points to the charts folder instead of the city root. The `source(setup.R)` call loads all libraries and creates the shared objects listed in the table below. The `if (!exists("aoi"))` guard prevents re-running setup when rendering via scan-calculations, which sources this file into an already-loaded session.
+
+**4. Data-loading chunk** (hidden)
+
+```r
+#| label: data-loading-elevation
+#| include: false
+elevation <- tryCatch({
+  read_csv(str_subset(list.files(tabular_dir, full = T), "elevation.csv"),
+           col_types = "cd") %>%
+    rename(Bin = 1, Count = 2) %>%
+    filter(!is.na(Bin), Count > 0) %>%
+    mutate(percent = Count / sum(Count),
+           Bin = factor(Bin, levels = Bin))
+}, error = function(e) { message("elevation not available: ", e$message); NULL })
+```
+
+Wrap all data loading in `tryCatch` — if the CSV doesn't exist yet, the variable is set to `NULL` and the chart section is skipped gracefully rather than crashing the render. Note the explicit `factor(..., levels = Bin)` call: factor levels are lost in CSV round-trips and must be restored after reading.
+
+**5. Chart chunk**
+
+```r
+#| label: elevation-chart
+#| results: asis
+if (is.null(elevation) || nrow(elevation) == 0) {
+  print_text(paste_bold("No elevation data available"))
+} else {
+  elevation_plot <- ggdonut(elevation, "Bin", "percent",
+    colors = c("#F2D7D3", "#DCBAC5", "#C59FB8", "#AF84A9", "#97679C"))
+
+  print(elevation_plot)
+  cat("\n\n")
+
+  print_paged_df(elevation)
+}
+```
+
+Always guard against empty data before plotting. Use plain `print()` for ggplots — `ggplot2 >= 4.0` removed `:::print.ggplot()`. The `cat("\n\n")` after `print()` is required to prevent subsequent text from rendering beside the plot. `print_paged_df()` renders a paginated HTML table.
+
+---
+
+### Objects available in chart documents
+
+After `source(setup.R)` runs, these objects are available in every chart:
+
+| Object | Contents |
+|---|---|
+| `tabular_dir` | Path to `02-process-output/tabular/` — read CSVs from here |
+| `spatial_dir` | Path to `02-process-output/spatial/` — read shapefiles/rasters from here |
+| `city_params` | Parsed `city_inputs.yml` as a list |
+| `city` | City name, title case |
+| `country` | Country name, title case |
+| `aoi` | City boundary as a `SpatVector` (EPSG:4326) |
+| `wards` | Wards boundary, or `NULL` if not present |
+| `layer_params` | Parsed `source/layers.yml` — use for palettes/breaks in charts |
+
+---
+
+### Adding a new section to an existing chart
+
+Open the task's `index.qmd` and add a new `##` section following the same pattern:
+
+1. Load the CSV from `tabular_dir` in a hidden chunk with a `tryCatch` guard
+2. Add a `## Section Title` header
+3. Build the ggplot in a `results: asis` chunk
+4. Call `print(plot)`, then `cat("\n\n")`, then `print_paged_df(df)` if a table is also needed
+
+---
+
+### Creating a chart for a new task
+
+1. Create `tasks/{task}/charts/`
+2. Copy `_quarto.yml` from any existing task (e.g. `tasks/solar/charts/_quarto.yml`)
+3. Create `index.qmd` using the boilerplate structure above — adjust the `here::i_am()` path and the CSV filename
+4. Render to check output:
+
+   ```bash
+   scan --render charts {task} --scan-id {id}
+   ```
+
+5. To include this task in the combined scan-calculations report, add it to `scan-calculations/sections.yml` in the appropriate position
