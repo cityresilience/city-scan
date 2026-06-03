@@ -39,8 +39,11 @@ book:
     - part: "Tasks & Data Layers"
       chapters: 
         - tasks-structure-overview.qmd
-        - datalayer-references.qmd
-    
+        - population-demographic.qmd
+        - economic-activity.qmd
+        - built-form.qmd
+        - climate-condition.qmd
+        - risk-identification.qmd
     - part: "Understanding the Repo"
       chapters: 
         - repo-structure.qmd

@@ -1,0 +1,290 @@
+# Population and Demographics
+
+--------
+
+## Population Growth
+
+::: {layout-ncol=2}
+![Population Growth — year-over-year change](image/manila-philippines/03-render-output/plots/oxford-pop-growth.png){#fig-pop-growth .lightbox}
+
+![Population time series vs. benchmark cities](image/manila-philippines/03-render-output/plots/oxford-pop-line.png){#fig-pop-line .lightbox}
+:::
+
+| Dataset | Measurement | Units | Source | Release Year | Years of Data | Coverage | Resolution | Task |
+|---------|-------------|-------|--------|--------------|---------------|----------|------------|------|
+| Global Cities Database | Population count | People | Oxford Economics | 2022 | 2000–2040 | Global | City-level | [tasks/oxford/](../tasks/oxford/) |
+
+**What is it?**
+
+An annual city-level population time series from the Oxford Economics Global Cities Database, covering 2000–2040 (historical actuals through ~2021, projections thereafter). The dataset also reports benchmark city comparisons and the city's share of national population.
+
+**Why use it?**
+
+Population figures are typically used as a denominator for many indicators and as a measure of demand for services. High growth of urban populations — driven by natural increase, rural-to-urban migration, and the absorption of surrounding settlements — puts pressure on cities to meet demand for housing, infrastructure, and public services. Tracking growth relative to benchmark cities provides context for whether the city's trajectory is typical for its region or income level.
+
+**How is this made?**
+
+Oxford Economics harmonizes data from national statistics offices, censuses, and administrative sources to consistent city boundary definitions. Year-over-year population growth percentages are computed from the raw time series.
+
+**How should we interpret it?**
+
+A consistently rising line indicates ongoing demographic pressure. Slowing growth rates can reflect urban maturation, suburbanization, or aging. Benchmark comparisons help identify whether observed trends are local or regional patterns.
+
+**Under the hood**
+
+The [`tasks/oxford/`](../tasks/oxford/) task reads the Oxford Economics Global Cities Data CSV from a GCS bucket, filters for the target city and a set of benchmark cities (non-sibling cities), and produces tabular outputs covering population, employment, GDP, and demographic structure. The collection step runs entirely in R (`collection.R`). For population specifically, the pipeline produces `_oxford_pop_growth.csv` (population + year-over-year growth %) and `_oxford_national_shares.csv` (city's share of national population, GDP, and employment in 2021).
+
+**Key outputs**
+
+- `{city}_oxford_pop_growth.csv` — annual population and growth percentage (2000–2040)
+- `{city}_oxford_national_shares.csv` — city share of national population, GDP, employment
+- `{city}_oxford_pop_line.csv` — population time series for city and benchmarks
+
+**Source data citation**
+
+Oxford Economics Global Cities Database. Oxford Economics Ltd. https://www.oxfordeconomics.com/
+
+--------
+
+## Population Density
+
+::: {.callout-note appearance="simple"}
+Example map not yet available in this reference. The task produces `{city}_population_map.png` — a raster choropleth using a magma colormap at 100m resolution.
+:::
+
+| Dataset | Measurement | Units | Source | Release Year | Years of Data | Coverage | Resolution | Task |
+|---------|-------------|-------|--------|--------------|---------------|----------|------------|------|
+| WorldPop Global 2 (R2025A) | Population count | People per 100m grid cell | [WorldPop](https://www.worldpop.org/) | 2025 | 2015–2030 | Global | 100m | [tasks/worldpop/](../tasks/worldpop/) |
+| WorldPop Global 1 | Population count | People per 1km grid cell | [WorldPop](https://www.worldpop.org/) | 2020 | 2000–2020 | Global | 1km | [tasks/worldpop/](../tasks/worldpop/) |
+
+**What is it?**
+
+A raster map showing estimated population counts at 100m resolution, clipped to the city AOI for the current year. Each pixel represents the estimated number of inhabitants within that 100m × 100m area.
+
+**Why use it?**
+
+Population density at fine spatial resolution reveals where people actually live within the city boundary — distinguishing dense urban cores, transitional peri-urban zones, and sparsely inhabited areas. High-resolution density data supports infrastructure planning, service delivery optimization, and hazard exposure assessments by identifying where concentrations of people coincide with risks.
+
+**How is this made?**
+
+WorldPop uses a dasymetric disaggregation approach: census population totals from administrative units are redistributed into 100m grid cells using built-settlement layers derived from satellite imagery (the Built-Settlement Growth Model, BSGM). Pixels outside settled areas receive zero population. Two archives are available — Global 1 (2000–2020, 1km, UN-adjusted) and Global 2 R2025A (2015–2030, 100m, constrained). The current-year band is extracted; if the current year falls outside 2015–2030, it is clamped to the nearest available year.
+
+**How should we interpret it?**
+
+High pixel values indicate densely settled areas such as urban cores and residential neighborhoods. Pixels with values ≤ 0 are masked as nodata, representing non-inhabited land (water, forests, agricultural land). Given the 100m resolution and modeled nature of the data, the map provides a high-level spatial overview rather than a census-precise count.
+
+**Under the hood**
+
+[`tasks/worldpop/`](../tasks/worldpop/) downloads rasters from WorldPop directly or from a GCS mirror, handling multi-country AOIs by downloading each country and mosaicking with `rasterio.merge`. The `_stack_mask()` function stacks single-year files into a multi-band archive with band descriptions `pop_{year}`. `analysis.py:compute_stats()` extracts percentiles, mean, sum, and count from the current-year raster. The population density map is rendered in R via [`core/R/`](../core/R/) using the `population` layer definition in [`source/layers.yml`](../source/layers.yml). Charts (e.g., population time series) are produced in [`tasks/worldpop/charts/`](../tasks/worldpop/charts/).
+
+**Key outputs**
+
+- `{city}_population.tif` — single-band current-year raster (100m)
+- `{city}_worldpop_2015_2030.tif` — 16-band archive (one per year, 100m)
+- `{city}_worldpop_2000_2020.tif` — 21-band archive (one per year, 1km)
+- `{city}_population_stats.csv` — summary statistics (min, percentiles, mean, sum, count)
+- `{city}_worldpop_2015_2030.csv` — total city population per year
+- `{city}_population_map.png` — raster choropleth map
+
+**Source data citation**
+
+_Bondarenko, Maksym, David Kerr, Alessandro Sorichetta, and Andrew Tatem. 2020. "Census/Projection-Disaggregated Gridded Population Datasets for 189 Countries in 2020 Using Built-Settlement Growth Model (BSGM) Outputs." University of Southampton. https://doi.org/10.5258/SOTON/WP00684._
+
+--------
+
+## Population–Urban Growth Ratio
+
+::: {.callout-note appearance="simple"}
+Example chart not yet available — the cross-task analysis (`_pug.csv`) requires both the `worldpop` and `wsf` tasks to have been run first.
+:::
+
+| Dataset | Measurement | Units | Source | Task |
+|---------|-------------|-------|--------|------|
+| WorldPop Global 2 (R2025A) | Population count per year | People | [WorldPop](https://www.worldpop.org/) | [tasks/worldpop/](../tasks/worldpop/) |
+| World Settlement Footprint (WSF) | Urban built area per year | km² | [DLR / WSF](https://www.dlr.de/eoc/en/desktopdefault.aspx/tabid-9334/16239_read-40144/) | tasks/wsf/ |
+
+**What is it?**
+
+A derived annual time series comparing population growth (%) to urban built area growth (%), producing a Population–Urban Growth Ratio. Values above 1 indicate that the city's population is growing faster than its footprint — densification. Values below 1 indicate sprawl, where land consumption outpaces population growth. The series also includes population density (people per km² of urban area) for each year.
+
+**Why use it?**
+
+Cities that grow by expanding their footprint rather than increasing density tend to be less efficient in service delivery and infrastructure provision, and may signal unsustainable land consumption. Tracking the ratio over time helps planners understand whether growth is being absorbed through densification or through outward expansion.
+
+**How is this made?**
+
+WorldPop multi-year population totals (`_pg.csv`) and WSF harmonized urban built area totals (`_wsf_harmonized.csv`) are joined by year. Year-over-year growth percentages are calculated for both series independently, then divided. A density column (people per km²) is computed as population / urban built area.
+
+**How should we interpret it?**
+
+A ratio consistently above 1 indicates a densifying city with relatively stable or slowly growing urban land. A ratio below 1 suggests land is being developed faster than people are arriving — potentially low-density suburban expansion. Sharp changes in the ratio may reflect data gaps, boundary reclassifications, or rapid development episodes rather than true behavioral shifts.
+
+**Under the hood**
+
+This is a cross-task analysis. The `clean_pug()` function in [`tasks/worldpop/analysis.py`](../tasks/worldpop/analysis.py) reads `_pg.csv` (generated by `clean_pg()` from the WorldPop archive) and `_wsf_harmonized.csv` (from the `wsf` task). Both tasks must be run before this step produces a result. Division-by-zero cases (e.g., zero urban area in early years) are handled gracefully.
+
+**Key outputs**
+
+- `{city}_pg.csv` — annual WorldPop population + year-over-year growth %
+- `{city}_pug.csv` — joined table: yearName, population, populationGrowthPercentage, uba (km²), growth_percentage, density, populationUrbanGrowthRatio
+
+--------
+
+## Historical Population (GHS-POP)
+
+::: {.callout-note appearance="simple"}
+Example map not yet available in this reference. The task produces `{city}_ghs_pop_E{year}_map.png` per epoch (1975, 1980, ..., 2030) using a magma colormap at 100m resolution.
+:::
+
+| Dataset | Measurement | Units | Source | Release Year | Years of Data | Coverage | Resolution | Task |
+|---------|-------------|-------|--------|--------------|---------------|----------|------------|------|
+| GHS-POP R2023A | Population count | People per 100m grid cell | [EU JRC / GHSL](https://ghsl.jrc.ec.europa.eu/ghs_pop2023.php) | 2023 | 1975–2030 (5-year epochs) | Global | 100m | [tasks/ghs_population/](../tasks/ghs_population/) |
+
+**What is it?**
+
+A raster population dataset from the EU Joint Research Centre's Global Human Settlement Layer (GHSL), providing population estimates at 100m resolution in 5-year snapshots from 1975 to 2030. This offers a longer historical window than WorldPop, making it suitable for multi-decadal trend analysis.
+
+**Why use it?**
+
+Understanding how a city's inhabited footprint has evolved over 45+ years helps contextualize current density patterns and inform long-range growth projections. The long time series is particularly useful for identifying periods of rapid urbanization, post-conflict recovery, or population decline. As an independent dataset from WorldPop, it also serves as a cross-check.
+
+**How is this made?**
+
+GHS-POP redistributes population from censuses into 100m cells using the GHS-BUILT built-up surface layer as a spatial constraint — population is placed only within settled areas. The dataset is produced in the Mollweide equal-area projection (EPSG:54009) and reprojected to EPSG:4326 for City Scan use.
+
+**How should we interpret it?**
+
+Compare epochs (e.g., 1990 vs. 2020) to visualize where population has grown and which areas have remained sparsely settled. Minor discrepancies with WorldPop totals are expected, as the two datasets use different disaggregation methods and source censuses. The 5-year granularity means year-specific events are smoothed.
+
+**Under the hood**
+
+[`tasks/ghs_population/`](../tasks/ghs_population/) loads a tile index shapefile (from GCS or the GHSL website as fallback), identifies intersecting tiles for the AOI, and downloads tile ZIPs in-memory. Tiles are mosaicked with `rasterio.merge`, clipped to the AOI geometry in Mollweide projection, then reprojected to EPSG:4326 using nearest-neighbor resampling. One GeoTIFF is written per epoch. `analysis.py` computes summary statistics for each year, filtering pixels ≤ 0 as nodata. Per-epoch raster maps are rendered in R via [`core/R/`](../core/R/) using the layer definitions in [`source/layers.yml`](../source/layers.yml).
+
+**Key outputs**
+
+- `{city}_ghs_pop_E{year}.tif` — per-epoch raster (one per 5-year step, EPSG:4326, 100m)
+- `{city}_ghs_pop_e{year}.csv` — summary statistics (min, percentiles, mean, sum, count) per epoch
+- `{city}_ghs_pop_E{year}_map.png` — raster choropleth map per epoch
+
+**Source data citation**
+
+_Schiavina, Marcello, Sergio Freire, Alessandra Carioli, and Kyle MacManus. 2023. "GHS-POP R2023A — GHS Population Grid Multitemporal (1975–2030)." European Commission, Joint Research Centre (JRC). https://doi.org/10.2905/2FF68A52-5B5B-4A22-8F40-C41DA8332CFE._
+
+--------
+
+## Population Distribution by Age and Sex
+
+::: {layout-ncol=2}
+![Age structure over time — Oxford Economics](image/manila-philippines/03-render-output/plots/oxford-age-structure-area.png){#fig-age-structure .lightbox}
+
+![Age distribution vs. benchmark cities](image/manila-philippines/03-render-output/plots/oxford-pop-distro.png){#fig-pop-distro .lightbox}
+:::
+
+| Dataset | Measurement | Units | Source | Release Year | Years of Data | Coverage | Resolution | Task |
+|---------|-------------|-------|--------|--------------|---------------|----------|------------|------|
+| WorldPop R2025A (Age-Sex) | Population count by age group and sex | People | [WorldPop](https://www.worldpop.org/) | 2025 | 2015–2030 | Global | 100m | [tasks/demographics/](../tasks/demographics/) |
+| Global Cities Database | Population by age group | People | Oxford Economics | 2022 | 2000–2021 | Global | City-level | [tasks/oxford/](../tasks/oxford/) |
+
+**What is it?**
+
+Two complementary views of the city's age-sex structure:
+
+- **WorldPop demographics** provides a spatially explicit snapshot — a 36-band raster (18 age groups × 2 sexes) at 100m resolution — that can be aggregated to produce an age pyramid, dependency ratios, and key demographic indicators.
+- **Oxford Economics age structure** provides a historical time series (2000–2021) showing how the share of Young (0–14), Working (15–64), and Elderly (65+) groups has evolved at the city level.
+
+**Why use it?**
+
+Age-sex structure is a fundamental input for urban planning: schools and pediatric services depend on child population shares; labor market assessments require working-age counts; elderly care infrastructure is driven by the 65+ share. Reproductive-age women (15–49) and youth (15–24) are tracked as distinct policy-relevant groups. Changes in structure over time — visible in the Oxford series — reveal whether a city is in demographic transition.
+
+**How is this made?**
+
+WorldPop R2025A age-sex rasters are downloaded as 36 separate bands covering ages 0–1, 1–4, and 5-year bins up to 80+, for both female (f) and male (m) categories. These are summed per band across all pixels to derive city-level counts. The 0–1 and 1–4 bands are merged into a single 0–4 group before calculating percentages. Dependency ratios are computed as:
+
+- Youth dependency ratio = pop(0–14) / pop(15–64) × 100
+- Elderly dependency ratio = pop(65+) / pop(15–64) × 100
+
+Reproductive age is defined as 15–49. Working age is defined as 15–64.
+
+**How should we interpret it?**
+
+A bottom-heavy age pyramid (wider young cohorts) indicates high birth rates and growing future demand for schools and employment. A top-heavy pyramid indicates an aging population with rising demand for healthcare and elderly services. The Oxford time series reveals structural shifts — an expanding working-age share can signal a demographic dividend, while a shrinking one signals future pension and care pressures.
+
+**Under the hood**
+
+[`tasks/demographics/`](../tasks/demographics/) downloads all 36 WorldPop rasters in parallel using `ThreadPoolExecutor` (3 workers). Each band is clipped to the AOI and stacked into a single multi-band GeoTIFF with band descriptions like `f_0-1`, `m_5-9`. `analysis.py` runs three sequential functions: `demographic_aggregate()` converts each band to a population count row; `clean_pas()` merges age groups, expands sex codes to full labels, and computes within-sex percentages; `clean_adr()` calculates youth, elderly, and total dependency ratios. Age distribution charts are produced in [`tasks/demographics/charts/`](../tasks/demographics/charts/) and the age-sex distribution R script is at [`core/R/age-sex-distribution.R`](../core/R/age-sex-distribution.R).
+
+For Oxford, [`tasks/oxford/collection.R`](../tasks/oxford/collection.R) processes `_oxford_age_structure.csv` (grouped shares over time) and `_oxford_pop_dist.csv` (age distribution snapshot vs. benchmark cities).
+
+**Key outputs**
+
+- `{city}_worldpop_demographics.tif` — 36-band multi-year raster (f/m × 18 age groups)
+- `{city}_demographic.csv` — per-band population counts (city, sex, age_group, population)
+- `{city}_pas.csv` — aggregated age pyramid (ageBracket, sex, count, percentage)
+- `{city}_adr.csv` — youth, elderly, and total dependency ratios
+- `{city}_demographics_summary.yml` — key indicators: under-5 %, youth %, working-age %, elderly %, reproductive-age %, sex ratio
+- `{city}_age_stats.png` / `{city}_age_stats.html` — age pyramid chart (static and interactive)
+- `{city}_oxford_age_structure.csv` — historical age-group shares 2000–2021
+- `{city}_oxford_pop_dist.csv` — age distribution snapshot vs. benchmarks
+
+**Source data citation**
+
+_Bondarenko, Maksym, David Kerr, Alessandro Sorichetta, and Andrew Tatem. 2020. "Census/Projection-Disaggregated Gridded Population Datasets for 189 Countries in 2020 Using Built-Settlement Growth Model (BSGM) Outputs." University of Southampton. https://doi.org/10.5258/SOTON/WP00684._
+
+Oxford Economics Global Cities Database. Oxford Economics Ltd. https://www.oxfordeconomics.com/
+
+--------
+
+## Relative Wealth
+
+::: {layout-ncol=2}
+![RWI — standardized (nationally comparable)](image/manila-philippines/03-render-output/maps/rwi_standardized.png){#fig-rwi-std .lightbox}
+
+![RWI — relative (city-internal)](image/manila-philippines/03-render-output/maps/rwi_relative.png){#fig-rwi-rel .lightbox}
+:::
+
+::: {layout-ncol=2}
+![RWI distribution — standardized](image/manila-philippines/03-render-output/plots/rwi-histogram-standardized.png){#fig-rwi-hist-std .lightbox}
+
+![RWI distribution — relative](image/manila-philippines/03-render-output/plots/rwi-histogram-relative.png){#fig-rwi-hist-rel .lightbox}
+:::
+
+| Dataset | Measurement | Units | Source | Release Year | Years of Data | Coverage | Resolution | Task |
+|---------|-------------|-------|--------|--------------|---------------|----------|------------|------|
+| Relative Wealth Index | Relative wealth score | Z-score (SD units) | [Data for Good at Meta](https://data.humdata.org/dataset/relative-wealth-index) | 2021 | 2021 | ~93 LMICs | ~2.4km | [tasks/rwi/](../tasks/rwi/) |
+
+**What is it?**
+
+A micro-estimate of relative wealth at approximately 2.4km resolution, covering nearly 100 low- and middle-income countries (LMICs). The score is a z-score relative to the country's national distribution — positive values indicate areas wealthier than the national average; negative values indicate poorer areas.
+
+Two categorization schemes are provided:
+
+- **City-relative (5 quantile bins):** Ranks grid cells from "Least Wealthy" to "Most Wealthy" within the city. Useful for identifying intra-city inequality patterns.
+- **Standardized (fixed SD breaks):** Uses nationally anchored thresholds (< −1.0, −1.0–0, 0–1.0, > 1.0 SD). Useful for cross-city comparisons and understanding the city's position within the national wealth distribution.
+
+**Why use it?**
+
+Relative wealth identifies spatial patterns of economic disparity that can guide targeted interventions — public investment prioritization, housing programs, and service delivery planning. Areas of concentrated poverty often have compounded vulnerability: lower access to services combined with higher exposure to environmental hazards.
+
+**How is this made?**
+
+The dataset was developed by Meta's Data for Good team. Ground-truth household wealth data from USAID Demographic and Health Surveys (66,819 villages in 56 LMICs) is linked to non-traditional data sources including satellite imagery, cellular network activity, topographic maps, and privacy-protected connectivity data. A supervised machine learning model is trained on these features to predict relative wealth at the populated grid cell level. The algorithm is proprietary.
+
+**How should we interpret it?**
+
+For the standardized map, values near 0 are close to the national median; values above +1 are significantly wealthier and below −1 are significantly poorer than the national average. For the relative map, the five bins show intra-city distribution regardless of national standing — a city that is uniformly poor will still have a "Most Wealthy" bin, which refers only to the wealthiest areas within that city. Cross-region comparisons using only the relative map can therefore be misleading.
+
+**Under the hood**
+
+[`tasks/rwi/`](../tasks/rwi/) downloads the country-level RWI CSV(s) from GCS, builds `Point` geometries from the lat/lon coordinates, projects to Web Mercator (EPSG:3857), and estimates the grid spacing using the median nearest-neighbor distance among all points. Square polygons are constructed around each point using this half-spacing as a buffer. Two categorical columns are added: `wealth_cat_en` (5 quantile bins, city-relative) and `wealth_cat_std` (fixed SD breaks: < −1.0, −1.0–0, 0–1.0, > 1.0). The result is written as a GeoPackage. `analysis.py` computes per-bin area (reprojected to UTM for accuracy) and returns area-weighted histograms for both categorization schemes. Choropleth maps are rendered in R via [`core/R/`](../core/R/) using the `rwi_standardized` and `rwi_relative` layer definitions in [`source/layers.yml`](../source/layers.yml). Distribution charts are produced in [`tasks/rwi/charts/`](../tasks/rwi/charts/).
+
+**Key outputs**
+
+- `{city}_rwi.gpkg` — vector polygons with rwi score, wealth_cat_en, wealth_cat_std
+- `{city}_rwi_stats.csv` — summary statistics (min, percentiles, mean, sum, count)
+- `{city}_rwi_area.csv` — area-weighted distribution by city-relative bin
+- `{city}_rwi_area_standardized.csv` — area-weighted distribution by standardized bin
+- `{city}_rwi_choropleth_map.png` — choropleth map
+
+**Source data citation**
+
+_Chi, Guanghua, Han Fang, Sourav Chatterjee, and Joshua E. Blumenstock. 2022. "Microestimates of Wealth for All Low- and Middle-Income Countries." Proceedings of the National Academy of Sciences 119 (3): e2113658119. https://doi.org/10.1073/pnas.2113658119._
