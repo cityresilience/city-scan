@@ -268,12 +268,13 @@ if (in_oxford && nrow(density_oxford) > 0 && nrow(pop_growth_years) > 0 &&
         axis.line = element_line(linewidth = .5, color = "black"),
         panel.grid.major = element_line(linewidth = .125, color = "dark gray"),
         panel.grid.minor = element_line(linewidth = .125, linetype = 2, color = "dark gray")) +
-      labs(title = "Population density comparison (Oxford)",
+      labs(title = "Population density comparison",
            y = bquote('Population density, people per '~km^2),
            x = "Population") +
       scale_y_continuous(labels = scales::label_comma(),
                          expand = expansion(mult = c(0, .03))) +
-      scale_x_continuous(labels = scales::label_comma()) +
+      scale_x_continuous(labels = scales::label_comma(),
+                         expand = expansion(mult = c(0.02, 0.12))) +
       scale_color_manual(values = hues_density) +
       expand_limits(y = 0)
 
@@ -475,7 +476,8 @@ if (in_oxford && nrow(emp_longitude) > 0) {
     theme(panel.grid.major = element_line(linewidth = .125, color = "dark gray"),
           panel.grid.minor = element_line(linewidth = .125, linetype = 2, color = "dark gray"),
           axis.line = element_line(linewidth = .5, color = "black"),
-          legend.position = "none") +
+          legend.position = "none",
+          plot.title = element_text(size = 10)) +
     labs(title = paste("Employment of", city, "and benchmark cities"), x = "") +
     scale_y_continuous(
       limits = c(0, NA), expand = c(0,0),

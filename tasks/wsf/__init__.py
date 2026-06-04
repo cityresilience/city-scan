@@ -18,7 +18,7 @@ def analyze(scan):
     logger.info("Analyzing WSF data...")
     stats_wsf(city_name=scan.city_name, output_dir=scan.output_dir, dataset="tracker")
     stats_wsf(city_name=scan.city_name, output_dir=scan.output_dir, dataset="evolution")
-    harmonize_wsf(city_name=scan.city_name, output_dir=scan.output_dir)
+    harmonize_wsf(aoi=scan.aoi, city_name=scan.city_name, output_dir=scan.output_dir)
     compute_histogram(city_name=scan.city_name, output_dir=scan.output_dir)
 
 

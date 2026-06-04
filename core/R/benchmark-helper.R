@@ -4,6 +4,16 @@
 
 message("\n=== Benchmark city selection ===")
 
+# Always authenticate for global reference data (Oxford CSVs live in GCS regardless of USE_GCS)
+if (!googleAuthR::gar_has_token()) {
+  adc_path <- Find(file.exists, c(
+    Sys.getenv("GOOGLE_APPLICATION_CREDENTIALS"),
+    file.path(Sys.getenv("HOME"), ".config", "gcloud", "application_default_credentials.json")))
+  if (!is.null(adc_path))
+    googleCloudStorageR::gcs_auth(token = gargle::credentials_app_default(
+      scopes = "https://www.googleapis.com/auth/cloud-platform"))
+}
+
 # Download Oxford locations from GCS
 if (!exists("oxford_location_file") || !file.exists(oxford_location_file)) {
   oxford_location_file <- tempfile(fileext = ".csv")
@@ -11,7 +21,7 @@ if (!exists("oxford_location_file") || !file.exists(oxford_location_file)) {
 }
 
 # Is city in Oxford Economics? --------------------------------------------------------------
-oxford_locations <- readr::read_csv(oxford_location_file, col_types = "c")
+oxford_locations <- read_csv(oxford_location_file, col_types = "c")
 oxford_locations_in_country <- dplyr::filter(oxford_locations, Country == country)
 
 # Match with or without diacritics (e.g. "Chișinău" == "Chisinau")

@@ -5,7 +5,6 @@ import numpy as np
 import pandas as pd
 import geopandas as gpd
 import rasterio
-from glob import glob
 from rasterio.io import MemoryFile
 from rasterio.mask import mask
 from rasterio.warp import reproject, Resampling, calculate_default_transform
@@ -168,6 +167,7 @@ def _resample_to_target(data, src_meta, target_meta, method=Resampling.nearest):
 
 
 def harmonize_wsf(
+        aoi: gpd.GeoDataFrame,
         city_name: str,
         output_dir: str,
         dist_thresh: int = 10,
@@ -281,10 +281,6 @@ def harmonize_wsf(
     logger.info(f"Saved raster: {output_tif}")
 
     # Clip to AOI for stats only
-    aoi_dir = os.path.join(os.path.dirname(output_dir), '01-user-input', 'AOI')
-    aoi_file = glob(os.path.join(aoi_dir, '*.shp'))[0]
-    aoi = gpd.read_file(aoi_file).to_crs(4326)
-
     evo_aoi = evo.rio.clip(aoi.geometry)
     evo_c_aoi = evo_c.rio.clip(aoi.geometry)
     trk_mode_aoi = trk_mode.rio.clip(aoi.geometry)

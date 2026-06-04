@@ -54,12 +54,16 @@ print_text(paste("AOI Area:", paste_bold(round(area, 1)), "sq km"), 1)
 
 coords <- st_centroid(aoi) %>% st_coordinates() %>% suppressWarnings()
 names(coords) <- c("Lon", "Lat")
-koeppen <- read_csv(koeppen_file, col_types = "ddc")
-koeppen_city <- subset(koeppen, between(Lon, coords["Lon"] - .5, coords["Lon"] + .5) &
-                         between(Lat, coords["Lat"] - .5, coords["Lat"] + .5)) %>%
-  .$Cls %>% unique()
+koeppen_city <- tryCatch({
+  koeppen <- read_csv(koeppen_file, col_types = "ddc")
+  subset(koeppen, between(Lon, coords["Lon"] - .5, coords["Lon"] + .5) &
+                    between(Lat, coords["Lat"] - .5, coords["Lat"] + .5)) %>%
+    .$Cls %>% unique()
+}, error = function(e) NULL)
 
-print_text(paste("Köppen climate classification:", paste_bold(koeppen_city), "(See https://en.wikipedia.org/wiki/Köppen_climate_classification for classes)"), 1)
+if (!is.null(koeppen_city)) {
+  print_text(paste("Köppen climate classification:", paste_bold(koeppen_city), "(See https://en.wikipedia.org/wiki/Köppen_climate_classification for classes)"), 1)
+}
 
 # Population estimate — use G2 CSV (closest to current year), fallback to raster
 pop_estimate <- tryCatch({

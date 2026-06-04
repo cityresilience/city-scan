@@ -1,6 +1,61 @@
 # Changelog
 
 ---
+## 2026-05-07
+
+### New
+- `core/R/fns-util.R::auto_root_here()` — finds the calling script via `sys.frames()$ofile` (or active editor via `rstudioapi` for "Run Cell"), walks up to `.here`, sets cwd + re-roots `here()`. Lets sourcing/running chart scripts from `mnt/<scan-id>/` work without manual setwd.
+
+### Changed
+- `core/R/setup.R` — moved `fns.R` source + `auto_root_here()` to top (right after `library(here)`); scan_id derivation/validation now runs before `dir.create` so a failed root doesn't pollute canonical with `01-`/`02-`/`03-` folders. Validation `stop()`s loudly.
+- `core/config/inputs.py::prepare_inputs` — AOI copy filtered by `AOI_shp_name` from `city_inputs.yml`; was copying every shapefile in `inputs/AOI/` (issue #5).
+- `tasks/wsf/analysis.py::harmonize_wsf` — takes `aoi: gpd.GeoDataFrame` (was glob-reading first `.shp` from spatial_dir); `tasks/wsf/__init__.py` passes `scan.aoi`.
+- `tasks/*/charts/index.qmd` — dropped `USE_GCS <<- FALSE` (14 files). `setup.R` already defaults `USE_GCS` to false; the override forced it even when GCS was wanted.
+- `.vscode/settings.json` — `excludeGitIgnore` was hiding `mnt/`; replaced with explicit `files.exclude` for the root junk we want hidden.
+
+### Fixed
+- `core/R/map-building-footprints.R:23` — `!is.null(roads)` → `inherits(roads, "SpatVector")`. PR #6 patched line 34 only; line 23 (gating the `crop()` that produced the error) was missed. `fuzzy_read` returns `NA` not `NULL`.
+
+### Removed
+- `core/R/user-inputs.R` — silent fallback that hardcoded a city when `scan_id` couldn't be derived (ran nouakchott when user wanted a different city). Replaced by loud `stop()` in `setup.R`.
+- `core/R/validate-data-files.R` — unreferenced.
+
+---
+## 2026-05-04
+
+### Changed
+- `core/R/fns.R` — split into 10 topic files (`fns-util`, `fns-text`, `fns-geometry`, `fns-aggregation`, `fns-maps-aes`, `fns-maps-static`, `fns-maps-web`, `fns-charts`, `fns-web` + existing `fns-pop`). `fns.R` is now a manifest; `setup.R` still sources only `fns.R`.
+- `core/R/maps-static.R` — render-target resolution → `resolve_render_targets()`, overview plots → `plot_wards_overview()`/`plot_landmarks_overview()`, autozoom → `autozoom_bounds()`.
+- `core/R/maps-static-experimental.R` — **EXPERIMENTAL.** Smoothing + hex aggregation paths live here (`apply_smoothing`, `aggregate_hex`, `build_aggregate_lookups`). Standard `maps-static.R` is plain plot path only.
+- `tasks/*/maps.yml` — **EXPERIMENTAL.** Per-layer aggregation overrides via mixed-list `layers:` (plain string or `name: {overrides}` dict).
+- `core/R/map-flooding.R` — removed smoothing + hex aggregation blocks. Kept built-up hatch overlay, WSF legend ordering, dynamic population overlay grep, band-1 select.
+- File renames: 11× `chart-*.R` (per-layer chart builders), `plot-building-footprints.R` → `map-building-footprints.R`, `flood-wsf-probability.R` → `data-flood-wsf-probability.R`. Establishes `map-*` / `chart-*` / `data-*` prefixes; callers updated.
+- `scan-calculations/generate-index.R` — dropped `menu.yml` gating; `sections.yml` is now the sole section-inclusion control.
+- `docs/reference/workflow-graph.md` — added "How a static map is built" and "How `scan-calculations.html` is built" sections with PNG diagrams (`workflow-maps.png`, `workflow-scan-calculations.png`) + reading-key bullets.
+
+### New
+- `add_roads_underlay()` / `add_wards_labels()` in `fns-maps-static.R` — defined, not yet wired. `setup.R` loads `road_network` global from `{city}_major_roads.gpkg`.
+
+### Fixed
+- `tasks/elevation/analysis.py` + `core/R/map-elevation.R` — FABDEM water sentinels (0.0) treated as NA both analysis-side and plot-side; was leaking into the lowest bin.
+- `tasks/flood_events/collection.R` — disable S2 before `st_make_valid()`; S2 can't fix self-intersecting polygons (was dropping DRC 2014-10-04).
+- `core/R/maps-static.R` — `aggregate_if_too_fine()` + multi-band → band 1 added to standard loop. Prevents OOM on dense rasters (Lobito port).
+- `aggregate_hex()` — **EXPERIMENTAL.** Hex `value` column renamed to layer's `data_variable` so `plot_static_layer` lookup matches (Lobito port).
+
+### Removed
+- `plot_static_layer` — dead `if (plot_roads)` block; `plot_roads` parameter dropped.
+- `source/generic-text.bkp.yml` — unused backup.
+
+---
+## 2026-04-28
+
+### Fixed
+- `core/R/maps-static.R` — task-mode layer filter now gates on `render_tasks` instead of `!is.null(render_layers)`. A task with only `custom:` and no `layers:` (e.g. `buildings`) had `render_layers` collapse to `NULL` (R's `c()`), so the guard fell through and ALL standard layers rendered.
+
+### New
+- `docs/reference/maps-customization.md` — full reference for `source/layers.yml` and `tasks/{name}/maps.yml` parameters (binning, scale, hex aggregation, smoothing, custom scripts), including allowed values for `binning_method`, `oob`, `aggregate_mode`, `aggregate_fun`.
+
+---
 ## 2026-04-24
 
 ### Fixed

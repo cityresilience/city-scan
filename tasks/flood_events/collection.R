@@ -4,13 +4,18 @@
 if (!exists("aoi")) source(here::here("core/R/setup.R"))
 aoi <- aoi %>% st_as_sf() %>% st_transform("EPSG:4326")
 
-flood_archive_file <- "/vsigs/city-scan-global-data/flood-archive/FloodArchive_region.shp"
+# flood_archive_file is set by core/R/global-data-paths.R based on USE_GCS
 
 flood_archive <- tryCatch({
   fa <- read_sf(flood_archive_file) %>% st_transform("EPSG:4326")
 
   if (nrow(fa) > 0) {
+    # Repair under planar GEOS — S2 can't fix self-intersecting polygons
+    # (e.g. DRC 2014-10-04 in Lobito corridor) and would drop them.
+    s2_prev <- sf_use_s2()
+    sf_use_s2(FALSE)
     fa <- st_make_valid(fa)
+    sf_use_s2(s2_prev)
     fa <- fa[st_is_valid(fa),] %>% st_transform(st_crs(aoi))
     intersections <- which(apply(st_intersects(fa, aoi, sparse = F), 1, any))
     fa[intersections,]

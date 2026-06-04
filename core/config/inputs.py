@@ -37,12 +37,13 @@ def prepare_inputs(dest, city_inputs, source_dir, aoi_dir=None, wards_dir=None, 
     if menu_src.exists() and (override or not menu_dst.exists()):
         shutil.copy2(menu_src, menu_dst)
 
-    # Copy AOI files
+    # Copy AOI files — only sidecars matching AOI_shp_name in city_inputs.yml
     aoi_dst = dest / "AOI"
+    aoi_shp_name = city_inputs.get('AOI_shp_name')
     if aoi_dir and aoi_dir.exists() and (override or not aoi_dst.exists()):
         os.makedirs(aoi_dst, exist_ok=True)
         for f in aoi_dir.iterdir():
-            if f.is_file():
+            if f.is_file() and f.stem == aoi_shp_name:
                 shutil.copy2(f, aoi_dst / f.name)
     elif not aoi_dir:
         # Single city mode — separate AOI and wards from source_dir/AOI/
@@ -50,14 +51,15 @@ def prepare_inputs(dest, city_inputs, source_dir, aoi_dir=None, wards_dir=None, 
         if aoi_src.exists() and (override or not aoi_dst.exists()):
             os.makedirs(aoi_dst, exist_ok=True)
             for f in aoi_src.iterdir():
-                if f.is_file():
-                    if 'wards' not in f.stem.lower():
-                        shutil.copy2(f, aoi_dst / f.name)
-                    else:
-                        # Auto-detect wards into wards/ subfolder
-                        w_dst = dest / "wards"
-                        os.makedirs(w_dst, exist_ok=True)
-                        shutil.copy2(f, w_dst / f.name)
+                if not f.is_file():
+                    continue
+                if 'wards' in f.stem.lower():
+                    # Auto-detect wards into wards/ subfolder
+                    w_dst = dest / "wards"
+                    os.makedirs(w_dst, exist_ok=True)
+                    shutil.copy2(f, w_dst / f.name)
+                elif f.stem == aoi_shp_name:
+                    shutil.copy2(f, aoi_dst / f.name)
 
     # Copy wards files
     if wards_dir and wards_dir.exists():

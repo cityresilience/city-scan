@@ -188,10 +188,12 @@ multi-scan-materials/.DS_Store
 *.csv
 !source/*.csv
 *.png
+!docs/**/*.png
 output/*_road_network/*
 data/flood/*
 mnt/**
 inputs/secrets.yml
+*_cache
 
 # IDE / tooling
 .vscode/
@@ -232,3 +234,4 @@ data/
 gcs-user-input/
 # docs/
 .here
+.egg-info

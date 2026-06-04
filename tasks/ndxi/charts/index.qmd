@@ -1,4 +1,5 @@
 ---
+df-print: paged
 execute:
   echo: false
   warning: false
@@ -8,35 +9,55 @@ execute:
 ## Vegetation
 
 ```{r}
-#| label: setup-ndxi
+#| label: setup-ndvi
 #| include: false
+
 if (file.exists("_quarto.yml")) here::i_am("tasks/ndxi/charts/index.qmd")
 if (!exists("aoi")) {
-  USE_GCS <<- FALSE
   source(here::here("core/R/setup.R"))
 }
 ```
 
 ```{r}
-#| label: ndvi-data
-#| output: false
-ndvi_file <- list.files(tabular_dir, pattern = "ndvi_area\\.csv$", full.names = TRUE)
-if (length(ndvi_file) > 0) {
-  ojs_define(ndvi_area = read.csv(ndvi_file[1]))
-  ojs_define(ndvi_city = city)
-} else {
-  ojs_define(ndvi_area = NULL)
-  ojs_define(ndvi_city = city)
-}
+#| label: data-loading-ndvi
+#| include: false
+veg_levels <- c("Barren", "Shrub and Grassland", "Sparse", "Dense")
+ndvi <- read_csv(file.path(tabular_dir, paste0(city_string, "_ndvi_area.csv"))) %>%
+    filter(type %in% veg_levels, count > 0) %>%
+    mutate(type = factor(type, levels = veg_levels))
+
 ```
 
-```{ojs}
-//| label: ndvi-plot
-//| output: true
-import { plot_ndvi_area, setCity, setWidth } from "../../core/ojs/plots.js"
+```{r}
+#| label: ndvi-bar
+#| results: asis
 
-setCity(ndvi_city)
-setWidth(640)
+if (is.null(ndvi) || nrow(ndvi) == 0) print_text(paste_bold("No NDVI file available")) else {
 
-ndvi_area ? plot_ndvi_area(ndvi_area, {height: 350}) : html`<p><strong>No NDVI data available</strong></p>`
+  ndvi_colors <- c(
+    "Barren"              = "#cfe4c7",
+    "Shrub and Grassland" = "#a5cd9f",
+    "Sparse"              = "#82b685",
+    "Dense"               = "#2e6a34"
+  )
+
+  ndvi_plot <- ggplot(ndvi, aes(x = type, y = percentage, fill = type)) +
+    geom_col(show.legend = FALSE) +
+    geom_text(aes(label = paste0(round(percentage, 1), "%")),
+              vjust = -0.5, size = 3) +
+    scale_fill_manual(values = ndvi_colors) +
+    scale_y_continuous(labels = function(x) paste0(x, "%"),
+                       expand = expansion(mult = c(0, 0.15))) +
+    labs(title = paste("Vegetation cover in", city), x = NULL, y = NULL) +
+    theme_minimal() +
+    theme(panel.grid.major.x = element_blank(),
+          panel.grid.minor   = element_blank())
+
+  ggsave(here("03-render-output", "plots", "ndvi-area-bar.png"), plot = ndvi_plot, device = "png",
+         width = 8, height = 4, units = "in", dpi = "print")
+  print(ndvi_plot)
+  cat("\n\n")
+
+  print_paged_df(ndvi)
+}
 ```

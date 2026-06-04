@@ -63,6 +63,20 @@ plots$aoi <- plot_static_layer(aoi_only = T, plot_aoi = T, plot_wards = !is.null
 plots$wards     <- plot_wards_overview()
 plots$landmarks <- plot_landmarks_overview()
 
+# Aggregation config -----------------------------------------------------------
+aggregate_mode <- city_params$aggregate_mode %||% "none"
+aggregate_size <- city_params$aggregate_size %||% 1000
+
+# Per-layer lookups resolved from each tasks/{name}/maps.yml. See
+# build_aggregate_lookups() in fns.R for the YAML schema (mixed-list with
+# optional per-layer overrides).
+.lookups <- build_aggregate_lookups()
+aggregate_fun_lookup      <- .lookups$fun
+aggregate_mode_lookup     <- .lookups$mode
+aggregate_size_lookup     <- .lookups$size
+aggregate_coverage_lookup <- .lookups$cov
+smoothing_lookup          <- .lookups$smoothing
+
 # Standard plots ---------------------------------------------------------------
 standard_layers <- unlist(lapply(layer_params, \(x) x$fuzzy_string)) %>%
   discard_at(c("fluvial", "pluvial", "coastal", "combined_flooding", "burnt_area", "elevation",
@@ -112,6 +126,30 @@ standard_layers %>%
         message(paste("Success:", yaml_key))
       }
 
+      # Smoothing (per-task, optional). Produces {layer}_smooth and feeds the
+      # smoothed raster into the hex path below. Helper handles tryCatch so a
+      # focal crash / OOM skips gracefully without breaking the rest of the render.
+      smooth_res <- apply_smoothing(data, yaml_key, smoothing_lookup[[yaml_key]], zoom_adjustment)
+      data_smoothed <- smooth_res$smoothed
+      if (!is.null(smooth_res$plot)) plots[[paste0(yaml_key, "_smooth")]] <<- smooth_res$plot
+
+      # Hex aggregation (per-task, optional). Single helper handles both the
+      # raster (run_aggregate) and points (points_hex_count) paths internally.
+      # When smoothing is active, hex is computed from the smoothed raster.
+      layer_agg_mode <- aggregate_mode_lookup[[yaml_key]] %||% aggregate_mode
+      layer_agg_size <- aggregate_size_lookup[[yaml_key]] %||% aggregate_size
+      if (layer_agg_mode != "none") {
+        hex_plot <- aggregate_hex(
+          data, data_smoothed, yaml_key, layer_agg_mode, layer_agg_size,
+          aggregate_coverage_lookup[[yaml_key]] %||% 0,
+          aggregate_fun_lookup[[yaml_key]] %||% "mean",
+          zoom_adjustment)
+        if (!is.null(hex_plot)) {
+          plots[[paste0(yaml_key, "_hex")]] <<- hex_plot
+          message(paste("Success:", yaml_key, "(hex)"))
+        }
+      }
+      
     })
   }) %>% unlist() -> plot_log
 
