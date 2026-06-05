@@ -281,7 +281,7 @@ if (!is.null(wsf_tif) && length(wsf_tif) > 0) {
     fluvial = list(pattern = "fluvial_2020\\.tif$", prob_out = "fu_prob.csv", total_out = "fu_total.csv"),
     pluvial = list(pattern = "pluvial_2020\\.tif$", prob_out = "pu_prob.csv", total_out = "pu_total.csv"),
     coastal = list(pattern = "coastal_2020\\.tif$", prob_out = "cu_prob.csv", total_out = "cu_total.csv"),
-    combined = list(pattern = "combined_flooding_2020\\.tif$", prob_out = "comb_prob.csv", total_out = "comb_total.csv")
+    combined = list(pattern = "_comb_2020\\.tif$", prob_out = "comb_prob.csv", total_out = "comb_total.csv")
   )
 
   flood_total_data <- list()

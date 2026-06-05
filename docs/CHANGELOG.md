@@ -1,6 +1,22 @@
 # Changelog
 
 ---
+## 2026-06-05
+
+### Added
+- `--gcs` / `--download={01,02,03}` flags (`core/config/cli.py`, `tasks/__main__.py`, `core/py/gcs_module.py::download_scan_folder`) — connect a scan stored in GCS to a local working copy. `--gcs` always pulls `01-user-input` local and syncs the full project into `mnt/` once (when missing); `--download` pulls 02/03 (symmetric to `--upload`); `--gcs --render` streams 02 from GCS (`USE_GCS=true`, prints `STREAMING DATA FROM GCS`). Rejects `--parallel`.
+
+### Fixed
+- `tasks/fathom/collection.py::_combine_flood_rasters` — combine by band description over the union extent (per-band `rasterio.merge`), so flood types with different RP bands or extents no longer error/clip (issue #13). Adds `Flood Types: combined (...)` + `Generated:` logs.
+- `core/py/gcs_module.py` — `01-user-input` now uploaded to GCS via new `upload_inputs()`, called once per run (backfill + before task run, serial/parallel); was only uploading `02`/`03`.
+
+### Changed
+- `source/layers.yml` — `combined_flooding` fuzzy_string `combined_flooding_2020.tif$` → `comb_2020.tif$`; maps now read the collection output.
+
+### Removed
+- `core/R/pre-mapping.R::combine_flood_types` — legacy R workaround that produced `combined_flooding_2020.tif`; superseded by the collection fix above.
+
+---
 ## 2026-05-07
 
 ### New

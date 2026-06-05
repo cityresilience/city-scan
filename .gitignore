@@ -193,6 +193,7 @@ output/*_road_network/*
 data/flood/*
 mnt/**
 inputs/secrets.yml
+*_cache
 
 # IDE / tooling
 .vscode/

@@ -21,12 +21,12 @@ vectorize_if_coarse <- function(data, threshold = 7000) {
   return(data)
 }
 
-aggregate_if_too_fine <- function(data, threshold = 1e5, fun = "modal") {
+aggregate_if_too_fine <- function(data, threshold = 1e5, fun = "modal", na.rm = T) {
   if (class(data)[1] %in% c("sf", "SpatVector")) return(data)
   cell_count <- count_aoi_cells(data, aoi)
   if (cell_count > threshold) {
     factor <- round(sqrt(cell_count / threshold))
-    if (factor > 1) data <- terra::aggregate(data, fact = factor, fun = fun)
+    if (factor > 1) data <- terra::aggregate(data, fact = factor, fun = fun, na.rm = na.rm)
   }
   return(data)
 }

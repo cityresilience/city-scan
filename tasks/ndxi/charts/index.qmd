@@ -9,18 +9,10 @@ execute:
 ## Vegetation
 
 ```{r}
-# for interactive testing, comment it out or remove when ready
-setwd("mnt/2026-04-mauritania-nouakchott")
-here::i_am("...")
-here::dr_here()
-```
-
-```{r}
 #| label: setup-ndvi
 #| include: false
 
-# Once plot is ready, uncomment below:
-# if (file.exists("_quarto.yml")) here::i_am("tasks/ndxi/charts/index.qmd")
+if (file.exists("_quarto.yml")) here::i_am("tasks/ndxi/charts/index.qmd")
 if (!exists("aoi")) {
   source(here::here("core/R/setup.R"))
 }

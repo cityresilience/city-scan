@@ -3,9 +3,11 @@
 KNOWN_FLAGS = {
     "--collect", "--analyze", "--multianalysis", "--render",
     "--all", "--scan-id", "--multicity", "--parallel", "--auto-exit",
-    "--upload", "--sync", "--keep", "--list", "--help", "--check",
+    "--upload", "--gcs", "--download", "--sync", "--keep", "--list", "--help", "--check",
     "-e", "-t", "-k",
 }
+
+DOWNLOAD_TARGETS = {"01", "02", "03"}
 
 SYNC_TARGETS = {"tasks", "source", "core", "scan-calculations"}
 CHECK_TARGETS = {"r", "python", "gee", "gcs", "quarto", "inputs"}
@@ -40,6 +42,17 @@ def parse_args(args):
         "-e" in args or bool(f['sync_targets']) or f['keep_as_is']
     )
     f['upload_enabled'] = "--upload" in args
+
+    # --gcs: connect to a scan stored in GCS. --download=01,02 is the explicit
+    # pull (symmetric to --upload); bare --download pulls all folders.
+    f['gcs'] = "--gcs" in args
+    f['download'] = []
+    for a in args:
+        if a == "--download":
+            f['download'] = list(DOWNLOAD_TARGETS)
+        elif a.startswith("--download="):
+            f['download'] = [v.strip() for v in a.split("=", 1)[1].split(",") if v.strip()]
+
     f['parallel_mode'] = "--parallel" in args
     f['auto_exit'] = "--auto-exit" in args
     f['run_all'] = "--all" in args
@@ -105,8 +118,21 @@ def parse_args(args):
 def validate_args(args):
     """Check for unknown flags. Returns error message or None."""
     for a in args:
+        if a.startswith("--download="):
+            for v in a.split("=", 1)[1].split(","):
+                if v.strip() not in DOWNLOAD_TARGETS:
+                    return f"--download values must be 01, 02, or 03 (got '{v.strip()}')"
+            continue
         if a.startswith("-") and a not in KNOWN_FLAGS:
             return f"Unknown flag: '{a}'. Use --list flags to see available flags."
+    # --gcs / --download
+    if "--gcs" in args:
+        if "--scan-id" not in args:
+            return "--gcs requires --scan-id"
+        if "--parallel" in args:
+            return "--gcs cannot be combined with --parallel"
+    if any(a == "--download" or a.startswith("--download=") for a in args) and "--gcs" not in args:
+        return "--download requires --gcs"
     if "--render" in args:
         idx = args.index("--render")
         valid_targets = {"maps", "scan-calculations", "charts"}

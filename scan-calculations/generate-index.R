@@ -34,6 +34,7 @@ lines <- c(
   "source(here::here(\"core/R/fns.R\"))",
   "dir.create(here(\"03-render-output\", \"plots\"), recursive = TRUE, showWarnings = FALSE)",
   "knitr::opts_chunk$set(error = TRUE)",
+  "source(here::here(\"core/R/benchmark-assembly.R\"))",
   "```",
   ""
 )

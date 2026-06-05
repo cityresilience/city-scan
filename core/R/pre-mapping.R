@@ -24,22 +24,6 @@ if (!file.exists(file.path(spatial_dir, "infrastructure.gpkg"))) {
   message("infrastructure.gpkg already exists, skipping...")
 }
 
-combine_flood_types <- function() {
-  flood_files <- str_subset(list.files(spatial_dir, full.names = T), "(fluvial|pluvial|coastal)_2020.tif$")
-  if (length(flood_files) > 0) {
-    combined_flooding <- flood_files %>%
-      lapply(rast) %>% 
-      reduce(\(x, y) max(x, resample(y, x), na.rm = T))    
-    writeRaster(combined_flooding, filename = file.path(spatial_dir, paste0(city_string, "_combined_flooding_2020.tif")), overwrite = T)
-  }
-}
-message("Combining flood types...")
-if (!file.exists(file.path(spatial_dir, paste0(city_string, "_combined_flooding_2020.tif")))) {
-  combine_flood_types()
-} else {
-  message(paste0(city_string, "_combined_flooding_2020.tif already exists, skipping..."))
-}
-
 # Road network centrality
 assign_road_types <- function() {
   roads <- fuzzy_read(spatial_dir, "centralities\\.gpkg$", layer = "edges")

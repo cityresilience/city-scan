@@ -2,7 +2,7 @@
 # change before running if GCS not authenticated!
 local_materials <- normalizePath(file.path(here::here(), "..", "..", "..", "03-multi-scan-materials"), mustWork = FALSE)
 
-if (USE_GCS && exists(GLOBAL_DATA_BUCKET)) {
+if (USE_GCS && exists("GLOBAL_DATA_BUCKET")) {
     # GCS paths - relative to city-scan-global-data bucket
 
     oxford_file <- "oxford-economics/Oxford Global Cities Data.csv"
