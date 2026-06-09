@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>11&nbsp; Repository Structure – City Scan Technical Reference</title>
+<title>17&nbsp; Repository Structure – City Scan Technical Reference</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,41 +23,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -69,7 +34,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./task-dependency.html" rel="next">
-<link href="./datalayer-references.html" rel="prev">
+<link href="./multi-analysis.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -120,7 +85,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./repo-structure.html">Understanding the Repo</a></li><li class="breadcrumb-item"><a href="./repo-structure.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Repository Structure</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./repo-structure.html">Understanding the Repo</a></li><li class="breadcrumb-item"><a href="./repo-structure.html"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Repository Structure</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -237,6 +202,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Customizing Maps and Charts</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adding-dataset.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Adding New Dataset</span></span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -251,13 +222,43 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./tasks-structure-overview.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Tasks &amp; Structure Overview</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Tasks &amp; Structure Overview</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./datalayer-references.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Data Layer References</span></span></a>
+  <a href="./population-demographic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Population and Demographics</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./economic-activity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Economic Activity</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./built-form.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Built Form</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./climate-condition.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Climate Conditions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./risk-identification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Risk Identification</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./multi-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Multi-Analysis (Exposure Analysis) – Placeholder</span></span></a>
   </div>
 </li>
       </ul>
@@ -274,13 +275,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./repo-structure.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Repository Structure</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Repository Structure</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./task-dependency.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Task Dependency</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Orchestration Dependency Graph</span></span></a>
   </div>
 </li>
       </ul>
@@ -297,13 +298,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./case-standard-rabat.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Case Study: Standard Scan — Rabat, Morocco</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Case Study: Standard Scan — Rabat, Morocco</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./case-multiple-philippines.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Case Study: Multiple Scans — Philippines</span></span></a>
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Case Study: Multiple Scans — Philippines</span></span></a>
   </div>
 </li>
       </ul>
@@ -320,31 +321,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./git-guide.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Git Guide</span></span></a>
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Git Guide</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./reporting-issues.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Reporting Issues</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Reporting Issues</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./contributing.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Contributing</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Contributing</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./sharing-the-guide.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Sharing the Guide</span></span></a>
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Sharing the Guide</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./editing-this-reference.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Editing This Reference</span></span></a>
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Editing This Reference</span></span></a>
   </div>
 </li>
       </ul>
@@ -365,23 +366,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#top-level-layout" id="toc-top-level-layout" class="nav-link active" data-scroll-target="#top-level-layout"><span class="header-section-number">11.1</span> Top-level Layout</a></li>
-  <li><a href="#core-package-cityscan" id="toc-core-package-cityscan" class="nav-link" data-scroll-target="#core-package-cityscan"><span class="header-section-number">11.2</span> Core Package: <code>cityscan/</code></a>
+  <li><a href="#tasks" id="toc-tasks" class="nav-link active" data-scroll-target="#tasks"><span class="header-section-number">17.1</span> tasks/</a></li>
+  <li><a href="#core" id="toc-core" class="nav-link" data-scroll-target="#core"><span class="header-section-number">17.2</span> core/</a>
   <ul class="collapse">
-  <li><a href="#key-modules" id="toc-key-modules" class="nav-link" data-scroll-target="#key-modules"><span class="header-section-number">11.2.1</span> Key Modules</a></li>
+  <li><a href="#coreconfig" id="toc-coreconfig" class="nav-link" data-scroll-target="#coreconfig"><span class="header-section-number">17.2.1</span> core/config/</a></li>
+  <li><a href="#corepy" id="toc-corepy" class="nav-link" data-scroll-target="#corepy"><span class="header-section-number">17.2.2</span> core/py/</a></li>
+  <li><a href="#corer" id="toc-corer" class="nav-link" data-scroll-target="#corer"><span class="header-section-number">17.2.3</span> core/R/</a></li>
+  <li><a href="#coreojs" id="toc-coreojs" class="nav-link" data-scroll-target="#coreojs"><span class="header-section-number">17.2.4</span> core/ojs/</a></li>
   </ul></li>
-  <li><a href="#tasks-directory-tasks" id="toc-tasks-directory-tasks" class="nav-link" data-scroll-target="#tasks-directory-tasks"><span class="header-section-number">11.3</span> Tasks Directory: <code>tasks/</code></a></li>
-  <li><a href="#inputs-outputs" id="toc-inputs-outputs" class="nav-link" data-scroll-target="#inputs-outputs"><span class="header-section-number">11.4</span> Inputs &amp; Outputs</a></li>
-  <li><a href="#tests" id="toc-tests" class="nav-link" data-scroll-target="#tests"><span class="header-section-number">11.5</span> Tests</a></li>
+  <li><a href="#source" id="toc-source" class="nav-link" data-scroll-target="#source"><span class="header-section-number">17.3</span> source/</a></li>
+  <li><a href="#inputs" id="toc-inputs" class="nav-link" data-scroll-target="#inputs"><span class="header-section-number">17.4</span> inputs/</a></li>
+  <li><a href="#mnt" id="toc-mnt" class="nav-link" data-scroll-target="#mnt"><span class="header-section-number">17.5</span> mnt/</a></li>
+  <li><a href="#scan-calculations" id="toc-scan-calculations" class="nav-link" data-scroll-target="#scan-calculations"><span class="header-section-number">17.6</span> scan-calculations/</a></li>
+  <li><a href="#templates" id="toc-templates" class="nav-link" data-scroll-target="#templates"><span class="header-section-number">17.7</span> templates/</a></li>
+  <li><a href="#docs" id="toc-docs" class="nav-link" data-scroll-target="#docs"><span class="header-section-number">17.8</span> docs/</a></li>
+  <li><a href="#logs" id="toc-logs" class="nav-link" data-scroll-target="#logs"><span class="header-section-number">17.9</span> logs/</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./repo-structure.html">Understanding the Repo</a></li><li class="breadcrumb-item"><a href="./repo-structure.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Repository Structure</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./repo-structure.html">Understanding the Repo</a></li><li class="breadcrumb-item"><a href="./repo-structure.html"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Repository Structure</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Repository Structure</span></h1>
+<h1 class="title"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Repository Structure</span></h1>
 </div>
 
 
@@ -398,118 +406,256 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>An orientation to the City Scan codebase — what lives where and why.</p>
-<section id="top-level-layout" class="level2" data-number="11.1">
-<h2 data-number="11.1" class="anchored" data-anchor-id="top-level-layout"><span class="header-section-number">11.1</span> Top-level Layout</h2>
-<pre><code>city-scan/
-├── cityscan/          # core Python package
-├── tasks/             # task modules
-├── inputs/            # user-supplied inputs (AOI, local data)
-├── outputs/           # generated scan outputs (git-ignored)
-├── scripts/           # utility scripts
-├── tests/             # test suite
-├── docs/              # this documentation
-├── pyproject.toml     # package metadata &amp; dependencies
-├── run.py             # CLI entry point
-└── orchestrator.sh    # shell-based orchestrator (legacy)</code></pre>
-</section>
-<section id="core-package-cityscan" class="level2" data-number="11.2">
-<h2 data-number="11.2" class="anchored" data-anchor-id="core-package-cityscan"><span class="header-section-number">11.2</span> Core Package: <code>cityscan/</code></h2>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-<pre><code>cityscan/
-├── __init__.py
-├── config.py          # config loading and validation
-├── registry.py        # task registration and discovery
-├── runner.py          # task execution and dependency resolution
-├── gee.py             # Google Earth Engine helpers
-├── io.py              # file I/O utilities
-└── report.py          # HTML report generation</code></pre>
-<section id="key-modules" class="level3" data-number="11.2.1">
-<h3 data-number="11.2.1" class="anchored" data-anchor-id="key-modules"><span class="header-section-number">11.2.1</span> Key Modules</h3>
-<div id="tbl-modules" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-modules-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;11.1: Core module responsibilities
-</figcaption>
-<div aria-describedby="tbl-modules-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Module</th>
-<th>Responsibility</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>config.py</code></td>
-<td>Load and validate <code>config.yml</code></td>
-</tr>
-<tr class="even">
-<td><code>registry.py</code></td>
-<td>Discover and register task classes</td>
-</tr>
-<tr class="odd">
-<td><code>runner.py</code></td>
-<td>Resolve dependencies, schedule, and run tasks</td>
-</tr>
-<tr class="even">
-<td><code>gee.py</code></td>
-<td>Authenticate and interact with GEE</td>
-</tr>
-</tbody>
-</table>
-</div>
-</figure>
-</div>
-</section>
-</section>
-<section id="tasks-directory-tasks" class="level2" data-number="11.3">
-<h2 data-number="11.3" class="anchored" data-anchor-id="tasks-directory-tasks"><span class="header-section-number">11.3</span> Tasks Directory: <code>tasks/</code></h2>
+<pre><code>city-scan-automation/
+├── tasks/
+├── core/
+├── source/
+├── inputs/
+├── mnt/
+├── scan-calculations/
+├── templates/
+├── docs/
+└── logs/</code></pre>
+<hr>
+<section id="tasks" class="level2" data-number="17.1">
+<h2 data-number="17.1" class="anchored" data-anchor-id="tasks"><span class="header-section-number">17.1</span> tasks/</h2>
 <pre><code>tasks/
-├── population.py
-├── landuse.py
-├── roads.py
-├── flood_risk.py
-├── coastal_erosion.py
-└── custom/            # user-defined custom tasks</code></pre>
-<p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Each file in <code>tasks/</code> is a self-contained module that is auto-discovered by the registry at startup.</p>
+├── elevation/
+│   ├── __init__.py
+│   ├── collection.py
+│   ├── analysis.py
+│   ├── maps.yml
+│   └── charts/
+│       ├── _quarto.yml
+│       └── index.qmd
+├── fathom/
+│   ├── __init__.py
+│   ├── collection.py
+│   ├── analysis.py
+│   ├── multianalysis.R
+│   ├── maps.yml
+│   └── charts/
+│       ├── _quarto.yml
+│       └── index.qmd
+├── worldpop/
+├── wsf/
+├── earthquake/        # R-based collection
+├── oxford/            # R-based collection
+└── ...</code></pre>
+<ul>
+<li>Each scan topic is a self-contained module</li>
+<li><code>__init__.py</code> registers entry points: <code>collect()</code>, <code>analyze()</code>, <code>visualize()</code></li>
+<li><code>collection.py</code> (or <code>.R</code>) downloads and clips data to AOI</li>
+<li><code>analysis.py</code> (or <code>.R</code>) computes statistics and generates CSVs</li>
+<li><code>maps.yml</code> declares the layers this task contributes (matched against <code>source/layers.yml</code>) and any custom map scripts</li>
+<li><code>charts/index.qmd</code> renders Quarto charts for the scan-calculations report</li>
+<li>Some tasks have <code>multianalysis.R</code> for cross-task R-based post-processing (e.g.&nbsp;fathom flood exposure)</li>
+<li>Tasks are auto-registered via <code>source/tasks.yml</code></li>
+<li>CLI entry point: <code>tasks/__main__.py</code> (parses flags, dispatches to <code>core/config/run.py</code>)</li>
+</ul>
+<hr>
 </section>
-<section id="inputs-outputs" class="level2" data-number="11.4">
-<h2 data-number="11.4" class="anchored" data-anchor-id="inputs-outputs"><span class="header-section-number">11.4</span> Inputs &amp; Outputs</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">inputs/</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">└──</span> AOI/               <span class="co"># place your GeoJSON boundary files here</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">outputs/</span>               <span class="co"># created automatically; git-ignored</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="ex">└──</span> <span class="op">&lt;</span>city_name<span class="op">&gt;</span>/</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="ex">├──</span> maps/</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="ex">├──</span> stats/</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="ex">└──</span> report.html</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="cover.png" class="img-fluid figure-img" style="width:80.0%" alt="Diagram illustrating the top-level directory structure of the City Scan repository."></p>
-<figcaption>Repository structure diagram</figcaption>
-</figure>
-</div>
+<section id="core" class="level2" data-number="17.2">
+<h2 data-number="17.2" class="anchored" data-anchor-id="core"><span class="header-section-number">17.2</span> core/</h2>
+<section id="coreconfig" class="level3" data-number="17.2.1">
+<h3 data-number="17.2.1" class="anchored" data-anchor-id="coreconfig"><span class="header-section-number">17.2.1</span> core/config/</h3>
+<pre><code>core/config/
+├── scan.py
+├── auth.py
+├── paths.py
+├── tasks.py
+├── cli.py
+├── run.py
+├── multitask.py
+├── inputs.py
+├── sync.py
+├── check_env.py
+└── utils.py</code></pre>
+<ul>
+<li><code>scan.py</code> — Scan class: loads AOI, city config, creates city output folders in <code>mnt/</code></li>
+<li><code>auth.py</code> — initializes GEE and GCS authentication (tiered: existing creds → gcloud ADC → fail-fast)</li>
+<li><code>paths.py</code> — auto-detects input/output directories based on project structure</li>
+<li><code>tasks.py</code> — task registry (reads <code>source/tasks.yml</code>)</li>
+<li><code>cli.py</code> — CLI flag parsing (single source of truth for all flags)</li>
+<li><code>run.py</code> — <code>run_task()</code>, <code>run_multicity()</code> execution logic</li>
+<li><code>multitask.py</code> — parallel task runner with TUI for <code>--parallel</code> flag</li>
+<li><code>inputs.py</code> — <code>prepare_inputs()</code> for staging user inputs into city folders</li>
+<li><code>sync.py</code> — <code>sync_project_files()</code> for <code>--sync</code> flag</li>
+<li><code>check_env.py</code> — environment preflight for <code>--check</code> flag</li>
+<li><code>utils.py</code> — shared <code>slugify()</code> and other helpers</li>
+</ul>
 </section>
-<section id="tests" class="level2" data-number="11.5">
-<h2 data-number="11.5" class="anchored" data-anchor-id="tests"><span class="header-section-number">11.5</span> Tests</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pytest</span> tests/            <span class="co"># run the full test suite</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pytest</span> tests/unit/       <span class="co"># unit tests only</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="ex">pytest</span> tests/integration/ <span class="co"># integration tests (requires GEE)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>For how tasks connect to each other, see <a href="./task-dependency.html">Task Dependency</a>.</p>
-</div>
-</div>
+<section id="corepy" class="level3" data-number="17.2.2">
+<h3 data-number="17.2.2" class="anchored" data-anchor-id="corepy"><span class="header-section-number">17.2.2</span> core/py/</h3>
+<pre><code>core/py/
+├── log_module.py
+├── error_tracker.py
+├── gcs_module.py
+├── aoi_module.py
+├── osm_client.py
+├── osm_pbf.py
+├── aoi_buffer.py
+├── gee_fns.py
+├── raster_module.py
+└── gdal_auth.py</code></pre>
+<ul>
+<li><code>log_module.py</code> — logging setup (console + rotating file output)</li>
+<li><code>error_tracker.py</code> — counts errors per task, surfaces OK / WARNING / ERROR / NO_DATA status</li>
+<li><code>gcs_module.py</code> — GCS upload/download, file tracking for <code>--upload</code> flag</li>
+<li><code>aoi_module.py</code> — detects country name(s) and ISO3 codes from AOI intersection (multi-country aware)</li>
+<li><code>osm_client.py</code> — unified OSM access (routes to Geofabrik PBF for large AOIs, Overpass otherwise)</li>
+<li><code>osm_pbf.py</code> — Geofabrik PBF download + attribute filter helpers</li>
+<li><code>aoi_buffer.py</code> — AOI buffer utilities in meters for OSM queries</li>
+<li><code>gee_fns.py</code> — GEE tiling helpers (<code>make_tiles</code>, <code>tiled_collection</code>)</li>
+<li><code>raster_module.py</code> — raster mosaic, masking, GCS-safe operations</li>
+<li><code>gdal_auth.py</code> — configures GDAL for <code>/vsigs/</code> access to private GCS buckets</li>
+</ul>
+</section>
+<section id="corer" class="level3" data-number="17.2.3">
+<h3 data-number="17.2.3" class="anchored" data-anchor-id="corer"><span class="header-section-number">17.2.3</span> core/R/</h3>
+<pre><code>core/R/
+├── setup.R
+├── fns.R
+├── pre-mapping.R
+├── maps-static.R
+├── map-flooding.R
+├── map-elevation.R
+├── map-sectoral-gdp-flood.R
+├── map-schools-health-proximity.R
+├── benchmark-helper.R
+├── pop-backup.R
+├── global-data-paths.R
+└── ...</code></pre>
+<ul>
+<li><code>setup.R</code> — R session setup: loads packages, reads AOI, sets directory paths</li>
+<li><code>fns.R</code> — <code>plot_static_layer()</code>, <code>prepare_parameters()</code>, <code>parse_agg_fun()</code>, <code>cell_aggregate()</code>, <code>hexbin_aggregate()</code>, <code>h3_aggregate()</code>, and other shared helpers</li>
+<li><code>pre-mapping.R</code> — data preprocessing before mapping (combine flood zones, edit WSF tracker, adjust deforestation years)</li>
+<li><code>maps-static.R</code> — orchestrates static map generation: standard layers loop + custom map scripts</li>
+<li><code>map-*.R</code> — custom map scripts for layers that need special handling (flood overlays, sectoral GDP, schools/health proximity, etc.)</li>
+<li><code>benchmark-helper.R</code> — benchmark city selection and Oxford lookup (diacritic-insensitive)</li>
+<li><code>pop-backup.R</code> — population fallback functions (UN data, citypopulation.de, GHS-POP)</li>
+</ul>
+</section>
+<section id="coreojs" class="level3" data-number="17.2.4">
+<h3 data-number="17.2.4" class="anchored" data-anchor-id="coreojs"><span class="header-section-number">17.2.4</span> core/ojs/</h3>
+<pre><code>core/ojs/
+└── plots.js</code></pre>
+<ul>
+<li>Observable JS interactive charts (D3-based) used in the web report</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="source" class="level2" data-number="17.3">
+<h2 data-number="17.3" class="anchored" data-anchor-id="source"><span class="header-section-number">17.3</span> source/</h2>
+<pre><code>source/
+├── layers.yml
+├── tasks.yml
+├── generic-text.yml
+├── custom.scss
+└── pagedtable-fix.scss</code></pre>
+<ul>
+<li>Canonical config files, copied to each city folder on first run</li>
+<li><code>layers.yml</code> — map layer styling (palettes, breaks, labels, fuzzy_string per layer)</li>
+<li><code>tasks.yml</code> — task config (auth requirements, aliases, dependencies)</li>
+<li><code>generic-text.yml</code> — report text templates per section</li>
+<li><code>custom.scss</code> — report CSS styling</li>
+<li><code>pagedtable-fix.scss</code> — Bootstrap table styling overrides</li>
+</ul>
+<hr>
+</section>
+<section id="inputs" class="level2" data-number="17.4">
+<h2 data-number="17.4" class="anchored" data-anchor-id="inputs"><span class="header-section-number">17.4</span> inputs/</h2>
+<pre><code>inputs/
+├── city_inputs.yml
+├── multi_inputs.yml
+├── menu.yml
+└── AOI/</code></pre>
+<ul>
+<li>User-facing configuration for new scans (not tracked in git — see <code>templates/</code> for starting copies)</li>
+<li><code>city_inputs.yml</code> — single-city config: name, AOI, year ranges, flood/accessibility/benchmark params</li>
+<li><code>multi_inputs.yml</code> — multi-city batch config: city list (or multipolygon file) + shared settings</li>
+<li><code>menu.yml</code> — toggle which tasks to enable or disable</li>
+<li><code>AOI/</code> — boundary shapefile(s) for the city or cities</li>
+</ul>
+<hr>
+</section>
+<section id="mnt" class="level2" data-number="17.5">
+<h2 data-number="17.5" class="anchored" data-anchor-id="mnt"><span class="header-section-number">17.5</span> mnt/</h2>
+<pre><code>mnt/
+└── 2026-03-tunisia-tunis/
+    ├── 01-user-input/
+    ├── 02-process-output/
+    │   ├── spatial/
+    │   └── tabular/
+    ├── 03-render-output/
+    │   ├── maps/
+    │   └── plots/
+    ├── tasks/
+    ├── core/
+    ├── source/
+    └── scan-calculations/</code></pre>
+<ul>
+<li>City output folders, auto-created per scan by the <code>Scan</code> class</li>
+<li>Each city gets its own copy of <code>tasks/</code>, <code>core/</code>, <code>source/</code>, <code>scan-calculations/</code></li>
+<li><code>01-user-input/</code> — copied from <code>inputs/</code></li>
+<li><code>02-process-output/spatial/</code> — rasters and vector data (.tif, .gpkg, .fgb)</li>
+<li><code>02-process-output/tabular/</code> — CSVs and statistics</li>
+<li><code>03-render-output/maps/</code> — static map PNGs</li>
+<li><code>03-render-output/plots/</code> — chart PNGs</li>
+</ul>
+<hr>
+</section>
+<section id="scan-calculations" class="level2" data-number="17.6">
+<h2 data-number="17.6" class="anchored" data-anchor-id="scan-calculations"><span class="header-section-number">17.6</span> scan-calculations/</h2>
+<pre><code>scan-calculations/
+├── _quarto.yml
+├── sections.yml
+├── generate-index.R
+└── ...</code></pre>
+<ul>
+<li>Quarto project that compiles per-task <code>charts/index.qmd</code> into a single combined HTML report</li>
+<li><code>sections.yml</code> defines which tasks appear and in what order</li>
+<li><code>generate-index.R</code> reads <code>sections.yml</code> and assembles the per-task qmds into <code>index.qmd</code></li>
+</ul>
+<hr>
+</section>
+<section id="templates" class="level2" data-number="17.7">
+<h2 data-number="17.7" class="anchored" data-anchor-id="templates"><span class="header-section-number">17.7</span> templates/</h2>
+<pre><code>templates/
+├── city_inputs.yml
+├── multi_inputs.yml
+├── menu.yml
+├── manual-text.md
+└── README.md</code></pre>
+<ul>
+<li>Boilerplate input configs and starter files</li>
+<li>Copy <code>city_inputs.yml</code>, <code>multi_inputs.yml</code>, <code>menu.yml</code> to <code>inputs/</code> and edit before running</li>
+</ul>
+<hr>
+</section>
+<section id="docs" class="level2" data-number="17.8">
+<h2 data-number="17.8" class="anchored" data-anchor-id="docs"><span class="header-section-number">17.8</span> docs/</h2>
+<pre><code>docs/
+├── README.md
+├── CHANGELOG.md
+├── getting-started/
+├── interface/
+├── reference/
+└── archived/</code></pre>
+<p>See <a href="../README.md">docs/README.md</a> for the full index.</p>
+<hr>
+</section>
+<section id="logs" class="level2" data-number="17.9">
+<h2 data-number="17.9" class="anchored" data-anchor-id="logs"><span class="header-section-number">17.9</span> logs/</h2>
+<pre><code>logs/
+├── app.log
+└── task_report.txt</code></pre>
+<ul>
+<li>Auto-created on first task run</li>
+<li><code>app.log</code> — full run log (overwrites per run)</li>
+<li><code>task_report.txt</code> — per-task status summary (status, source, messages, last update)</li>
+</ul>
 
 
 </section>
@@ -917,13 +1063,13 @@ Note
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./datalayer-references.html" class="pagination-link" aria-label="Data Layer References">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Data Layer References</span></span>
+      <a href="./multi-analysis.html" class="pagination-link" aria-label="Multi-Analysis (Exposure Analysis) -- Placeholder">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Multi-Analysis (Exposure Analysis) – Placeholder</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./task-dependency.html" class="pagination-link" aria-label="Task Dependency">
-        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Task Dependency</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./task-dependency.html" class="pagination-link" aria-label="Orchestration Dependency Graph">
+        <span class="nav-page-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Orchestration Dependency Graph</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

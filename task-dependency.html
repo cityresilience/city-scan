@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>12&nbsp; Task Dependency – City Scan Technical Reference</title>
+<title>18&nbsp; Orchestration Dependency Graph – City Scan Technical Reference</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -22,41 +22,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -120,7 +85,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./repo-structure.html">Understanding the Repo</a></li><li class="breadcrumb-item"><a href="./task-dependency.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Task Dependency</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./repo-structure.html">Understanding the Repo</a></li><li class="breadcrumb-item"><a href="./task-dependency.html"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Orchestration Dependency Graph</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -237,6 +202,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Customizing Maps and Charts</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./adding-dataset.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Adding New Dataset</span></span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -251,13 +222,43 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./tasks-structure-overview.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Tasks &amp; Structure Overview</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Tasks &amp; Structure Overview</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./datalayer-references.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Data Layer References</span></span></a>
+  <a href="./population-demographic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Population and Demographics</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./economic-activity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Economic Activity</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./built-form.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Built Form</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./climate-condition.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Climate Conditions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./risk-identification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Risk Identification</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./multi-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Multi-Analysis (Exposure Analysis) – Placeholder</span></span></a>
   </div>
 </li>
       </ul>
@@ -274,13 +275,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./repo-structure.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Repository Structure</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Repository Structure</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./task-dependency.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Task Dependency</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Orchestration Dependency Graph</span></span></a>
   </div>
 </li>
       </ul>
@@ -297,13 +298,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./case-standard-rabat.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Case Study: Standard Scan — Rabat, Morocco</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Case Study: Standard Scan — Rabat, Morocco</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./case-multiple-philippines.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Case Study: Multiple Scans — Philippines</span></span></a>
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Case Study: Multiple Scans — Philippines</span></span></a>
   </div>
 </li>
       </ul>
@@ -320,31 +321,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./git-guide.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Git Guide</span></span></a>
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Git Guide</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./reporting-issues.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Reporting Issues</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Reporting Issues</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./contributing.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Contributing</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Contributing</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./sharing-the-guide.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Sharing the Guide</span></span></a>
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Sharing the Guide</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./editing-this-reference.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Editing This Reference</span></span></a>
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Editing This Reference</span></span></a>
   </div>
 </li>
       </ul>
@@ -365,21 +366,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#dependency-graph" id="toc-dependency-graph" class="nav-link active" data-scroll-target="#dependency-graph"><span class="header-section-number">12.1</span> Dependency Graph</a></li>
-  <li><a href="#how-dependencies-are-declared" id="toc-how-dependencies-are-declared" class="nav-link" data-scroll-target="#how-dependencies-are-declared"><span class="header-section-number">12.2</span> How Dependencies Are Declared</a></li>
-  <li><a href="#execution-order-example" id="toc-execution-order-example" class="nav-link" data-scroll-target="#execution-order-example"><span class="header-section-number">12.3</span> Execution Order Example</a></li>
-  <li><a href="#dependency-table" id="toc-dependency-table" class="nav-link" data-scroll-target="#dependency-table"><span class="header-section-number">12.4</span> Dependency Table</a></li>
-  <li><a href="#handling-failures" id="toc-handling-failures" class="nav-link" data-scroll-target="#handling-failures"><span class="header-section-number">12.5</span> Handling Failures</a></li>
-  <li><a href="#visualizing-the-dag" id="toc-visualizing-the-dag" class="nav-link" data-scroll-target="#visualizing-the-dag"><span class="header-section-number">12.6</span> Visualizing the DAG</a></li>
+  <li><a href="#dependencies-used-by-the-orchestration-layer" id="toc-dependencies-used-by-the-orchestration-layer" class="nav-link active" data-scroll-target="#dependencies-used-by-the-orchestration-layer"><span class="header-section-number">18.1</span> Dependencies used by the orchestration layer</a></li>
+  <li><a href="#flag-targets-from-coreconfigcli.py" id="toc-flag-targets-from-coreconfigcli.py" class="nav-link" data-scroll-target="#flag-targets-from-coreconfigcli.py"><span class="header-section-number">18.2</span> Flag targets (from <code>core/config/cli.py</code>)</a></li>
+  <li><a href="#orchestration-graph" id="toc-orchestration-graph" class="nav-link" data-scroll-target="#orchestration-graph"><span class="header-section-number">18.3</span> Orchestration graph</a></li>
+  <li><a href="#utilities-used-throughout" id="toc-utilities-used-throughout" class="nav-link" data-scroll-target="#utilities-used-throughout"><span class="header-section-number">18.4</span> Utilities (used throughout)</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./repo-structure.html">Understanding the Repo</a></li><li class="breadcrumb-item"><a href="./task-dependency.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Task Dependency</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./repo-structure.html">Understanding the Repo</a></li><li class="breadcrumb-item"><a href="./task-dependency.html"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Orchestration Dependency Graph</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Task Dependency</span></h1>
+<h1 class="title"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Orchestration Dependency Graph</span></h1>
 </div>
 
 
@@ -396,117 +395,207 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>City Scan tasks form a directed acyclic graph (DAG). Understanding dependencies helps you predict execution order and debug failures.</p>
-<section id="dependency-graph" class="level2" data-number="12.1">
-<h2 data-number="12.1" class="anchored" data-anchor-id="dependency-graph"><span class="header-section-number">12.1</span> Dependency Graph</h2>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="cover.png" class="img-fluid figure-img" style="width:90.0%" alt="Directed acyclic graph showing City Scan task dependencies, with population and AOI prep as root nodes."></p>
-<figcaption>Task dependency DAG</figcaption>
-</figure>
-</div>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. The orchestrator builds this graph at startup by reading each task’s <code>depends_on</code> declaration.</p>
+<section id="dependencies-used-by-the-orchestration-layer" class="level2" data-number="18.1">
+<h2 data-number="18.1" class="anchored" data-anchor-id="dependencies-used-by-the-orchestration-layer"><span class="header-section-number">18.1</span> Dependencies used by the orchestration layer</h2>
+<pre><code>requirements.txt (orchestration-critical subset)
+├── PyYAML==6.0.1              ← reads city_inputs.yml, menu.yml,
+│                                tasks.yml, multi_inputs.yml, layers.yml
+├── geopandas==1.0.1           ← AOI loading + multipolygon handling
+│                                (Scan.aoi, run_multicity, find_country)
+├── earthengine-api&gt;=1.6.12    ← core/config/auth.py::init_gee()
+├── google-cloud-storage       ← core/config/auth.py::init_gcs(),
+│     ==2.16.0                   core/py/gcs_module.py (upload)
+├── rasterio==1.3.8            ← raster I/O for collection/analysis
+├── shapely==2.0.4             ← AOI geometry ops
+└── fiona==1.10.1              ← shp/gpkg read</code></pre>
+<p>Standard-library orchestration modules: <code>argparse</code>-style parsing (custom in <code>core/config/cli.py</code>), <code>importlib</code> (task discovery), <code>subprocess</code> (R/Quarto), <code>threading</code> / <code>concurrent.futures</code> (parallel mode), <code>termios</code> / <code>tty</code> / <code>select</code> (TUI keybinds), <code>logging</code>, <code>pathlib</code>, <code>shutil</code>.</p>
 </section>
-<section id="how-dependencies-are-declared" class="level2" data-number="12.2">
-<h2 data-number="12.2" class="anchored" data-anchor-id="how-dependencies-are-declared"><span class="header-section-number">12.2</span> How Dependencies Are Declared</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> AccessibilityTask:</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    name <span class="op">=</span> <span class="st">"accessibility"</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    depends_on <span class="op">=</span> [<span class="st">"roads"</span>, <span class="st">"population"</span>]  <span class="co"># must run after these</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> run(<span class="va">self</span>, config):</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        roads <span class="op">=</span> <span class="va">self</span>.load_output(<span class="st">"roads"</span>)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        pop   <span class="op">=</span> <span class="va">self</span>.load_output(<span class="st">"population"</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="co"># ... compute accessibility</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="flag-targets-from-coreconfigcli.py" class="level2" data-number="18.2">
+<h2 data-number="18.2" class="anchored" data-anchor-id="flag-targets-from-coreconfigcli.py"><span class="header-section-number">18.2</span> Flag targets (from <code>core/config/cli.py</code>)</h2>
+<pre><code>--sync     ∈ { tasks, source, core, scan-calculations }   (SYNC_TARGETS)
+             • no target  → all four
+             • -t         → shortcut for `--sync tasks`
+--render   ∈ { maps, scan-calculations, charts }          (render_targets)
+             • maps                → Rscript core/R/maps-static.R
+             • scan-calculations   → quarto render scan-calculations/
+             • charts &lt;task&gt;       → quarto render tasks/&lt;task&gt;/charts/index.qmd
+--scan-id  &lt;id&gt;      target existing city folder in mnt/
+--all                run every task enabled in menu.yml
+--multicity          batch from inputs/multi_inputs.yml
+--collect / --analyze / --multianalysis   single-phase run
+--parallel           multitask.py TUI runner
+--upload             gcs_module.upload_task_outputs()
+-e                   use existing city folder (skip folder prompt)
+-k / --keep          run with code already in city folder (skip sync)
+-t                   shortcut for `--sync tasks`
+--list     ∈ { tasks, cities, flags }</code></pre>
 </section>
-<section id="execution-order-example" class="level2" data-number="12.3">
-<h2 data-number="12.3" class="anchored" data-anchor-id="execution-order-example"><span class="header-section-number">12.3</span> Execution Order Example</h2>
-<p>For the default task suite, the orchestrator produces the following topological order:</p>
-<pre><code>1. aoi_prep
-2. population          (depends on: aoi_prep)
-3. landuse             (depends on: aoi_prep)
-4. roads               (depends on: aoi_prep)
-5. ndvi                (depends on: aoi_prep)
-6. flood_risk          (depends on: aoi_prep)
-7. accessibility       (depends on: roads, population)
-8. urban_heat          (depends on: landuse, ndvi)
-9. report              (depends on: all above)</code></pre>
-<p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Tasks at the same level can be parallelized.</p>
+<section id="orchestration-graph" class="level2" data-number="18.3">
+<h2 data-number="18.3" class="anchored" data-anchor-id="orchestration-graph"><span class="header-section-number">18.3</span> Orchestration graph</h2>
+<pre><code>                                USER CLI
+                                python -m tasks ...
+                        (or `scan ...` via pyproject entry point)
+                                        │
+                                        ▼
+┌──────────────────────────────────────────────────────────────────────────────────────┐
+│  tasks/__main__.py                                                                   │
+│    main()  — dispatches based on flags                                               │
+└──────────────────────────────────────────────────────────────────────────────────────┘
+        │            │            │                    │                          │
+        ▼            ▼            ▼                    ▼                          ▼
+    [--help]    [--list X]  [validate+parse]        [normal]                   [MULTI]
+                                │                      │                          │
+                                ▼                      │                          ▼
+┌───────────────────────────────────────────┐          │    ┌──────────────────────────────────────────────┐
+│  core/config/cli.py                       │          │    │ core/py/run.py                               │
+│    KNOWN_FLAGS, SYNC_TARGETS (const)      │          │    │   run_multicity(path, args, flags)           │
+│    validate_args(args) → err|None         │          │    │     ├─ reads inputs/multi_inputs.yml         │
+│    parse_args(args)    → flags dict       │          │    │     ├─ gpd.read_file  (multipolygon mode)    │
+│      flags: sync_targets, keep_as_is,     │          │    │     ├─ find_country()                        │
+│        use_existing, upload_enabled,      │          │    │     ├─ scan_init()                           │
+│        parallel_mode, auto_exit, run_all, │          │    │     ├─ prepare_inputs()                      │
+│        multicity, step, scan_id,          │          │    │     └─ subprocess: `scan --scan-id &lt;id&gt; ...` │
+│        render_targets, task_names         │          │    │         (loops per city, falls back into     │
+└───────────────────────────────────────────┘          │    │          the [normal] path)                  │
+                                │                      │    └──────────────────────────────────────────────┘
+                                │                      │                          │
+                                └──────────────────────┼──────────────────────────┘
+                                                       ▼
+┌────────────────────────────────────────────────────────────────────┐
+│  core/config/scan.py                                               │
+│    scan_init(country, city, use_existing) → scan_id                │
+│      (prompts [e]xisting / [n]ew unless use_existing or non-tty)   │
+│                                                                    │
+│    class Scan:                                                     │
+│      __init__(scan_id, sync_tasks, skip_sync,                      │
+│               use_existing, sync_targets)                          │
+│        ├─→ prepare_inputs()      (core/config/inputs.py)           │
+│        ├─→ find_country()        (core/py/aoi_module.py)           │
+│        ├─→ scan_init()           (self)                            │
+│        ├─→ sync_project_files()  (core/config/sync.py)  [skippable]│
+│        └─ attrs: city_dir, input_dir, output_dir, render_dir,      │
+│           spatial_dir, tabular_dir, menu, sources, font_dict       │
+└────────────────────────────────────────────────────────────────────┘
+                                                      │
+                 ┌────────────────────────────────────┼────────────────────────────────────┐
+                 ▼                                    ▼                                    ▼
+┌─────────────────────────────────┐ ┌─────────────────────────────────┐ ┌───────────────────────────────────────┐
+│ core/config/paths.py            │ │ core/config/inputs.py           │ │ core/config/sync.py                   │
+│   PROJECT_ROOT                  │ │   prepare_inputs(               │ │   SKIP_PATTERNS                       │
+│   INPUTS  (auto-detect:         │ │     dest, city_inputs,          │ │   _ignore(dir, files)                 │
+│     inputs/  OR  01-user-input/)│ │     source_dir,                 │ │   sync_project_files(                 │
+│   OUTPUTS (mnt/  OR  city       │ │     aoi_dir, wards_dir,         │ │     city_root,                        │
+│            parent)              │ │     override)                   │ │     sync_targets,                     │
+│                                 │ │                                 │ │     sync_tasks)                       │
+│ core/config/utils.py            │ │   writes city_inputs.yml,       │ │                                       │
+│   slugify(name)                 │ │   copies AOI/menu/wards into    │ │   sync_targets ∈ {                    │
+│                                 │ │   01-user-input/                │ │     tasks, source, core,              │
+│                                 │ │                                 │ │     scan-calculations                 │
+│                                 │ │                                 │ │   }   (from cli.py SYNC_TARGETS)      │
+│                                 │ │                                 │ │                                       │
+│                                 │ │                                 │ │   sync_tasks = list of task folders   │
+│                                 │ │                                 │ │                 or None (all tasks)   │
+│                                 │ │                                 │ │                                       │
+│                                 │ │                                 │ │   modes:                              │
+│                                 │ │                                 │ │     sync_targets set  → explicit      │
+│                                 │ │                                 │ │     first run         → all 4 targets │
+│                                 │ │                                 │ │     non-tty           → tasks only    │
+│                                 │ │                                 │ │     else → prompt [t/o/k/a]:          │
+│                                 │ │                                 │ │       [t] tasks only                  │
+│                                 │ │                                 │ │       [o] override all                │
+│                                 │ │                                 │ │       [k] keep as-is                  │
+│                                 │ │                                 │ │       [a] abort                       │
+└─────────────────────────────────┘ └─────────────────────────────────┘ └───────────────────────────────────────┘
+
+                                                      │
+                                  (back in __main__.py after Scan init)
+                                                      ▼
+        ┌──────────────────┬───────────────────┬───────────────────┬───────────────────┐
+        ▼                  ▼                   ▼                   ▼                   ▼
+ [--sync targets]   [--upload only]     [--render targets]   [--all / tasks]       [default]
+
+ returns after       backfill upload     calls Rscript        resolves task list   run collect+analyze
+ sync_project_       of whole city       / quarto per         from menu.yml +      serially per task
+ files() ran in      output dir via      target (see Flag     args via             (uses TASK_REGISTRY,
+ Scan init           gcs_module          targets block)       TASK_REGISTRY +      gates by auth)
+                                                              topo_sort()
+                                                      │                   │                   │
+                                                      │                   └─────────┬─────────┘
+                                                      │                             ▼
+                                                      │       ┌────────────────────────────────────────────┐
+                                                      │       │ core/config/tasks.py                       │
+                                                      │       │   TASK_REGISTRY     ALIASES                │
+                                                      │       │   GEE_TASKS         GCS_TASKS              │
+                                                      │       │   MENU_KEYS         TASK_DEPENDENCIES      │
+                                                      │       │   discover_tasks()                         │
+                                                      │       │   menu_enabled(menu, name)                 │
+                                                      │       │   topo_sort(names, deps)                   │
+                                                      │       │   ← source/tasks.yml                       │
+                                                      │       └────────────────────────────────────────────┘
+                                                      │                             │
+                                                      │                             ▼
+                                                      │       ┌────────────────────────────────────────────┐
+                                                      │       │ core/config/auth.py                        │
+                                                      │       │   init_gee()     init_gcs()                │
+                                                      │       └────────────────────────────────────────────┘
+                                                      │                             │
+                                                      │                 ┌───────────┴──────────┐
+                                                      ▼                 ▼                      ▼
+                        ┌────────────────────────────────────────┐   [serial]              [parallel]
+                        │ subprocess:                            │      │                      │
+                        │   Rscript   core/R/maps-static.R       │      ▼                      ▼
+                        │   quarto    render scan-calculations/  │   ┌──────────────┐   ┌──────────────────────────────────────────┐
+                        │   quarto    render tasks/&lt;t&gt;/charts/   │   │ run_task(    │   │ core/py/multitask.py                     │
+                        └────────────────────────────────────────┘   │   name,      │   │   run_parallel(task_names, scan, step,   │
+                                                      │              │   scan,      │   │                 run_task_fn, skip_tasks, │
+                                                      ▼              │   step)      │   │                 auto_exit)               │
+                        ┌────────────────────────────────────────┐   └──────────────┘   │     ├ TaskState                          │
+                        │ core/py/gcs_module.py                  │          │           │     ├ TaskLogHandler                     │
+                        │   get_all_files(dir)                   │          │           │     ├ worker()  per task thread          │
+                        │   upload_task_outputs(scan, task,      │          │           │     ├ Semaphores  (gee / gcs / osm)      │
+                        │                       step,            │          │           │     ├ TUI loop  (termios/tty/select)     │
+                        │                       files_before)    │          │           │     └ collect_results                    │
+                        └────────────────────────────────────────┘          │           └──────────────────────────────────────────┘
+                                                                            │                        │
+                                                                            ▼                        │
+                                               ┌────────────────────────────────────────────┐        │
+                                               │ core/py/run.py                             │◀───────┘
+                                               │   run_task(name, scan, step)               │
+                                               │     ├ importlib.import_module              │
+                                               │     ├ ErrorTracker() context mgr           │
+                                               │     └ dispatches to task module:           │
+                                               │         collect / analyze / multianalysis  │
+                                               └────────────────────────────────────────────┘
+                                                                  │
+                                                                  ▼
+                                               ┌────────────────────────────────────────────┐
+                                               │ tasks/{name}/                              │
+                                               │   __init__.py  →  collection.py            │
+                                               │                   analysis.py              │
+                                               │                   multianalysis.R          │
+                                               │                   charts/index.qmd         │
+                                               └────────────────────────────────────────────┘
+
+                                  BACK IN __main__.py (after runs)
+                                                  │
+                                                  ▼
+                        ┌────────────────────────────────────────────────────────┐
+                        │  summary table → logger                                │
+                        │  logs/task_report.txt                                  │
+                        │    (task | step | status | source | msg | timestamp)   │
+                        └────────────────────────────────────────────────────────┘</code></pre>
 </section>
-<section id="dependency-table" class="level2" data-number="12.4">
-<h2 data-number="12.4" class="anchored" data-anchor-id="dependency-table"><span class="header-section-number">12.4</span> Dependency Table</h2>
-<div id="tbl-deps" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-deps-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;12.1: Task dependency matrix
-</figcaption>
-<div aria-describedby="tbl-deps-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Task</th>
-<th>Depends On</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>population</code></td>
-<td><code>aoi_prep</code></td>
-</tr>
-<tr class="even">
-<td><code>roads</code></td>
-<td><code>aoi_prep</code></td>
-</tr>
-<tr class="odd">
-<td><code>landuse</code></td>
-<td><code>aoi_prep</code></td>
-</tr>
-<tr class="even">
-<td><code>flood_risk</code></td>
-<td><code>aoi_prep</code></td>
-</tr>
-<tr class="odd">
-<td><code>accessibility</code></td>
-<td><code>roads</code>, <code>population</code></td>
-</tr>
-<tr class="even">
-<td><code>urban_heat</code></td>
-<td><code>landuse</code>, <code>ndvi</code></td>
-</tr>
-<tr class="odd">
-<td><code>report</code></td>
-<td>all tasks</td>
-</tr>
-</tbody>
-</table>
-</div>
-</figure>
-</div>
-</section>
-<section id="handling-failures" class="level2" data-number="12.5">
-<h2 data-number="12.5" class="anchored" data-anchor-id="handling-failures"><span class="header-section-number">12.5</span> Handling Failures</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Resume a scan after a failed task</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> run.py <span class="at">--config</span> config.yml <span class="at">--resume</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. With <code>--resume</code>, the runner skips tasks whose output files already exist and only re-runs tasks downstream of the failure point.</p>
-</section>
-<section id="visualizing-the-dag" class="level2" data-number="12.6">
-<h2 data-number="12.6" class="anchored" data-anchor-id="visualizing-the-dag"><span class="header-section-number">12.6</span> Visualizing the DAG</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> cityscan.runner <span class="im">import</span> Runner</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>runner <span class="op">=</span> Runner.from_config(<span class="st">"config.yml"</span>)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>runner.visualize_dag(<span class="st">"dag.png"</span>)   <span class="co"># saves a PNG of the dependency graph</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Tip
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Use <code>python run.py --dry-run --config config.yml</code> to print the resolved execution order without running any tasks.</p>
-</div>
-</div>
+<section id="utilities-used-throughout" class="level2" data-number="18.4">
+<h2 data-number="18.4" class="anchored" data-anchor-id="utilities-used-throughout"><span class="header-section-number">18.4</span> Utilities (used throughout)</h2>
+<pre><code>core/py/log_module.py    setup_logger(name), set_log_dir(path),
+                         _file_handler (module-level)
+core/py/error_tracker.py ErrorTracker()  — context manager, captures
+                         status + messages per phase
+core/py/aoi_module.py    find_country(aoi) → (iso3, name, iso3_list)
+core/py/gcs_module.py    get_all_files(dir), upload_task_outputs(
+                          scan, task_name, step, files_before)
+core/config/gdal_auth.py GDAL cloud config for /vsicurl/ reads</code></pre>
+<p>Legend: boxes = files, indented lines = functions/attrs within that file. Arrows = import/call direction.</p>
 
 
 </section>
@@ -915,12 +1004,12 @@ Tip
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="./repo-structure.html" class="pagination-link" aria-label="Repository Structure">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Repository Structure</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Repository Structure</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./case-standard-rabat.html" class="pagination-link" aria-label="Case Study: Standard Scan — Rabat, Morocco">
-        <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Case Study: Standard Scan — Rabat, Morocco</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Case Study: Standard Scan — Rabat, Morocco</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
