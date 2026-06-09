@@ -10,6 +10,6 @@ The City Scan is a diagnostic tool designed to equip cities with the early insig
 This reference book is a structured technical documentation to use and operate City Scan as a diagnostic tool. Here, you will find documentations on City Scan overview, getting started, running a City Scan, tasks and data layers, repository structure, case studies & galleries, as well as contributing guides.
 
 ### About City Resilience Program (CRP)
-The City Resilience Program is housed within the Global Facility for Disaster Reduction and Recovery (GFDRR) at the World Bank. CRP is a global initiative supported by the Swiss State Secretariat for Economic Affairs,  the Austrian Federal Ministry of Finance, the Italian Ministry of Foreign Affairs, the Italian Agency for Development Cooperation, and the Gates Foundation.
+The City Resilience Program is housed within the Global Facility for Disaster Reduction and Recovery (GFDRR) at the World Bank.
 
-To learn more about CRP and GFDRR visit <https://www.gfdrr.org/en/crp>.
+To learn more about CRP and GFDRR visit [our website](https://www.gfdrr.org/en/crp).

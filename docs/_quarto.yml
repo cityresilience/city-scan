@@ -15,6 +15,7 @@ book:
     right: |
       City Scan is a product of GFDRR - World Bank's [City Resilience Program](https://www.gfdrr.org/en/crp).
   cover-image: image/cover.png
+  
   # favicon: cover.jpg
   sidebar:
     logo: image/CRP_LOGO.jpeg
@@ -36,6 +37,7 @@ book:
       chapters: 
         - multiple-cityscan.qmd
         - custom-cityscan.qmd 
+        - adding-dataset.qmd
     - part: "Tasks & Data Layers"
       chapters: 
         - tasks-structure-overview.qmd
@@ -44,6 +46,7 @@ book:
         - built-form.qmd
         - climate-condition.qmd
         - risk-identification.qmd
+        - multi-analysis.qmd
     - part: "Understanding the Repo"
       chapters: 
         - repo-structure.qmd
@@ -62,6 +65,8 @@ book:
     - references.qmd
 
 bibliography: references.bib
+reference-location: document
+citation-location: document
 
 format:
   html:
