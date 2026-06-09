@@ -1,6 +1,6 @@
 # Tasks & Structure Overview
 
 
-{{< placeholder 400 200 format=svg >}}
+{{< placeholder 400 200 >}}
 
 {{< lipsum 2 >}}
