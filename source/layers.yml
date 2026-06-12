@@ -21,7 +21,6 @@ template:
   # labFormat: NULL
   # crop: crop domain to layer values - default of resolution or resolution_factor
 
-
 # SECTION 3 DEMOGRAPHICS
 population: # <-- We refer to this as the "YAML key" and is used to match generic and manual text
   fuzzy_string: (?<!dense_)population.tif$
@@ -113,11 +112,11 @@ gdp_service:
 gdp_combined:
   fuzzy_string: gdp_combined.tif$
   data_variable: gdp_combined_2020
-  title: 'Total Sectoral GDP'
-  subtitle: 'Combined agricultural, industrial and service sectoral GDPs (thousand USD, nominal)'
+  title: 'Subnational GDP'
+  subtitle: 'Thousand USD, nominal'
   palette: ['#fee391', '#fec44f', '#fe9929', '#ec7014', '#cc4c02', '#8c2d04']
   bins: 5
-  group_id: Total Sectoral GDP
+  group_id: Subnational GDP
   caption: 'Map data from Chen et al. (2025), SectGDP30 v2. Sectors use the most recent year available (2020 where present, otherwise 2015).'
 economic_activity:
   fuzzy_string: avg_rad_sum.*.tif$
@@ -137,7 +136,8 @@ economic_change:
 # # SECTION 5 BUILT FORM
 wsf:
   fuzzy_string: wsf-edit.tif$
-  title: Year of urban expansion, 1985–2015
+  title: Built-up area change, 1985–2015
+  subtitle: Era of urban expansion
   breaks: [1985, 1986, 1996, 2006, 2015]
   oob: censor
   # labels: ['Before 1986', '1986', '1996', '2006', '2015']
@@ -148,7 +148,8 @@ wsf:
   caption: 'Map data from World Settlement Footprint.'
 wsf_tracker:
   fuzzy_string: wsf_tracker.tif$
-  title: Year of urban expansion, 2016–2024
+  title: Built-up area change, 2016–2025
+  subtitle: Era of urban expansion
   breaks: [2016.5, 2017, 2020, 2023, 2026]
   data_variable: era
   labels: ['Before July 2016', 'By July 2019', 'By July 2022', 'By July 2025']
@@ -156,7 +157,8 @@ wsf_tracker:
   group_id: Urban extent, 2016–2024
 wsf_harmonized:
   fuzzy_string: wsf_harmonized.tif$
-  title: Year of urban expansion, 1985–2025
+  title: Built-up area change, 1985–2025
+  subtitle: Era of urban expansion
   breaks: [1985, 1986, 1996, 2006, 2015, 2025]
   oob: censor
   labels: ['Before 1986', '1986-1995', '1996-2005', '2006-2015', '2016-2025']
@@ -222,12 +224,13 @@ school_zones:
   caption: 'Map data from OpenStreetMap.'
 school_points:
   fuzzy_string: school-points
-  title: School
+  title: Schools
   subtitle: Kindergartens, schools, colleges, and universities
   data_variable: Feature # To show individual school types, use `amenity` and set factor: FALSE (but also requires changes to fns.R)
   palette: ['#FBAF00']
   alpha: 1
-  labels: ['School']
+  breaks: ['School']
+  labels: ['School (kindergarten, school, \ncollege, or university)']
   factor: TRUE
   group_id: School proximity
   caption: 'Map data from OpenStreetMap.'
@@ -246,11 +249,12 @@ health_zones:
   caption: 'Map data from OpenStreetMap.'
 health_points:
   fuzzy_string: health-points
-  title: Health Facility
+  title: Health facilities
   data_variable: Feature # To show individual health facility types, use `amenity` and set factor: FALSE (but also requires changes to fns.R)
   palette: ['#523249']
   alpha: 1
-  labels: ['Health facility']
+  breaks: ['Health facility']
+  labels: ['Health clinic or hospital']
   factor: TRUE
   group_id: Healthcare proximity
   caption: 'Map data from OpenStreetMap.'
@@ -300,7 +304,7 @@ summer_lst:
   caption: 'Map data from USGS (Landsat 9, Collection 2).'
 vegetation:
   fuzzy_string: ndvi_season.*.tif$
-  title: Vegetated Areas
+  title: Vegetated areas
   subtitle: 'Normalized difference vegetation index (NDVI)'
   palette: ['#c2e3b8', '#87c27e', '#54a159', '#2e6a34']
   breaks: [0.14, 0.18, 0.27, 0.36, 1]
@@ -313,15 +317,15 @@ forest: # Requires preprocessing to combine forest and deforestation?
   title: 'Forest cover'
   breaks: [1]
   palette: ['#8CC056']
-  labels: ['Current Forest']
+  labels: ['Current forest']
   factor: TRUE
   group_id: Forests
 deforest: # Requires preprocessing to combine forest and deforestation?
   fuzzy_string: deforestation-edit.tif$
   title: Deforestation
   subtitle: Year of deforestation
-  domain: [2001, 2021]
-  palette: ['#EEEC00', '#D73837']
+  breaks: [2000, 2005, 2010, 2020, 2023]
+  palette: ['#ECEC5E', '#B3B373', '#81818D', '#535388', '#393958']
   group_id: Deforestation
 infrastructure:
   fuzzy_string: infrastructure.gpkg$
@@ -339,52 +343,52 @@ fluvial:
   data_variable: max_probability
   palette: ['#A7BCEE', '#1B35C4'] # Changing color instead of opacity
   # palette: ['#4465893f', '#4465897f', '#446589bf']
-  breaks: [0, .11, 1.1, 10.1]  # Values are slightly greater than their intended (0.1, 1, 10)
+  breaks: [0, .21, 1.1, 10.1]  # Values are slightly greater than their intended (0.1, 1, 10)
   # labels: ['0.1–1%', '1–10%', '>10%']
-  labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+  labels: ['1-in-500 year', '1-in-100 year', '1-in-10 year']
   # title: 'Fluvial flood probability'
   title: 'Fluvial flood return period'
   # subtitle: 'Probability of a flood event within a 3-arc-second area in a given year'
-  subtitle: 'Minimum return period of a flood event within a 3-arc-second area'
+  subtitle: '15-cm flood event within a 3-arc-second area'
   group_id: Riverine flooding
 pluvial:
   fuzzy_string: pluvial_2020.tif$
   data_variable: max_probability
   palette: ['#A7BCEE', '#1B35C4'] # Changing color instead of opacity
   # palette: ['#4465893f', '#4465897f', '#446589bf']
-  breaks: [0, .11, 1.1, 10.1]  # Values are slightly greater than their intended (0.1, 1, 10)
+  breaks: [0, .21, 1.1, 10.1]  # Values are slightly greater than their intended (0.1, 1, 10)
   # labels: ['0.1–1%', '1–10%', '>10%']
-  labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+  labels: ['1-in-500 year', '1-in-100 year', '1-in-10 year']
   # title: 'Pluvial flood probability'
   title: 'Pluvial flood return period'
   # subtitle: 'Probability of a flood event within a 3-arc-second area in a given year'
-  subtitle: 'Minimum return period of a flood event within a 3-arc-second area'
+  subtitle: '15-cm flood event within a 3-arc-second area'
   group_id: Surface water flooding
 coastal:
   fuzzy_string: coastal_2020.tif$
   data_variable: max_probability
   palette: ['#A7BCEE', '#1B35C4'] # Changing color instead of opacity
   # palette: ['#4465893f', '#4465897f', '#446589bf']
-  breaks: [0, .11, 1.1, 10.1]  # Values are slightly greater than their intended (0.1, 1, 10)
+  breaks: [0, .21, 1.1, 10.1]  # Values are slightly greater than their intended (0.1, 1, 10)
   # labels: ['0.1–1%', '1–10%', '>10%']
-  labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+  labels: ['1-in-500 year', '1-in-100 year', '1-in-10 year']
   # title: 'Coastal flood probability'
   title: 'Coastal flood return period'
   # subtitle: 'Probability of a flood event within a 3-arc-second area in a given year'
-  subtitle: 'Minimum return period of a flood event within a 3-arc-second area'
+  subtitle: '15-cm flood event within a 3-arc-second area'
   group_id: Coastal flooding
-
 combined_flooding:
   fuzzy_string: comb_2020.tif$
+  data_variable: max_probability
   palette: ['#A7BCEE', '#1B35C4'] # Changing color instead of opacity
   # palette: ['#4465893f', '#4465897f', '#446589bf']
-  breaks: [0, .11, 1.1, 10.1]  # Values are slightly greater than their intended (0.1, 1, 10)
+  breaks: [0, .21, 1.1, 10.1]  # Values are slightly greater than their intended (0.1, 1, 10)
   # labels: ['0.1–1%', '1–10%', '>10%']
-  labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+  labels: ['1-in-500 year', '1-in-100 year', '1-in-10 year']
   # title: 'Combined Flood probability'
   title: 'Combined flood return period'
   # subtitle: 'Probability of a flood event within a 3-arc-second area in a given year'
-  subtitle: 'Minimum return period of a flood event within a 3-arc-second area'
+  subtitle: '15-cm flood event within a 3-arc-second area'
   group_id: Combined flooding
   # caption: 'Map data from Fathom. Flood probabilities are modeled for 2020.'
   caption: 'Map data from Fathom. Flood depth modeled for 2020.'
@@ -436,7 +440,7 @@ roads:
   fuzzy_string: edges-edit.gpkg
   palette: NULL
   stroke:
-    title: Road network segment criticality
+    title: Road network criticality
     subtitle: Percentage of all hypothetical in-city trips using this road segment
     variable: edge_centrality
     palette: ['#C5D1E9', '#8696C8', '#516BAE', '#9C2F76', '#CE3737']
@@ -452,13 +456,13 @@ roads:
   caption: 'Map data from OpenStreetMap.'
 roads_network:
   fuzzy_string: major_roads.gpkg
-  title: Road Network
+  title: Road network
   subtitle: All mapped roads from OpenStreetMap
   group_id: Road network
   caption: 'Map data from OpenStreetMap.'
 burnable:
   fuzzy_string: burn-edit.tif$
-  title: Burnability Factor
+  title: Burnability factor
   palette: ['#FFFFFF', '#EFAD42', '#681A17']
   breaks: [-1, 0, .17, .33, .5, .67, .83, 1]
   labels: [0, 0.17, 0.33, 0.5, 0.67, 0.83, 1]
@@ -665,7 +669,6 @@ water_risk_depletion:
   labels: ['<25%', '25-50%', '50-75%', '>75%']
   # oob: censor
   group_id: Water Depletion
-
 
 # Sea Level Rise - Climate Central
 # Combined 1-10m layer (minimum flood level for each cell)
