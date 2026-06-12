@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -23,7 +23,26 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -41,10 +60,13 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-b95cbf176b21d35b97d826ad6b6af685.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-0c4bb16d4a1e9fb2fb50ff9ab29e58a5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -73,6 +95,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -255,12 +306,6 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Risk Identification</span></span></a>
   </div>
 </li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./multi-analysis.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Multi-Analysis (Exposure Analysis) – Placeholder</span></span></a>
-  </div>
-</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -275,13 +320,13 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./repo-structure.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Repository Structure</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Repository Structure</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./task-dependency.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Orchestration Dependency Graph</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Orchestration Dependency Graph</span></span></a>
   </div>
 </li>
       </ul>
@@ -298,13 +343,13 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./case-standard-rabat.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Case Study: Standard Scan — Rabat, Morocco</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Case Study: Standard Scan — Rabat, Morocco</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./case-multiple-philippines.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Case Study: Multiple Scans — Philippines</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Case Study: Multiple Scans — Philippines</span></span></a>
   </div>
 </li>
       </ul>
@@ -321,31 +366,31 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./git-guide.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Git Guide</span></span></a>
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Git Guide</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./reporting-issues.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Reporting Issues</span></span></a>
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Reporting Issues</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./contributing.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Contributing</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Contributing</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./sharing-the-guide.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Sharing the Guide</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Sharing the Guide</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./editing-this-reference.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Editing This Reference</span></span></a>
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Editing This Reference</span></span></a>
   </div>
 </li>
       </ul>
@@ -361,8 +406,19 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview"><span class="header-section-number">14.1</span> Overview</a></li>
+  <li><a href="#solar-pv-potential" id="toc-solar-pv-potential" class="nav-link" data-scroll-target="#solar-pv-potential"><span class="header-section-number">14.2</span> Solar PV Potential</a></li>
+  <li><a href="#air-quality" id="toc-air-quality" class="nav-link" data-scroll-target="#air-quality"><span class="header-section-number">14.3</span> Air Quality</a></li>
+  <li><a href="#summer-land-surface-temperature" id="toc-summer-land-surface-temperature" class="nav-link" data-scroll-target="#summer-land-surface-temperature"><span class="header-section-number">14.4</span> Summer Land Surface Temperature</a></li>
+  <li><a href="#green-space-ndvi" id="toc-green-space-ndvi" class="nav-link" data-scroll-target="#green-space-ndvi"><span class="header-section-number">14.5</span> Green Space (NDVI)</a></li>
+  <li><a href="#forests-deforestation" id="toc-forests-deforestation" class="nav-link" data-scroll-target="#forests-deforestation"><span class="header-section-number">14.6</span> Forests &amp; Deforestation</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -386,11 +442,551 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sagittis posuere ligula sit amet lacinia. Duis dignissim pellentesque magna, rhoncus congue sapien finibus mollis. Ut eu sem laoreet, vehicula ipsum in, convallis erat. Vestibulum magna sem, blandit pulvinar augue sit amet, auctor malesuada sapien. Nullam faucibus leo eget eros hendrerit, non laoreet ipsum lacinia. Curabitur cursus diam elit, non tempus ante volutpat a. Quisque hendrerit blandit purus non fringilla. Integer sit amet elit viverra ante dapibus semper. Vestibulum viverra rutrum enim, at luctus enim posuere eu. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
-<p>Nunc ac dignissim magna. Vestibulum vitae egestas elit. Proin feugiat leo quis ante condimentum, eu ornare mauris feugiat. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Mauris cursus laoreet ex, dignissim bibendum est posuere iaculis. Suspendisse et maximus elit. In fringilla gravida ornare. Aenean id lectus pulvinar, sagittis felis nec, rutrum risus. Nam vel neque eu arcu blandit fringilla et in quam. Aliquam luctus est sit amet vestibulum eleifend. Phasellus elementum sagittis molestie. Proin tempor lorem arcu, at condimentum purus volutpat eu. Fusce et pellentesque ligula. Pellentesque id tellus at erat luctus fringilla. Suspendisse potenti.</p>
-<p>Etiam maximus accumsan gravida. Maecenas at nunc dignissim, euismod enim ac, bibendum ipsum. Maecenas vehicula velit in nisl aliquet ultricies. Nam eget massa interdum, maximus arcu vel, pretium erat. Maecenas sit amet tempor purus, vitae aliquet nunc. Vivamus cursus urna velit, eleifend dictum magna laoreet ut. Duis eu erat mollis, blandit magna id, tincidunt ipsum. Integer massa nibh, commodo eu ex vel, venenatis efficitur ligula. Integer convallis lacus elit, maximus eleifend lacus ornare ac. Vestibulum scelerisque viverra urna id lacinia. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Aenean eget enim at diam bibendum tincidunt eu non purus. Nullam id magna ultrices, sodales metus viverra, tempus turpis.</p>
+<section id="overview" class="level2" data-number="14.1">
+<h2 data-number="14.1" class="anchored" data-anchor-id="overview"><span class="header-section-number">14.1</span> Overview</h2>
+<p>This section examines key climatic and environmental conditions that shape the city’s livability, sustainability, and resilience. It covers solar photovoltaic potential, ambient air quality, summer land surface temperature, vegetation cover, and forest change. Together these indicators reveal the city’s renewable energy opportunities, health risks from pollution, heat exposure patterns, and the state of its green and forested areas.</p>
+<hr>
+<p><strong>Data Sources</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 41%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Summary</th>
+<th>Measurement</th>
+<th>Units</th>
+<th>Coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Global Solar Atlas 2.0 (Solargis)</td>
+<td>Global satellite-derived solar PV potential dataset developed for the World Bank Group by Solargis</td>
+<td>Annual and monthly PV energy yield</td>
+<td>kWh/kWp per day</td>
+<td>Global; ~1994–2024 (varies by location)</td>
+</tr>
+<tr class="even">
+<td>Global Annual PM2.5 Grids v5 (SEDAC/CIESIN)</td>
+<td>Satellite-retrieved ground-level fine particulate matter concentrations, fusing MODIS, MISR, SeaWiFS, and VIIRS aerosol optical depth data with geographically weighted regression</td>
+<td>Annual PM2.5 concentration</td>
+<td>µg/m³</td>
+<td>Global; 1998–2022</td>
+</tr>
+<tr class="odd">
+<td>Landsat 8 Collection 2, Level 2 (USGS)</td>
+<td>Thermal infrared imagery from Landsat 8 used to derive land surface temperature</td>
+<td>Mean summer land surface temperature</td>
+<td>°C</td>
+<td>Global; 2017–2024</td>
+</tr>
+<tr class="even">
+<td>Sentinel-2 Harmonized (ESA, via GEE)</td>
+<td>Multispectral imagery used to compute normalized difference vegetation index (NDVI)</td>
+<td>NDVI (dimensionless, −1 to 1)</td>
+<td>—</td>
+<td>Global; 2017–2024</td>
+</tr>
+<tr class="odd">
+<td>Global Forest Change v1.12 (Hansen et al.)</td>
+<td>Annual tracking of global forest cover gain and loss using Landsat satellite imagery</td>
+<td>Forest cover (binary) and year of deforestation</td>
+<td>Year</td>
+<td>Global; 2000–2024</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><strong>Relevant Tasks</strong></p>
+<pre><code>tasks/
+├── solar/        — annual and monthly photovoltaic potential (Global Solar Atlas, Python)
+├── air_quality/  — PM2.5 annual concentrations, recent mean, and trend (SEDAC v5, Python)
+├── lst/          — summer land surface temperature composite (Landsat 8 via GEE, Python)
+├── ndxi/         — NDVI vegetation index seasonal composite (Sentinel-2 via GEE, Python)
+└── forest/       — forest cover and deforestation year (Hansen et al. via GEE, Python)</code></pre>
+<hr>
+<p><strong>Relevant Outputs</strong></p>
+<pre><code>mnt/{scan-id}/
+├── 02-process-output/
+│   ├── spatial/
+│   │   ├── {city}_solar.tif                   — annual PV potential raster (~1km)
+│   │   ├── {city}_solar_monthly.tif           — 12-band monthly PV potential raster
+│   │   ├── {city}_air_quality_pm2_5.tif       — multi-band PM2.5 raster (1998–2022 + summaries)
+│   │   ├── {city}_lst_summer.tif              — summer mean LST raster (30m, °C)
+│   │   ├── {city}_ndvi_season.tif             — seasonal NDVI raster (10m)
+│   │   ├── {city}_forest_cover23.tif          — binary forest cover raster (2023, 30m)
+│   │   └── {city}_deforestation.tif           — year of deforestation raster (2001–2024, 30m)
+│   └── tabular/
+│       ├── {city}_solar_stats.csv             — PV potential summary statistics
+│       ├── {city}_solar_monthly_stats.csv     — monthly PV mean, min, max (12 months)
+│       ├── {city}_pv_area.csv                 — area by PV condition bin
+│       └── {city}_air_quality_pm2_5.csv       — PM2.5 per-band summary statistics
+└── 03-render-output/
+    ├── maps/
+    │   ├── solar.png                          — PV potential choropleth map
+    │   ├── air_quality.png                    — PM2.5 concentration map (global scale)
+    │   ├── air_quality_local.png              — PM2.5 concentration map (local scale)
+    │   ├── air_quality_trend.png              — PM2.5 trend map (2013–2022)
+    │   ├── summer_lst.png                     — summer land surface temperature map
+    │   ├── vegetation.png                     — NDVI vegetation density map
+    │   ├── forest.png                         — current forest cover map
+    │   └── deforest.png                       — deforestation year map
+    └── plots/
+        └── monthly-pv.png                     — seasonal PV availability line chart</code></pre>
+<hr>
+</section>
+<section id="solar-pv-potential" class="level2" data-number="14.2">
+<h2 data-number="14.2" class="anchored" data-anchor-id="solar-pv-potential"><span class="header-section-number">14.2</span> Solar PV Potential</h2>
+<!-- chart examples -->
+<div id="fig-solar" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-solar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-solar" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-map" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-map-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/solar.png" class="lightbox" data-gallery="fig-solar" title="Figure&nbsp;14.1&nbsp;(a): PV Potential (Map)"><img src="image/2026-06-philippines-manila/03-render-output/maps/solar.png" data-ref-parent="fig-solar" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-map-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) PV Potential (Map)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-solar" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-chart" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/plots/monthly-pv.png" class="lightbox" data-gallery="fig-solar" title="Figure&nbsp;14.1&nbsp;(b): Solar Seasonal Availability (Chart)"><img src="image/2026-06-philippines-manila/03-render-output/plots/monthly-pv.png" data-ref-parent="fig-solar" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Solar Seasonal Availability (Chart)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-solar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.1
+</figcaption>
+</figure>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Measurement</th>
+<th>Units</th>
+<th>Source</th>
+<th>Release Year</th>
+<th>Years of Data</th>
+<th>Coverage</th>
+<th>Resolution</th>
+<th>Task</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Global Solar Atlas 2.0</td>
+<td>Photovoltaic power potential</td>
+<td>kWh/kWp per day</td>
+<td><a href="https://globalsolaratlas.info/map">Solargis / World Bank</a></td>
+<td>2019</td>
+<td>~1994–2024</td>
+<td>Global</td>
+<td>~1km (30 arc-sec)</td>
+<td><a href="../tasks/solar/">tasks/solar/</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>What is it?</strong></p>
+<p>Solar PV potential is the estimated daily energy yield of a theoretical 1 kilowatt-peak (kWp) photovoltaic system, in kilowatt-hours per day (kWh/kWp). The annual raster shows the long-run mean yield across the city, while the seasonal chart shows how that yield varies month by month. Values above 4.5 kWh/kWp are considered excellent; values between 3.5 and 4.5 are favorable; values below 3.5 indicate below-favorable conditions.</p>
+<p><strong>Why use it?</strong></p>
+<p>Solar PV offers a pathway to long-term energy sustainability and resilience, especially in rapidly urbanizing cities where electricity demand is growing. Mapping spatial variation in solar potential helps identify optimal areas for rooftop or ground-mounted installations and supports planning for distributed renewable energy generation. The seasonal chart reveals how consistent the resource is throughout the year — consistent availability matters as much as peak yield for the viability of solar systems without battery storage.</p>
+<p><strong>How is this made?</strong></p>
+<p>The Global Solar Atlas 2.0 was developed by Solargis s.r.o. for the World Bank Group’s Energy Sector Management Assistance Program (ESMAP). It draws on long-term satellite observations (covering locations back to ~1994) to derive solar irradiance and photovoltaic output estimates using atmospheric models. The annual PVOUT raster represents the mean daily PV yield at optimal tilt under 100% system availability. A separate 12-band monthly raster captures seasonal variation across January–December.</p>
+<p><strong>How should we interpret it?</strong></p>
+<p>Within a city, spatial variation in solar potential is typically small — differences of 0.1–0.2 kWh/kWp across the AOI are common. In practice, PV siting decisions should weight other factors more heavily than the spatial distribution shown here: roof orientation, shading from adjacent buildings or trees, and ease of maintenance. The seasonal chart is more diagnostic — systems in places with high seasonal ratios (peak-to-trough above 2:1) may require storage or grid backup to remain effective year-round. The map alone should not be the primary basis for siting decisions; it provides a baseline potential, not a deployment plan.</p>
+<p><strong>Under the hood</strong></p>
+<p><a href="../tasks/solar/collection.py"><code>tasks/solar/collection.py</code></a> downloads <code>PVOUT.tif</code> (annual) and <code>PVOUT-monthly.tif</code> (12-band monthly) from the public GCS bucket and clips both to the AOI. <code>compute_stats()</code> in <a href="../tasks/solar/analysis.py"><code>tasks/solar/analysis.py</code></a> computes summary statistics from the annual raster and writes <code>{city}_solar_stats.csv</code>. <code>plot_solar_seasonality()</code> extracts per-band monthly means from the 12-band raster, writes <code>{city}_solar_monthly_stats.csv</code>, computes a seasonality interpretation (ratio of max to min monthly yield), and renders the seasonal availability chart. Area by PV condition bin (Less than Favorable / Favorable / Excellent) is written to <code>{city}_pv_area.csv</code>. The annual PV map is rendered in R via <a href="../core/R/"><code>core/R/</code></a> using the <code>solar</code> layer definition in <a href="../source/layers.yml"><code>source/layers.yml</code></a>.</p>
+<p><strong>Key outputs</strong></p>
+<ul>
+<li><code>mnt/{scan-id}/02-process-output/spatial/{city}_solar.tif</code> — annual PV potential raster</li>
+<li><code>mnt/{scan-id}/02-process-output/spatial/{city}_solar_monthly.tif</code> — 12-band monthly PV potential raster</li>
+<li><code>mnt/{scan-id}/02-process-output/tabular/{city}_solar_stats.csv</code> — summary statistics (min, percentiles, mean, max)</li>
+<li><code>mnt/{scan-id}/02-process-output/tabular/{city}_solar_monthly_stats.csv</code> — monthly mean, min, max per month</li>
+<li><code>mnt/{scan-id}/02-process-output/tabular/{city}_pv_area.csv</code> — area share by PV condition bin</li>
+<li><code>mnt/{scan-id}/03-render-output/maps/solar.png</code> — annual PV potential map</li>
+<li><code>mnt/{scan-id}/03-render-output/plots/monthly-pv.png</code> — seasonal PV availability chart</li>
+</ul>
+<p><strong>Source data citation</strong></p>
+<p>Data obtained from the Global Solar Atlas 2.0, a free web-based application developed and operated by Solargis s.r.o. on behalf of the World Bank Group, utilizing Solargis data, with funding from the Energy Sector Management Assistance Program (ESMAP). For additional information: <a href="https://globalsolaratlas.info">https://globalsolaratlas.info</a></p>
+<p><span class="citation" data-cites="world_bank_group_global_2019">(<a href="references.html#ref-world_bank_group_global_2019" role="doc-biblioref">World Bank Group 2019</a>)</span></p>
+<hr>
+</section>
+<section id="air-quality" class="level2" data-number="14.3">
+<h2 data-number="14.3" class="anchored" data-anchor-id="air-quality"><span class="header-section-number">14.3</span> Air Quality</h2>
+<!-- chart examples -->
+<div id="fig-air" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-air-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-air" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-map" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-map-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/air_quality.png" class="lightbox" data-gallery="fig-air" title="Figure&nbsp;14.2&nbsp;(a): Air Quality PM2.5 (Map)"><img src="image/2026-06-philippines-manila/03-render-output/maps/air_quality.png" data-ref-parent="fig-air" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-map-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Air Quality PM2.5 (Map)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-air" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-local" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-local-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/air_quality_local.png" class="lightbox" data-gallery="fig-air" title="Figure&nbsp;14.2&nbsp;(b): Air Quality Local Scale (Map)"><img src="image/2026-06-philippines-manila/03-render-output/maps/air_quality_local.png" data-ref-parent="fig-air" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-local-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Air Quality Local Scale (Map)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-air" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-trend" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-trend-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/air_quality_trend.png" class="lightbox" data-gallery="fig-air" title="Figure&nbsp;14.2&nbsp;(c): Air Quality Trend (Map)"><img src="image/2026-06-philippines-manila/03-render-output/maps/air_quality_trend.png" data-ref-parent="fig-air" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-trend-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) Air Quality Trend (Map)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-air-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.2
+</figcaption>
+</figure>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Measurement</th>
+<th>Units</th>
+<th>Source</th>
+<th>Release Year</th>
+<th>Years of Data</th>
+<th>Coverage</th>
+<th>Resolution</th>
+<th>Task</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Global Annual PM2.5 Grids v5 (VIIRS), v5 GL-04</td>
+<td>Ground-level PM2.5 annual concentration</td>
+<td>µg/m³</td>
+<td><a href="https://sedac.ciesin.columbia.edu/data/set/sdei-global-annual-gwr-pm2-5-modis-misr-seawifs-aod-v4-gl-03">NASA SEDAC / Columbia CIESIN</a></td>
+<td>2024</td>
+<td>1998–2022</td>
+<td>Global</td>
+<td>~1.1km (36 arc-sec)</td>
+<td><a href="../tasks/air_quality/">tasks/air_quality/</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>What is it?</strong></p>
+<p>Three complementary views of the city’s PM2.5 air quality, all derived from the same multi-band raster:</p>
+<ul>
+<li><strong>Global scale map</strong> — PM2.5 concentration for 2022 using the WHO and US EPA standard breakpoints, enabling comparison against global health benchmarks.</li>
+<li><strong>Local scale map</strong> — same 2022 data re-classified into local quantile bins that emphasize intra-city variation.</li>
+<li><strong>Trend map</strong> — the linear trend slope in PM2.5 from 2013 to 2022 (µg/m³ per year), showing where air quality is improving or deteriorating.</li>
+</ul>
+<p>PM2.5 particles (≤2.5 µm in diameter) penetrate deep into the lungs and bloodstream. Common sources include vehicle emissions, industrial combustion, biomass burning, and dust. The WHO guideline is 5 µg/m³ annual mean; the US EPA standard is 12 µg/m³.</p>
+<p><strong>Why use it?</strong></p>
+<p>Chronic exposure to elevated PM2.5 is associated with cardiovascular and respiratory disease and is a leading contributor to premature mortality in urban areas. Mapping PM2.5 concentration spatially identifies neighborhoods with disproportionate pollution burden and supports prioritization of emission reduction interventions. The trend map adds a temporal dimension — an improving trend (negative slope) signals progress; a worsening trend (positive slope) flags emerging public health risk.</p>
+<p><strong>How is this made?</strong></p>
+<p>Annual ground-level PM2.5 estimates are derived from satellite-retrieved aerosol optical depth (AOD) measured by MODIS, MISR, SeaWiFS, and VIIRS sensors, then converted to surface concentrations using geographically weighted regression (GWR) that accounts for spatial variation in the AOD-to-PM2.5 relationship. The City Scan pipeline downloads all 25 annual rasters (1998–2022), clips to the AOI, and produces three derived summary bands: <code>mean_1998_2022</code> (long-run mean), <code>mean_2013_2022</code> (most recent 10-year mean), and <code>trend_2013_2022</code> (pixel-wise linear regression slope over 2013–2022).</p>
+<p><strong>How should we interpret it?</strong></p>
+<p>The global-scale map uses standard breakpoints, enabling direct comparison with health guidelines and other cities. Values consistently above 15–20 µg/m³ indicate a significant pollution burden. The local-scale map stretches the color range to the city’s own distribution, making intra-city spatial patterns easier to read — but values cannot be directly compared across cities using this map. The trend map is directional: negative values indicate improving air quality, positive values indicate worsening. Note that annual averages mask seasonal extremes — events like wildfire smoke or seasonal burning can produce concentrations far above the annual mean in specific months.</p>
+<p><strong>Under the hood</strong></p>
+<p><a href="../tasks/air_quality/collection.py"><code>tasks/air_quality/collection.py</code></a> downloads and clips 25 yearly PM2.5 GeoTIFFs from GCS (<code>sdei-global-annual-gwr-pm2-5-modis-misr-seawifs-viirs-aod-v5-gl-04-{year}-geotiff.tif</code> for 1998–2022) and stacks them into a single multi-band output. Three additional summary bands (<code>mean_1998_2022</code>, <code>mean_2013_2022</code>, <code>trend_2013_2022</code>) are prepended. Band descriptions are written to the GeoTIFF header. Maps are rendered in R via <a href="../core/R/"><code>core/R/</code></a> using the <code>air_quality</code>, <code>air_quality_local</code>, and <code>air_quality_trend</code> layer definitions in <a href="../source/layers.yml"><code>source/layers.yml</code></a>, each reading a different band from the same raster.</p>
+<p><strong>Key outputs</strong></p>
+<ul>
+<li><code>mnt/{scan-id}/02-process-output/spatial/{city}_air_quality_pm2_5.tif</code> — multi-band raster (3 summary bands + 25 annual bands)</li>
+<li><code>mnt/{scan-id}/02-process-output/tabular/{city}_air_quality_pm2_5.csv</code> — per-band summary statistics (max, mean, median)</li>
+<li><code>mnt/{scan-id}/03-render-output/maps/air_quality.png</code> — PM2.5 map (2022, global WHO breakpoints)</li>
+<li><code>mnt/{scan-id}/03-render-output/maps/air_quality_local.png</code> — PM2.5 map (2022, local quantile scale)</li>
+<li><code>mnt/{scan-id}/03-render-output/maps/air_quality_trend.png</code> — PM2.5 trend map (2013–2022, µg/m³/yr)</li>
+</ul>
+<p><strong>Source data citation</strong></p>
+<p><span class="citation" data-cites="ciesin2022global">(<a href="references.html#ref-ciesin2022global" role="doc-biblioref">Center for International Earth Science Information Network (CIESIN), Columbia University 2022</a>)</span></p>
+<hr>
+</section>
+<section id="summer-land-surface-temperature" class="level2" data-number="14.4">
+<h2 data-number="14.4" class="anchored" data-anchor-id="summer-land-surface-temperature"><span class="header-section-number">14.4</span> Summer Land Surface Temperature</h2>
+<!-- chart examples -->
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-sum" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-sum-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/summer_lst.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Figure&nbsp;14.3: Summer Surface Temperature (Map)"><img src="image/2026-06-philippines-manila/03-render-output/maps/summer_lst.png" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sum-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.3: Summer Surface Temperature (Map)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Measurement</th>
+<th>Units</th>
+<th>Source</th>
+<th>Release Year</th>
+<th>Years of Data</th>
+<th>Coverage</th>
+<th>Resolution</th>
+<th>Task</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Landsat 8 Collection 2, Level 2</td>
+<td>Mean summer land surface temperature</td>
+<td>°C</td>
+<td><a href="https://www.usgs.gov/landsat-missions/landsat-collection-2-surface-temperature">USGS Landsat</a></td>
+<td>Ongoing</td>
+<td>2017–2024</td>
+<td>Global</td>
+<td>~30m</td>
+<td><a href="../tasks/lst/">tasks/lst/</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>What is it?</strong></p>
+<p>Summer land surface temperature (LST) is the mean temperature of the ground surface — including soil, pavement, vegetation, and rooftops — measured during the three hottest months of the year, averaged across 2017–2024. LST is distinct from air temperature: it measures the thermal emission of the surface itself, not the ambient air at 1.5–2m height. Surface temperatures in densely built-up areas can exceed air temperatures by 10–20°C during heatwaves.</p>
+<p><strong>Why use it?</strong></p>
+<p>Extreme surface temperatures are a direct indicator of urban heat stress and its spatial distribution. Built surfaces such as asphalt and concrete absorb and retain solar radiation, generating the urban heat island effect and amplifying risk for outdoor workers, vulnerable populations, and poorly cooled housing. Mapping LST identifies which neighborhoods — typically dense, low-vegetation urban cores — experience the greatest heat burden, informing targeted greening interventions, cool surface programs, and heat action planning.</p>
+<p><strong>How is this made?</strong></p>
+<p>The Landsat 8 satellite’s thermal infrared band (Band 10, 10.6–11.2 µm) captures the thermal emission of the land surface. The pipeline uses Landsat 8 Collection 2, Level 2, Tier 1 imagery from Google Earth Engine (<code>LANDSAT/LC08/C02/T1_L2</code>), filtered to the three hottest months of the year for each year from 2017 to 2024. Cloud and saturation pixels are masked using the QA_PIXEL and QA_RADSAT bands. Monthly mean composites are computed for the seasonal window, then averaged across years. Values are converted from Kelvin to Celsius (subtracting 273.15 °C).</p>
+<p><strong>How should we interpret it?</strong></p>
+<p>High-value (hot) pixels correspond to surfaces with low evapotranspiration and high thermal mass: asphalt roads, rooftops, industrial areas, and sparse-vegetation zones. Low-value (cool) pixels typically correspond to vegetated areas, water bodies, and well-shaded spaces. Because LST measures surface temperature, not ambient thermal comfort, it should be used alongside humidity and wind data for a complete heat stress assessment. LST does not directly measure the urban heat island effect (which is defined by the temperature difference between urban and surrounding rural areas at night), but it serves as a strong spatial proxy for daytime heat concentration.</p>
+<p><strong>Under the hood</strong></p>
+<p><a href="../tasks/lst/collection.py"><code>tasks/lst/collection.py</code></a> builds a Landsat 8 collection filtered to the seasonal window via <code>fns.Composite</code>, applies cloud masking with <code>maskL8sr()</code>, and computes a seasonal mean composite using <code>comp.seasonal('summer', 'mean')</code>. The thermal band is scaled to Kelvin (multiply by 0.00341802, add 149.0) and converted to Celsius server-side before export via <code>fns.tiled_collection()</code> at 30m. The output is saved as <code>{city}_lst_summer.tif</code>. The LST map is rendered in R via <a href="../core/R/"><code>core/R/</code></a> using the <code>summer_lst</code> layer definition in <a href="../source/layers.yml"><code>source/layers.yml</code></a>.</p>
+<p><strong>Key outputs</strong></p>
+<ul>
+<li><code>mnt/{scan-id}/02-process-output/spatial/{city}_lst_summer.tif</code> — summer mean LST raster (30m, °C)</li>
+<li><code>mnt/{scan-id}/03-render-output/maps/summer_lst.png</code> — summer surface temperature choropleth map</li>
+</ul>
+<p><strong>Source data citation</strong></p>
+<p><span class="citation" data-cites="eros2020landsat">(<a href="references.html#ref-eros2020landsat" role="doc-biblioref">Earth Resources Observation and Science (EROS) Center 2020</a>)</span></p>
+<hr>
+</section>
+<section id="green-space-ndvi" class="level2" data-number="14.5">
+<h2 data-number="14.5" class="anchored" data-anchor-id="green-space-ndvi"><span class="header-section-number">14.5</span> Green Space (NDVI)</h2>
+<!-- chart examples -->
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-ndvi" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ndvi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/vegetation.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Figure&nbsp;14.4: Vegetated Area Map"><img src="image/2026-06-philippines-manila/03-render-output/maps/vegetation.png" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ndvi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.4: Vegetated Area Map
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Measurement</th>
+<th>Units</th>
+<th>Source</th>
+<th>Release Year</th>
+<th>Years of Data</th>
+<th>Coverage</th>
+<th>Resolution</th>
+<th>Task</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Sentinel-2 Harmonized (ESA, via GEE)</td>
+<td>Normalized Difference Vegetation Index (NDVI)</td>
+<td>Dimensionless (−1 to 1)</td>
+<td><a href="https://dataspace.copernicus.eu/explore-data/data-collections/sentinel-data/sentinel-2">European Space Agency / Copernicus</a></td>
+<td>Ongoing</td>
+<td>2017–2024</td>
+<td>Global</td>
+<td>10m</td>
+<td><a href="../tasks/ndxi/">tasks/ndxi/</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>What is it?</strong></p>
+<p>This map shows the density and health of vegetation using the Normalized Difference Vegetation Index (NDVI). NDVI is derived from the near-infrared (NIR) and red spectral bands of Sentinel-2 imagery:</p>
+<p><span class="math display">\[NDVI = \frac{NIR - Red}{NIR + Red}\]</span></p>
+<p>Values range from −1 to 1. Pixels below 0.14 indicate water, rock, or artificial surfaces. Values of 0.14–0.18 represent very sparse or barren land; 0.18–0.27 correspond to shrub and grassland; 0.27–0.36 indicate sparse vegetation; and values above 0.36 indicate dense vegetation such as urban parks, forests, or mature crops. The map represents the seasonal (summer) median composite averaged over 2017–2024.</p>
+<p><strong>Why use it?</strong></p>
+<p>Vegetation distribution in cities has wide-ranging implications for health, climate resilience, and environmental quality. Urban green space reduces ambient temperature through evapotranspiration, providing a natural counterpart to LST hotspots. Vegetation helps absorb rainfall and reduce surface runoff, lowering flood risk downstream. Trees and shrubs also intercept and deposit particulate matter, providing passive air quality benefits. Beyond these environmental functions, green spaces support social wellbeing — they serve as gathering places and provide mental health benefits, a role that proved especially important during the COVID-19 pandemic.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Comparing NDVI against LST identifies areas where targeted greening could deliver maximum cooling benefit.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<p><strong>How is this made?</strong></p>
+<p>Sentinel-2 Harmonized imagery (<code>COPERNICUS/S2_HARMONIZED</code>) is filtered to scenes with less than 10% cloud cover for the summer season of each year (2017–2024). Cloud pixels are masked using the QA60 band. Median composites are computed per season, and NDVI is calculated server-side as <code>(B8 − B4) / (B8 + B4)</code>, using Band 8 (NIR, 780–885 nm) and Band 4 (Red, 650–860 nm).<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> Both bands have a native resolution of 10m. The resulting seasonal NDVI composite is exported at 10m and saved as <code>{city}_ndvi_season.tif</code>.</p>
+<p><strong>How should we interpret it?</strong></p>
+<p>NDVI captures both vegetation density and vegetation health at a given point in time. Because the map shows a seasonal median, it reflects peak-green conditions for summer — areas with seasonal deciduous vegetation may appear greener than their year-round average. NDVI does not distinguish between different vegetation types, so a dense urban park and a productive crop field with similar canopy structure would show similar values. NDVI also does not capture the social accessibility or quality of green spaces — high NDVI areas may be private gardens or industrial green buffers inaccessible to the public.</p>
+<p><strong>Under the hood</strong></p>
+<p><a href="../tasks/ndxi/collection.py"><code>tasks/ndxi/collection.py</code></a> builds a Sentinel-2 collection filtered to the seasonal window and cloud fraction threshold, applies the QA60-based cloud mask via <code>maskS2clouds()</code>, and computes the median seasonal composite. NDVI is computed server-side and exported via <code>fns.tiled_collection()</code> at 10m. The output is saved as <code>{city}_ndvi_season.tif</code>. The vegetation map is rendered in R via <a href="../core/R/"><code>core/R/</code></a> using the <code>vegetation</code> layer definition in <a href="../source/layers.yml"><code>source/layers.yml</code></a>, which applies fixed NDVI breakpoints.</p>
+<p><strong>Key outputs</strong></p>
+<ul>
+<li><code>mnt/{scan-id}/02-process-output/spatial/{city}_ndvi_season.tif</code> — seasonal NDVI composite raster (10m)</li>
+<li><code>mnt/{scan-id}/03-render-output/maps/vegetation.png</code> — NDVI vegetation density map</li>
+</ul>
+<p><strong>Source data citation</strong></p>
+<p><span class="citation" data-cites="esa2020ndvi">(<a href="references.html#ref-esa2020ndvi" role="doc-biblioref">European Space Agency 2020</a>)</span></p>
+<hr>
+</section>
+<section id="forests-deforestation" class="level2" data-number="14.6">
+<h2 data-number="14.6" class="anchored" data-anchor-id="forests-deforestation"><span class="header-section-number">14.6</span> Forests &amp; Deforestation</h2>
+<!-- chart examples -->
+<div id="fig-forest" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-forest-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-forest" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-forest-map" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-forest-map-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/forest.png" class="lightbox" data-gallery="fig-forest" title="Figure&nbsp;14.5&nbsp;(a): Forest (Map)"><img src="image/2026-06-philippines-manila/03-render-output/maps/forest.png" data-ref-parent="fig-forest" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-forest-map-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Forest (Map)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-forest" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-deforest-map" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-deforest-map-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/deforest.png" class="lightbox" data-gallery="fig-forest" title="Figure&nbsp;14.5&nbsp;(b): Deforestation (Map)"><img src="image/2026-06-philippines-manila/03-render-output/maps/deforest.png" data-ref-parent="fig-forest" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-deforest-map-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Deforestation (Map)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-forest-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.5: Forests and Deforestation
+</figcaption>
+</figure>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Measurement</th>
+<th>Units</th>
+<th>Source</th>
+<th>Release Year</th>
+<th>Years of Data</th>
+<th>Coverage</th>
+<th>Resolution</th>
+<th>Task</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Global Forest Change v1.12 (Hansen et al.)</td>
+<td>Forest cover (binary) and year of deforestation</td>
+<td>Year (integer, 1–24 for 2001–2024)</td>
+<td><a href="https://glad.earthengine.app/view/global-forest-change">University of Maryland / GEE</a></td>
+<td>2024</td>
+<td>2000–2024</td>
+<td>Global</td>
+<td>30m</td>
+<td><a href="../tasks/forest/">tasks/forest/</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>What is it?</strong></p>
+<p>Two complementary maps of the city’s forest status. The <strong>forest cover map</strong> shows current tree cover — specifically, areas where at least 20% of a 30m×30m pixel was covered by tree canopy of 5 metres or more in 2000 and that has not been lost by 2023 (with gain areas from 2000–2012 included). The <strong>deforestation map</strong> shows the year that each forested pixel experienced tree cover loss (encoded as 1–24 for 2001–2024).</p>
+<p><strong>Why use it?</strong></p>
+<p>Forests provide a range of ecosystem services with direct implications for urban resilience: they regulate the local water cycle through evapotranspiration, reduce surface runoff and flood risk, stabilize soils on slopes and riverbanks, sequester carbon, and filter air pollutants. Tracking deforestation identifies where these services are being eroded and may signal expanding agricultural use, land clearing for urban development, or wildfire activity. At the peri-urban fringe, deforestation pressure often correlates with informal settlement expansion.</p>
+<p><strong>How is this made?</strong></p>
+<p>The Hansen et al.&nbsp;Global Forest Change dataset is produced at the University of Maryland using Landsat time-series imagery. Areas of vegetation are first detected using red and near-infrared bands, then filtered by height — pixels with ≥20% tree cover at ≥5m height are classified as forest. The dataset provides a 2000 baseline tree cover map plus annual layers of forest loss (2001–2024) and a 2000–2012 forest gain map. The City Scan pipeline derives two outputs: a current forest cover raster for approximately 2023 (starting from the 2000 baseline, subtracting loss through 2023, adding gain), and a deforestation year raster encoding when each loss pixel occurred.</p>
+<p><strong>How should we interpret it?</strong></p>
+<p>The forest cover map shows where trees currently exist, not whether the land is legally designated as forest. Urban parks and tree-lined streets with sufficient canopy density may appear as forested. The deforestation map reveals the spatial and temporal pattern of loss — clusters of loss in the same year may indicate clearing events or fire episodes; scattered annual loss may reflect gradual encroachment. As with all global remote sensing products, accuracy varies by forest type and canopy structure; tropical forests tend to have higher detection accuracy than sparse dryland woodlands.</p>
+<p><strong>Under the hood</strong></p>
+<p><a href="../tasks/forest/collection.py"><code>tasks/forest/collection.py</code></a> loads the Hansen GFC v1.12 image (<code>UMD/hansen/global_forest_change_2024_v1_12</code>) from Google Earth Engine. Current forest cover is derived as: <code>forestCover2000 (≥20%) − lossThrough2023 + gain2000-2012 ≥ 1</code>. The binary forest cover and the deforestation year (<code>lossyear</code>) bands are each exported via <code>fns.tiled_collection()</code> at 30m with nearest-neighbor resampling to preserve discrete values. Both rasters are saved as <code>int8</code> and <code>int16</code> respectively with nodata=0. Forest and deforestation maps are rendered in R via <a href="../core/R/"><code>core/R/</code></a> using the <code>forest</code> and <code>deforest</code> layer definitions in <a href="../source/layers.yml"><code>source/layers.yml</code></a>.</p>
+<p><strong>Key outputs</strong></p>
+<ul>
+<li><code>mnt/{scan-id}/02-process-output/spatial/{city}_forest_cover23.tif</code> — binary forest cover raster (~2023, 30m)</li>
+<li><code>mnt/{scan-id}/02-process-output/spatial/{city}_deforestation.tif</code> — year of deforestation raster (2001–2024, 30m)</li>
+<li><code>mnt/{scan-id}/03-render-output/maps/forest.png</code> — current forest cover map</li>
+<li><code>mnt/{scan-id}/03-render-output/maps/deforest.png</code> — deforestation year map</li>
+</ul>
+<p><strong>Source data citation</strong></p>
+<p><span class="citation" data-cites="hansenetal2013">(<a href="references.html#ref-hansenetal2013" role="doc-biblioref">Hansen et al. 2013</a>)</span></p>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-ciesin2022global" class="csl-entry" role="listitem">
+Center for International Earth Science Information Network (CIESIN), Columbia University. 2022. <em>Global Annual <span>PM2.5</span> Grids from <span>MODIS</span>, <span>MISR</span> and <span>SeaWiFS</span> Aerosol Optical Depth (<span>AOD</span>), 1998-2019, <span>V4.GL.03</span> (Version 4.03)</em>. NASA Socioeconomic Data and Applications Center (SEDAC). <a href="https://doi.org/10.7927/FX80-4N39">https://doi.org/10.7927/FX80-4N39</a>.
+</div>
+<div id="ref-eros2020landsat" class="csl-entry" role="listitem">
+Earth Resources Observation and Science (EROS) Center. 2020. <em>Landsat 8-9 Operational Land Imager / Thermal Infrared Sensor Level-2, Collection 2</em>. U.S. Geological Survey. <a href="https://doi.org/10.5066/P9OGBGM6">https://doi.org/10.5066/P9OGBGM6</a>.
+</div>
+<div id="ref-esa2020ndvi" class="csl-entry" role="listitem">
+European Space Agency. 2020. <em>Normalized Difference Vegetation Index</em>. Sentinel-2. Copernicus Data Space Ecosystem. <a href="https://documentation.dataspace.copernicus.eu/Data/SentinelMissions/Sentinel2.html">https://documentation.dataspace.copernicus.eu/Data/SentinelMissions/Sentinel2.html</a>.
+</div>
+<div id="ref-hansenetal2013" class="csl-entry" role="listitem">
+Hansen, M. C., P. V. Potapov, R. Moore, et al. 2013. <span>“High-Resolution Global Maps of 21st-Century Forest Cover Change.”</span> <em>Science</em> 342 (6160): 850–53. <a href="https://doi.org/10.1126/science.1244693">https://doi.org/10.1126/science.1244693</a>.
+</div>
+<div id="ref-world_bank_group_global_2019" class="csl-entry" role="listitem">
+World Bank Group. 2019. <em>Global <span>Solar</span> <span>Atlas</span> 2.0 : <span>Technical</span> <span>Report</span> (<span>English</span>).</em> Energy Sector Management Assistance Program. <a href="http://documents.worldbank.org/curated/en/529431592893043403">http://documents.worldbank.org/curated/en/529431592893043403</a>.
+</div>
+</div>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>Research on the role of urban vegetation in reducing particulate matter: <a href="https://www.sciencedirect.com/science/article/pii/S0048969721036779" class="uri">https://www.sciencedirect.com/science/article/pii/S0048969721036779</a><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>On how vegetation alters local climate: <a href="https://sustainability.stanford.edu/news/how-vegetation-alters-climate" class="uri">https://sustainability.stanford.edu/news/how-vegetation-alters-climate</a><a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Sentinel-2 captures 13 bands; NDVI uses bands 4 and 8, both at 10m resolution. See <a href="https://custom-scripts.sentinel-hub.com/custom-scripts/sentinel-2/ndvi/" class="uri">https://custom-scripts.sentinel-hub.com/custom-scripts/sentinel-2/ndvi/</a>.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -819,6 +1415,38 @@ ul.task-list li input[type="checkbox"] {
 </div>
   </div>
 </footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -23,7 +23,26 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -33,7 +52,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./multi-analysis.html" rel="next">
+<link href="./repo-structure.html" rel="next">
 <link href="./climate-condition.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -41,10 +60,13 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-b95cbf176b21d35b97d826ad6b6af685.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-0c4bb16d4a1e9fb2fb50ff9ab29e58a5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -73,6 +95,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -255,12 +306,6 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Risk Identification</span></span></a>
   </div>
 </li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./multi-analysis.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Multi-Analysis (Exposure Analysis) – Placeholder</span></span></a>
-  </div>
-</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -275,13 +320,13 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./repo-structure.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Repository Structure</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Repository Structure</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./task-dependency.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Orchestration Dependency Graph</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Orchestration Dependency Graph</span></span></a>
   </div>
 </li>
       </ul>
@@ -298,13 +343,13 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./case-standard-rabat.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Case Study: Standard Scan — Rabat, Morocco</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Case Study: Standard Scan — Rabat, Morocco</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./case-multiple-philippines.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Case Study: Multiple Scans — Philippines</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Case Study: Multiple Scans — Philippines</span></span></a>
   </div>
 </li>
       </ul>
@@ -321,31 +366,31 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./git-guide.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Git Guide</span></span></a>
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Git Guide</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./reporting-issues.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Reporting Issues</span></span></a>
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Reporting Issues</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./contributing.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Contributing</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Contributing</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./sharing-the-guide.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Sharing the Guide</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Sharing the Guide</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./editing-this-reference.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Editing This Reference</span></span></a>
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Editing This Reference</span></span></a>
   </div>
 </li>
       </ul>
@@ -361,8 +406,25 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview"><span class="header-section-number">15.1</span> Overview</a></li>
+  <li><a href="#flood-events" id="toc-flood-events" class="nav-link" data-scroll-target="#flood-events"><span class="header-section-number">15.2</span> Flood Events</a></li>
+  <li><a href="#flood-hazards-exposure-fathom" id="toc-flood-hazards-exposure-fathom" class="nav-link" data-scroll-target="#flood-hazards-exposure-fathom"><span class="header-section-number">15.3</span> Flood Hazards &amp; Exposure (Fathom)</a></li>
+  <li><a href="#elevation-and-slope" id="toc-elevation-and-slope" class="nav-link" data-scroll-target="#elevation-and-slope"><span class="header-section-number">15.4</span> Elevation and Slope</a></li>
+  <li><a href="#landslide-susceptibility" id="toc-landslide-susceptibility" class="nav-link" data-scroll-target="#landslide-susceptibility"><span class="header-section-number">15.5</span> Landslide Susceptibility</a></li>
+  <li><a href="#earthquake-events" id="toc-earthquake-events" class="nav-link" data-scroll-target="#earthquake-events"><span class="header-section-number">15.6</span> Earthquake Events</a></li>
+  <li><a href="#liquefaction-susceptibility" id="toc-liquefaction-susceptibility" class="nav-link" data-scroll-target="#liquefaction-susceptibility"><span class="header-section-number">15.7</span> Liquefaction Susceptibility</a></li>
+  <li><a href="#seismic-hazard" id="toc-seismic-hazard" class="nav-link" data-scroll-target="#seismic-hazard"><span class="header-section-number">15.8</span> Seismic Hazard</a></li>
+  <li><a href="#road-network-criticality" id="toc-road-network-criticality" class="nav-link" data-scroll-target="#road-network-criticality"><span class="header-section-number">15.9</span> Road Network Criticality</a></li>
+  <li><a href="#drought" id="toc-drought" class="nav-link" data-scroll-target="#drought"><span class="header-section-number">15.10</span> Drought</a></li>
+  <li><a href="#burnability" id="toc-burnability" class="nav-link" data-scroll-target="#burnability"><span class="header-section-number">15.11</span> Burnability</a></li>
+  <li><a href="#historical-burnt-area-fire-weather-index" id="toc-historical-burnt-area-fire-weather-index" class="nav-link" data-scroll-target="#historical-burnt-area-fire-weather-index"><span class="header-section-number">15.12</span> Historical Burnt Area &amp; Fire Weather Index</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -386,11 +448,1520 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sagittis posuere ligula sit amet lacinia. Duis dignissim pellentesque magna, rhoncus congue sapien finibus mollis. Ut eu sem laoreet, vehicula ipsum in, convallis erat. Vestibulum magna sem, blandit pulvinar augue sit amet, auctor malesuada sapien. Nullam faucibus leo eget eros hendrerit, non laoreet ipsum lacinia. Curabitur cursus diam elit, non tempus ante volutpat a. Quisque hendrerit blandit purus non fringilla. Integer sit amet elit viverra ante dapibus semper. Vestibulum viverra rutrum enim, at luctus enim posuere eu. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
-<p>Nunc ac dignissim magna. Vestibulum vitae egestas elit. Proin feugiat leo quis ante condimentum, eu ornare mauris feugiat. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Mauris cursus laoreet ex, dignissim bibendum est posuere iaculis. Suspendisse et maximus elit. In fringilla gravida ornare. Aenean id lectus pulvinar, sagittis felis nec, rutrum risus. Nam vel neque eu arcu blandit fringilla et in quam. Aliquam luctus est sit amet vestibulum eleifend. Phasellus elementum sagittis molestie. Proin tempor lorem arcu, at condimentum purus volutpat eu. Fusce et pellentesque ligula. Pellentesque id tellus at erat luctus fringilla. Suspendisse potenti.</p>
-<p>Etiam maximus accumsan gravida. Maecenas at nunc dignissim, euismod enim ac, bibendum ipsum. Maecenas vehicula velit in nisl aliquet ultricies. Nam eget massa interdum, maximus arcu vel, pretium erat. Maecenas sit amet tempor purus, vitae aliquet nunc. Vivamus cursus urna velit, eleifend dictum magna laoreet ut. Duis eu erat mollis, blandit magna id, tincidunt ipsum. Integer massa nibh, commodo eu ex vel, venenatis efficitur ligula. Integer convallis lacus elit, maximus eleifend lacus ornare ac. Vestibulum scelerisque viverra urna id lacinia. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Aenean eget enim at diam bibendum tincidunt eu non purus. Nullam id magna ultrices, sodales metus viverra, tempus turpis.</p>
+<section id="overview" class="level2" data-number="15.1">
+<h2 data-number="15.1" class="anchored" data-anchor-id="overview"><span class="header-section-number">15.1</span> Overview</h2>
+<p>This section examines the physical hazards that shape a city’s exposure to risk. It covers flooding (historical events and modeled hazard), terrain (elevation and slope), geological hazards (landslide susceptibility, liquefaction, seismic hazard), road network criticality, and fire-related risks (drought, burnability, historical burnt area, and fire weather). Together these layers help identify where people and assets are most exposed and where mitigation investments can have the greatest impact.</p>
+<hr>
+<p><strong>Data Sources</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 41%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Summary</th>
+<th>Measurement</th>
+<th>Units</th>
+<th>Coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Global Active Archive of Large Flood Events</td>
+<td>Historical flood events from the Dartmouth Flood Observatory</td>
+<td>Flood extent, fatalities, displaced persons</td>
+<td>—</td>
+<td>1985–present; Global</td>
+</tr>
+<tr class="even">
+<td>Fathom-Global 3.0</td>
+<td>Flood hazard probability at multiple return periods for fluvial, pluvial, and coastal flooding</td>
+<td>Flood depth at exceedance probability</td>
+<td>m</td>
+<td>Global; 30m</td>
+</tr>
+<tr class="odd">
+<td>FABDEM v1.2</td>
+<td>Forest- and building-removed digital elevation model derived from Copernicus DEM</td>
+<td>Bare-earth elevation and terrain slope</td>
+<td>m above sea level; degrees</td>
+<td>Global; ~30m</td>
+</tr>
+<tr class="even">
+<td>NASA Global Landslide Model</td>
+<td>Heuristic landslide susceptibility based on slope, lithology, roads, faults, and forest loss</td>
+<td>Susceptibility index</td>
+<td>0–1 class</td>
+<td>Global; ~1km</td>
+</tr>
+<tr class="odd">
+<td>NGDC/WDS Global Significant Earthquake Database</td>
+<td>Curated catalog of significant earthquakes with damage and casualty metadata</td>
+<td>Magnitude, depth, fatalities, damage</td>
+<td>—</td>
+<td>Global; 1900–present</td>
+</tr>
+<tr class="even">
+<td>USGS FDSN Earthquake Catalog</td>
+<td>Comprehensive seismic event catalog queried within 500km of the city</td>
+<td>Magnitude, depth</td>
+<td>—</td>
+<td>Global; 1900–present</td>
+</tr>
+<tr class="odd">
+<td>Global Liquefaction Susceptibility Map</td>
+<td>Geospatial regression model for soil liquefaction susceptibility</td>
+<td>Susceptibility class</td>
+<td>5-class ordinal</td>
+<td>Global; ~1.2km</td>
+</tr>
+<tr class="even">
+<td>GEM Seismic Hazard Map (v2023.1)</td>
+<td>Probabilistic peak ground acceleration at a 475-year return period on reference rock</td>
+<td>PGA</td>
+<td>g</td>
+<td>Global; ~3 arc-min</td>
+</tr>
+<tr class="odd">
+<td>OpenStreetMap (via OSMnx)</td>
+<td>Road network geometry used to compute edge betweenness centrality</td>
+<td>Betweenness centrality (% of trips)</td>
+<td>%</td>
+<td>Global; current snapshot</td>
+</tr>
+<tr class="even">
+<td>Sentinel-2 Harmonized (ESA, via GEE)</td>
+<td>NDMI-derived moisture index used as a proxy for drought and water stress</td>
+<td>Normalized Difference Moisture Index</td>
+<td>−1 to 1</td>
+<td>Global; 2017–2024; 10m</td>
+</tr>
+<tr class="odd">
+<td>ESA CCI Land Cover (v2.1.1)</td>
+<td>Global 300m land cover reclassified to burnability scores</td>
+<td>Burnability factor</td>
+<td>0–1</td>
+<td>Global; 2020</td>
+</tr>
+<tr class="even">
+<td>GlobFire / MODIS Burnt Area</td>
+<td>MODIS-derived historical fire event centroids with date and size</td>
+<td>Fire occurrence and area</td>
+<td>ha</td>
+<td>Global; 2001–2020</td>
+</tr>
+<tr class="odd">
+<td>Global Fire Weather Database (GFWED)</td>
+<td>Daily NASA GEOS-5 Fire Weather Index resampled to weekly 95th percentile</td>
+<td>Fire Weather Index</td>
+<td>FWI index</td>
+<td>Global; 2016–2021</td>
+</tr>
+<tr class="even">
+<td>Climate Central CoastalDEM</td>
+<td>Sea level rise inundation scenarios for 1–10m and IPCC AR6 SSP projections</td>
+<td>Flood elevation / year of inundation</td>
+<td>m / year</td>
+<td>Coastal areas; ~90m</td>
+</tr>
+<tr class="odd">
+<td>ShorelineMonitor (Deltares)</td>
+<td>Long-term shoreline change rates from CDSM satellite imagery</td>
+<td>Shoreline change rate</td>
+<td>m/year</td>
+<td>Global coasts; 1984–2016</td>
+</tr>
+<tr class="even">
+<td>WRI Aqueduct Water Risk v4</td>
+<td>Composite water risk scores from WRI’s Aqueduct model</td>
+<td>Water risk score</td>
+<td>0–5 ordinal</td>
+<td>Global; ~500m</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><strong>Relevant Tasks</strong></p>
+<pre><code>tasks/
+├── flood_events/        — historical flood event archive (Dartmouth Flood Observatory, R)
+├── fathom/              — flood hazard rasters and exposure overlays (Fathom-Global 3.0, Python)
+├── elevation/           — bare-earth elevation raster from FABDEM (Python)
+├── slope/               — terrain slope derived from FABDEM elevation (Python)
+├── landslide/           — landslide susceptibility raster (NASA, Python)
+├── earthquake/          — significant earthquake event archive with damage metadata (R)
+├── liquefaction/        — liquefaction susceptibility raster (Zhu et al., Python)
+├── seismic_hazard/      — PGA seismic hazard raster (GEM 2023, Python)
+├── accessibility/       — road network criticality via edge betweenness centrality (OSMnx, Python)
+├── ndxi/                — NDMI drought index composite (Sentinel-2 via GEE, Python)
+├── landcover_burn/      — burnability raster from ESA CCI land cover (Python)
+├── burned_area/         — historical fire event centroids from MODIS (Python)
+├── fwi/                 — Fire Weather Index seasonal chart (NASA GFWED, Python)
+├── sea_level_rise/      — sea level rise inundation rasters by scenario (R)
+├── coastal_erosion/     — shoreline change bar polygons from ShorelineMonitor (R)
+└── water_risk/          — WRI Aqueduct water risk polygons (GEE, Python)</code></pre>
+<hr>
+<p><strong>Relevant Outputs</strong></p>
+<pre><code>mnt/{scan-id}/
+├── 02-process-output/
+│   ├── spatial/
+│   │   ├── {city}_fluvial_{rp}.tif                  — fluvial flood hazard per return period
+│   │   ├── {city}_pluvial_{rp}.tif                  — pluvial flood hazard per return period
+│   │   ├── {city}_coastal_{rp}.tif                  — coastal flood hazard per return period
+│   │   ├── {city}_combined_flooding.tif             — combined flood hazard (max probability)
+│   │   ├── {city}_elevation.tif                     — bare-earth elevation (~30m, meters)
+│   │   ├── {city}_slope.tif                         — terrain slope (~30m, degrees)
+│   │   ├── {city}_landslide.tif                     — landslide susceptibility raster (~1km)
+│   │   ├── {city}_liquefaction.tif                  — liquefaction susceptibility raster (~1.2km)
+│   │   ├── {city}_seismic_hazard.tif                — PGA seismic hazard raster (~3 arc-min)
+│   │   ├── {city}_nodes_and_edges_centralities.gpkg — road network with betweenness centrality
+│   │   ├── {city}_ndmi_season.tif                   — seasonal NDMI drought raster (10m)
+│   │   ├── {city}_burnable.tif                      — burnability factor raster (~300m)
+│   │   ├── {city}_globfire_centroids.gpkg           — MODIS fire event centroids
+│   │   ├── {city}_fwi_{percentile}.tif              — FWI percentile raster
+│   │   ├── {city}_slr_1_10m.tif                     — combined SLR inundation raster (1–10m)
+│   │   ├── {city}_slr_{ssp}_{pct}_{rl}.tif         — AR6 SSP SLR scenario rasters
+│   │   ├── {city}_shoreline_snap.gpkg               — shoreline change bars (snapped to AOI)
+│   │   ├── {city}_shoreline_baseline.gpkg           — shoreline change bars (raw transects)
+│   │   └── {city}_water_risk.geojson                — WRI Aqueduct water risk polygons
+│   └── tabular/
+│       ├── {city}_flood_events.csv                  — Dartmouth flood events intersecting AOI
+│       ├── {city}_earthquake.csv                    — earthquake catalog (USGS + NCEI merged)
+│       ├── {city}_globfire_centroids.csv            — MODIS fire centroids tabular extract
+│       └── {city}_fwi_weekly_95.csv                 — weekly 95th-percentile FWI values
+└── 03-render-output/
+    ├── maps/
+    │   ├── fluvial.png, pluvial.png, coastal.png, combined_flooding.png
+    │   ├── fluvial_population.png, pluvial_population.png, ...
+    │   ├── fluvial_wsf.png, pluvial_wsf.png, ...
+    │   ├── fluvial_infrastructure.png, pluvial_infrastructure.png, ...
+    │   ├── elevation.png, slope.png
+    │   ├── landslides.png, landslides_builtup.png
+    │   ├── liquefaction.png, liquefaction_builtup.png
+    │   ├── seismic_hazard.png
+    │   ├── roads.png, roads_network.png
+    │   ├── drought.png
+    │   ├── burnable.png
+    │   ├── burnt_area.png
+    │   ├── sea_level_rise.png
+    │   └── coastal_erosion_snap.png
+    └── plots/
+        ├── darthmouth_flood_events.pdf
+        ├── fluvial-flood-1.png, pluvial-flood-2.png, ...
+        ├── sectoral-gdp-flood-rainwater.png, sectoral-gdp-flood-coastal.png
+        ├── combined-gdp-flood-rainwater.png, combined-gdp-flood-coastal.png
+        ├── wsf-elevation-pieplot.png, wsf-slope-pieplot.png
+        └── nasa-fwi.png</code></pre>
+<hr>
+</section>
+<section id="flood-events" class="level2" data-number="15.2">
+<h2 data-number="15.2" class="anchored" data-anchor-id="flood-events"><span class="header-section-number">15.2</span> Flood Events</h2>
+<!-- chart examples -->
+<iframe src="./image/2026-06-philippines-manila/03-render-output/plots/darthmouth_flood_events.pdf" width="100%" height="350px" allow="autoplay">
+</iframe>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Measurement</th>
+<th>Units</th>
+<th>Source</th>
+<th>Release Year</th>
+<th>Years of Data</th>
+<th>Coverage</th>
+<th>Resolution</th>
+<th>Task</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Global Active Archive of Large Flood Events</td>
+<td>Flood extent, fatalities, displaced persons</td>
+<td>—</td>
+<td><a href="http://floodobservatory.colorado.edu/Archives/index.html">Dartmouth Flood Observatory</a></td>
+<td>Ongoing</td>
+<td>1985–present</td>
+<td>Global</td>
+<td>—</td>
+<td><a href="../tasks/flood_events/">tasks/flood_events/</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>What is it?</strong></p>
+<p>A catalog of large flood events recorded by the Dartmouth Flood Observatory, filtered to events whose spatial extent intersects the city’s AOI. Each event includes start and end dates, the main cause, severity level, and figures for deaths and displaced persons. The chart shows the ten most significant events (ranked by a composite of deaths, displacement, and severity), with all others plotted but unlabelled.</p>
+<p>Note that the death and displacement figures reflect the entire flood event’s geographic extent, which may be considerably larger than the city’s boundary.</p>
+<p><strong>Why use it?</strong></p>
+<p>Historical flood events ground-truth modeled hazard layers and reveal which types of flooding have most affected the city in the past. Repeated events in the same season or from the same cause (e.g., cyclone-driven rainfall) indicate recurring vulnerabilities that warrant priority attention.</p>
+<p><strong>How is this made?</strong></p>
+<p>The Dartmouth Flood Observatory archive is stored in a GCS bucket as a spatial file. The pipeline reads this archive, reprojects to the AOI’s CRS, validates geometries (repairing self-intersections where necessary), and filters for events intersecting the AOI. A severity-weighted score combining deaths, displacement, and the observatory’s severity rating is used to label the ten most significant events on the chart.</p>
+<p><strong>How should we interpret it?</strong></p>
+<p>Events are plotted on a timeline with point size or color encoding severity. The archive may not capture all significant local floods — it emphasizes events large enough to appear in international reporting, with a known bias toward events near settlements and roads.</p>
+<p><strong>Under the hood</strong></p>
+<p><a href="../tasks/flood_events/collection.R"><code>tasks/flood_events/collection.R</code></a> reads the Dartmouth archive spatial file from a GCS bucket, repairs any self-intersecting geometries with <code>sf::st_make_valid()</code> (switching off S2 spherical geometry temporarily to handle edge cases), and filters for events that spatially intersect the AOI. A severity-weighted score — computed as the product of normalized deaths, normalized displacement, and the observatory severity rating — ranks all events; the top 10 receive annotated text labels on the chart. The chart is rendered by <a href="../tasks/flood_events/charts/index.qmd"><code>tasks/flood_events/charts/index.qmd</code></a>.</p>
+<p><strong>Key outputs</strong></p>
+<ul>
+<li><code>mnt/{scan-id}/02-process-output/tabular/{city}_flood_events.csv</code> — filtered flood event archive (BEGAN, ENDED, DEAD, DISPLACED, MAINCAUSE, SEVERITY)</li>
+<li><code>mnt/{scan-id}/03-render-output/plots/darthmouth_flood_events.pdf</code> — annotated flood event timeline chart</li>
+</ul>
+<p><strong>Source data citation</strong></p>
+<p><span class="citation" data-cites="brakenridgeGlobalActive">(<a href="references.html#ref-brakenridgeGlobalActive" role="doc-biblioref">Brakenridge n.d.</a>)</span></p>
+<hr>
+</section>
+<section id="flood-hazards-exposure-fathom" class="level2" data-number="15.3">
+<h2 data-number="15.3" class="anchored" data-anchor-id="flood-hazards-exposure-fathom"><span class="header-section-number">15.3</span> Flood Hazards &amp; Exposure (Fathom)</h2>
+<!-- chart examples -->
+<div id="fig-flood" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-flood-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-flood" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-fluv" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fluv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/fluvial.png" class="lightbox" data-gallery="fig-flood" title="Figure&nbsp;15.1&nbsp;(a): Fluvial Flood (Map)"><img src="image/2026-06-philippines-manila/03-render-output/maps/fluvial.png" data-ref-parent="fig-flood" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fluv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Fluvial Flood (Map)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-flood" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-pluv" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-pluv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/pluvial.png" class="lightbox" data-gallery="fig-flood" title="Figure&nbsp;15.1&nbsp;(b): Pluvial Flood (Map)"><img src="image/2026-06-philippines-manila/03-render-output/maps/pluvial.png" data-ref-parent="fig-flood" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-pluv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Pluvial Flood (Map)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-flood" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-coast" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-coast-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/coastal.png" class="lightbox" data-gallery="fig-flood" title="Figure&nbsp;15.1&nbsp;(c): Coastal Flood (Map)"><img src="image/2026-06-philippines-manila/03-render-output/maps/coastal.png" data-ref-parent="fig-flood" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-coast-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) Coastal Flood (Map)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-flood" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-comb" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-comb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/combined_flooding.png" class="lightbox" data-gallery="fig-flood" title="Figure&nbsp;15.1&nbsp;(d): Combined Flood (Map)"><img src="image/2026-06-philippines-manila/03-render-output/maps/combined_flooding.png" data-ref-parent="fig-flood" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-comb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(d) Combined Flood (Map)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-flood-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;15.1: Flood Hazard
+</figcaption>
+</figure>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Measurement</th>
+<th>Units</th>
+<th>Source</th>
+<th>Release Year</th>
+<th>Years of Data</th>
+<th>Coverage</th>
+<th>Resolution</th>
+<th>Task</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Fathom-Global 3.0 Flood Hazard Data</td>
+<td>Flood depth at 1-in-10, 1-in-100, and 1-in-1000 year return periods</td>
+<td>m</td>
+<td><a href="https://www.fathom.global/product/flood-hazard-data-maps/fathom-global/">Fathom</a></td>
+<td>2022</td>
+<td>—</td>
+<td>Global</td>
+<td>1 arc-second (30m)</td>
+<td><a href="../tasks/fathom/">tasks/fathom/</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>What is it?</strong></p>
+<p>There are 12 total flood hazard maps, covering three flood types and their combination, each overlaid with population density, built-up area, and social infrastructure layers. The flood types are:</p>
+<ol type="1">
+<li><p><strong>Fluvial</strong> (riverine) flooding occurs when a watercourse overflows its banks due to high upstream flow — from intense rainfall, snowmelt, or dam releases. It can strike an area even during dry local conditions if the triggering event occurred upstream.</p></li>
+<li><p><strong>Pluvial</strong> (rainwater) flooding is floodwater that has not yet, or cannot, reach a watercourse. It occurs independently of overflowing water bodies and can affect any urban area, including elevated ones. <em>Surface water flooding</em> develops when drainage systems are overwhelmed; <em>flash floods</em> arrive faster than the drainage network can absorb, often from torrential local rainfall. Both are worsened by impervious urban surfaces that limit infiltration.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p></li>
+<li><p><strong>Coastal</strong> flooding occurs when seawater inundates normally dry coastal land, typically via storm surge driven by severe winds coinciding with high tides. It can also result from tsunamis or from gradual sea level rise pushing tides above historic levels.</p></li>
+</ol>
+<p>The <strong>combined</strong> flood zone represents the spatial union of all three types and is particularly relevant because flood types can compound — a coastal storm surge can impair drainage capacity, while a precipitation event may simultaneously cause both pluvial and fluvial flooding.</p>
+<p><strong>Why use it?</strong></p>
+<p>Urban density means that more people and assets are concentrated in flood-prone areas. Cities often occupy river confluences or coastal locations chosen for access to water, and impervious surfaces reduce natural infiltration, increasing runoff. Flooding causes immediate harm (death, injury), damage to buildings and infrastructure, economic disruption, environmental contamination, and displacement. Knowing the spatial pattern of flood exposure — disaggregated by flood type — enables targeted infrastructure investment, informed land-use planning, and preparation of non-structural responses such as early warning systems and evacuation plans.</p>
+<div id="fig-flood-pop" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-flood-pop-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-flood-pop" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-fluv" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fluv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/fluvial_population.png" class="lightbox" data-gallery="fig-flood-pop" title="Figure&nbsp;15.2&nbsp;(a): Population Exposed to Fluvial Flood (Map)"><img src="image/2026-06-philippines-manila/03-render-output/maps/fluvial_population.png" data-ref-parent="fig-flood-pop" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fluv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Population Exposed to Fluvial Flood (Map)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-flood-pop" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-pluv" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-pluv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/pluvial_population.png" class="lightbox" data-gallery="fig-flood-pop" title="Figure&nbsp;15.2&nbsp;(b): Population Exposed to Pluvial Flood (Map)"><img src="image/2026-06-philippines-manila/03-render-output/maps/pluvial_population.png" data-ref-parent="fig-flood-pop" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-pluv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Population Exposed to Pluvial Flood (Map)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-flood-pop" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-coast" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-coast-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/coastal_population.png" class="lightbox" data-gallery="fig-flood-pop" title="Figure&nbsp;15.2&nbsp;(c): Population Exposed to Coastal Flood (Map)"><img src="image/2026-06-philippines-manila/03-render-output/maps/coastal_population.png" data-ref-parent="fig-flood-pop" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-coast-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) Population Exposed to Coastal Flood (Map)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-flood-pop" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-comb" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-comb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/combined_flooding_population.png" class="lightbox" data-gallery="fig-flood-pop" title="Figure&nbsp;15.2&nbsp;(d): Population Exposed to Combined Flood (Map)"><img src="image/2026-06-philippines-manila/03-render-output/maps/combined_flooding_population.png" data-ref-parent="fig-flood-pop" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-comb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(d) Population Exposed to Combined Flood (Map)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-flood-pop-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;15.2: Flood Exposed Population
+</figcaption>
+</figure>
+</div>
+<p>The <strong>population density</strong> overlay shows which flood zones would affect the most people. Areas with greater population density likely require greater resource allocation and longer evacuation lead times.</p>
+<div id="fig-flood-uba" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-flood-uba-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-flood-uba" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-fluv" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fluv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/fluvial_wsf.png" class="lightbox" data-gallery="fig-flood-uba" title="Figure&nbsp;15.3&nbsp;(a): Urban Built-Up Area Exposed to Fluvial Flood (Map)"><img src="image/2026-06-philippines-manila/03-render-output/maps/fluvial_wsf.png" data-ref-parent="fig-flood-uba" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fluv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Urban Built-Up Area Exposed to Fluvial Flood (Map)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-flood-uba" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-fluv-chart" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fluv-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/plots/fluvial-flood-1.png" class="lightbox" data-gallery="fig-flood-uba" title="Figure&nbsp;15.3&nbsp;(b): Urban Built-Up Area Exposed to Fluvial Flood (Chart)"><img src="image/2026-06-philippines-manila/03-render-output/plots/fluvial-flood-1.png" data-ref-parent="fig-flood-uba" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fluv-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Urban Built-Up Area Exposed to Fluvial Flood (Chart)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-flood-uba" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-pluv" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-pluv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/pluvial_wsf.png" class="lightbox" data-gallery="fig-flood-uba" title="Figure&nbsp;15.3&nbsp;(c): Urban Built-Up Area Exposed to Pluvial Flood (Map)"><img src="image/2026-06-philippines-manila/03-render-output/maps/pluvial_wsf.png" data-ref-parent="fig-flood-uba" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-pluv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) Urban Built-Up Area Exposed to Pluvial Flood (Map)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-flood-uba" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-pluv-chart" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-pluv-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/plots/pluvial-flood-2.png" class="lightbox" data-gallery="fig-flood-uba" title="Figure&nbsp;15.3&nbsp;(d): Urban Built-Up Area Exposed to Pluvial Flood (Chart)"><img src="image/2026-06-philippines-manila/03-render-output/plots/pluvial-flood-2.png" data-ref-parent="fig-flood-uba" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-pluv-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(d) Urban Built-Up Area Exposed to Pluvial Flood (Chart)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-flood-uba" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-coast" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-coast-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/coastal_wsf.png" class="lightbox" data-gallery="fig-flood-uba" title="Figure&nbsp;15.3&nbsp;(e): Urban Built-Up Area Exposed to Coastal Flood (Map)"><img src="image/2026-06-philippines-manila/03-render-output/maps/coastal_wsf.png" data-ref-parent="fig-flood-uba" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-coast-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(e) Urban Built-Up Area Exposed to Coastal Flood (Map)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-flood-uba" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-coast-chart" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-coast-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/plots/coastal-flood-2.png" class="lightbox" data-gallery="fig-flood-uba" title="Figure&nbsp;15.3&nbsp;(f): Urban Built-Up Area Exposed to Coastal Flood (Chart)"><img src="image/2026-06-philippines-manila/03-render-output/plots/coastal-flood-2.png" data-ref-parent="fig-flood-uba" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-coast-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(f) Urban Built-Up Area Exposed to Coastal Flood (Chart)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-flood-uba" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-comb" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-comb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/combined_flooding_wsf.png" class="lightbox" data-gallery="fig-flood-uba" title="Figure&nbsp;15.3&nbsp;(g): Urban Built-Up Area Exposed to Combined Flood (Map)"><img src="image/2026-06-philippines-manila/03-render-output/maps/combined_flooding_wsf.png" data-ref-parent="fig-flood-uba" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-comb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(g) Urban Built-Up Area Exposed to Combined Flood (Map)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-flood-uba" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-comb-chart" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-comb-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/plots/combined-flood-2.png" class="lightbox" data-gallery="fig-flood-uba" title="Figure&nbsp;15.3&nbsp;(h): Urban Built-Up Area Exposed to Combined Flood (Chart)"><img src="image/2026-06-philippines-manila/03-render-output/plots/combined-flood-2.png" data-ref-parent="fig-flood-uba" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-comb-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(h) Urban Built-Up Area Exposed to Combined Flood (Chart)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-flood-uba-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;15.3: Flood Exposed Built Up Area
+</figcaption>
+</figure>
+</div>
+<p>The <strong>built-up area</strong> overlay (from the World Settlement Footprint) shows how flood zones intersect with developed land. Flooding in built-up areas damages buildings; in non-built-up areas it may destroy crops or contaminate water sources. The temporal extent of WSF also reveals whether newer or older development is concentrated in flood-prone zones, which can indicate the likely quality of flood-resilient construction.</p>
+<div id="fig-flood-infra" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-flood-infra-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-flood-infra" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-fluv" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fluv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/fluvial_infrastructure.png" class="lightbox" data-gallery="fig-flood-infra" title="Figure&nbsp;15.4&nbsp;(a): Infrastructure Exposed to Fluvial Flood (Map)"><img src="image/2026-06-philippines-manila/03-render-output/maps/fluvial_infrastructure.png" data-ref-parent="fig-flood-infra" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fluv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Infrastructure Exposed to Fluvial Flood (Map)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-flood-infra" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-pluv" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-pluv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/pluvial_infrastructure.png" class="lightbox" data-gallery="fig-flood-infra" title="Figure&nbsp;15.4&nbsp;(b): Infrastructure Exposed to Pluvial Flood (Map)"><img src="image/2026-06-philippines-manila/03-render-output/maps/pluvial_infrastructure.png" data-ref-parent="fig-flood-infra" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-pluv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Infrastructure Exposed to Pluvial Flood (Map)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-flood-infra" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-coast" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-coast-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/coastal_infrastructure.png" class="lightbox" data-gallery="fig-flood-infra" title="Figure&nbsp;15.4&nbsp;(c): Infrastructure Exposed to Coastal Flood (Map)"><img src="image/2026-06-philippines-manila/03-render-output/maps/coastal_infrastructure.png" data-ref-parent="fig-flood-infra" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-coast-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) Infrastructure Exposed to Coastal Flood (Map)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-flood-infra" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-comb" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-comb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/combined_flooding_infrastructure.png" class="lightbox" data-gallery="fig-flood-infra" title="Figure&nbsp;15.4&nbsp;(d): Infrastructure Exposed to Combined Flood (Map)"><img src="image/2026-06-philippines-manila/03-render-output/maps/combined_flooding_infrastructure.png" data-ref-parent="fig-flood-infra" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-comb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(d) Infrastructure Exposed to Combined Flood (Map)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-flood-infra-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;15.4: Flood Exposed Social Infrastructure
+</figcaption>
+</figure>
+</div>
+<p>The <strong>social infrastructure</strong> overlay maps hospitals, schools, fire stations, and police stations. These facilities are critical not only in normal times but especially during disaster response: flooded hospitals cannot treat casualties; flooded fire and police stations impair first-response capacity; and schools often serve as evacuation shelters.</p>
+<div id="fig-flood-gdp" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-flood-gdp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-flood-gdp" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-pluv-gdp" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-pluv-gdp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/plots/sectoral-gdp-flood-rainwater.png" class="lightbox" data-gallery="fig-flood-gdp" title="Figure&nbsp;15.5&nbsp;(a): Sectoral GDP areas exposed to Pluvial Flood (Chart)"><img src="image/2026-06-philippines-manila/03-render-output/plots/sectoral-gdp-flood-rainwater.png" data-ref-parent="fig-flood-gdp" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-pluv-gdp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Sectoral GDP areas exposed to Pluvial Flood (Chart)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-flood-gdp" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-coast-gdp" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-coast-gdp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/plots/sectoral-gdp-flood-coastal.png" class="lightbox" data-gallery="fig-flood-gdp" title="Figure&nbsp;15.5&nbsp;(b): Sectoral GDP areas exposed to Coastal Flood (Chart)"><img src="image/2026-06-philippines-manila/03-render-output/plots/sectoral-gdp-flood-coastal.png" data-ref-parent="fig-flood-gdp" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-coast-gdp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Sectoral GDP areas exposed to Coastal Flood (Chart)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-flood-gdp" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-pluv-gdp2" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-pluv-gdp2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/plots/combined-gdp-flood-rainwater.png" class="lightbox" data-gallery="fig-flood-gdp" title="Figure&nbsp;15.5&nbsp;(c): Combined GDP areas exposed to Pluvial Flood (Chart)"><img src="image/2026-06-philippines-manila/03-render-output/plots/combined-gdp-flood-rainwater.png" data-ref-parent="fig-flood-gdp" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-pluv-gdp2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) Combined GDP areas exposed to Pluvial Flood (Chart)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-flood-gdp" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-coast-gdp2" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-coast-gdp2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/plots/combined-gdp-flood-coastal.png" class="lightbox" data-gallery="fig-flood-gdp" title="Figure&nbsp;15.5&nbsp;(d): Combined GDP areas exposed to Coastal Flood (Chart)"><img src="image/2026-06-philippines-manila/03-render-output/plots/combined-gdp-flood-coastal.png" data-ref-parent="fig-flood-gdp" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-coast-gdp2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(d) Combined GDP areas exposed to Coastal Flood (Chart)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-flood-gdp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;15.5: Sectoral and Combined GDP exposure to flood hazards
+</figcaption>
+</figure>
+</div>
+<p>The <strong>sectoral GDP</strong> overlay combines Fathom flood hazard with the SectGDP30 gridded GDP rasters to estimate the value of economic activity exposed to flooding, disaggregated by sector (agriculture, industry, services).</p>
+<p>Note: fluvial flood GDP exposures in this example are omitted here due to low hazard extent.</p>
+<p><strong>How is this made?</strong></p>
+<p>Fathom-Global 3.0 begins with the Copernicus Digital Elevation Model, adjusted to remove building and forest surfaces to produce a bare-earth terrain model. River channel depths are estimated hydraulically from modeled water flow. A hydrodynamic model simulates water movement across terrain during extreme precipitation and riverflow events, combined with hydrological models and global precipitation frequency statistics. The result is a flood depth raster at 1-in-10, 1-in-100, and 1-in-1,000 year return periods, with a critical success index of 0.75. The City Scan pipeline clips the relevant flood type rasters to the AOI, applies a 15cm depth threshold to define flooded area, and produces per-return-period exposure overlays with population, WSF, social infrastructure, and sectoral GDP layers.</p>
+<p><strong>How should we interpret it?</strong></p>
+<p>These maps show 15-cm flood zones at 1-in-10, 1-in-100, and 1-in-1,000 year return periods. Climate change is expected to increase both frequency and severity of flooding — the stated return periods reflect historical statistics and will understate future risk as conditions shift.</p>
+<p><strong>Under the hood</strong></p>
+<p><a href="../tasks/fathom/collection.py"><code>tasks/fathom/collection.py</code></a> downloads per-type, per-return-period GeoTIFFs from a private GCS bucket (<code>/vsigs/city-scan-global-private/Fathom/v2023</code>), clips each to the AOI, and applies a 15cm depth threshold via <code>apply_flood_threshold()</code> to produce binary flooded/not-flooded bands. A composite raster is assembled by <code>composite_flood_raster()</code>: Band 1 holds the maximum flood probability across all return periods (used for mapping), while subsequent bands hold the binary per-RP indicators (used for exposure charting). <a href="../tasks/fathom/analysis.py"><code>tasks/fathom/analysis.py</code></a> computes WSF-era exposure statistics (<code>calculate_flood_wsf_stats()</code>), population exposure, and OSM facility counts within flood zones. <a href="../tasks/fathom/multianalysis.R"><code>tasks/fathom/multianalysis.R</code></a> joins the flood exposure tables with WSF harmonized area and sectoral GDP rasters to produce the GDP exposure charts. The per-type flood maps and overlay maps (population, WSF, infrastructure) are rendered by <a href="../core/R/map-flooding.R"><code>core/R/map-flooding.R</code></a> using layer definitions in <a href="../source/layers.yml"><code>source/layers.yml</code></a>.</p>
+<p><strong>Key outputs</strong></p>
+<ul>
+<li><code>mnt/{scan-id}/02-process-output/spatial/{city}_{flood_type}_{rp}.tif</code> — per-type, per-return-period flood rasters</li>
+<li><code>mnt/{scan-id}/02-process-output/spatial/{city}_combined_flooding.tif</code> — combined flood hazard (max probability)</li>
+<li><code>mnt/{scan-id}/03-render-output/maps/fluvial.png</code>, <code>pluvial.png</code>, <code>coastal.png</code>, <code>combined_flooding.png</code> — flood hazard maps</li>
+<li><code>mnt/{scan-id}/03-render-output/maps/{flood_type}_population.png</code> — population exposure maps</li>
+<li><code>mnt/{scan-id}/03-render-output/maps/{flood_type}_wsf.png</code> — built-up area exposure maps</li>
+<li><code>mnt/{scan-id}/03-render-output/maps/{flood_type}_infrastructure.png</code> — social infrastructure exposure maps</li>
+</ul>
+<p><strong>Source data citation</strong></p>
+<p><span class="citation" data-cites="fathom_sampson2015high fathom2023global">(<a href="references.html#ref-fathom_sampson2015high" role="doc-biblioref">Sampson et al. 2015</a>; <a href="references.html#ref-fathom2023global" role="doc-biblioref">Fathom 2023</a>)</span></p>
+<hr>
+</section>
+<section id="elevation-and-slope" class="level2" data-number="15.4">
+<h2 data-number="15.4" class="anchored" data-anchor-id="elevation-and-slope"><span class="header-section-number">15.4</span> Elevation and Slope</h2>
+<!-- chart examples -->
+<div id="fig-elevation" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-elevation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-elevation" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-elev-map" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-elev-map-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/elevation.png" class="lightbox" data-gallery="fig-elevation" title="Figure&nbsp;15.6&nbsp;(a): Elevation (Map)"><img src="image/2026-06-philippines-manila/03-render-output/maps/elevation.png" data-ref-parent="fig-elevation" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-elev-map-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Elevation (Map)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-elevation" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-elev-chart" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-elev-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/plots/wsf-elevation-pieplot.png" class="lightbox" data-gallery="fig-elevation" title="Figure&nbsp;15.6&nbsp;(b): Elevation (Chart)"><img src="image/2026-06-philippines-manila/03-render-output/plots/wsf-elevation-pieplot.png" data-ref-parent="fig-elevation" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-elev-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Elevation (Chart)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-elevation" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-slope-map" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-slope-map-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/slope.png" class="lightbox" data-gallery="fig-elevation" title="Figure&nbsp;15.6&nbsp;(c): Slope (Map)"><img src="image/2026-06-philippines-manila/03-render-output/maps/slope.png" data-ref-parent="fig-elevation" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-slope-map-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) Slope (Map)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-elevation" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-slope-chart" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-slope-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/plots/wsf-slope-pieplot.png" class="lightbox" data-gallery="fig-elevation" title="Figure&nbsp;15.6&nbsp;(d): Slope (Chart)"><img src="image/2026-06-philippines-manila/03-render-output/plots/wsf-slope-pieplot.png" data-ref-parent="fig-elevation" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-slope-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(d) Slope (Chart)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-elevation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;15.6: Elevation and Slope
+</figcaption>
+</figure>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Measurement</th>
+<th>Units</th>
+<th>Source</th>
+<th>Release Year</th>
+<th>Years of Data</th>
+<th>Coverage</th>
+<th>Resolution</th>
+<th>Task</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>FABDEM v1.2</td>
+<td>Bare-earth elevation</td>
+<td>Meters above sea level</td>
+<td><a href="https://doi.org/10.1088/1748-9326/ac4d4f">University of Bristol / Copernicus</a></td>
+<td>2022</td>
+<td>—</td>
+<td>Global</td>
+<td>~30m</td>
+<td><a href="../tasks/elevation/">tasks/elevation/</a>, <a href="../tasks/slope/">tasks/slope/</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>What is it?</strong></p>
+<p>Two terrain maps derived from the FABDEM (Forest and Buildings Removed DEM): an elevation raster showing height above sea level and a slope raster showing terrain gradient in degrees. FABDEM is a bare-earth model that removes the vertical contribution of buildings and tree canopies from the Copernicus DEM, making it more suitable for hydrological and urban analysis than standard surface models.</p>
+<p><strong>Why use it?</strong></p>
+<p>Elevation and slope influence flood risk, landslide susceptibility, infrastructure cost, and service delivery. Low-lying areas are prone to pluvial or fluvial flooding; steep slopes increase landslide risk and make road construction more challenging. These two layers provide the terrain baseline that underpins many hazard analyses in this section.</p>
+<p><strong>How is this made?</strong></p>
+<p>FABDEM tiles are downloaded from a public GCS bucket and mosaicked for the AOI (falling back to the GEE community catalog, then USGS SRTM, if tiles are unavailable). The slope raster is derived by reprojecting the elevation raster to a local UTM CRS, computing the gradient with <code>numpy.gradient</code>, and converting to degrees via arctangent. The slope raster is then reprojected back to EPSG:4326 and clipped to the AOI.</p>
+<p><strong>How should we interpret it?</strong></p>
+<p>The elevation map identifies low-lying areas at potential flood risk and elevated areas that may serve as natural refuges. The slope map highlights zones where construction is constrained: slopes above 15–20° are challenging for dense development; slopes above 30° present significant landslide risk. Both maps are most informative when overlaid with flood hazard, landslide, or population layers.</p>
+<p><strong>Under the hood</strong></p>
+<p><a href="../tasks/elevation/collection.py"><code>tasks/elevation/collection.py</code></a> downloads FABDEM ZIP archives from GCS, extracts tiles, and mosaics them with <code>rasterio.merge</code>. A buffered clip (500m buffer, <code>{city}_elevation_buf.tif</code>) is also produced for use by the slope task. <a href="../tasks/slope/collection.py"><code>tasks/slope/collection.py</code></a> reads the buffered elevation, reprojects to UTM, computes slope with <code>numpy.gradient</code>, and reprojects back to EPSG:4326.</p>
+<p><strong>Key outputs</strong></p>
+<ul>
+<li><code>mnt/{scan-id}/02-process-output/spatial/{city}_elevation.tif</code> — bare-earth elevation raster (~30m, meters)</li>
+<li><code>mnt/{scan-id}/02-process-output/spatial/{city}_slope.tif</code> — terrain slope raster (~30m, degrees)</li>
+<li><code>mnt/{scan-id}/03-render-output/maps/elevation.png</code> — elevation choropleth map</li>
+<li><code>mnt/{scan-id}/03-render-output/maps/slope.png</code> — slope choropleth map</li>
+<li><code>mnt/{scan-id}/03-render-output/plots/wsf-elevation-pieplot.png</code> — built-up area by elevation class</li>
+<li><code>mnt/{scan-id}/03-render-output/plots/wsf-slope-pieplot.png</code> — built-up area by slope class</li>
+</ul>
+<p><strong>Source Data Citation</strong></p>
+<p><span class="citation" data-cites="fabdem2022">(<a href="references.html#ref-fabdem2022" role="doc-biblioref">Hawker et al. 2022</a>)</span></p>
+<hr>
+</section>
+<section id="landslide-susceptibility" class="level2" data-number="15.5">
+<h2 data-number="15.5" class="anchored" data-anchor-id="landslide-susceptibility"><span class="header-section-number">15.5</span> Landslide Susceptibility</h2>
+<!-- chart examples -->
+<div id="fig-landslide" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-landslide-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-landslide" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-lslide" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-lslide-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/landslides.png" class="lightbox" data-gallery="fig-landslide" title="Figure&nbsp;15.7&nbsp;(a): Landslide Susceptibility (Map)"><img src="image/2026-06-philippines-manila/03-render-output/maps/landslides.png" data-ref-parent="fig-landslide" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-lslide-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Landslide Susceptibility (Map)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-landslide" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-lslide-uba" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-lslide-uba-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/landslides_builtup.png" class="lightbox" data-gallery="fig-landslide" title="Figure&nbsp;15.7&nbsp;(b): Landslide Exposure to Built Up Area (Map)"><img src="image/2026-06-philippines-manila/03-render-output/maps/landslides_builtup.png" data-ref-parent="fig-landslide" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-lslide-uba-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Landslide Exposure to Built Up Area (Map)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-landslide-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;15.7: Landslide susceptibility and exposure
+</figcaption>
+</figure>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Measurement</th>
+<th>Units</th>
+<th>Source</th>
+<th>Release Year</th>
+<th>Years of Data</th>
+<th>Coverage</th>
+<th>Resolution</th>
+<th>Task</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>NASA Global Landslide Model</td>
+<td>Susceptibility index (5-class)</td>
+<td>Ordinal class (very low–very high)</td>
+<td><a href="https://gpm.nasa.gov/applications/global-landslide-model">NASA Goddard</a></td>
+<td>2020</td>
+<td>—</td>
+<td>Global</td>
+<td>30 arc-seconds (~1km)</td>
+<td><a href="../tasks/landslide/">tasks/landslide/</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>What is it?</strong></p>
+<p>A map of landslide susceptibility at ~1km resolution, classifying land into five levels (very low to very high). Landslides are the mass movement of rock or soil down a slope and can take many forms — falls, topples, flows, and spreads — triggered by heavy rainfall, <a href="#liquefaction-susceptibility">liquefaction</a>, excavation, or stream erosion. For a full typology, see the USGS <a href="https://pubs.usgs.gov/circ/1325/">Landslide Handbook</a>.</p>
+<p><strong>Why use it?</strong></p>
+<p>Landslides can directly damage buildings and infrastructure in their path, and the secondary effects — blocked roads, broken pipes, downed power lines — can disrupt far larger areas. Road construction is a common trigger, as excavation and infill weaken slopes. Landslide susceptibility maps can direct new development away from high-risk zones and identify where slope stabilization or vegetation measures are warranted.</p>
+<p><strong>How is this made?</strong></p>
+<p>The model uses a fuzzy heuristic approach combining five globally available inputs: slope (from the Viewfinder Panoramas DEM, aggregated to the maximum 30-arc-second cell value), lithological class (reclassified from Bouysse’s Geological Map of the World into five strength levels), distance to fault lines, presence of OSM highway segments, and forest loss (from the Hansen dataset, 2000–2013). Non-slope variables are combined with a fuzzy gamma operator (γ = 0.9), then multiplied by the transformed slope variable to ensure flat terrain cannot receive high susceptibility scores. The resulting index is classified into five breakpoints (0.11, 0.49, 0.671, 0.75) so that each class covers roughly half the area of the previous one. The model achieves an AUC of 0.82 on the classified output, validated against 1,194 global landslide events.</p>
+<p>The susceptibility formula is:</p>
+<p><span class="math inline">\(Susceptibility = \left(1 - \prod_{i}^{n} (1 - X_i)\right)^{0.9} \cdot \left( \prod_{i}^{n} X_i \right)^{0.1} \cdot S\)</span></p>
+<p>where <span class="math inline">\(X_i\)</span> is the transformed non-slope variable <span class="math inline">\(i\)</span> and <span class="math inline">\(S\)</span> is the transformed slope variable.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<p><strong>How should we interpret it?</strong></p>
+<p>Susceptibility measures how prone a site is to landslide formation given its intrinsic properties — it does not indicate probability over a time period. The very high class covers approximately 3% of global land area and has a positive likelihood ratio about 100 times greater than the very low class. Because the model uses globally available data, it cannot capture fine-grained soil heterogeneity within grid cells, and does not differentiate between landslide types.</p>
+<p><strong>Under the hood</strong></p>
+<p><a href="../tasks/landslide/collection.py"><code>tasks/landslide/collection.py</code></a> downloads the pre-classified landslide susceptibility GeoTIFF from a public GCS bucket and clips it to the AOI using <code>rasterio.mask</code>. <a href="../tasks/landslide/analysis.py"><code>tasks/landslide/analysis.py</code></a> computes summary statistics (min, percentiles, mean) over the clipped raster. The susceptibility map and the built-up area overlay are rendered in R via <a href="../core/R/"><code>core/R/</code></a> using the <code>landslides</code> layer definition in <a href="../source/layers.yml"><code>source/layers.yml</code></a>. The built-up overlay is derived by masking the susceptibility raster to the WSF Evolution footprint.</p>
+<p><strong>Key outputs</strong></p>
+<ul>
+<li><code>mnt/{scan-id}/02-process-output/spatial/{city}_landslide.tif</code> — landslide susceptibility raster (~1km, 5-class)</li>
+<li><code>mnt/{scan-id}/03-render-output/maps/landslides.png</code> — susceptibility map</li>
+<li><code>mnt/{scan-id}/03-render-output/maps/landslides_builtup.png</code> — susceptibility overlaid with built-up area</li>
+</ul>
+<p><strong>Source Data Citation</strong></p>
+<p><span class="citation" data-cites="stanley2017heuristic">(<a href="references.html#ref-stanley2017heuristic" role="doc-biblioref">Stanley and Kirschbaum 2017</a>)</span></p>
+<hr>
+</section>
+<section id="earthquake-events" class="level2" data-number="15.6">
+<h2 data-number="15.6" class="anchored" data-anchor-id="earthquake-events"><span class="header-section-number">15.6</span> Earthquake Events</h2>
+<!-- chart examples -->
+<div id="fig-eq" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-eq-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/plots/ngdc-earthquake-scatter.png" class="lightbox" data-gallery="quarto-lightbox-gallery-31" title="Figure&nbsp;15.8: Earthquake Events"><img src="image/2026-06-philippines-manila/03-render-output/plots/ngdc-earthquake-scatter.png" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-eq-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;15.8: Earthquake Events
+</figcaption>
+</figure>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Measurement</th>
+<th>Units</th>
+<th>Source</th>
+<th>Release Year</th>
+<th>Years of Data</th>
+<th>Coverage</th>
+<th>Resolution</th>
+<th>Task</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>NGDC/WDS Global Significant Earthquake Database</td>
+<td>Magnitude, depth, fatalities, damage level</td>
+<td>—</td>
+<td><a href="https://www.ngdc.noaa.gov/hazel/hazard-service/api/v1/earthquakes">NOAA NCEI</a></td>
+<td>Ongoing</td>
+<td>1900–present</td>
+<td>Global</td>
+<td>—</td>
+<td><a href="../tasks/earthquake/">tasks/earthquake/</a></td>
+</tr>
+<tr class="even">
+<td>USGS FDSN Earthquake Catalog</td>
+<td>Magnitude, depth</td>
+<td>—</td>
+<td><a href="https://earthquake.usgs.gov/fdsnws/event/1/">USGS</a></td>
+<td>Ongoing</td>
+<td>1900–present</td>
+<td>Global</td>
+<td>—</td>
+<td><a href="../tasks/earthquake/">tasks/earthquake/</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>What is it?</strong></p>
+<p>A scatter chart of significant earthquakes within 500km of the city, drawn from a merged catalog of the USGS FDSN (comprehensive, including small events) and the NOAA NCEI/WDS Global Significant Earthquake Database (curated, with damage and casualty metadata). Events appearing in both sources are deduplicated using a proximity and magnitude threshold. The NCEI database defines damage levels by monetary cost: limited (&lt;$1M), moderate ($1–5M), severe ($5–24M), extreme ($25M+).</p>
+<p><strong>Why use it?</strong></p>
+<p>The earthquake catalog provides historical context for seismic activity in and around the city. Combined with the <a href="#seismic-hazard">Seismic Hazard</a> and <a href="#liquefaction-susceptibility">Liquefaction</a> maps, it helps establish whether past events have affected the city and at what magnitude and depth. Seismic risk in cities has grown largely due to urbanization, poor land-use planning, and inadequate building codes — understanding the historical record supports investment in retrofitting and preparedness.</p>
+<p><strong>How is this made?</strong></p>
+<p>The USGS API is queried for all earthquakes of magnitude ≥ 1.0 within a 500km radius of the city centroid, back to 1900. The NCEI API is queried for the same period globally and results are filtered spatially. Events are merged and deduplicated: events within 1 day, 50km, and 0.8 magnitude units of each other are treated as the same event, retaining the NCEI row (which carries richer damage metadata).</p>
+<p><strong>Under the hood</strong></p>
+<p><a href="../tasks/earthquake/collection.R"><code>tasks/earthquake/collection.R</code></a> queries the USGS FDSN REST API (<code>earthquake.usgs.gov/fdsnws/event/1/query</code>) and the NOAA NCEI Hazard Service API (<code>ngdc.noaa.gov/hazel/hazard-service/api/v1/earthquakes</code>) using the <code>httr2</code> package, with paginated requests for the NCEI endpoint. The merged catalog is deduplicated by matching events within a 1-day window, 50km radius, and 0.8-magnitude tolerance, preferring NCEI rows for their richer damage fields. The output CSV uses the NCEI column schema with <code>NA</code> values for USGS-only events. The scatter chart is rendered by <a href="../tasks/earthquake/charts/index.qmd"><code>tasks/earthquake/charts/index.qmd</code></a>, plotting magnitude vs.&nbsp;year and encoding depth and damage level visually.</p>
+<p><strong>Key outputs</strong></p>
+<ul>
+<li><code>mnt/{scan-id}/02-process-output/tabular/{city}_earthquake.csv</code> — merged USGS + NCEI earthquake catalog</li>
+<li><code>mnt/{scan-id}/03-render-output/plots/ngdc-earthquake-scatter.png</code> — earthquake scatter chart</li>
+</ul>
+<p><strong>Source data citation</strong></p>
+<p><span class="citation" data-cites="ncei_earthquake usgs_fdsn">(<a href="references.html#ref-ncei_earthquake" role="doc-biblioref">National Geophysical Data Center / World Data Service (NGDC/WDS) n.d.</a>; <a href="references.html#ref-usgs_fdsn" role="doc-biblioref">U.S. Geological Survey n.d.</a>)</span></p>
+<hr>
+</section>
+<section id="liquefaction-susceptibility" class="level2" data-number="15.7">
+<h2 data-number="15.7" class="anchored" data-anchor-id="liquefaction-susceptibility"><span class="header-section-number">15.7</span> Liquefaction Susceptibility</h2>
+<!-- chart examples -->
+<div id="fig-liquefaction" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-liquefaction-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-liquefaction" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-liq" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-liq-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/liquefaction.png" class="lightbox" data-gallery="fig-liquefaction" title="Figure&nbsp;15.9&nbsp;(a): Liquefaction Susceptibility"><img src="image/2026-06-philippines-manila/03-render-output/maps/liquefaction.png" data-ref-parent="fig-liquefaction" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-liq-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Liquefaction Susceptibility
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-liquefaction" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-liq-uba" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-liq-uba-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/liquefaction_builtup.png" class="lightbox" data-gallery="fig-liquefaction" title="Figure&nbsp;15.9&nbsp;(b): Liquefaction Exposure to Built Up Area"><img src="image/2026-06-philippines-manila/03-render-output/maps/liquefaction_builtup.png" data-ref-parent="fig-liquefaction" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-liq-uba-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Liquefaction Exposure to Built Up Area
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-liquefaction-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;15.9: Liquefaction hazard and exposure
+</figcaption>
+</figure>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Measurement</th>
+<th>Units</th>
+<th>Source</th>
+<th>Release Year</th>
+<th>Years of Data</th>
+<th>Coverage</th>
+<th>Resolution</th>
+<th>Task</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Global Liquefaction Susceptibility Map</td>
+<td>Susceptibility class</td>
+<td>Ordinal (very low–very high)</td>
+<td><a href="https://zenodo.org/record/2583746">Zenodo (Zhu et al.)</a></td>
+<td>2019</td>
+<td>—</td>
+<td>Global</td>
+<td>~1.2km</td>
+<td><a href="../tasks/liquefaction/">tasks/liquefaction/</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>What is it?</strong></p>
+<p>A map showing where soils are most susceptible to liquefaction — the process by which strong earthquake vibrations temporarily convert water-saturated sediment into a fluid-like state, causing the ground to lose its load-bearing capacity. When liquefaction occurs, buildings and bridges can tilt or collapse, and gentle slopes can begin to flow. This map classifies susceptibility into five levels (very low to very high) based on soil and terrain characteristics, independent of any specific earthquake. Liquefaction is most commonly triggered by earthquakes, but non-seismic loads — such as dam failures and mine tailings impoundments — can also raise pore water pressure sufficiently to induce it.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
+<p><strong>Why use it?</strong></p>
+<p>While seismic hazard is roughly uniform across a city’s area, liquefaction susceptibility varies considerably based on soil type, saturation, and drainage. Understanding which areas are more susceptible guides decisions on building codes, foundation design, and soil improvement. The three general responses are: avoiding susceptible areas, engineering more resistant foundations, and strengthening the soil through drainage, densification, or replacement.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
+<p><strong>How is this made?</strong></p>
+<p>The Zhu et al.&nbsp;model uses geospatial regression trained on observed liquefaction (and non-liquefaction) from 27 earthquake events in six countries. The coastal model (within 20km of the sea) uses precipitation, distance to water bodies, and time-averaged shear wave velocity <span class="math inline">\(V_{S30}\)</span> (approximated from slope); the inland model replaces distance to water bodies with water table depth. Because the trained model requires peak ground velocity (PGV) as an earthquake loading proxy, PGV is removed from the final susceptibility output to produce a site-characteristic rather than event-specific map. The resulting values are classified into five ordinal levels.</p>
+<p><strong>How should we interpret it?</strong></p>
+<p><em>Susceptibility</em> differs from <em>probability</em>: susceptibility is a time-independent characteristic of the site, while probability would incorporate the likelihood of a triggering earthquake. High liquefaction susceptibility in a low-seismicity area does not mean liquefaction is likely — view this map alongside the <a href="#seismic-hazard">Seismic Hazard</a> map. The 1.2km resolution and the use of slope-derived <span class="math inline">\(V_{S30}\)</span> (rather than in-situ measurements) mean that significant within-cell variation may exist.</p>
+<p><strong>Under the hood</strong></p>
+<p><a href="../tasks/liquefaction/collection.py"><code>tasks/liquefaction/collection.py</code></a> downloads the pre-classified liquefaction susceptibility GeoTIFF from a public GCS bucket and clips it to the AOI using <code>rasterio.mask</code>. The output is a single-band raster with five ordinal class values. The susceptibility map and built-up area overlay are rendered in R via <a href="../core/R/"><code>core/R/</code></a> using the <code>liquefaction</code> layer definition in <a href="../source/layers.yml"><code>source/layers.yml</code></a>. The built-up overlay is derived by masking the susceptibility raster to the WSF Evolution footprint, consistent with the landslide built-up overlay.</p>
+<p><strong>Key outputs</strong></p>
+<ul>
+<li><code>mnt/{scan-id}/02-process-output/spatial/{city}_liquefaction.tif</code> — liquefaction susceptibility raster (~1.2km, 5-class)</li>
+<li><code>mnt/{scan-id}/03-render-output/maps/liquefaction.png</code> — susceptibility map</li>
+<li><code>mnt/{scan-id}/03-render-output/maps/liquefaction_builtup.png</code> — susceptibility overlaid with built-up area</li>
+</ul>
+<p><strong>Source data citation</strong></p>
+<p><span class="citation" data-cites="zorn_2019_2583746">(<a href="references.html#ref-zorn_2019_2583746" role="doc-biblioref">Zorn and Koks 2019</a>)</span></p>
+</section>
+<section id="seismic-hazard" class="level2" data-number="15.8">
+<h2 data-number="15.8" class="anchored" data-anchor-id="seismic-hazard"><span class="header-section-number">15.8</span> Seismic Hazard</h2>
+<!-- chart examples -->
+<div id="fig-seismic" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-seismic-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/seismic_hazard.png" class="lightbox" data-gallery="quarto-lightbox-gallery-34" title="Figure&nbsp;15.10: Seismic Hazard"><img src="image/2026-06-philippines-manila/03-render-output/maps/seismic_hazard.png" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-seismic-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;15.10: Seismic Hazard
+</figcaption>
+</figure>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Measurement</th>
+<th>Units</th>
+<th>Source</th>
+<th>Release Year</th>
+<th>Years of Data</th>
+<th>Coverage</th>
+<th>Resolution</th>
+<th>Task</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>GEM Seismic Hazard Map (v2023.1)</td>
+<td>Peak Ground Acceleration (PGA) at 10% probability of exceedance in 50 years on reference rock</td>
+<td>g</td>
+<td><a href="https://maps.openquake.org/map/global-seismic-hazard-map/">Global Earthquake Model / OpenQuake</a></td>
+<td>2023</td>
+<td>—</td>
+<td>Global</td>
+<td>~3 arc-min (~5km)</td>
+<td><a href="../tasks/seismic_hazard/">tasks/seismic_hazard/</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>What is it?</strong></p>
+<p>A map of Peak Ground Acceleration (PGA) representing the seismic shaking intensity with a 10% probability of being exceeded in 50 years — corresponding to a ~475-year return period — on reference rock conditions (shear wave velocity 760–800 m/s). PGA is the standard metric for structural design and seismic risk assessments. An earthquake with moderate damage potential (PGA ~0.1–0.2g) can cause structural damage to unreinforced masonry and movement of wood-frame structures.</p>
+<p><strong>Why use it?</strong></p>
+<p>Seismic hazard is the foundation for understanding earthquake risk to people and assets. By itself it describes the shaking potential; combined with <a href="#liquefaction-susceptibility">Liquefaction Susceptibility</a> and building inventory data, it enables fuller risk assessment. Seismic risk in cities has grown primarily due to rapid urbanization, informal construction, and the concentration of population in poorly engineered buildings. This map provides the spatial baseline for prioritizing seismic retrofitting and resilient design standards.</p>
+<p><strong>How is this made?</strong></p>
+<p>The GEM hazard model is produced using OpenQuake, an open-source probabilistic seismic hazard analysis platform. It incorporates global seismicity catalogs, fault source models, and ground motion prediction equations. The 2023 version covers the globe at ~3 arc-minute resolution. The City Scan pipeline downloads and clips the <code>v2023_1_pga_475_rock_3min.tif</code> raster to the AOI.</p>
+<p><strong>How should we interpret it?</strong></p>
+<p>The map shows relative seismic shaking intensity across the city at the 475-year return period. Higher PGA values indicate areas with greater expected shaking — though at the ~5km resolution, the map is most useful for city-to-city comparison and broad zoning rather than site-specific structural design. Combine with the Liquefaction Susceptibility map to identify where shaking may be amplified by soil conditions.</p>
+<p><strong>Under the hood</strong></p>
+<p><a href="../tasks/seismic_hazard/collection.py"><code>tasks/seismic_hazard/collection.py</code></a> downloads the GEM 2023 PGA raster (<code>v2023_1_pga_475_rock_3min.tif</code>) from the OpenQuake public release, opens it via <code>rasterio</code>, and clips it to the AOI using <code>rasterio.windows</code>. The seismic hazard map is rendered in R via <a href="../core/R/map-seismic-hazard.R"><code>core/R/map-seismic-hazard.R</code></a> using the <code>seismic_hazard</code> layer definition in <a href="../source/layers.yml"><code>source/layers.yml</code></a>.</p>
+<p><strong>Key outputs</strong></p>
+<ul>
+<li><code>mnt/{scan-id}/02-process-output/spatial/{city}_seismic_hazard.tif</code> — PGA raster (~5km)</li>
+<li><code>mnt/{scan-id}/03-render-output/maps/seismic_hazard.png</code> — seismic hazard choropleth map</li>
+</ul>
+<p><strong>Source data citation</strong></p>
+<p><span class="citation" data-cites="silva2023global">(<a href="references.html#ref-silva2023global" role="doc-biblioref">Silva et al. 2023</a>)</span></p>
+<hr>
+</section>
+<section id="road-network-criticality" class="level2" data-number="15.9">
+<h2 data-number="15.9" class="anchored" data-anchor-id="road-network-criticality"><span class="header-section-number">15.9</span> Road Network Criticality</h2>
+<!-- chart examples -->
+<div id="fig-road" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-road-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-road" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-road-crit" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-road-crit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/roads.png" class="lightbox" data-gallery="fig-road" title="Figure&nbsp;15.11&nbsp;(a): Road Network Criticality"><img src="image/2026-06-philippines-manila/03-render-output/maps/roads.png" data-ref-parent="fig-road" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-road-crit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Road Network Criticality
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-road" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-road-net" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-road-net-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/roads_network.png" class="lightbox" data-gallery="fig-road" title="Figure&nbsp;15.11&nbsp;(b): Major roads"><img src="image/2026-06-philippines-manila/03-render-output/maps/roads_network.png" data-ref-parent="fig-road" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-road-net-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Major roads
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-road-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;15.11
+</figcaption>
+</figure>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Measurement</th>
+<th>Units</th>
+<th>Source</th>
+<th>Release Year</th>
+<th>Years of Data</th>
+<th>Coverage</th>
+<th>Resolution</th>
+<th>Task</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>OpenStreetMap</td>
+<td>Road network geometry</td>
+<td>—</td>
+<td><a href="https://geoffboeing.com/2016/11/osmnx-python-street-networks/">OSM via OSMnx</a></td>
+<td>Ongoing</td>
+<td>Current snapshot</td>
+<td>Global</td>
+<td>—</td>
+<td><a href="../tasks/accessibility/">tasks/accessibility/</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>What is it?</strong></p>
+<p>A map showing the relative importance of each road segment to the city’s overall road network, measured by edge betweenness centrality. Betweenness is the share of all shortest-path trips (between intersections) that pass through a given road segment. Higher percentages indicate segments whose obstruction would disrupt travel for a larger proportion of the city.</p>
+<p><strong>Why use it?</strong></p>
+<p>Road networks are critical for the movement of people and goods, emergency response, and evacuation. A non-critical street obstruction may affect only nearby residents; the obstruction of a highly critical segment during a flood or earthquake could broadly disrupt economic and social life and impede rescue operations. Identifying critical segments guides investment in resilience measures — elevating flood-exposed sections, adding redundant routes, or siting transit infrastructure on well-connected corridors.</p>
+<p><strong>How is this made?</strong></p>
+<p>The OSM road network is extracted for primary and secondary road types within the city AOI. The edge betweenness centrality algorithm maps the shortest path between all intersection pairs (or a 500-sample approximation for large cities, shown to produce similar results). Each segment’s betweenness score is expressed as the percentage of total trips using that segment. The road network and centrality values are saved to a GeoPackage for mapping.</p>
+<p><strong>How should we interpret it?</strong></p>
+<p>Cities with grid networks or many alternative routes show lower maximum betweenness scores — fewer segments are truly critical. Cities with radial or tree-like structures concentrate betweenness on a small number of segments. This analysis treats all road segments and intersections equally, which does not reflect capacity differences between, say, a motorway and a residential street. Trip distribution also differs from shortest-path logic in practice; congestion, preferences, and road quality all affect actual route choice.</p>
+<p><strong>Under the hood</strong></p>
+<p><a href="../tasks/accessibility/collection.py"><code>tasks/accessibility/collection.py</code></a> downloads the OSM road network graph via <code>ox.graph_from_polygon()</code> using OSMnx, with a 5km buffer around the AOI. The graph is saved as both a GeoPackage (<code>{city}_nodes_and_edges.gpkg</code>) and a GraphML file. <a href="../tasks/accessibility/analysis.py"><code>tasks/accessibility/analysis.py</code></a> computes edge and node betweenness centrality via <code>nx.edge_betweenness_centrality()</code> and <code>nx.betweenness_centrality()</code> from NetworkX, using a sample of 500 intersection nodes for large networks to keep computation tractable. Centrality values are joined back to the edges GeoDataFrame and saved to <code>{city}_nodes_and_edges_centralities.gpkg</code>. The road criticality and network maps are rendered in R via <a href="../core/R/"><code>core/R/</code></a> using the <code>roads</code> and <code>roads_network</code> layer definitions in <a href="../source/layers.yml"><code>source/layers.yml</code></a>.</p>
+<p><strong>Key outputs</strong></p>
+<ul>
+<li><code>mnt/{scan-id}/02-process-output/spatial/{city}_nodes_and_edges_centralities.gpkg</code> — road network with betweenness centrality</li>
+<li><code>mnt/{scan-id}/03-render-output/maps/roads.png</code> — road criticality choropleth map</li>
+<li><code>mnt/{scan-id}/03-render-output/maps/roads_network.png</code> — major road network map</li>
+</ul>
+<p><strong>Source data citation</strong></p>
+<p><span class="citation" data-cites="OpenStreetMap osmnx_2025">(<a href="references.html#ref-OpenStreetMap" role="doc-biblioref">OpenStreetMap contributors 2017</a>; <a href="references.html#ref-osmnx_2025" role="doc-biblioref">Boeing 2025</a>)</span></p>
+<hr>
+</section>
+<section id="drought" class="level2" data-number="15.10">
+<h2 data-number="15.10" class="anchored" data-anchor-id="drought"><span class="header-section-number">15.10</span> Drought</h2>
+<!-- chart examples -->
+<div id="fig-drought" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-drought-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/drought.png" class="lightbox" data-gallery="quarto-lightbox-gallery-37" title="Figure&nbsp;15.12: Drought"><img src="image/2026-06-philippines-manila/03-render-output/maps/drought.png" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-drought-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;15.12: Drought
+</figcaption>
+</figure>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Measurement</th>
+<th>Units</th>
+<th>Source</th>
+<th>Release Year</th>
+<th>Years of Data</th>
+<th>Coverage</th>
+<th>Resolution</th>
+<th>Task</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Sentinel-2 Harmonized (ESA, via GEE)</td>
+<td>Normalized Difference Moisture Index (NDMI)</td>
+<td>Dimensionless (−1 to 1)</td>
+<td><a href="https://dataspace.copernicus.eu/explore-data/data-collections/sentinel-data/sentinel-2">European Space Agency / Copernicus</a></td>
+<td>Ongoing</td>
+<td>2017–2024</td>
+<td>Global</td>
+<td>10m</td>
+<td><a href="../tasks/ndxi/">tasks/ndxi/</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>What is it?</strong></p>
+<p>The Normalized Difference Moisture Index (NDMI) measures moisture content in vegetation using Sentinel-2 near-infrared and shortwave infrared bands:</p>
+<p><span class="math display">\[NDMI = \frac{NIR - SWIR}{NIR + SWIR}\]</span></p>
+<p>This map shows the seasonal (summer) median NDMI composite averaged over 2017–2024. Negative values indicate water-stressed vegetation; positive values indicate well-watered or potentially waterlogged vegetation.</p>
+<p><strong>Why use it?</strong></p>
+<p>Moisture stress in vegetation affects agricultural productivity, ecosystem resilience, and wildfire risk. Areas with persistently low NDMI — particularly during dry seasons — are more susceptible to vegetation loss and combustion. NDMI is especially useful as a precursor indicator when combined with the <a href="#historical-burnt-area--fire-weather-index">Fire Weather Index</a> and <a href="#burnability">Burnability</a> layers.</p>
+<p><strong>How is this made?</strong></p>
+<p>Sentinel-2 Harmonized imagery is filtered to scenes with less than 10% cloud cover for the summer season (2017–2024). Clouds are masked using the QA60 band. Median composites are computed per season and NDMI is calculated as <code>(B8 − B11) / (B8 + B11)</code>, using Band 8 (NIR) and Band 11 (SWIR). The resulting composite is exported at 10m and saved as <code>{city}_ndmi_season.tif</code>.</p>
+<p><strong>How should we interpret it?</strong></p>
+<p>NDMI ranges from −1 to 1. Values below 0 indicate water stress; values approaching −1 represent severely stressed or bare land. Because the map shows a seasonal median, it reflects typical conditions during the hottest months — areas that are chronically dry will show consistently low values.</p>
+<p><strong>Under the hood</strong></p>
+<p><a href="../tasks/ndxi/collection.py"><code>tasks/ndxi/collection.py</code></a> handles both NDVI and NDMI, selecting the appropriate Sentinel-2 band pair via the <code>INDEX_BANDS</code> dictionary (<code>ndmi</code> uses B8 NIR and B11 SWIR). It builds a Sentinel-2 Harmonized collection filtered to the summer season and scenes with less than 10% cloud cover, applies the QA60-based cloud mask via <code>maskS2clouds()</code>, and computes the seasonal median composite server-side in GEE using <code>fns.Composite</code>. The NDMI composite is exported at 10m via <code>fns.tiled_collection()</code> and saved as <code>{city}_ndmi_season.tif</code>. The drought map is rendered in R via <a href="../core/R/"><code>core/R/</code></a> using the <code>drought</code> layer definition in <a href="../source/layers.yml"><code>source/layers.yml</code></a>.</p>
+<p><strong>Key outputs</strong></p>
+<ul>
+<li><code>mnt/{scan-id}/02-process-output/spatial/{city}_ndmi_season.tif</code> — seasonal NDMI raster (10m)</li>
+<li><code>mnt/{scan-id}/03-render-output/maps/drought.png</code> — NDMI drought map</li>
+</ul>
+<p><strong>Source data citation</strong></p>
+<p><span class="citation" data-cites="esa2020ndmi">(<a href="references.html#ref-esa2020ndmi" role="doc-biblioref">European Space Agency 2020</a>)</span></p>
+<hr>
+</section>
+<section id="burnability" class="level2" data-number="15.11">
+<h2 data-number="15.11" class="anchored" data-anchor-id="burnability"><span class="header-section-number">15.11</span> Burnability</h2>
+<!-- chart examples -->
+<div id="fig-burn" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-burn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/burnable.png" class="lightbox" data-gallery="quarto-lightbox-gallery-38" title="Figure&nbsp;15.13: Burnability Factor"><img src="image/2026-06-philippines-manila/03-render-output/maps/burnable.png" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-burn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;15.13: Burnability Factor
+</figcaption>
+</figure>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Measurement</th>
+<th>Units</th>
+<th>Source</th>
+<th>Release Year</th>
+<th>Years of Data</th>
+<th>Coverage</th>
+<th>Resolution</th>
+<th>Task</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>ESA CCI Land Cover v2.1.1</td>
+<td>Land cover class → burnability score</td>
+<td>0–1 (7-level ordinal)</td>
+<td><a href="https://www.esa-landcover-cci.org/">ESA Climate Change Initiative</a></td>
+<td>2020</td>
+<td>2016–2020</td>
+<td>Global</td>
+<td>~300m</td>
+<td><a href="../tasks/landcover_burn/">tasks/landcover_burn/</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>What is it?</strong></p>
+<p>A raster map showing the potential for combustion of each land area based on its land cover type. The 2020 ESA CCI land cover classification is reclassified into a burnability score from 0 to 1 using a mapping derived from global wildfire occurrence research. Dense closed forest receives the highest score (1.0); urban and permanent water bodies receive 0.</p>
+<p><strong>Why use it?</strong></p>
+<p>Burnability captures fuel availability — one of the three key components of wildfire risk alongside ignition sources and atmospheric conditions. Areas with high burnability scores that also experience high Fire Weather Index values or low NDMI represent zones of compounded wildfire potential. This is especially relevant at the urban-rural interface where vegetation encroaches on settled areas.</p>
+<p><strong>How is this made?</strong></p>
+<p>The ESA CCI 2020 land cover raster is downloaded from GCS and clipped to the AOI. Each pixel’s class code is mapped to a burnability score using the following scheme, based on Gannon et al.&nbsp;(2021) and historical MODIS wildfire intensity patterns:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Score</th>
+<th>Land cover classes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>Urban, bare areas, permanent water, snow/ice</td>
+</tr>
+<tr class="even">
+<td>0.16</td>
+<td>Sparse shrubland</td>
+</tr>
+<tr class="odd">
+<td>0.33</td>
+<td>Sparse vegetation, sparse forest</td>
+</tr>
+<tr class="even">
+<td>0.50</td>
+<td>Mosaic cropland/vegetation, shrubland, wetlands</td>
+</tr>
+<tr class="odd">
+<td>0.66</td>
+<td>Rainfed/irrigated cropland, grassland, tree cover types</td>
+</tr>
+<tr class="even">
+<td>0.83</td>
+<td>Closed broadleaved forest types, flooded forest</td>
+</tr>
+<tr class="odd">
+<td>1.0</td>
+<td>Closed evergreen broadleaved forest</td>
+</tr>
+</tbody>
+</table>
+<p><strong>How should we interpret it?</strong></p>
+<p>The burnability score represents relative fuel load and ignition potential given the land cover type — it does not predict that a fire will occur. High-burnability areas near urban edges are most actionable for vegetation management and firebreak planning. Use alongside the <a href="#historical-burnt-area--fire-weather-index">FWI chart</a> and <a href="#drought">Drought map</a> for a fuller assessment of wildfire conditions.</p>
+<p><strong>Under the hood</strong></p>
+<p><a href="../tasks/landcover_burn/collection.py"><code>tasks/landcover_burn/collection.py</code></a> reads the ESA CCI 2020 land cover GeoTIFF (<code>ESACCI.tif</code>) from a GCS bucket via GDAL’s <code>/vsigs/</code> virtual file system, clips it to the AOI using <code>rasterio.mask</code>, and reclassifies each pixel’s integer class code to a burnability float score using the <code>CLASS_TO_BURN</code> lookup dictionary. The reclassified raster is saved as <code>{city}_burnable.tif</code>. The burnability map is rendered in R via <a href="../core/R/"><code>core/R/</code></a> using the <code>burnable</code> layer definition in <a href="../source/layers.yml"><code>source/layers.yml</code></a>.</p>
+<p><strong>Key outputs</strong></p>
+<ul>
+<li><code>mnt/{scan-id}/02-process-output/spatial/{city}_burnable.tif</code> — burnability score raster (~300m, 0–1)</li>
+<li><code>mnt/{scan-id}/03-render-output/maps/burnable.png</code> — burnability choropleth map</li>
+</ul>
+<p><strong>Source data citation</strong></p>
+<p><span class="citation" data-cites="zanaga_2021_ESA_Landcover gannon_global_2021">(<a href="references.html#ref-zanaga_2021_ESA_Landcover" role="doc-biblioref">Zanaga et al. 2021</a>; <a href="references.html#ref-gannon_global_2021" role="doc-biblioref">Gannon and Steinberg 2021</a>)</span></p>
+</section>
+<section id="historical-burnt-area-fire-weather-index" class="level2" data-number="15.12">
+<h2 data-number="15.12" class="anchored" data-anchor-id="historical-burnt-area-fire-weather-index"><span class="header-section-number">15.12</span> Historical Burnt Area &amp; Fire Weather Index</h2>
+<!-- chart examples -->
+<div id="fig-fwi" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-fwi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-fwi" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-burnt" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-burnt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/burnt_area.png" class="lightbox" data-gallery="fig-fwi" title="Figure&nbsp;15.14&nbsp;(a): History of Fire (MODIS Burnt Area)"><img src="image/2026-06-philippines-manila/03-render-output/maps/burnt_area.png" data-ref-parent="fig-fwi" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-burnt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) History of Fire (MODIS Burnt Area)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-fwi" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-fwi-chart" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fwi-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/plots/nasa-fwi.png" class="lightbox" data-gallery="fig-fwi" title="Figure&nbsp;15.14&nbsp;(b): Fire Weather Index"><img src="image/2026-06-philippines-manila/03-render-output/plots/nasa-fwi.png" data-ref-parent="fig-fwi" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fwi-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Fire Weather Index
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-fwi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;15.14
+</figcaption>
+</figure>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Measurement</th>
+<th>Units</th>
+<th>Source</th>
+<th>Release Year</th>
+<th>Years of Data</th>
+<th>Coverage</th>
+<th>Resolution</th>
+<th>Task</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>GlobFire (MODIS MCD64A1)</td>
+<td>Historical fire event centroids with date, size, and satellite source</td>
+<td>Date, area (ha)</td>
+<td><a href="https://www.globalfiredata.org/">GlobFire / University of Maryland</a></td>
+<td>Ongoing</td>
+<td>2001–2020</td>
+<td>Global</td>
+<td>~500m</td>
+<td><a href="../tasks/burned_area/">tasks/burned_area/</a></td>
+</tr>
+<tr class="even">
+<td>Global Fire Weather Database (GFWED)</td>
+<td>NASA GEOS-5 daily FWI resampled to weekly 95th percentile</td>
+<td>Unitless</td>
+<td><a href="https://data.giss.nasa.gov/impacts/gfwed/">NASA GFWED</a></td>
+<td>2015</td>
+<td>2016–2021</td>
+<td>Global</td>
+<td>0.5° × 2/3°</td>
+<td><a href="../tasks/fwi/">tasks/fwi/</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>What is it?</strong></p>
+<p>Two complementary fire risk indicators:</p>
+<ul>
+<li><p><strong>Historical Burnt Area</strong>: A map of fire event centroids from the GlobFire dataset, derived from MODIS MCD64A1 monthly burned area product. Each point represents a distinct fire event, showing where fires have historically occurred in and around the city.</p></li>
+<li><p><strong>Fire Weather Index (FWI)</strong>: A seasonal chart of the weekly 95th-percentile FWI from NASA’s GEOS-5 atmospheric reanalysis (2016–2021). The FWI combines fuel moisture, wind, and buildup index into a single measure of wildfire potential. Values are categorized as Very Low (&lt;5.2), Low (5.2–11.2), Moderate (11.2–21.3), High (21.3–38.0), Very High (38.0–50), and Extreme (&gt;50).</p></li>
+</ul>
+<p><strong>Why use it?</strong></p>
+<p>Wildfires are becoming more frequent and destructive globally, with climate-driven increases in temperature and drought extending fire seasons. The historical fire map shows where burning has occurred, which may reflect recurring ignition sources (agricultural clearing, power lines, dry grasslands) or seasonal fire corridors. The FWI chart reveals which months have the highest atmospheric potential for wildfire — a critical complement to burnability and drought maps, since not all high-FWI days result in fires.</p>
+<p><strong>How is this made?</strong></p>
+<p>For burnt area, GlobFire FlatGeobuf files are downloaded from a public GCS bucket for each month from 2001 to 2020, filtered to a 1-degree buffer around the AOI. Fire event records are compiled into a GeoPackage and CSV.</p>
+<p>For the FWI, NASA GEOS-5 daily FWI rasters are downloaded from GCS, clipped to the AOI, and a 95th-percentile value is extracted per week, then averaged across years to produce the seasonal FWI profile shown in the chart.</p>
+<p><strong>How should we interpret it?</strong></p>
+<p>The FWI is a relative index calibrated to local baseline conditions — months with higher values indicate relatively elevated fire weather risk. It captures atmospheric conditions only and does not account for vegetation availability, ignition sources, or fire management. FWI values must be interpreted locally: absolute values are not directly comparable between cities or regions. The historical fire map provides empirical grounding; the absence of fire events in a high-burnability area may reflect fire suppression, or simply that ignition conditions have not yet coincided with high fuel loads.</p>
+<p><strong>Under the hood</strong></p>
+<p>For burnt area, <a href="../tasks/burned_area/collection.py"><code>tasks/burned_area/collection.py</code></a> iterates over year-month combinations from 2001 to 2020, reading monthly GlobFire FlatGeobuf files from a public GCS bucket (<code>city-scan-global-public/globfire_fgb/</code>). Each file is read with <code>geopandas.read_file()</code> filtered to a bounding box 1° around the AOI. All records are compiled into a GeoDataFrame, saved as <code>{city}_globfire_centroids.gpkg</code> and a CSV equivalent. The burnt area map is rendered in R via <a href="../core/R/"><code>core/R/</code></a>.</p>
+<p>For the FWI, <a href="../tasks/fwi/collection.py"><code>tasks/fwi/collection.py</code></a> downloads daily NASA GEOS-5 FWI GeoTIFFs from GCS for the configured year range via GDAL <code>/vsicurl/</code>, clips each to the AOI, and assembles a dictionary keyed by date string. <a href="../tasks/fwi/analysis.py"><code>tasks/fwi/analysis.py</code></a> stacks all daily rasters along the time axis and computes a per-pixel 98.6th-percentile summary raster (<code>generate_nth_raster()</code>), plus a weekly 95th-percentile time series (<code>compute_weekly_percentiles()</code>). The seasonal FWI chart is rendered by <a href="../tasks/fwi/charts/index.qmd"><code>tasks/fwi/charts/index.qmd</code></a> with FWI risk category bands (Very Low through Extreme) as background shading.</p>
+<p><strong>Key outputs</strong></p>
+<ul>
+<li><code>mnt/{scan-id}/02-process-output/spatial/{city}_globfire_centroids.gpkg</code> — MODIS fire event centroids (GeoPackage)</li>
+<li><code>mnt/{scan-id}/02-process-output/tabular/{city}_globfire_centroids.csv</code> — fire event table (date, area, source)</li>
+<li><code>mnt/{scan-id}/02-process-output/spatial/{city}_fwi_{percentile}.tif</code> — FWI percentile raster</li>
+<li><code>mnt/{scan-id}/02-process-output/tabular/{city}_fwi_weekly_95.csv</code> — weekly 95th-percentile FWI values</li>
+<li><code>mnt/{scan-id}/03-render-output/maps/burnt_area.png</code> — historical fire event map</li>
+<li><code>mnt/{scan-id}/03-render-output/plots/nasa-fwi.png</code> — seasonal FWI chart</li>
+</ul>
+<p><strong>Source data citation</strong></p>
+<p><span class="citation" data-cites="globfireFWI_2015 gfwed_globfire">(<a href="references.html#ref-globfireFWI_2015" role="doc-biblioref">Field et al. 2015</a>; <a href="references.html#ref-gfwed_globfire" role="doc-biblioref">NASA Goddard Institute for Space Studies 2015</a>)</span></p>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-osmnx_2025" class="csl-entry" role="listitem">
+Boeing, Geoff. 2025. <span>“Modeling and Analyzing Urban Networks and Amenities with OSMnx.”</span> <em>Geographical Analysis</em> 57 (4): 567–77. https://doi.org/<a href="https://doi.org/10.1111/gean.70009">https://doi.org/10.1111/gean.70009</a>.
+</div>
+<div id="ref-brakenridgeGlobalActive" class="csl-entry" role="listitem">
+Brakenridge, G. R. n.d. <em>Global Active Archive of Large Flood Events</em>. Dartmouth Flood Observatory, University of Colorado. <a href="https://floodobservatory.colorado.edu/Archives/index.html">https://floodobservatory.colorado.edu/Archives/index.html</a>.
+</div>
+<div id="ref-esa2020ndmi" class="csl-entry" role="listitem">
+European Space Agency. 2020. <em>Normalized Difference Moisture Index</em>. Sentinel-2. Copernicus Data Space Ecosystem. <a href="https://documentation.dataspace.copernicus.eu/Data/SentinelMissions/Sentinel2.html">https://documentation.dataspace.copernicus.eu/Data/SentinelMissions/Sentinel2.html</a>.
+</div>
+<div id="ref-fathom2023global" class="csl-entry" role="listitem">
+Fathom. 2023. <em>Fathom-Global Flood Data (Version 2023)</em>. Fathom; Dataset. <a href="https://fathom.global">https://fathom.global</a>.
+</div>
+<div id="ref-globfireFWI_2015" class="csl-entry" role="listitem">
+Field, R. D., A. C. Spessa, N. A. Aziz, et al. 2015. <span>“Development of a <span>Global</span> <span>Fire</span> <span>Weather</span> <span>Database</span>.”</span> <em>Natural Hazards and Earth System Sciences</em> 15 (6): 1407–23. <a href="https://doi.org/10.5194/nhess-15-1407-2015">https://doi.org/10.5194/nhess-15-1407-2015</a>.
+</div>
+<div id="ref-gannon_global_2021" class="csl-entry" role="listitem">
+Gannon, Colin S, and Nik C Steinberg. 2021. <span>“A Global Assessment of Wildfire Potential Under Climate Change Utilizing <span>Keetch</span>-<span>Byram</span> Drought Index and Land Cover Classifications.”</span> <em>Environmental Research Communications</em> 3 (3): 035002. <a href="https://doi.org/10.1088/2515-7620/abd836">https://doi.org/10.1088/2515-7620/abd836</a>.
+</div>
+<div id="ref-fabdem2022" class="csl-entry" role="listitem">
+Hawker, Laurence, Peter Uhe, Luntadila Paulo, et al. 2022. <span>“<span>FABDEM</span> V1.2: A 30m Global Elevation Model That Excludes Buildings and Trees.”</span> In <em>Environmental Research Letters</em>. <a href="https://doi.org/10.1088/1748-9326/ac4d4f">https://doi.org/10.1088/1748-9326/ac4d4f</a>.
+</div>
+<div id="ref-gfwed_globfire" class="csl-entry" role="listitem">
+NASA Goddard Institute for Space Studies. 2015. <em>Global Fire Weather Database (<span>GFWED</span>)</em>. NASA GISS. <a href="https://data.giss.nasa.gov/impacts/gfwed/">https://data.giss.nasa.gov/impacts/gfwed/</a>.
+</div>
+<div id="ref-ncei_earthquake" class="csl-entry" role="listitem">
+National Geophysical Data Center / World Data Service (NGDC/WDS). n.d. <em><span>NCEI/WDS</span> Global Significant Earthquake Database</em>. NOAA National Centers for Environmental Information. <a href="https://doi.org/10.7289/V5TD9V7K">https://doi.org/10.7289/V5TD9V7K</a>.
+</div>
+<div id="ref-OpenStreetMap" class="csl-entry" role="listitem">
+OpenStreetMap contributors. 2017. <em><span class="nocase">Planet dump retrieved from https://planet.osm.org </span></em>.<a href=" https://www.openstreetmap.org " class="uri"> https://www.openstreetmap.org</a>.
+</div>
+<div id="ref-fathom_sampson2015high" class="csl-entry" role="listitem">
+Sampson, Christopher C., Andrew M. Smith, Paul D. Bates, Jeffrey C. Neal, Mark A. Trigg, and Jakob Zscheischler. 2015. <span>“A High-Resolution Global Flood Hazard Model.”</span> <em>Water Resources Research</em> 51 (9): 7352–69. <a href="https://doi.org/10.1002/2015WR016954">https://doi.org/10.1002/2015WR016954</a>.
+</div>
+<div id="ref-silva2023global" class="csl-entry" role="listitem">
+Silva, V., A. Calderon, M. Caruso, et al. 2023. <em>Global Earthquake Model (<span>GEM</span>) Seismic Risk Map (Version 2023.1)</em>. Zenodo. <a href="https://doi.org/10.5281/zenodo.8409623">https://doi.org/10.5281/zenodo.8409623</a>.
+</div>
+<div id="ref-stanley2017heuristic" class="csl-entry" role="listitem">
+Stanley, Thomas, and Dalia B. Kirschbaum. 2017. <span>“A Heuristic Approach to Global Landslide Susceptibility Mapping.”</span> <em>Natural Hazards</em> 87 (1): 145–64. <a href="https://doi.org/10.1007/s11069-017-2757-y">https://doi.org/10.1007/s11069-017-2757-y</a>.
+</div>
+<div id="ref-usgs_fdsn" class="csl-entry" role="listitem">
+U.S. Geological Survey. n.d. <em><span>FDSN</span> Earthquake Catalog</em>. USGS Earthquake Hazards Program. <a href="https://earthquake.usgs.gov/fdsnws/event/1/">https://earthquake.usgs.gov/fdsnws/event/1/</a>.
+</div>
+<div id="ref-zanaga_2021_ESA_Landcover" class="csl-entry" role="listitem">
+Zanaga, Daniele, Ruben Van De Kerchove, Wanda De Keersmaecker, et al. 2021. <span>“ESA WorldCover 10 m 2020 V100.”</span> Version v100. Zenodo, October. <a href="https://doi.org/10.5281/zenodo.5571936">https://doi.org/10.5281/zenodo.5571936</a>.
+</div>
+<div id="ref-zorn_2019_2583746" class="csl-entry" role="listitem">
+Zorn, Conrad, and Elco Koks. 2019. <span>“Global Liquefaction Susceptibility Map.”</span> Version 1. Zenodo, March. <a href="https://doi.org/10.5281/zenodo.2583746">https://doi.org/10.5281/zenodo.2583746</a>.
+</div>
+</div>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>See Zurich Insurance, <a href="https://www.zurich.com/knowledge/topics/flood-and-water-damage/three-common-types-of-flood">“Three Common Types of Flood”</a> for a concise overview of surface water and flash flood distinctions.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>The fuzzy gamma operator combines the probability that any of a set of events happen (the left term, analogous to a union) with the probability that all occur (the right term, analogous to an intersection), weighted by <span class="math inline">\(\gamma = 0.9\)</span>. Full form: <span class="math inline">\(\left(1 - \prod_{i}^{n} (1 - X_i)\right)^\gamma \cdot \left( \prod_{i}^{n} X_i \right)^{1-\gamma}\)</span>. See <a href="https://pro.arcgis.com/en/pro-app/latest/tool-reference/spatial-analyst/applying-fuzzy-logic-to-overlay-rasters.htm">Esri’s documentation on fuzzy overlay</a> for further explanation.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Kramer, Steven Lawrence. 1985. <a href="https://www.proquest.com/openview/bd9efecaff7df535c0654c9f582ed1ff/1">“Liquefaction of Sands Due to Non-seismic Loading.”</a> University of Washington.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>Johansson, Jörgen. 2000. <a href="https://depts.washington.edu/liquefy/html/how/how1.html">Soil Liquefaction</a>. University of Washington.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -800,8 +2371,8 @@ ul.task-list li input[type="checkbox"] {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./multi-analysis.html" class="pagination-link" aria-label="Multi-Analysis (Exposure Analysis) -- Placeholder">
-        <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Multi-Analysis (Exposure Analysis) – Placeholder</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./repo-structure.html" class="pagination-link" aria-label="Repository Structure">
+        <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Repository Structure</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -819,6 +2390,38 @@ ul.task-list li input[type="checkbox"] {
 </div>
   </div>
 </footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 

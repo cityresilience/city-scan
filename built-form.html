@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -23,7 +23,26 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -41,10 +60,13 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-b95cbf176b21d35b97d826ad6b6af685.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-0c4bb16d4a1e9fb2fb50ff9ab29e58a5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -255,12 +277,6 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Risk Identification</span></span></a>
   </div>
 </li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./multi-analysis.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Multi-Analysis (Exposure Analysis) – Placeholder</span></span></a>
-  </div>
-</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -275,13 +291,13 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./repo-structure.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Repository Structure</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Repository Structure</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./task-dependency.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Orchestration Dependency Graph</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Orchestration Dependency Graph</span></span></a>
   </div>
 </li>
       </ul>
@@ -298,13 +314,13 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./case-standard-rabat.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Case Study: Standard Scan — Rabat, Morocco</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Case Study: Standard Scan — Rabat, Morocco</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./case-multiple-philippines.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Case Study: Multiple Scans — Philippines</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Case Study: Multiple Scans — Philippines</span></span></a>
   </div>
 </li>
       </ul>
@@ -321,31 +337,31 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./git-guide.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Git Guide</span></span></a>
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Git Guide</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./reporting-issues.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Reporting Issues</span></span></a>
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Reporting Issues</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./contributing.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Contributing</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Contributing</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./sharing-the-guide.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Sharing the Guide</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Sharing the Guide</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./editing-this-reference.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Editing This Reference</span></span></a>
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Editing This Reference</span></span></a>
   </div>
 </li>
       </ul>
@@ -361,8 +377,19 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview"><span class="header-section-number">13.1</span> Overview</a></li>
+  <li><a href="#urban-extent-and-change-wsf" id="toc-urban-extent-and-change-wsf" class="nav-link" data-scroll-target="#urban-extent-and-change-wsf"><span class="header-section-number">13.2</span> Urban Extent and Change (WSF)</a></li>
+  <li><a href="#land-cover" id="toc-land-cover" class="nav-link" data-scroll-target="#land-cover"><span class="header-section-number">13.3</span> Land Cover</a></li>
+  <li><a href="#road-network-and-orientation" id="toc-road-network-and-orientation" class="nav-link" data-scroll-target="#road-network-and-orientation"><span class="header-section-number">13.4</span> Road Network and Orientation</a></li>
+  <li><a href="#intersection-density" id="toc-intersection-density" class="nav-link" data-scroll-target="#intersection-density"><span class="header-section-number">13.5</span> Intersection Density</a></li>
+  <li><a href="#accessibility-to-education-healthcare" id="toc-accessibility-to-education-healthcare" class="nav-link" data-scroll-target="#accessibility-to-education-healthcare"><span class="header-section-number">13.6</span> Accessibility to Education &amp; Healthcare</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -386,11 +413,738 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sagittis posuere ligula sit amet lacinia. Duis dignissim pellentesque magna, rhoncus congue sapien finibus mollis. Ut eu sem laoreet, vehicula ipsum in, convallis erat. Vestibulum magna sem, blandit pulvinar augue sit amet, auctor malesuada sapien. Nullam faucibus leo eget eros hendrerit, non laoreet ipsum lacinia. Curabitur cursus diam elit, non tempus ante volutpat a. Quisque hendrerit blandit purus non fringilla. Integer sit amet elit viverra ante dapibus semper. Vestibulum viverra rutrum enim, at luctus enim posuere eu. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
-<p>Nunc ac dignissim magna. Vestibulum vitae egestas elit. Proin feugiat leo quis ante condimentum, eu ornare mauris feugiat. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Mauris cursus laoreet ex, dignissim bibendum est posuere iaculis. Suspendisse et maximus elit. In fringilla gravida ornare. Aenean id lectus pulvinar, sagittis felis nec, rutrum risus. Nam vel neque eu arcu blandit fringilla et in quam. Aliquam luctus est sit amet vestibulum eleifend. Phasellus elementum sagittis molestie. Proin tempor lorem arcu, at condimentum purus volutpat eu. Fusce et pellentesque ligula. Pellentesque id tellus at erat luctus fringilla. Suspendisse potenti.</p>
-<p>Etiam maximus accumsan gravida. Maecenas at nunc dignissim, euismod enim ac, bibendum ipsum. Maecenas vehicula velit in nisl aliquet ultricies. Nam eget massa interdum, maximus arcu vel, pretium erat. Maecenas sit amet tempor purus, vitae aliquet nunc. Vivamus cursus urna velit, eleifend dictum magna laoreet ut. Duis eu erat mollis, blandit magna id, tincidunt ipsum. Integer massa nibh, commodo eu ex vel, venenatis efficitur ligula. Integer convallis lacus elit, maximus eleifend lacus ornare ac. Vestibulum scelerisque viverra urna id lacinia. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Aenean eget enim at diam bibendum tincidunt eu non purus. Nullam id magna ultrices, sodales metus viverra, tempus turpis.</p>
+<section id="overview" class="level2" data-number="13.1">
+<h2 data-number="13.1" class="anchored" data-anchor-id="overview"><span class="header-section-number">13.1</span> Overview</h2>
+<p>This section examines the city’s built environment by analyzing its spatial extent and expansion over time, land cover composition, road network orientation and connectivity, intersection density, and accessibility to schools and healthcare facilities. Together these layers provide a foundation for understanding how the city has grown, how its land is used, and how well it is connected internally.</p>
+<hr>
+<p><strong>Data Sources</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 41%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Summary</th>
+<th>Measurement</th>
+<th>Units</th>
+<th>Coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>WSF® Evolution</td>
+<td>Global settlement footprint at 30m resolution showing when land was first urbanized, from 1985 to 2015</td>
+<td>Year of urban expansion</td>
+<td>Year (integer)</td>
+<td>1985–2015; Global</td>
+</tr>
+<tr class="even">
+<td>WSF® Tracker</td>
+<td>Higher-resolution, more recent settlement footprint tracking urban growth from mid-2016 onward, available under private GCS access</td>
+<td>Year of urban expansion</td>
+<td>Fractional year (6-month intervals)</td>
+<td>July 2016–July 2025; Global</td>
+</tr>
+<tr class="odd">
+<td>WSF® Harmonized</td>
+<td>Combined dataset merging WSF Evolution and WSF Tracker into a single continuous 1985–2025 time series using a spatial backdating algorithm</td>
+<td>Year of urban expansion</td>
+<td>Year</td>
+<td>1985–2025; Global</td>
+</tr>
+<tr class="even">
+<td>ESA WorldCover (v2.0)</td>
+<td>Global 10m land cover product for 2021, classifying the earth’s surface into 11 land cover types</td>
+<td>Land cover class</td>
+<td>Categorical (11 classes)</td>
+<td>2021; Global</td>
+</tr>
+<tr class="odd">
+<td>OpenStreetMap (OSMnx)</td>
+<td>Street network and points of interest extracted from OpenStreetMap</td>
+<td>Road network geometry, POI locations</td>
+<td>—</td>
+<td>Global; extracted at time of analysis</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><strong>Relevant Tasks</strong></p>
+<pre><code>tasks/
+├── wsf/             — WSF Evolution, Tracker, and Harmonized rasters (Python)
+├── landcover/       — ESA WorldCover land cover raster (GEE via Python)
+├── slope/           — Terrain slope derived from elevation (Python)
+└── accessibility/   — Road network, intersection density, and proximity to services (OSMnx, Python)</code></pre>
+<hr>
+<p><strong>Relevant Outputs</strong></p>
+<pre><code>mnt/{scan-id}/
+├── 02-process-output/
+│   ├── spatial/
+│   │   ├── {city}_wsf_evolution.tif             — year of urbanization, 1985–2015 (30m)
+│   │   ├── {city}_wsf_tracker.tif               — year of urbanization, 2016–2025 (10m, 6-month steps)
+│   │   ├── {city}_wsf_harmonized.tif            — year of urbanization, 1985–2025 (harmonized)
+│   │   ├── {city}_lc.tif                        — land cover classes (10m, categorical)
+│   │   ├── {city}_network.graphml               — road network graph (OSMnx)
+│   │   ├── {city}_nodes_and_edges.gpkg          — road network nodes and edges (GeoPackage)
+│   │   ├── {city}_nodes_and_edges_centralities.gpkg — nodes and edges with centrality measures
+│   │   ├── {city}_nodes_and_edges_accessibilities.gpkg — network with accessibility distances
+│   │   ├── {city}_school_isochrone.gpkg         — school proximity isochrones
+│   │   ├── {city}_health_isochrone.gpkg         — healthcare proximity isochrones
+│   │   ├── {city}_osm_school.gpkg               — school POI locations from OSM
+│   │   ├── {city}_osm_health.gpkg               — health facility POI locations from OSM
+│   │   └── {city}_major_roads.gpkg              — primary, trunk, and motorway road segments
+│   └── tabular/
+│       ├── {city}_wsf_evolution.csv             — cumulative built-up area by year (1985–2015)
+│       ├── {city}_wsf_tracker.csv               — cumulative built-up area by year-month (2016–2025)
+│       ├── {city}_wsf_harmonized.csv            — harmonized cumulative area by year and source
+│       ├── {city}_lc.csv                        — land cover pixel counts by class
+│       └── {city}_network_stats.csv             — basic road network statistics
+└── 03-render-output/
+    ├── maps/
+    │   ├── wsf.png                              — WSF Evolution choropleth (1985–2015)
+    │   ├── wsf_tracker.png                      — WSF Tracker choropleth (2016–2025)
+    │   ├── wsf_harmonized.png                   — WSF Harmonized choropleth (1985–2025)
+    │   ├── land_cover.png                       — land cover classification map
+    │   ├── intersections.png                    — intersection density raster map
+    │   ├── school_points.png                    — school locations map
+    │   ├── school_proximity.png                 — school proximity isochrone map
+    │   ├── health_points.png                    — health facility locations map
+    │   └── health_proximity.png                 — healthcare proximity isochrone map
+    └── plots/
+        ├── wsf-uba-plot.png                     — WSF Evolution cumulative built-up area chart
+        ├── wsf-uba-tracker-plot.png             — WSF Tracker built-up area chart
+        ├── wsf-uba-harmonized-plot.png          — WSF Harmonized built-up area chart
+        ├── wsf-uba-separate-plot.png            — Evolution vs. Tracker sources comparison chart
+        ├── wsf-growth-rate-plot.png             — Urban growth rate chart (3-year average)
+        └── wsf-lc-pieplot.png                   — Land cover composition donut chart</code></pre>
+<hr>
+</section>
+<section id="urban-extent-and-change-wsf" class="level2" data-number="13.2">
+<h2 data-number="13.2" class="anchored" data-anchor-id="urban-extent-and-change-wsf"><span class="header-section-number">13.2</span> Urban Extent and Change (WSF)</h2>
+<!-- chart examples -->
+<div id="fig-wsf-evo" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-wsf-evo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-wsf-evo" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-map" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-map-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/wsf.png" class="lightbox" data-gallery="fig-wsf-evo" title="Figure&nbsp;13.1&nbsp;(a): Urban Extent Growth (Map - WSF Evolution)"><img src="image/2026-06-philippines-manila/03-render-output/maps/wsf.png" data-ref-parent="fig-wsf-evo" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-map-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Urban Extent Growth (Map - WSF Evolution)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-wsf-evo" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-chart" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/plots/wsf-uba-plot.png" class="lightbox" data-gallery="fig-wsf-evo" title="Figure&nbsp;13.1&nbsp;(b): Urban Extent Growth (Chart - WSF Evolution)"><img src="image/2026-06-philippines-manila/03-render-output/plots/wsf-uba-plot.png" data-ref-parent="fig-wsf-evo" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Urban Extent Growth (Chart - WSF Evolution)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-wsf-evo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13.1: WSF Evolution
+</figcaption>
+</figure>
+</div>
+<div id="fig-wsf-tracker" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-wsf-tracker-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-wsf-tracker" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-map" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-map-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/wsf_tracker.png" class="lightbox" data-gallery="fig-wsf-tracker" title="Figure&nbsp;13.2&nbsp;(a): Urban Extent Growth (Map - WSF Tracker)"><img src="image/2026-06-philippines-manila/03-render-output/maps/wsf_tracker.png" data-ref-parent="fig-wsf-tracker" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-map-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Urban Extent Growth (Map - WSF Tracker)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-wsf-tracker" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-chart" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/plots/wsf-uba-tracker-plot.png" class="lightbox" data-gallery="fig-wsf-tracker" title="Figure&nbsp;13.2&nbsp;(b): Urban Extent Growth (Chart - WSF Tracker)"><img src="image/2026-06-philippines-manila/03-render-output/plots/wsf-uba-tracker-plot.png" data-ref-parent="fig-wsf-tracker" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Urban Extent Growth (Chart - WSF Tracker)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-wsf-tracker-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13.2: WSF Tracker
+</figcaption>
+</figure>
+</div>
+<div id="fig-wsf-harmonized" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-wsf-harmonized-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-wsf-harmonized" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-map" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-map-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/wsf_harmonized.png" class="lightbox" data-gallery="fig-wsf-harmonized" title="Figure&nbsp;13.3&nbsp;(a): Urban Extent Growth (Map - WSF Harmonized)"><img src="image/2026-06-philippines-manila/03-render-output/maps/wsf_harmonized.png" data-ref-parent="fig-wsf-harmonized" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-map-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Urban Extent Growth (Map - WSF Harmonized)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-wsf-harmonized" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-chart" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/plots/wsf-uba-harmonized-plot.png" class="lightbox" data-gallery="fig-wsf-harmonized" title="Figure&nbsp;13.3&nbsp;(b): Urban Extent Growth (Chart - WSF Harmonized"><img src="image/2026-06-philippines-manila/03-render-output/plots/wsf-uba-harmonized-plot.png" data-ref-parent="fig-wsf-harmonized" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Urban Extent Growth (Chart - WSF Harmonized
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-wsf-harmonized" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-chart-separate" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-chart-separate-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/plots/wsf-uba-separate-plot.png" class="lightbox" data-gallery="fig-wsf-harmonized" title="Figure&nbsp;13.3&nbsp;(c): Urban Extent Growth (Chart - sources comparison"><img src="image/2026-06-philippines-manila/03-render-output/plots/wsf-uba-separate-plot.png" data-ref-parent="fig-wsf-harmonized" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-chart-separate-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) Urban Extent Growth (Chart - sources comparison
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-wsf-harmonized" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-chart-growth" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-chart-growth-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/plots/wsf-growth-rate-plot.png" class="lightbox" data-gallery="fig-wsf-harmonized" title="Figure&nbsp;13.3&nbsp;(d): Urban Extent Growth Rate (Chart - WSF Harmonized)"><img src="image/2026-06-philippines-manila/03-render-output/plots/wsf-growth-rate-plot.png" data-ref-parent="fig-wsf-harmonized" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-chart-growth-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(d) Urban Extent Growth Rate (Chart - WSF Harmonized)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-wsf-harmonized-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13.3: WSF Harmonized
+</figcaption>
+</figure>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Measurement</th>
+<th>Units</th>
+<th>Source</th>
+<th>Release Year</th>
+<th>Years of Data</th>
+<th>Coverage</th>
+<th>Resolution</th>
+<th>Task</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>WSF® Evolution</td>
+<td>Year of urban expansion</td>
+<td>Year</td>
+<td><a href="https://geoservice.dlr.de/web/datasets/wsf_evo">DLR</a></td>
+<td>2019</td>
+<td>1985–2015</td>
+<td>Global</td>
+<td>30m</td>
+<td><a href="../tasks/wsf/">tasks/wsf/</a></td>
+</tr>
+<tr class="even">
+<td>WSF® Tracker</td>
+<td>Year of urban expansion</td>
+<td>Fractional year (6-month steps)</td>
+<td>DLR (private GCS bucket)</td>
+<td>Pre-release</td>
+<td>July 2016–July 2025</td>
+<td>Global</td>
+<td>10m</td>
+<td><a href="../tasks/wsf/">tasks/wsf/</a></td>
+</tr>
+<tr class="odd">
+<td>WSF® Harmonized</td>
+<td>Year of urban expansion</td>
+<td>Year</td>
+<td>Derived from WSF Evolution + Tracker</td>
+<td>—</td>
+<td>1985–2025</td>
+<td>Global</td>
+<td>30m</td>
+<td><a href="../tasks/wsf/">tasks/wsf/</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>What is it?</strong></p>
+<p>Three complementary views of when land was urbanized. WSF Evolution (1985–2015, 30m) provides the historical baseline, showing the year each pixel first became a settled area using Landsat imagery. WSF Tracker (2016–2025, 10m) extends the record into the present using Sentinel-2, at higher spatial resolution and 6-month temporal granularity. WSF Harmonized combines both sources into a single seamless 1985–2025 time series using a spatial backdating algorithm that reconciles the different resolutions and sensors.</p>
+<p>The cumulative built-up area charts translate the raster data into a time series of total urban footprint (in km²), summarizing how quickly the city has grown over each period.</p>
+<p><strong>Why use it?</strong></p>
+<p>Understanding where and when urban expansion occurred has direct implications for infrastructure planning, service delivery, and resilience. Areas urbanized decades ago are likely to have older building stock and may have been built before modern land use or building codes. Rapid recent expansion may indicate informal settlement growth or peri-urban sprawl. The harmonized dataset’s 40-year continuous record enables analysis of long-term urbanization trajectories and changes in the rate of urban growth.</p>
+<p><strong>How is this made?</strong></p>
+<p>WSF Evolution was produced by the German Aerospace Center (DLR) using an iterative machine-learning approach trained on Landsat imagery, generating yearly settlement extents from 1985 to 2015. WSF Tracker uses Sentinel-2 at 10m with 6-month composites. The City Scan harmonization pipeline resamples the Tracker to 30m using modal resampling, identifies pixels that appear as 2016 settlements in the Tracker but are absent from the Evolution dataset, and uses Euclidean distance transform-based backdating to assign them plausible pre-2016 urbanization years from the nearest confirmed Evolution pixel. The remaining 2016-and-later pixels retain their Tracker year. Per-year cumulative built-up area statistics are computed in square kilometers.</p>
+<p><strong>How should we interpret it?</strong></p>
+<p>The maps display urbanization epochs in 5-year or 10-year ranges, revealing spatial-temporal patterns of growth. Areas shown as “Before 1986” on the Evolution map were already urbanized at the start of the record and represent the established historic core. Comparing Evolution and Tracker in the harmonized chart reveals whether the pace of urbanization has accelerated or slowed since 2016. Note that WSF does not track land that transitions back from urban to non-urban (rare but possible), and WSF Tracker tiles require private GCS access and may not be available in all deployment environments.</p>
+<p><strong>Under the hood</strong></p>
+<p><a href="../tasks/wsf/collection.py"><code>tasks/wsf/collection.py</code></a> downloads 2-degree tiles: WSF Evolution tiles from DLR’s public GeoService, and WSF Tracker tiles from a private GCS bucket (<code>/vsigs/city-scan-global-private/wsf_tracker</code>). Tiles are merged and clipped to the AOI. For WSF Tracker, integer mode values are converted to fractional years (mode value <code>i</code> → year <code>2016.0 + i × 0.5</code>). Harmonization is handled by <code>harmonize_wsf()</code> in <a href="../tasks/wsf/analysis.py"><code>tasks/wsf/analysis.py</code></a>, which uses <code>scipy.ndimage.distance_transform_edt</code> for backdating and auto-calibrates the distance threshold at the 90th percentile of disputed-pixel distances. Cumulative area statistics are computed per year and source. Charts are rendered in R via <a href="../tasks/wsf/charts/"><code>tasks/wsf/charts/</code></a>.</p>
+<p><strong>Key outputs</strong></p>
+<ul>
+<li><code>mnt/{scan-id}/02-process-output/spatial/{city}_wsf_evolution.tif</code> — year of urbanization, 1985–2015 (30m)</li>
+<li><code>mnt/{scan-id}/02-process-output/spatial/{city}_wsf_tracker.tif</code> — year of urbanization, 2016–2025 (10m, fractional years)</li>
+<li><code>mnt/{scan-id}/02-process-output/spatial/{city}_wsf_harmonized.tif</code> — harmonized year of urbanization, 1985–2025</li>
+<li><code>mnt/{scan-id}/02-process-output/tabular/{city}_wsf_evolution.csv</code> — cumulative built-up area by year (1985–2015)</li>
+<li><code>mnt/{scan-id}/02-process-output/tabular/{city}_wsf_tracker.csv</code> — cumulative built-up area by year and month (2016–2025)</li>
+<li><code>mnt/{scan-id}/02-process-output/tabular/{city}_wsf_harmonized.csv</code> — harmonized cumulative area with source column</li>
+<li><code>mnt/{scan-id}/03-render-output/plots/wsf-uba-plot.png</code> — WSF Evolution built-up area chart</li>
+<li><code>mnt/{scan-id}/03-render-output/plots/wsf-uba-tracker-plot.png</code> — WSF Tracker built-up area chart</li>
+<li><code>mnt/{scan-id}/03-render-output/plots/wsf-uba-harmonized-plot.png</code> — WSF Harmonized cumulative area chart</li>
+<li><code>mnt/{scan-id}/03-render-output/plots/wsf-growth-rate-plot.png</code> — urban growth rate chart (3-year rolling average)</li>
+</ul>
+<p><strong>Source data citation</strong></p>
+<p><span class="citation" data-cites="marconcini_understanding_2021">(<a href="references.html#ref-marconcini_understanding_2021" role="doc-biblioref">Marconcini et al. 2021</a>)</span></p>
+<hr>
+</section>
+<section id="land-cover" class="level2" data-number="13.3">
+<h2 data-number="13.3" class="anchored" data-anchor-id="land-cover"><span class="header-section-number">13.3</span> Land Cover</h2>
+<!-- chart examples -->
+<div id="fig-lc" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-lc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-lc" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-map" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-map-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/land_cover.png" class="lightbox" data-gallery="fig-lc" title="Figure&nbsp;13.4&nbsp;(a): Land Cover (Map)"><img src="image/2026-06-philippines-manila/03-render-output/maps/land_cover.png" data-ref-parent="fig-lc" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-map-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Land Cover (Map)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-lc" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-chart" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/plots/wsf-lc-pieplot.png" class="lightbox" data-gallery="fig-lc" title="Figure&nbsp;13.4&nbsp;(b): Land Cover (Chart)"><img src="image/2026-06-philippines-manila/03-render-output/plots/wsf-lc-pieplot.png" data-ref-parent="fig-lc" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Land Cover (Chart)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-lc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13.4
+</figcaption>
+</figure>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Measurement</th>
+<th>Units</th>
+<th>Source</th>
+<th>Release Year</th>
+<th>Years of Data</th>
+<th>Coverage</th>
+<th>Resolution</th>
+<th>Task</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>ESA WorldCover v2.0</td>
+<td>Land cover class</td>
+<td>Categorical (11 classes)</td>
+<td><a href="https://esa-worldcover.org/en">European Space Agency</a></td>
+<td>2021</td>
+<td>2021</td>
+<td>Global</td>
+<td>10m</td>
+<td><a href="../tasks/landcover/">tasks/landcover/</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>What is it?</strong></p>
+<p>A land cover classification of the city AOI at 10m resolution, derived from the ESA WorldCover v2.0 dataset for 2021. Each pixel is assigned one of 11 land cover classes: Tree cover, Shrubland, Grassland, Cropland, Built-up, Bare/sparse vegetation, Snow and ice, Permanent water bodies, Herbaceous wetland, Mangroves, and Moss and lichen. The companion donut chart shows the proportional area of each land cover class within the AOI.</p>
+<p><strong>Why use it?</strong></p>
+<p>Land cover composition reveals how the city’s territory is divided between urban, natural, agricultural, and water areas. Understanding these proportions supports sustainable planning — identifying opportunities to protect green corridors, expand urban greenery, or assess flood risk from impervious surface coverage. Land cover also serves as a cross-reference for WSF urbanized area estimates: built-up pixels from ESA WorldCover and WSF settle surfaces should broadly align, but differences arise from varying definitions of “urban.”</p>
+<p><strong>How is this made?</strong></p>
+<p>ESA WorldCover was produced by the European Space Agency using Sentinel-1 and Sentinel-2 data, trained against the UN FAO Land Cover Classification System. The City Scan pipeline retrieves the <code>ESA/WorldCover/v200</code> collection via Google Earth Engine, repins the raster to EPSG:3857 at 10m to preserve categorical pixel codes, and saves a clipped GeoTIFF. A post-processing step snaps any residual fractional values to the nearest valid ESA class code (10, 20, 30, …, 100).</p>
+<p><strong>How should we interpret it?</strong></p>
+<p>Built-up cover indicates the share of impervious or developed land, while tree cover and grassland reflect the extent of green and natural areas. A high built-up share with limited tree cover may indicate urban heat island risk. Cropland on the urban fringe signals agricultural land potentially under pressure from urbanization. Because ESA WorldCover is based on satellite reflectance signatures and not cadastral data, some misclassifications occur — dense shade trees may be confused with forest cover, and bare construction sites may be classified as bare soil rather than built-up.</p>
+<p><strong>Under the hood</strong></p>
+<p><a href="../tasks/landcover/collection.py"><code>tasks/landcover/collection.py</code></a> fetches <code>ESA/WorldCover/v200</code> from Google Earth Engine, reprojects to EPSG:3857 at 10m with nearest-neighbor resampling to preserve categorical values, and clips to the AOI. After export, pixel values are snapped to the valid ESA class code set. <a href="../tasks/landcover/analysis.py"><code>tasks/landcover/analysis.py</code></a> reads the raster in blocks using windowed reads, counts pixels per class, and writes <code>{city}_lc.csv</code>. The land cover map is rendered in R via <a href="../core/R/"><code>core/R/</code></a> using the <code>land_cover</code> layer definition in <a href="../source/layers.yml"><code>source/layers.yml</code></a>. The composition chart is produced in <a href="../tasks/landcover/charts/"><code>tasks/landcover/charts/</code></a>.</p>
+<p><strong>Key outputs</strong></p>
+<ul>
+<li><code>mnt/{scan-id}/02-process-output/spatial/{city}_lc.tif</code> — land cover raster (10m, categorical)</li>
+<li><code>mnt/{scan-id}/02-process-output/tabular/{city}_lc.csv</code> — pixel count per land cover class</li>
+<li><code>mnt/{scan-id}/03-render-output/maps/land_cover.png</code> — land cover classification map</li>
+<li><code>mnt/{scan-id}/03-render-output/plots/wsf-lc-pieplot.png</code> — land cover composition donut chart</li>
+</ul>
+<p><strong>Source data citation</strong></p>
+<p><span class="citation" data-cites="zanaga_2021_ESA_Landcover">(<a href="references.html#ref-zanaga_2021_ESA_Landcover" role="doc-biblioref">Zanaga et al. 2021</a>)</span></p>
+</section>
+<section id="road-network-and-orientation" class="level2" data-number="13.4">
+<h2 data-number="13.4" class="anchored" data-anchor-id="road-network-and-orientation"><span class="header-section-number">13.4</span> Road Network and Orientation</h2>
+<!-- chart examples -->
+<div id="fig-road" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-road-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-road" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-map" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-map-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/plots/manila_network_plot.png" class="lightbox" data-gallery="fig-road" title="Figure&nbsp;13.5&nbsp;(a): Road Network (Map)"><img src="image/2026-06-philippines-manila/03-render-output/plots/manila_network_plot.png" data-ref-parent="fig-road" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-map-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Road Network (Map)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-road" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-chart" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/plots/manila_road_orientation.png" class="lightbox" data-gallery="fig-road" title="Figure&nbsp;13.5&nbsp;(b): Road Network Orientation (Chart)"><img src="image/2026-06-philippines-manila/03-render-output/plots/manila_road_orientation.png" data-ref-parent="fig-road" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Road Network Orientation (Chart)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-road-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13.5: Road Network
+</figcaption>
+</figure>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Measurement</th>
+<th>Units</th>
+<th>Source</th>
+<th>Release Year</th>
+<th>Years of Data</th>
+<th>Coverage</th>
+<th>Resolution</th>
+<th>Task</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>OpenStreetMap</td>
+<td>Road network geometry</td>
+<td>—</td>
+<td><a href="https://geoffboeing.com/2016/11/osmnx-python-street-networks/">OSM via OSMnx</a></td>
+<td>Ongoing</td>
+<td>Current snapshot</td>
+<td>Global</td>
+<td>—</td>
+<td><a href="../tasks/accessibility/">tasks/accessibility/</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>What is it?</strong></p>
+<p>A visualization of the city’s road network and a polar histogram (compass rose) showing the distribution of street bearings. Each bar in the orientation chart represents the proportion of street segments pointing in that compass direction, revealing the dominant orientations of the road grid. The road network map shows all OSM-mapped streets extracted for the city, buffered 5km beyond the AOI boundary.</p>
+<p><strong>Why use it?</strong></p>
+<p>Street network structure has long-term consequences for mobility, walkability, and urban resilience. A grid-dominated orientation provides route redundancy, shorter average travel distances, and more equitable access to destinations on foot or by vehicle. An organic, heterogeneous orientation reflects topography-driven or historically unplanned growth and may concentrate traffic on a limited set of routes. Understanding the road network structure informs infrastructure investment priorities, evacuation planning, and transport network resilience assessments.</p>
+<p><strong>How is this made?</strong></p>
+<p>The road network is extracted from OpenStreetMap using OSMnx with a 5km buffer around the AOI (<code>network_type='all'</code>). The graph is saved as both a GeoPackage (nodes and edges) and a GraphML file for fast reloading. Edge bearings are computed using <code>ox.add_edge_bearings()</code> on the undirected graph, and OSMnx’s <code>plot_orientation()</code> generates the compass rose. A road network map is produced via <code>ox.plot_graph()</code>. Major roads (primary, trunk, motorway, and their links) are filtered into a separate GeoPackage.</p>
+<p><strong>How should we interpret it?</strong></p>
+<p>Cities built with grid-based urban planning exhibit a clear cross pattern in the compass rose, with most street bearings clustered around two perpendicular axes (e.g., Manhattan). A circular distribution with no dominant orientation reflects organic urban form, where streets follow terrain, water, or historical paths rather than a planned grid. Intermediate patterns are common in cities where a historic organic core coexists with newer planned extensions. The network map also reveals gaps — areas with sparse coverage may indicate informal settlements not yet mapped in OSM, or zones with restricted access.</p>
+<p><strong>Under the hood</strong></p>
+<p><a href="../tasks/accessibility/collection.py"><code>tasks/accessibility/collection.py</code></a> downloads the graph via <code>ox.graph_from_polygon()</code>, buffering the AOI by 5km. The graph is saved as a GeoPackage and GraphML. Major roads are filtered from the edges layer using keywords (<code>primary</code>, <code>trunk</code>, <code>motorway</code>, etc.) in the <code>highway</code> attribute. The road network visualization is produced by <code>network_plot()</code> and the orientation chart by <code>road_orientation()</code>, both in <a href="../tasks/accessibility/analysis.py"><code>tasks/accessibility/analysis.py</code></a>. Network statistics (node count, edge count, average node degree, circuity, etc.) are computed using <code>ox.stats.basic_stats()</code> and saved to <code>{city}_network_stats.csv</code>.</p>
+<p><strong>Key outputs</strong></p>
+<ul>
+<li><code>mnt/{scan-id}/02-process-output/spatial/{city}_network.graphml</code> — road network graph (for analysis reuse)</li>
+<li><code>mnt/{scan-id}/02-process-output/spatial/{city}_nodes_and_edges.gpkg</code> — nodes and edges (GeoPackage)</li>
+<li><code>mnt/{scan-id}/02-process-output/spatial/{city}_major_roads.gpkg</code> — primary, trunk, and motorway segments</li>
+<li><code>mnt/{scan-id}/02-process-output/tabular/{city}_network_stats.csv</code> — basic network statistics</li>
+<li><code>mnt/{scan-id}/02-process-output/images/{city}_network_plot.png</code> — road network visualization</li>
+<li><code>mnt/{scan-id}/02-process-output/images/{city}_road_orientation.png</code> — street orientation compass rose</li>
+</ul>
+<p><strong>Source data citation</strong></p>
+<p><span class="citation" data-cites="OpenStreetMap Boeing_2019 osmnx_2025">(<a href="references.html#ref-OpenStreetMap" role="doc-biblioref">OpenStreetMap contributors 2017</a>; <a href="references.html#ref-Boeing_2019" role="doc-biblioref">Boeing 2019</a>, <a href="references.html#ref-osmnx_2025" role="doc-biblioref">2025</a>)</span></p>
+</section>
+<section id="intersection-density" class="level2" data-number="13.5">
+<h2 data-number="13.5" class="anchored" data-anchor-id="intersection-density"><span class="header-section-number">13.5</span> Intersection Density</h2>
+<!-- chart examples -->
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-intersections" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-intersections-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/intersections.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13" title="Figure&nbsp;13.6: Intersection density map"><img src="image/2026-06-philippines-manila/03-render-output/maps/intersections.png" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-intersections-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13.6: Intersection density map
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Measurement</th>
+<th>Units</th>
+<th>Source</th>
+<th>Release Year</th>
+<th>Years of Data</th>
+<th>Coverage</th>
+<th>Resolution</th>
+<th>Task</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>OpenStreetMap</td>
+<td>Road intersection count per km²</td>
+<td>Intersections per km²</td>
+<td><a href="https://geoffboeing.com/2016/11/osmnx-python-street-networks/">OSM via OSMnx</a></td>
+<td>Ongoing</td>
+<td>Current snapshot</td>
+<td>Global</td>
+<td>—</td>
+<td><a href="../tasks/accessibility/">tasks/accessibility/</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>What is it?</strong></p>
+<p>A raster map showing the density of road intersections per square kilometer, derived from the OSM road network. Each cell represents how many intersections fall within a surrounding 1km² kernel, revealing where the network is most connected and accessible.</p>
+<p><strong>Why use it?</strong></p>
+<p>Intersection density is a direct measure of street network connectivity. Dense intersection patterns indicate fine-grained grids with many route options, supporting walking, cycling, and vehicle movement. Low intersection density — typically associated with cul-de-sac suburban layouts or underserved areas — forces longer travel distances and reduces route choice. Higher intersection density is associated with more walkable neighborhoods, lower vehicle-miles traveled, and more efficient emergency response.</p>
+<p><strong>How is this made?</strong></p>
+<p>Intersection nodes are extracted from the OSM road network graph (nodes with degree &gt; 2). These point features are passed to <code>density_rast()</code> in <a href="../core/R/fns-geometry.R"><code>core/R/fns-geometry.R</code></a>, which rasterizes the point density at 200 cells across the AOI extent and writes <code>intersection-density.tif</code>. The map is rendered in R via <a href="../core/R/map-intersections.R"><code>core/R/map-intersections.R</code></a> using the <code>intersections</code> layer definition in <a href="../source/layers.yml"><code>source/layers.yml</code></a>.</p>
+<p><strong>How should we interpret it?</strong></p>
+<p>High-density zones correspond to the urban core or grid-planned neighborhoods where streets connect frequently. Lower-density zones on the urban periphery or in areas with large blocks, highways, or industrial estates indicate reduced connectivity. Areas with very low or zero intersection density may represent inaccessible land uses (water bodies, parks, airports) or informal zones with limited mapped street coverage.</p>
+<p><strong>Under the hood</strong></p>
+<p>The intersection density raster is derived from the nodes GeoPackage produced by the accessibility task. <a href="../core/R/pre-mapping.R"><code>core/R/pre-mapping.R</code></a> reads the nodes layer, computes density using <code>density_rast()</code>, and writes <code>intersection-density.tif</code> to the spatial directory if it does not already exist.</p>
+<p><strong>Key outputs</strong></p>
+<ul>
+<li><code>mnt/{scan-id}/02-process-output/spatial/intersection-density.tif</code> — intersection density raster (intersections per km²)</li>
+<li><code>mnt/{scan-id}/03-render-output/maps/intersections.png</code> — intersection density choropleth map</li>
+</ul>
+<p><strong>Source data citation</strong></p>
+<p><span class="citation" data-cites="OpenStreetMap osmnx_2025">(<a href="references.html#ref-OpenStreetMap" role="doc-biblioref">OpenStreetMap contributors 2017</a>; <a href="references.html#ref-osmnx_2025" role="doc-biblioref">Boeing 2025</a>)</span></p>
+</section>
+<section id="accessibility-to-education-healthcare" class="level2" data-number="13.6">
+<h2 data-number="13.6" class="anchored" data-anchor-id="accessibility-to-education-healthcare"><span class="header-section-number">13.6</span> Accessibility to Education &amp; Healthcare</h2>
+<!-- chart examples -->
+<div id="fig-school" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-school-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-school" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-point" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-point-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/school_points.png" class="lightbox" data-gallery="fig-school" title="Figure&nbsp;13.7&nbsp;(a): School Points map"><img src="image/2026-06-philippines-manila/03-render-output/maps/school_points.png" data-ref-parent="fig-school" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-point-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) School Points map
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-school" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-proximity" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-proximity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/school_proximity.png" class="lightbox" data-gallery="fig-school" title="Figure&nbsp;13.7&nbsp;(b): School Proximity map"><img src="image/2026-06-philippines-manila/03-render-output/maps/school_proximity.png" data-ref-parent="fig-school" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-proximity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) School Proximity map
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-school-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13.7: Accessibility to education facilities
+</figcaption>
+</figure>
+</div>
+<div id="fig-health" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-health-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-health" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-health-point" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-health-point-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/health_points.png" class="lightbox" data-gallery="fig-health" title="Figure&nbsp;13.8&nbsp;(a): Healthcare Points map"><img src="image/2026-06-philippines-manila/03-render-output/maps/health_points.png" data-ref-parent="fig-health" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-health-point-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Healthcare Points map
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-health" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-health-proximity" class="lightbox quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-health-proximity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="image/2026-06-philippines-manila/03-render-output/maps/health_proximity.png" class="lightbox" data-gallery="fig-health" title="Figure&nbsp;13.8&nbsp;(b): Healthcare Proximity map"><img src="image/2026-06-philippines-manila/03-render-output/maps/health_proximity.png" data-ref-parent="fig-health" height="300" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-health-proximity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Healthcare Proximity map
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-health-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13.8: Accessibility to healthcare facilities
+</figcaption>
+</figure>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Measurement</th>
+<th>Units</th>
+<th>Source</th>
+<th>Release Year</th>
+<th>Years of Data</th>
+<th>Coverage</th>
+<th>Resolution</th>
+<th>Task</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>OpenStreetMap</td>
+<td>Education facility locations</td>
+<td>—</td>
+<td><a href="https://geoffboeing.com/2016/11/osmnx-python-street-networks/">OSM via OSMnx</a></td>
+<td>Ongoing</td>
+<td>Current snapshot</td>
+<td>Global</td>
+<td>—</td>
+<td><a href="../tasks/accessibility/">tasks/accessibility/</a></td>
+</tr>
+<tr class="even">
+<td>OpenStreetMap</td>
+<td>Healthcare facility locations</td>
+<td>—</td>
+<td><a href="https://geoffboeing.com/2016/11/osmnx-python-street-networks/">OSM via OSMnx</a></td>
+<td>Ongoing</td>
+<td>Current snapshot</td>
+<td>Global</td>
+<td>—</td>
+<td><a href="../tasks/accessibility/">tasks/accessibility/</a></td>
+</tr>
+<tr class="odd">
+<td>OpenStreetMap</td>
+<td>Road network geometry</td>
+<td>—</td>
+<td><a href="https://geoffboeing.com/2016/11/osmnx-python-street-networks/">OSM via OSMnx</a></td>
+<td>Ongoing</td>
+<td>Current snapshot</td>
+<td>Global</td>
+<td>—</td>
+<td><a href="../tasks/accessibility/">tasks/accessibility/</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>What is it?</strong></p>
+<p>Network-based isochrone maps showing which parts of the city are within recommended travel distances of the nearest school and healthcare facility, measured along the actual road network. For schools, the analysis includes all OSM features tagged as school, kindergarten, college, or university. For healthcare, it includes all features tagged as health amenity, clinic, or hospital. Facility locations are displayed as point overlays.</p>
+<p><strong>Why use it?</strong></p>
+<p>Access to education and healthcare is a key dimension of urban equity. Areas beyond the recommended service radius — typically 800m for schools and 1km for healthcare facilities — may face service gaps that disadvantage residents who cannot travel far by foot or lack vehicle access. Mapping these gaps visually identifies underserved zones and supports prioritization of new facilities or transport improvements.</p>
+<p><strong>How is this made?</strong></p>
+<p>OSM POIs are extracted for each facility category using <code>POI_collection()</code> in <a href="../tasks/accessibility/collection.py"><code>tasks/accessibility/collection.py</code></a>. The network-based isochrone analysis is performed by <code>compute_accessibility_analysis()</code> in <a href="../tasks/accessibility/analysis.py"><code>tasks/accessibility/analysis.py</code></a>, which calls <code>make_isochrone()</code> for each category. This function snaps each facility to the nearest road network node, computes shortest-path distances from all facility nodes to all other nodes using Dijkstra’s algorithm, then generates buffered isochrone polygons at configurable distance thresholds. Thresholds are set in <code>inputs/city_inputs.yml</code> under the <code>isochrone</code> key (e.g., <code>[800, 1600, 2400]</code> meters for schools and <code>[1000, 2000, 3000]</code> for health facilities).</p>
+<p><strong>How should we interpret it?</strong></p>
+<p>Areas inside the innermost isochrone are well-served; areas outside the outermost isochrone mark a clear service gap. Because the analysis uses the road network rather than straight-line distance, it reflects actual travel conditions. Note that OSM coverage is incomplete in many cities — particularly informal settlements — so the absence of mapped facilities does not necessarily confirm a service gap. The facility point maps provide a visual check on coverage.</p>
+<p><strong>Under the hood</strong></p>
+<p>POI collections are stored as <code>{city}_osm_{key}.gpkg</code>. Isochrone polygons are saved as <code>{city}_{key}_isochrone.gpkg</code>. Accessibility distances per node are merged into <code>{city}_nodes_and_edges_accessibilities.gpkg</code> for each category. Distance thresholds and the list of facility categories are fully configurable via <code>inputs/city_inputs.yml</code>. The isochrone maps are rendered in R via <a href="../core/R/"><code>core/R/</code></a> using the <code>school_zones</code>, <code>school_points</code>, <code>health_zones</code>, and <code>health_points</code> layer definitions in <a href="../source/layers.yml"><code>source/layers.yml</code></a>.</p>
+<p><strong>Key outputs</strong></p>
+<ul>
+<li><code>mnt/{scan-id}/02-process-output/spatial/{city}_osm_school.gpkg</code> — school POI locations from OSM</li>
+<li><code>mnt/{scan-id}/02-process-output/spatial/{city}_osm_health.gpkg</code> — health facility POI locations from OSM</li>
+<li><code>mnt/{scan-id}/02-process-output/spatial/{city}_school_isochrone.gpkg</code> — school isochrone polygons</li>
+<li><code>mnt/{scan-id}/02-process-output/spatial/{city}_health_isochrone.gpkg</code> — healthcare isochrone polygons</li>
+<li><code>mnt/{scan-id}/02-process-output/spatial/{city}_nodes_and_edges_accessibilities.gpkg</code> — network nodes/edges with distance-to-nearest-facility attributes</li>
+<li><code>mnt/{scan-id}/03-render-output/maps/school_points.png</code> — school location map</li>
+<li><code>mnt/{scan-id}/03-render-output/maps/school_proximity.png</code> — school proximity isochrone map</li>
+<li><code>mnt/{scan-id}/03-render-output/maps/health_points.png</code> — health facility location map</li>
+<li><code>mnt/{scan-id}/03-render-output/maps/health_proximity.png</code> — healthcare proximity isochrone map</li>
+</ul>
+<p><strong>Source data citation</strong></p>
+<p><span class="citation" data-cites="OpenStreetMap osmnx_2025 networkX">(<a href="references.html#ref-OpenStreetMap" role="doc-biblioref">OpenStreetMap contributors 2017</a>; <a href="references.html#ref-osmnx_2025" role="doc-biblioref">Boeing 2025</a>; <a href="references.html#ref-networkX" role="doc-biblioref">Hagberg et al. 2008</a>)</span></p>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-Boeing_2019" class="csl-entry" role="listitem">
+Boeing, Geoff. 2019. <span>“Urban Spatial Order: Street Network Orientation, Configuration, and Entropy.”</span> <em>Applied Network Science</em> 4 (1). <a href="https://doi.org/10.1007/s41109-019-0189-1">https://doi.org/10.1007/s41109-019-0189-1</a>.
+</div>
+<div id="ref-osmnx_2025" class="csl-entry" role="listitem">
+Boeing, Geoff. 2025. <span>“Modeling and Analyzing Urban Networks and Amenities with OSMnx.”</span> <em>Geographical Analysis</em> 57 (4): 567–77. https://doi.org/<a href="https://doi.org/10.1111/gean.70009">https://doi.org/10.1111/gean.70009</a>.
+</div>
+<div id="ref-networkX" class="csl-entry" role="listitem">
+Hagberg, Aric A., Daniel A. Schult, and Pieter J. Swart. 2008. <span>“Exploring Network Structure, Dynamics, and Function Using NetworkX.”</span> In <em>Proceedings of the 7th Python in Science Conference</em>, edited by Gaël Varoquaux, Travis Vaught, and Jarrod Millman. Pasadena, CA USA.
+</div>
+<div id="ref-marconcini_understanding_2021" class="csl-entry" role="listitem">
+Marconcini, Mattia, Annekatrin Metz- Marconcini, Thomas Esch, and Noel Gorelick. 2021. <span>“Understanding <span>Current</span> <span>Trends</span> in <span>Global</span> <span>Urbanisation</span> - <span>The</span> <span>World</span> <span>Settlement</span> <span>Footprint</span> <span>Suite</span>.”</span> <em>GI_Forum</em> 1: 33–38. <a href="https://doi.org/10.1553/giscience2021_01_s33">https://doi.org/10.1553/giscience2021_01_s33</a>.
+</div>
+<div id="ref-OpenStreetMap" class="csl-entry" role="listitem">
+OpenStreetMap contributors. 2017. <em><span class="nocase">Planet dump retrieved from https://planet.osm.org </span></em>.<a href=" https://www.openstreetmap.org " class="uri"> https://www.openstreetmap.org</a>.
+</div>
+<div id="ref-zanaga_2021_ESA_Landcover" class="csl-entry" role="listitem">
+Zanaga, Daniele, Ruben Van De Kerchove, Wanda De Keersmaecker, et al. 2021. <span>“ESA WorldCover 10 m 2020 V100.”</span> Version v100. Zenodo, October. <a href="https://doi.org/10.5281/zenodo.5571936">https://doi.org/10.5281/zenodo.5571936</a>.
+</div>
+</div>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -819,6 +1573,38 @@ ul.task-list li input[type="checkbox"] {
 </div>
   </div>
 </footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 

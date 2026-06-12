@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>23&nbsp; Contributing – City Scan Technical Reference</title>
+<title>22&nbsp; Contributing – City Scan Technical Reference</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -22,6 +22,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -41,10 +76,10 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-b95cbf176b21d35b97d826ad6b6af685.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-0c4bb16d4a1e9fb2fb50ff9ab29e58a5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -85,7 +120,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./git-guide.html">Collaborating</a></li><li class="breadcrumb-item"><a href="./contributing.html"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Contributing</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./git-guide.html">Collaborating</a></li><li class="breadcrumb-item"><a href="./contributing.html"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Contributing</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -255,12 +290,6 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Risk Identification</span></span></a>
   </div>
 </li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./multi-analysis.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Multi-Analysis (Exposure Analysis) – Placeholder</span></span></a>
-  </div>
-</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -275,13 +304,13 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./repo-structure.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Repository Structure</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Repository Structure</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./task-dependency.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Orchestration Dependency Graph</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Orchestration Dependency Graph</span></span></a>
   </div>
 </li>
       </ul>
@@ -298,13 +327,13 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./case-standard-rabat.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Case Study: Standard Scan — Rabat, Morocco</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Case Study: Standard Scan — Rabat, Morocco</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./case-multiple-philippines.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Case Study: Multiple Scans — Philippines</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Case Study: Multiple Scans — Philippines</span></span></a>
   </div>
 </li>
       </ul>
@@ -321,31 +350,31 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./git-guide.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Git Guide</span></span></a>
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Git Guide</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./reporting-issues.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Reporting Issues</span></span></a>
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Reporting Issues</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./contributing.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Contributing</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Contributing</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./sharing-the-guide.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Sharing the Guide</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Sharing the Guide</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./editing-this-reference.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Editing This Reference</span></span></a>
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Editing This Reference</span></span></a>
   </div>
 </li>
       </ul>
@@ -361,15 +390,45 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#git-branching-system" id="toc-git-branching-system" class="nav-link active" data-scroll-target="#git-branching-system"><span class="header-section-number">22.1</span> Git Branching System</a>
+  <ul class="collapse">
+  <li><a href="#our-branching-model" id="toc-our-branching-model" class="nav-link" data-scroll-target="#our-branching-model"><span class="header-section-number">22.1.1</span> Our Branching Model</a></li>
+  <li><a href="#what-contributors-do" id="toc-what-contributors-do" class="nav-link" data-scroll-target="#what-contributors-do"><span class="header-section-number">22.1.2</span> What Contributors Do</a></li>
+  <li><a href="#safety-rules" id="toc-safety-rules" class="nav-link" data-scroll-target="#safety-rules"><span class="header-section-number">22.1.3</span> Safety Rules</a></li>
+  </ul></li>
+  <li><a href="#task-architecture" id="toc-task-architecture" class="nav-link" data-scroll-target="#task-architecture"><span class="header-section-number">22.2</span> Task Architecture</a>
+  <ul class="collapse">
+  <li><a href="#file-responsibilities" id="toc-file-responsibilities" class="nav-link" data-scroll-target="#file-responsibilities"><span class="header-section-number">22.2.1</span> File Responsibilities</a></li>
+  </ul></li>
+  <li><a href="#linking-a-new-module-to-__main__.py" id="toc-linking-a-new-module-to-__main__.py" class="nav-link" data-scroll-target="#linking-a-new-module-to-__main__.py"><span class="header-section-number">22.3</span> Linking a New Module to <code>__main__.py</code></a></li>
+  <li><a href="#function-design-rules" id="toc-function-design-rules" class="nav-link" data-scroll-target="#function-design-rules"><span class="header-section-number">22.4</span> Function Design Rules</a>
+  <ul class="collapse">
+  <li><a href="#required-function-signatures" id="toc-required-function-signatures" class="nav-link" data-scroll-target="#required-function-signatures"><span class="header-section-number">22.4.1</span> Required Function Signatures</a></li>
+  </ul></li>
+  <li><a href="#documentation-style-guide" id="toc-documentation-style-guide" class="nav-link" data-scroll-target="#documentation-style-guide"><span class="header-section-number">22.5</span> Documentation &amp; Style Guide</a>
+  <ul class="collapse">
+  <li><a href="#docstrings" id="toc-docstrings" class="nav-link" data-scroll-target="#docstrings"><span class="header-section-number">22.5.1</span> Docstrings</a></li>
+  <li><a href="#logging" id="toc-logging" class="nav-link" data-scroll-target="#logging"><span class="header-section-number">22.5.2</span> Logging</a></li>
+  <li><a href="#error-handling" id="toc-error-handling" class="nav-link" data-scroll-target="#error-handling"><span class="header-section-number">22.5.3</span> Error Handling</a></li>
+  <li><a href="#modularity-readability" id="toc-modularity-readability" class="nav-link" data-scroll-target="#modularity-readability"><span class="header-section-number">22.5.4</span> Modularity &amp; Readability</a></li>
+  </ul></li>
+  <li><a href="#standalone-testing" id="toc-standalone-testing" class="nav-link" data-scroll-target="#standalone-testing"><span class="header-section-number">22.6</span> Standalone Testing</a></li>
+  <li><a href="#folder-naming-structure" id="toc-folder-naming-structure" class="nav-link" data-scroll-target="#folder-naming-structure"><span class="header-section-number">22.7</span> Folder Naming &amp; Structure</a></li>
+  <li><a href="#design-philosophy" id="toc-design-philosophy" class="nav-link" data-scroll-target="#design-philosophy"><span class="header-section-number">22.8</span> Design Philosophy</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./git-guide.html">Collaborating</a></li><li class="breadcrumb-item"><a href="./contributing.html"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Contributing</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./git-guide.html">Collaborating</a></li><li class="breadcrumb-item"><a href="./contributing.html"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Contributing</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Contributing</span></h1>
+<h1 class="title"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Contributing</span></h1>
 </div>
 
 
@@ -387,13 +446,266 @@ ul.task-list li input[type="checkbox"] {
 
 
 <p>We welcome contributions to City Scan — from new data layers to documentation improvements.</p>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sagittis posuere ligula sit amet lacinia. Duis dignissim pellentesque magna, rhoncus congue sapien finibus mollis. Ut eu sem laoreet, vehicula ipsum in, convallis erat. Vestibulum magna sem, blandit pulvinar augue sit amet, auctor malesuada sapien. Nullam faucibus leo eget eros hendrerit, non laoreet ipsum lacinia. Curabitur cursus diam elit, non tempus ante volutpat a. Quisque hendrerit blandit purus non fringilla. Integer sit amet elit viverra ante dapibus semper. Vestibulum viverra rutrum enim, at luctus enim posuere eu. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
-<p>Nunc ac dignissim magna. Vestibulum vitae egestas elit. Proin feugiat leo quis ante condimentum, eu ornare mauris feugiat. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Mauris cursus laoreet ex, dignissim bibendum est posuere iaculis. Suspendisse et maximus elit. In fringilla gravida ornare. Aenean id lectus pulvinar, sagittis felis nec, rutrum risus. Nam vel neque eu arcu blandit fringilla et in quam. Aliquam luctus est sit amet vestibulum eleifend. Phasellus elementum sagittis molestie. Proin tempor lorem arcu, at condimentum purus volutpat eu. Fusce et pellentesque ligula. Pellentesque id tellus at erat luctus fringilla. Suspendisse potenti.</p>
-<p>Etiam maximus accumsan gravida. Maecenas at nunc dignissim, euismod enim ac, bibendum ipsum. Maecenas vehicula velit in nisl aliquet ultricies. Nam eget massa interdum, maximus arcu vel, pretium erat. Maecenas sit amet tempor purus, vitae aliquet nunc. Vivamus cursus urna velit, eleifend dictum magna laoreet ut. Duis eu erat mollis, blandit magna id, tincidunt ipsum. Integer massa nibh, commodo eu ex vel, venenatis efficitur ligula. Integer convallis lacus elit, maximus eleifend lacus ornare ac. Vestibulum scelerisque viverra urna id lacinia. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Aenean eget enim at diam bibendum tincidunt eu non purus. Nullam id magna ultrices, sodales metus viverra, tempus turpis.</p>
-<p>Duis ornare ex ac iaculis pretium. Maecenas sagittis odio id erat pharetra, sit amet consectetur quam sollicitudin. Vivamus pharetra quam purus, nec sagittis risus pretium at. Nullam feugiat, turpis ac accumsan interdum, sem tellus blandit neque, id vulputate diam quam semper nisl. Donec sit amet enim at neque porttitor aliquet. Phasellus facilisis nulla eget placerat eleifend. Vestibulum non egestas eros, eget lobortis ipsum. Nulla rutrum massa eget enim aliquam, id porttitor erat luctus. Nunc sagittis quis eros eu sagittis. Pellentesque dictum, erat at pellentesque sollicitudin, justo augue pulvinar metus, quis rutrum est mi nec felis. Vestibulum efficitur mi lorem, at elementum purus tincidunt a. Aliquam finibus enim magna, vitae pellentesque erat faucibus at. Nulla mauris tellus, imperdiet id lobortis et, dignissim condimentum ipsum. Morbi nulla orci, varius at aliquet sed, facilisis id tortor. Donec ut urna nisi.</p>
-<p>Aenean placerat luctus tortor vitae molestie. Nulla at aliquet nulla. Sed efficitur tellus orci, sed fringilla lectus laoreet eget. Vivamus maximus quam sit amet arcu dignissim, sed accumsan massa ullamcorper. Sed iaculis tincidunt feugiat. Nulla in est at nunc ultricies dictum ut vitae nunc. Aenean convallis vel diam at malesuada. Suspendisse arcu libero, vehicula tempus ultrices a, placerat sit amet tortor. Sed dictum id nulla commodo mattis. Aliquam mollis, nunc eu tristique faucibus, purus lacus tincidunt nulla, ac pretium lorem nunc ut enim. Curabitur eget mattis nisl, vitae sodales augue. Nam felis massa, bibendum sit amet nulla vel, vulputate rutrum lacus. Aenean convallis odio pharetra nulla mattis consequat.</p>
+<p>This document explains how to add new analytical modules to the <code>tasks</code> framework and integrate them into the pipeline.</p>
+<p>This project follows a <strong>modular, reproducible, and readable</strong> design philosophy. Each task module represents <strong>one analytical domain</strong> (e.g.&nbsp;air quality, population, hazard, etc.).</p>
+<hr>
+<section id="git-branching-system" class="level2" data-number="22.1">
+<h2 data-number="22.1" class="anchored" data-anchor-id="git-branching-system"><span class="header-section-number">22.1</span> Git Branching System</h2>
+<p>Before you start, let’s ensure we are on the same page on the branching system. This is to avoid pushing unstable updates to main.</p>
+<section id="our-branching-model" class="level3" data-number="22.1.1">
+<h3 data-number="22.1.1" class="anchored" data-anchor-id="our-branching-model"><span class="header-section-number">22.1.1</span> Our Branching Model</h3>
+<pre><code>main          → stable / production-like
+  │
+  └── new_structure   → This is where our initiative lives
+         │
+         ├── new_structure_alice
+         ├── new_structure_bob
+         └── new_structure_charlie</code></pre>
+<p>No one touches <code>main</code> directly.</p>
+<p>No one pushes to <code>new_structure</code> without review.</p>
+<hr>
+</section>
+<section id="what-contributors-do" class="level3" data-number="22.1.2">
+<h3 data-number="22.1.2" class="anchored" data-anchor-id="what-contributors-do"><span class="header-section-number">22.1.2</span> What Contributors Do</h3>
+<section id="step-1-sync-with-remote" class="level4">
+<h4 class="anchored" data-anchor-id="step-1-sync-with-remote">Step 1 — Sync with remote</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> fetch origin</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout new_structure</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> pull</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="step-2-create-their-personal-branch" class="level4">
+<h4 class="anchored" data-anchor-id="step-2-create-their-personal-branch">Step 2 — Create their personal branch</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout <span class="at">-b</span> new_structure_alice</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Naming convention:</p>
+<pre><code>new_structure_&lt;name&gt;</code></pre>
+<hr>
+</section>
+<section id="step-3-work-normally" class="level4">
+<h4 class="anchored" data-anchor-id="step-3-work-normally">Step 3 — Work normally</h4>
+<p>When you make updates to your code, commit locally:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add .</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"Implement accessibility data parser"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="step-4-push-their-branch" class="level4">
+<h4 class="anchored" data-anchor-id="step-4-push-their-branch">Step 4 — Push their branch</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push <span class="at">-u</span> origin new_structure_alice</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="step-5-open-a-pull-request" class="level4">
+<h4 class="anchored" data-anchor-id="step-5-open-a-pull-request">Step 5 — Open a Pull Request</h4>
+<p>On GitHub / GitLab:</p>
+<pre><code>FROM: new_structure_alice
+TO:   new_structure</code></pre>
+<p>Daniel will review your code.</p>
+<hr>
+</section>
+</section>
+<section id="safety-rules" class="level3" data-number="22.1.3">
+<h3 data-number="22.1.3" class="anchored" data-anchor-id="safety-rules"><span class="header-section-number">22.1.3</span> Safety Rules</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Rule</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>No direct commits to <code>main</code></td>
+<td>Prevent breaking prod</td>
+</tr>
+<tr class="even">
+<td>No direct commits to <code>new_structure</code></td>
+<td>Forces review</td>
+</tr>
+<tr class="odd">
+<td>Always branch from <code>new_structure</code></td>
+<td>Prevents divergence</td>
+</tr>
+<tr class="even">
+<td>Small PRs</td>
+<td>Easier review</td>
+</tr>
+<tr class="odd">
+<td>One feature per branch</td>
+<td>No tangled work</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+</section>
+<section id="task-architecture" class="level2" data-number="22.2">
+<h2 data-number="22.2" class="anchored" data-anchor-id="task-architecture"><span class="header-section-number">22.2</span> Task Architecture</h2>
+<p>The idea is to transfer what previously live in <code>backend/</code> folder into their new house: <code>tasks/</code> folder. Each task module must follow the standard structure:</p>
+<pre><code>tasks/
+└── &lt;module_name&gt;/
+    ├── __init__.py
+    ├── datacollection.py
+    ├── dataanalysis.py
+    └── datavisualization.py</code></pre>
+<p>Example:</p>
+<pre><code>tasks/air_quality/</code></pre>
+<p>Reference implementation: <code>tasks/air_quality</code></p>
+<section id="file-responsibilities" class="level3" data-number="22.2.1">
+<h3 data-number="22.2.1" class="anchored" data-anchor-id="file-responsibilities"><span class="header-section-number">22.2.1</span> File Responsibilities</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 36%">
+<col style="width: 63%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>File</th>
+<th>Responsibility</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>datacollection.py</code></td>
+<td>Download / load raw data, either via cloud storage, API, direct download, etc. &amp; clip to AOI</td>
+</tr>
+<tr class="even">
+<td><code>dataanalysis.py</code></td>
+<td>Perform numerical/statistical/spatial analysis</td>
+</tr>
+<tr class="odd">
+<td><code>datavisualization.py</code></td>
+<td>Generate maps &amp; plots, not as a final polished product, but as an exploratory data analysis effort. Later, we will polish more in frontend.</td>
+</tr>
+<tr class="even">
+<td><code>__init__.py</code></td>
+<td>Module registration</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+</section>
+<section id="linking-a-new-module-to-__main__.py" class="level2" data-number="22.3">
+<h2 data-number="22.3" class="anchored" data-anchor-id="linking-a-new-module-to-__main__.py"><span class="header-section-number">22.3</span> Linking a New Module to <code>__main__.py</code></h2>
+<p>Each datacollection, dataanlysis, and datavisualization functions are orchestrated from each folder’s <code>tasks/{task_name}/__init__.py</code>. Then, all task modules are orchestrated from <code>tasks/main.py</code>.</p>
+<p>To integrate a new module:</p>
+<ol type="1">
+<li>Import the module’s pipeline functions in <code>__init__.py</code></li>
+<li>Call them in the execution sequence</li>
+</ol>
+<p>This three-stage pipeline <strong>must be preserved</strong>:</p>
+<blockquote class="blockquote">
+<p><strong>Collection → Analysis → Visualization</strong></p>
+</blockquote>
+<hr>
+</section>
+<section id="function-design-rules" class="level2" data-number="22.4">
+<h2 data-number="22.4" class="anchored" data-anchor-id="function-design-rules"><span class="header-section-number">22.4</span> Function Design Rules</h2>
+<section id="required-function-signatures" class="level3" data-number="22.4.1">
+<h3 data-number="22.4.1" class="anchored" data-anchor-id="required-function-signatures"><span class="header-section-number">22.4.1</span> Required Function Signatures</h3>
+<p>All modules must use these standard arguments:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>city_name: str</code></td>
+<td>City identifier</td>
+</tr>
+<tr class="even">
+<td><code>output_dir: str</code></td>
+<td>Root output directory</td>
+</tr>
+<tr class="odd">
+<td><code>aoi: GeoDataFrame</code></td>
+<td>Area of interest</td>
+</tr>
+<tr class="even">
+<td><code>return_*</code> flags</td>
+<td>Enable standalone testing</td>
+</tr>
+</tbody>
+</table>
+<p>This ensures consistent orchestration.</p>
+<hr>
+</section>
+</section>
+<section id="documentation-style-guide" class="level2" data-number="22.5">
+<h2 data-number="22.5" class="anchored" data-anchor-id="documentation-style-guide"><span class="header-section-number">22.5</span> Documentation &amp; Style Guide</h2>
+<section id="docstrings" class="level3" data-number="22.5.1">
+<h3 data-number="22.5.1" class="anchored" data-anchor-id="docstrings"><span class="header-section-number">22.5.1</span> Docstrings</h3>
+<p>Every public function <strong>must</strong> include a NumPy-style docstring:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> compute_stats(...):</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">   Summary of what this function is about.</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">    Parameters</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">    ----------</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">    what are the inputs to this function</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">    ...</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co">    -------</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co">    what are the outputs of this function</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co">    ...</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="logging" class="level3" data-number="22.5.2">
+<h3 data-number="22.5.2" class="anchored" data-anchor-id="logging"><span class="header-section-number">22.5.2</span> Logging</h3>
+<p>Use the shared logger:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> utils.log_module <span class="im">import</span> setup_logger</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>logger <span class="op">=</span> setup_logger(<span class="va">__name__</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Never use <code>print()</code> for operational logging.</p>
+</section>
+<section id="error-handling" class="level3" data-number="22.5.3">
+<h3 data-number="22.5.3" class="anchored" data-anchor-id="error-handling"><span class="header-section-number">22.5.3</span> Error Handling</h3>
+<ul>
+<li>Validate inputs at the start of each function</li>
+<li>Log failures with <code>logger.error(...)</code></li>
+<li>Return <code>None</code> on failure instead of crashing the pipeline</li>
+</ul>
+</section>
+<section id="modularity-readability" class="level3" data-number="22.5.4">
+<h3 data-number="22.5.4" class="anchored" data-anchor-id="modularity-readability"><span class="header-section-number">22.5.4</span> Modularity &amp; Readability</h3>
+<ul>
+<li>One responsibility per function</li>
+<li>No hidden side effects</li>
+<li>Avoid hard-coded paths — always use <code>output_dir</code></li>
+<li>Favor explicitness over cleverness</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="standalone-testing" class="level2" data-number="22.6">
+<h2 data-number="22.6" class="anchored" data-anchor-id="standalone-testing"><span class="header-section-number">22.6</span> Standalone Testing</h2>
+<p>Every file should support standalone execution:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># minimal test example</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This allows rapid local testing without running the full pipeline.</p>
+<hr>
+</section>
+<section id="folder-naming-structure" class="level2" data-number="22.7">
+<h2 data-number="22.7" class="anchored" data-anchor-id="folder-naming-structure"><span class="header-section-number">22.7</span> Folder Naming &amp; Structure</h2>
+<p>Use <strong>snake_case</strong> for module names:</p>
+<pre><code>flood_event
+ghs_builtup
+elevation</code></pre>
+<p>Follow the standard layout shown in <code>structure.txt</code> .</p>
+<hr>
+</section>
+<section id="design-philosophy" class="level2" data-number="22.8">
+<h2 data-number="22.8" class="anchored" data-anchor-id="design-philosophy"><span class="header-section-number">22.8</span> Design Philosophy</h2>
+<p>This framework is designed for:</p>
+<ul>
+<li>reproducibility</li>
+<li>scientific transparency</li>
+<li>easy extension</li>
+<li>clear audit trails</li>
+</ul>
+<p>Every contribution should preserve these goals.</p>
+<hr>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -799,12 +1111,12 @@ ul.task-list li input[type="checkbox"] {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="./reporting-issues.html" class="pagination-link" aria-label="Reporting Issues">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Reporting Issues</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Reporting Issues</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./sharing-the-guide.html" class="pagination-link" aria-label="Sharing the Guide">
-        <span class="nav-page-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Sharing the Guide</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Sharing the Guide</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
