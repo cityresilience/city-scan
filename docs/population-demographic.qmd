@@ -80,9 +80,9 @@ mnt/{scan-id}/
 
 <!-- chart examples -->
 ::: {layout-ncol=2}
-![Population Growth — year-over-year change (Oxford Economics)](image/2026-06-philippines-manila/03-render-output/plots/oxford-pop-growth.png){#fig-pop-growth .lightbox}
+![Population Growth — year-over-year change (Oxford Economics)](image/2026-06-philippines-manila/03-render-output/plots/oxford-pop-growth.png){#fig-pop-growth .lightbox height=300}
 
-![Population time series vs. benchmark cities (Oxford Economics)](image/2026-06-philippines-manila/03-render-output/plots/oxford-pop-line.png){#fig-pop-line .lightbox}
+![Population time series vs. benchmark cities (Oxford Economics)](image/2026-06-philippines-manila/03-render-output/plots/oxford-pop-line.png){#fig-pop-line .lightbox height=300}
 
 :::
 
@@ -138,9 +138,9 @@ The [`tasks/oxford/`](../tasks/oxford/) task reads the Oxford Economics Global C
 <!-- chart examples -->
 ::: {layout-ncol=2}
 
-![Population growth (Worldpop Global 1, 2000-2020)](image/2026-06-philippines-manila/03-render-output/plots/worldpop-g1-growth.png){#fig-pop-line .lightbox}
+![Population growth (Worldpop Global 1, 2000-2020)](image/2026-06-philippines-manila/03-render-output/plots/worldpop-g1-growth.png){#fig-pop-line .lightbox height=300}
 
-![Population growth (Worldpop Global 2, 2015-2030)](image/2026-06-philippines-manila/03-render-output/plots/worldpop-g2-growth.png){#fig-pop-line .lightbox}
+![Population growth (Worldpop Global 2, 2015-2030)](image/2026-06-philippines-manila/03-render-output/plots/worldpop-g2-growth.png){#fig-pop-line .lightbox height=300}
 :::
 
 
@@ -197,9 +197,9 @@ WorldPop analyses strictly clip to the provided AOI. When the AOI is the histori
 ## Population Density
 
 ::: {layout-ncol=2}
-![Population density](image/2026-06-philippines-manila/03-render-output/maps/population.png){#fig-pop-growth .lightbox}
+![Population density](image/2026-06-philippines-manila/03-render-output/maps/population.png){#fig-pop-growth .lightbox height=300}
 
-![Population density distribution](image/2026-06-philippines-manila/03-render-output/plots/worldpop-pop-density-distribution.png){#fig-pop-line .lightbox}
+![Population density distribution](image/2026-06-philippines-manila/03-render-output/plots/worldpop-pop-density-distribution.png){#fig-pop-line .lightbox height=300}
 :::
 
 | Dataset | Measurement | Units | Source | Release Year | Years of Data | Coverage | Resolution | Task |
@@ -326,9 +326,9 @@ Compare epochs (e.g., 1990 vs. 2020) to visualize where population has grown and
 ## Population Distribution by Age and Sex
 
 ::: {layout-ncol=2}
-![Age structure over time — Oxford Economics](image/2026-06-philippines-manila/03-render-output/plots/oxford-age-structure-area.png){#fig-age-structure .lightbox}
+![Age structure over time — Oxford Economics](image/2026-06-philippines-manila/03-render-output/plots/oxford-age-structure-area.png){#fig-age-structure .lightbox height=300}
 
-![Age distribution vs. benchmark cities](image/2026-06-philippines-manila/03-render-output/plots/oxford-pop-distro.png){#fig-pop-distro .lightbox}
+![Age distribution vs. benchmark cities](image/2026-06-philippines-manila/03-render-output/plots/oxford-pop-distro.png){#fig-pop-distro .lightbox height=300}
 :::
 
 | Dataset | Measurement | Units | Source | Release Year | Years of Data | Coverage | Resolution | Task |
@@ -387,15 +387,15 @@ For Oxford, [`tasks/oxford/collection.R`](../tasks/oxford/collection.R) processe
 ## Relative Wealth
 
 ::: {layout-ncol=2}
-![RWI — standardized (nationally comparable)](image/2026-06-philippines-manila/03-render-output/maps/rwi_standardized.png){#fig-rwi-std .lightbox}
+![RWI — standardized (nationally comparable)](image/2026-06-philippines-manila/03-render-output/maps/rwi_standardized.png){#fig-rwi-std .lightbox height=300}
 
-![RWI — relative (city-internal)](image/2026-06-philippines-manila/03-render-output/maps/rwi_relative.png){#fig-rwi-rel .lightbox}
+![RWI — relative (city-internal)](image/2026-06-philippines-manila/03-render-output/maps/rwi_relative.png){#fig-rwi-rel .lightbox height=300}
 :::
 
 ::: {layout-ncol=2}
-![RWI distribution — standardized](image/2026-06-philippines-manila/03-render-output/plots/rwi-histogram-standardized.png){#fig-rwi-hist-std .lightbox}
+![RWI distribution — standardized](image/2026-06-philippines-manila/03-render-output/plots/rwi-histogram-standardized.png){#fig-rwi-hist-std .lightbox height=300}
 
-![RWI distribution — relative](image/2026-06-philippines-manila/03-render-output/plots/rwi-histogram-relative.png){#fig-rwi-hist-rel .lightbox}
+![RWI distribution — relative](image/2026-06-philippines-manila/03-render-output/plots/rwi-histogram-relative.png){#fig-rwi-hist-rel .lightbox height=300}
 :::
 
 | Dataset | Measurement | Units | Source | Release Year | Years of Data | Coverage | Resolution | Task |

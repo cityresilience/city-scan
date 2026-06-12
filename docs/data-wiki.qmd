@@ -242,7 +242,8 @@ The European Space Agency developed the first global land cover product for the 
 Mapping land cover is effective to look at the spatial distributions of land uses. Urbanized land may slightly differ from the WSF urbanized land due to the data coming from different sources. 
 
 **Source data citation**
-_Zanaga, Daniele, Ruben Van De Kerchove, Wanda De Keersmaecker, Niels Souverijns, Carsten Brockmann, Ralf Quast, Jan Wevers, et al. 2021. “ESA WorldCover 10 m 2021 V200.” Zenodo. https://doi.org/10.5281/zenodo.5571936._
+
+[@zanaga_2021_ESA_Landcover]
 
 --------
 

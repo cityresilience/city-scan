@@ -2,7 +2,7 @@
 
 City Scan output is a collection of maps and charts made from global and publicly available datasets that provide quick high-level insights into resilience-related topics for a city. The output is a package of maps, data visualizations and insights that integrate features of both the built and natural environments. It is available as standalone images, compiled PDF, and interactive Quarto HTML. 
 
-## Example 1: Standalone Images - Dakar, Senegal
+## Example 1: Standalone Analysis - example: Dakar, Senegal
 
 This format is useful if you'd like to combine City Scan outputs with your own analysis. See examples from our analysis for Dakar, Senegal
 

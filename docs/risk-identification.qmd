@@ -1,3 +1,756 @@
 # Risk Identification
 
-{{< lipsum 3 >}}
+## Overview
+
+This section examines the physical hazards that shape a city's exposure to risk. It covers flooding (historical events and modeled hazard), terrain (elevation and slope), geological hazards (landslide susceptibility, liquefaction, seismic hazard), road network criticality, and fire-related risks (drought, burnability, historical burnt area, and fire weather). Together these layers help identify where people and assets are most exposed and where mitigation investments can have the greatest impact.
+
+----
+
+**Data Sources**
+
+| Dataset | Summary | Measurement | Units | Coverage |
+|-----|------------|----|----|----|
+| Global Active Archive of Large Flood Events | Historical flood events from the Dartmouth Flood Observatory | Flood extent, fatalities, displaced persons | — | 1985–present; Global |
+| Fathom-Global 3.0 | Flood hazard probability at multiple return periods for fluvial, pluvial, and coastal flooding | Flood depth at exceedance probability | m | Global; 30m |
+| FABDEM v1.2 | Forest- and building-removed digital elevation model derived from Copernicus DEM | Bare-earth elevation and terrain slope | m above sea level; degrees | Global; ~30m |
+| NASA Global Landslide Model | Heuristic landslide susceptibility based on slope, lithology, roads, faults, and forest loss | Susceptibility index | 0–1 class | Global; ~1km |
+| NGDC/WDS Global Significant Earthquake Database | Curated catalog of significant earthquakes with damage and casualty metadata | Magnitude, depth, fatalities, damage | — | Global; 1900–present |
+| USGS FDSN Earthquake Catalog | Comprehensive seismic event catalog queried within 500km of the city | Magnitude, depth | — | Global; 1900–present |
+| Global Liquefaction Susceptibility Map | Geospatial regression model for soil liquefaction susceptibility | Susceptibility class | 5-class ordinal | Global; ~1.2km |
+| GEM Seismic Hazard Map (v2023.1) | Probabilistic peak ground acceleration at a 475-year return period on reference rock | PGA | g | Global; ~3 arc-min |
+| OpenStreetMap (via OSMnx) | Road network geometry used to compute edge betweenness centrality | Betweenness centrality (% of trips) | % | Global; current snapshot |
+| Sentinel-2 Harmonized (ESA, via GEE) | NDMI-derived moisture index used as a proxy for drought and water stress | Normalized Difference Moisture Index | −1 to 1 | Global; 2017–2024; 10m |
+| ESA CCI Land Cover (v2.1.1) | Global 300m land cover reclassified to burnability scores | Burnability factor | 0–1 | Global; 2020 |
+| GlobFire / MODIS Burnt Area | MODIS-derived historical fire event centroids with date and size | Fire occurrence and area | ha | Global; 2001–2020 |
+| Global Fire Weather Database (GFWED) | Daily NASA GEOS-5 Fire Weather Index resampled to weekly 95th percentile | Fire Weather Index | FWI index | Global; 2016–2021 |
+| Climate Central CoastalDEM | Sea level rise inundation scenarios for 1–10m and IPCC AR6 SSP projections | Flood elevation / year of inundation | m / year | Coastal areas; ~90m |
+| ShorelineMonitor (Deltares) | Long-term shoreline change rates from CDSM satellite imagery | Shoreline change rate | m/year | Global coasts; 1984–2016 |
+| WRI Aqueduct Water Risk v4 | Composite water risk scores from WRI's Aqueduct model | Water risk score | 0–5 ordinal | Global; ~500m |
+
+----
+
+**Relevant Tasks**
+
+```
+tasks/
+├── flood_events/        — historical flood event archive (Dartmouth Flood Observatory, R)
+├── fathom/              — flood hazard rasters and exposure overlays (Fathom-Global 3.0, Python)
+├── elevation/           — bare-earth elevation raster from FABDEM (Python)
+├── slope/               — terrain slope derived from FABDEM elevation (Python)
+├── landslide/           — landslide susceptibility raster (NASA, Python)
+├── earthquake/          — significant earthquake event archive with damage metadata (R)
+├── liquefaction/        — liquefaction susceptibility raster (Zhu et al., Python)
+├── seismic_hazard/      — PGA seismic hazard raster (GEM 2023, Python)
+├── accessibility/       — road network criticality via edge betweenness centrality (OSMnx, Python)
+├── ndxi/                — NDMI drought index composite (Sentinel-2 via GEE, Python)
+├── landcover_burn/      — burnability raster from ESA CCI land cover (Python)
+├── burned_area/         — historical fire event centroids from MODIS (Python)
+├── fwi/                 — Fire Weather Index seasonal chart (NASA GFWED, Python)
+├── sea_level_rise/      — sea level rise inundation rasters by scenario (R)
+├── coastal_erosion/     — shoreline change bar polygons from ShorelineMonitor (R)
+└── water_risk/          — WRI Aqueduct water risk polygons (GEE, Python)
+```
+
+----
+
+**Relevant Outputs**
+
+```
+mnt/{scan-id}/
+├── 02-process-output/
+│   ├── spatial/
+│   │   ├── {city}_fluvial_{rp}.tif                  — fluvial flood hazard per return period
+│   │   ├── {city}_pluvial_{rp}.tif                  — pluvial flood hazard per return period
+│   │   ├── {city}_coastal_{rp}.tif                  — coastal flood hazard per return period
+│   │   ├── {city}_combined_flooding.tif             — combined flood hazard (max probability)
+│   │   ├── {city}_elevation.tif                     — bare-earth elevation (~30m, meters)
+│   │   ├── {city}_slope.tif                         — terrain slope (~30m, degrees)
+│   │   ├── {city}_landslide.tif                     — landslide susceptibility raster (~1km)
+│   │   ├── {city}_liquefaction.tif                  — liquefaction susceptibility raster (~1.2km)
+│   │   ├── {city}_seismic_hazard.tif                — PGA seismic hazard raster (~3 arc-min)
+│   │   ├── {city}_nodes_and_edges_centralities.gpkg — road network with betweenness centrality
+│   │   ├── {city}_ndmi_season.tif                   — seasonal NDMI drought raster (10m)
+│   │   ├── {city}_burnable.tif                      — burnability factor raster (~300m)
+│   │   ├── {city}_globfire_centroids.gpkg           — MODIS fire event centroids
+│   │   ├── {city}_fwi_{percentile}.tif              — FWI percentile raster
+│   │   ├── {city}_slr_1_10m.tif                     — combined SLR inundation raster (1–10m)
+│   │   ├── {city}_slr_{ssp}_{pct}_{rl}.tif         — AR6 SSP SLR scenario rasters
+│   │   ├── {city}_shoreline_snap.gpkg               — shoreline change bars (snapped to AOI)
+│   │   ├── {city}_shoreline_baseline.gpkg           — shoreline change bars (raw transects)
+│   │   └── {city}_water_risk.geojson                — WRI Aqueduct water risk polygons
+│   └── tabular/
+│       ├── {city}_flood_events.csv                  — Dartmouth flood events intersecting AOI
+│       ├── {city}_earthquake.csv                    — earthquake catalog (USGS + NCEI merged)
+│       ├── {city}_globfire_centroids.csv            — MODIS fire centroids tabular extract
+│       └── {city}_fwi_weekly_95.csv                 — weekly 95th-percentile FWI values
+└── 03-render-output/
+    ├── maps/
+    │   ├── fluvial.png, pluvial.png, coastal.png, combined_flooding.png
+    │   ├── fluvial_population.png, pluvial_population.png, ...
+    │   ├── fluvial_wsf.png, pluvial_wsf.png, ...
+    │   ├── fluvial_infrastructure.png, pluvial_infrastructure.png, ...
+    │   ├── elevation.png, slope.png
+    │   ├── landslides.png, landslides_builtup.png
+    │   ├── liquefaction.png, liquefaction_builtup.png
+    │   ├── seismic_hazard.png
+    │   ├── roads.png, roads_network.png
+    │   ├── drought.png
+    │   ├── burnable.png
+    │   ├── burnt_area.png
+    │   ├── sea_level_rise.png
+    │   └── coastal_erosion_snap.png
+    └── plots/
+        ├── darthmouth_flood_events.pdf
+        ├── fluvial-flood-1.png, pluvial-flood-2.png, ...
+        ├── sectoral-gdp-flood-rainwater.png, sectoral-gdp-flood-coastal.png
+        ├── combined-gdp-flood-rainwater.png, combined-gdp-flood-coastal.png
+        ├── wsf-elevation-pieplot.png, wsf-slope-pieplot.png
+        └── nasa-fwi.png
+```
+
+----
+
+## Flood Events
+
+<!-- chart examples -->
+
+<iframe src="/image/2026-06-philippines-manila/03-render-output/plots/darthmouth_flood_events.pdf"
+        width="100%" height="350px" allow="autoplay"></iframe>
+
+
+| Dataset | Measurement | Units | Source | Release Year | Years of Data | Coverage | Resolution | Task |
+|------------|------------|------------|------------|------------|------------|------------|------------|--------|
+| Global Active Archive of Large Flood Events | Flood extent, fatalities, displaced persons | — | [Dartmouth Flood Observatory](http://floodobservatory.colorado.edu/Archives/index.html) | Ongoing | 1985–present | Global | — | [tasks/flood_events/](../tasks/flood_events/)|
+
+
+**What is it?**
+
+A catalog of large flood events recorded by the Dartmouth Flood Observatory, filtered to events whose spatial extent intersects the city's AOI. Each event includes start and end dates, the main cause, severity level, and figures for deaths and displaced persons. The chart shows the ten most significant events (ranked by a composite of deaths, displacement, and severity), with all others plotted but unlabelled.
+
+Note that the death and displacement figures reflect the entire flood event's geographic extent, which may be considerably larger than the city's boundary.
+
+**Why use it?**
+
+Historical flood events ground-truth modeled hazard layers and reveal which types of flooding have most affected the city in the past. Repeated events in the same season or from the same cause (e.g., cyclone-driven rainfall) indicate recurring vulnerabilities that warrant priority attention.
+
+**How is this made?**
+
+The Dartmouth Flood Observatory archive is stored in a GCS bucket as a spatial file. The pipeline reads this archive, reprojects to the AOI's CRS, validates geometries (repairing self-intersections where necessary), and filters for events intersecting the AOI. A severity-weighted score combining deaths, displacement, and the observatory's severity rating is used to label the ten most significant events on the chart.
+
+**How should we interpret it?**
+
+Events are plotted on a timeline with point size or color encoding severity. The archive may not capture all significant local floods — it emphasizes events large enough to appear in international reporting, with a known bias toward events near settlements and roads.
+
+**Under the hood**
+
+[`tasks/flood_events/collection.R`](../tasks/flood_events/collection.R) reads the Dartmouth archive spatial file from a GCS bucket, repairs any self-intersecting geometries with `sf::st_make_valid()` (switching off S2 spherical geometry temporarily to handle edge cases), and filters for events that spatially intersect the AOI. A severity-weighted score — computed as the product of normalized deaths, normalized displacement, and the observatory severity rating — ranks all events; the top 10 receive annotated text labels on the chart. The chart is rendered by [`tasks/flood_events/charts/index.qmd`](../tasks/flood_events/charts/index.qmd).
+
+**Key outputs**
+
+- `mnt/{scan-id}/02-process-output/tabular/{city}_flood_events.csv` — filtered flood event archive (BEGAN, ENDED, DEAD, DISPLACED, MAINCAUSE, SEVERITY)
+- `mnt/{scan-id}/03-render-output/plots/darthmouth_flood_events.pdf` — annotated flood event timeline chart
+
+**Source data citation**
+
+[@brakenridgeGlobalActive]
+
+----------
+
+## Flood Hazards & Exposure (Fathom)
+
+<!-- chart examples -->
+
+::: {#fig-flood layout-ncol=2 layout-valign="center"}
+
+![Fluvial Flood (Map)](image/2026-06-philippines-manila/03-render-output/maps/fluvial.png){#fig-fluv .lightbox height=300}
+
+![Pluvial Flood (Map)](image/2026-06-philippines-manila/03-render-output/maps/pluvial.png){#fig-pluv .lightbox height=300}
+
+![Coastal Flood (Map)](image/2026-06-philippines-manila/03-render-output/maps/coastal.png){#fig-coast .lightbox height=300}
+
+![Combined Flood (Map)](image/2026-06-philippines-manila/03-render-output/maps/combined_flooding.png){#fig-comb .lightbox height=300}
+
+Flood Hazard
+:::
+
+
+
+
+| Dataset | Measurement | Units | Source | Release Year | Years of Data | Coverage | Resolution | Task |
+|------------|------------|------------|------------|------------|------------|------------|------------|--------|
+| Fathom-Global 3.0 Flood Hazard Data | Flood depth at 1-in-10, 1-in-100, and 1-in-1000 year return periods | m | [Fathom](https://www.fathom.global/product/flood-hazard-data-maps/fathom-global/) | 2022 | — | Global | 1 arc-second (30m) | [tasks/fathom/](../tasks/fathom/)|
+
+
+**What is it?**
+
+There are 12 total flood hazard maps, covering three flood types and their combination, each overlaid with population density, built-up area, and social infrastructure layers. The flood types are:
+
+1. **Fluvial** (riverine) flooding occurs when a watercourse overflows its banks due to high upstream flow — from intense rainfall, snowmelt, or dam releases. It can strike an area even during dry local conditions if the triggering event occurred upstream.
+
+2. **Pluvial** (rainwater) flooding is floodwater that has not yet, or cannot, reach a watercourse. It occurs independently of overflowing water bodies and can affect any urban area, including elevated ones. *Surface water flooding* develops when drainage systems are overwhelmed; *flash floods* arrive faster than the drainage network can absorb, often from torrential local rainfall. Both are worsened by impervious urban surfaces that limit infiltration.^[See Zurich Insurance, ["Three Common Types of Flood"](https://www.zurich.com/knowledge/topics/flood-and-water-damage/three-common-types-of-flood) for a concise overview of surface water and flash flood distinctions.]
+
+3. **Coastal** flooding occurs when seawater inundates normally dry coastal land, typically via storm surge driven by severe winds coinciding with high tides. It can also result from tsunamis or from gradual sea level rise pushing tides above historic levels.
+
+The **combined** flood zone represents the spatial union of all three types and is particularly relevant because flood types can compound — a coastal storm surge can impair drainage capacity, while a precipitation event may simultaneously cause both pluvial and fluvial flooding.
+
+**Why use it?**
+
+Urban density means that more people and assets are concentrated in flood-prone areas. Cities often occupy river confluences or coastal locations chosen for access to water, and impervious surfaces reduce natural infiltration, increasing runoff. Flooding causes immediate harm (death, injury), damage to buildings and infrastructure, economic disruption, environmental contamination, and displacement. Knowing the spatial pattern of flood exposure — disaggregated by flood type — enables targeted infrastructure investment, informed land-use planning, and preparation of non-structural responses such as early warning systems and evacuation plans.
+
+::: {#fig-flood-pop layout-ncol=2 layout-valign="center"}
+
+![Population Exposed to Fluvial Flood (Map)](image/2026-06-philippines-manila/03-render-output/maps/fluvial_population.png){#fig-fluv .lightbox height=300}
+
+![Population Exposed to Pluvial Flood (Map)](image/2026-06-philippines-manila/03-render-output/maps/pluvial_population.png){#fig-pluv .lightbox height=300}
+
+![Population Exposed to Coastal Flood (Map)](image/2026-06-philippines-manila/03-render-output/maps/coastal_population.png){#fig-coast .lightbox height=300}
+
+![Population Exposed to Combined Flood (Map)](image/2026-06-philippines-manila/03-render-output/maps/combined_flooding_population.png){#fig-comb .lightbox height=300}
+
+Flood Exposed Population
+:::
+
+The **population density** overlay shows which flood zones would affect the most people. Areas with greater population density likely require greater resource allocation and longer evacuation lead times.
+
+
+::: {#fig-flood-uba layout-ncol=2 layout-valign="center"}
+
+![Urban Built-Up Area Exposed to Fluvial Flood (Map)](image/2026-06-philippines-manila/03-render-output/maps/fluvial_wsf.png){#fig-fluv .lightbox height=300}
+
+![Urban Built-Up Area Exposed to Fluvial Flood (Chart)](image/2026-06-philippines-manila/03-render-output/plots/fluvial-flood-1.png){#fig-fluv-chart .lightbox height=300}
+
+![Urban Built-Up Area Exposed to Pluvial Flood (Map)](image/2026-06-philippines-manila/03-render-output/maps/pluvial_wsf.png){#fig-pluv .lightbox height=300}
+
+![Urban Built-Up Area Exposed to Pluvial Flood (Chart)](image/2026-06-philippines-manila/03-render-output/plots/pluvial-flood-2.png){#fig-pluv-chart .lightbox height=300}
+
+![Urban Built-Up Area Exposed to Coastal Flood (Map)](image/2026-06-philippines-manila/03-render-output/maps/coastal_wsf.png){#fig-coast .lightbox height=300}
+
+![Urban Built-Up Area Exposed to Coastal Flood (Chart)](image/2026-06-philippines-manila/03-render-output/plots/coastal-flood-2.png){#fig-coast-chart .lightbox height=300}
+
+![Urban Built-Up Area Exposed to Combined Flood (Map)](image/2026-06-philippines-manila/03-render-output/maps/combined_flooding_wsf.png){#fig-comb .lightbox height=300}
+
+![Urban Built-Up Area Exposed to Combined Flood (Chart)](image/2026-06-philippines-manila/03-render-output/plots/combined-flood-2.png){#fig-comb-chart .lightbox height=300}
+
+Flood Exposed Built Up Area
+:::
+
+The **built-up area** overlay (from the World Settlement Footprint) shows how flood zones intersect with developed land. Flooding in built-up areas damages buildings; in non-built-up areas it may destroy crops or contaminate water sources. The temporal extent of WSF also reveals whether newer or older development is concentrated in flood-prone zones, which can indicate the likely quality of flood-resilient construction.
+
+
+::: {#fig-flood-infra layout-ncol=2 layout-valign="center"}
+
+![Infrastructure Exposed to Fluvial Flood (Map)](image/2026-06-philippines-manila/03-render-output/maps/fluvial_infrastructure.png){#fig-fluv .lightbox height=300}
+
+![Infrastructure Exposed to Pluvial Flood (Map)](image/2026-06-philippines-manila/03-render-output/maps/pluvial_infrastructure.png){#fig-pluv .lightbox height=300}
+
+![Infrastructure Exposed to Coastal Flood (Map)](image/2026-06-philippines-manila/03-render-output/maps/coastal_infrastructure.png){#fig-coast .lightbox height=300}
+
+![Infrastructure Exposed to Combined Flood (Map)](image/2026-06-philippines-manila/03-render-output/maps/combined_flooding_infrastructure.png){#fig-comb .lightbox height=300}
+
+Flood Exposed Social Infrastructure
+:::
+
+The **social infrastructure** overlay maps hospitals, schools, fire stations, and police stations. These facilities are critical not only in normal times but especially during disaster response: flooded hospitals cannot treat casualties; flooded fire and police stations impair first-response capacity; and schools often serve as evacuation shelters.
+
+::: {#fig-flood-gdp layout-ncol=2 layout-valign="center"}
+
+![Sectoral GDP areas exposed to Pluvial Flood (Chart)](image/2026-06-philippines-manila/03-render-output/plots/sectoral-gdp-flood-rainwater.png){#fig-pluv-gdp .lightbox height=300}
+
+![Sectoral GDP areas exposed to Coastal Flood (Chart)](image/2026-06-philippines-manila/03-render-output/plots/sectoral-gdp-flood-coastal.png){#fig-coast-gdp .lightbox height=300}
+
+![Combined GDP areas exposed to Pluvial Flood (Chart)](image/2026-06-philippines-manila/03-render-output/plots/combined-gdp-flood-rainwater.png){#fig-pluv-gdp2 .lightbox height=300}
+
+![Combined GDP areas exposed to Coastal Flood (Chart)](image/2026-06-philippines-manila/03-render-output/plots/combined-gdp-flood-coastal.png){#fig-coast-gdp2 .lightbox height=300}
+
+Sectoral and Combined GDP exposure to flood hazards
+:::
+
+The **sectoral GDP** overlay combines Fathom flood hazard with the SectGDP30 gridded GDP rasters to estimate the value of economic activity exposed to flooding, disaggregated by sector (agriculture, industry, services). 
+
+Note: fluvial flood GDP exposures in this example are omitted here due to low hazard extent. 
+
+**How is this made?**
+
+Fathom-Global 3.0 begins with the Copernicus Digital Elevation Model, adjusted to remove building and forest surfaces to produce a bare-earth terrain model. River channel depths are estimated hydraulically from modeled water flow. A hydrodynamic model simulates water movement across terrain during extreme precipitation and riverflow events, combined with hydrological models and global precipitation frequency statistics. The result is a flood depth raster at 1-in-10, 1-in-100, and 1-in-1,000 year return periods, with a critical success index of 0.75. The City Scan pipeline clips the relevant flood type rasters to the AOI, applies a 15cm depth threshold to define flooded area, and produces per-return-period exposure overlays with population, WSF, social infrastructure, and sectoral GDP layers.
+
+**How should we interpret it?**
+
+These maps show 15-cm flood zones at 1-in-10, 1-in-100, and 1-in-1,000 year return periods. Climate change is expected to increase both frequency and severity of flooding — the stated return periods reflect historical statistics and will understate future risk as conditions shift.
+
+**Under the hood**
+
+[`tasks/fathom/collection.py`](../tasks/fathom/collection.py) downloads per-type, per-return-period GeoTIFFs from a private GCS bucket (`/vsigs/city-scan-global-private/Fathom/v2023`), clips each to the AOI, and applies a 15cm depth threshold via `apply_flood_threshold()` to produce binary flooded/not-flooded bands. A composite raster is assembled by `composite_flood_raster()`: Band 1 holds the maximum flood probability across all return periods (used for mapping), while subsequent bands hold the binary per-RP indicators (used for exposure charting). [`tasks/fathom/analysis.py`](../tasks/fathom/analysis.py) computes WSF-era exposure statistics (`calculate_flood_wsf_stats()`), population exposure, and OSM facility counts within flood zones. [`tasks/fathom/multianalysis.R`](../tasks/fathom/multianalysis.R) joins the flood exposure tables with WSF harmonized area and sectoral GDP rasters to produce the GDP exposure charts. The per-type flood maps and overlay maps (population, WSF, infrastructure) are rendered by [`core/R/map-flooding.R`](../core/R/map-flooding.R) using layer definitions in [`source/layers.yml`](../source/layers.yml).
+
+**Key outputs**
+
+- `mnt/{scan-id}/02-process-output/spatial/{city}_{flood_type}_{rp}.tif` — per-type, per-return-period flood rasters
+- `mnt/{scan-id}/02-process-output/spatial/{city}_combined_flooding.tif` — combined flood hazard (max probability)
+- `mnt/{scan-id}/03-render-output/maps/fluvial.png`, `pluvial.png`, `coastal.png`, `combined_flooding.png` — flood hazard maps
+- `mnt/{scan-id}/03-render-output/maps/{flood_type}_population.png` — population exposure maps
+- `mnt/{scan-id}/03-render-output/maps/{flood_type}_wsf.png` — built-up area exposure maps
+- `mnt/{scan-id}/03-render-output/maps/{flood_type}_infrastructure.png` — social infrastructure exposure maps
+
+**Source data citation**
+
+[@fathom_sampson2015high; @fathom2023global]
+
+----------
+
+
+
+## Elevation and Slope
+
+<!-- chart examples -->
+
+::: {#fig-elevation layout-ncol=2 layout-valign="center"}
+
+![Elevation (Map)](image/2026-06-philippines-manila/03-render-output/maps/elevation.png){#fig-elev-map .lightbox height=300}
+
+![Elevation (Chart)](image/2026-06-philippines-manila/03-render-output/plots/wsf-elevation-pieplot.png){#fig-elev-chart .lightbox height=300}
+
+![Slope (Map)](image/2026-06-philippines-manila/03-render-output/maps/slope.png){#fig-slope-map .lightbox height=300}
+
+![Slope (Chart)](image/2026-06-philippines-manila/03-render-output/plots/wsf-slope-pieplot.png){#fig-slope-chart .lightbox height=300}
+
+Elevation and Slope
+:::
+
+
+| Dataset | Measurement | Units | Source | Release Year | Years of Data | Coverage | Resolution | Task |
+|------------|------------|------------|------------|------------|------------|------------|------------|--------|
+| FABDEM v1.2 | Bare-earth elevation | Meters above sea level | [University of Bristol / Copernicus](https://doi.org/10.1088/1748-9326/ac4d4f) | 2022 | — | Global | ~30m | [tasks/elevation/](../tasks/elevation/), [tasks/slope/](../tasks/slope/) |
+
+
+**What is it?**
+
+Two terrain maps derived from the FABDEM (Forest and Buildings Removed DEM): an elevation raster showing height above sea level and a slope raster showing terrain gradient in degrees. FABDEM is a bare-earth model that removes the vertical contribution of buildings and tree canopies from the Copernicus DEM, making it more suitable for hydrological and urban analysis than standard surface models.
+
+**Why use it?**
+
+Elevation and slope influence flood risk, landslide susceptibility, infrastructure cost, and service delivery. Low-lying areas are prone to pluvial or fluvial flooding; steep slopes increase landslide risk and make road construction more challenging. These two layers provide the terrain baseline that underpins many hazard analyses in this section.
+
+**How is this made?**
+
+FABDEM tiles are downloaded from a public GCS bucket and mosaicked for the AOI (falling back to the GEE community catalog, then USGS SRTM, if tiles are unavailable). The slope raster is derived by reprojecting the elevation raster to a local UTM CRS, computing the gradient with `numpy.gradient`, and converting to degrees via arctangent. The slope raster is then reprojected back to EPSG:4326 and clipped to the AOI.
+
+**How should we interpret it?**
+
+The elevation map identifies low-lying areas at potential flood risk and elevated areas that may serve as natural refuges. The slope map highlights zones where construction is constrained: slopes above 15–20° are challenging for dense development; slopes above 30° present significant landslide risk. Both maps are most informative when overlaid with flood hazard, landslide, or population layers.
+
+**Under the hood**
+
+[`tasks/elevation/collection.py`](../tasks/elevation/collection.py) downloads FABDEM ZIP archives from GCS, extracts tiles, and mosaics them with `rasterio.merge`. A buffered clip (500m buffer, `{city}_elevation_buf.tif`) is also produced for use by the slope task. [`tasks/slope/collection.py`](../tasks/slope/collection.py) reads the buffered elevation, reprojects to UTM, computes slope with `numpy.gradient`, and reprojects back to EPSG:4326.
+
+**Key outputs**
+
+- `mnt/{scan-id}/02-process-output/spatial/{city}_elevation.tif` — bare-earth elevation raster (~30m, meters)
+- `mnt/{scan-id}/02-process-output/spatial/{city}_slope.tif` — terrain slope raster (~30m, degrees)
+- `mnt/{scan-id}/03-render-output/maps/elevation.png` — elevation choropleth map
+- `mnt/{scan-id}/03-render-output/maps/slope.png` — slope choropleth map
+- `mnt/{scan-id}/03-render-output/plots/wsf-elevation-pieplot.png` — built-up area by elevation class
+- `mnt/{scan-id}/03-render-output/plots/wsf-slope-pieplot.png` — built-up area by slope class
+
+**Source Data Citation**
+
+[@fabdem2022]
+
+----------
+
+
+## Landslide Susceptibility
+
+<!-- chart examples -->
+
+::: {#fig-landslide layout-ncol="2" layout-valign="center"}
+
+![Landslide Susceptibility (Map)](image/2026-06-philippines-manila/03-render-output/maps/landslides.png){#fig-lslide .lightbox height=300}
+
+![Landslide Exposure to Built Up Area (Map)](image/2026-06-philippines-manila/03-render-output/maps/landslides_builtup.png){#fig-lslide-uba .lightbox height=300}
+
+Landslide susceptibility and exposure
+:::
+
+
+| Dataset | Measurement | Units | Source | Release Year | Years of Data | Coverage | Resolution | Task |
+|------------|------------|------------|------------|------------|------------|------------|------------|--------|
+| NASA Global Landslide Model | Susceptibility index (5-class) | Ordinal class (very low–very high) | [NASA Goddard](https://gpm.nasa.gov/applications/global-landslide-model) | 2020 | — | Global | 30 arc-seconds (~1km) | [tasks/landslide/](../tasks/landslide/) |
+
+
+**What is it?**
+
+A map of landslide susceptibility at ~1km resolution, classifying land into five levels (very low to very high). Landslides are the mass movement of rock or soil down a slope and can take many forms — falls, topples, flows, and spreads — triggered by heavy rainfall, [liquefaction](#liquefaction-susceptibility), excavation, or stream erosion. For a full typology, see the USGS [Landslide Handbook](https://pubs.usgs.gov/circ/1325/).
+
+**Why use it?**
+
+Landslides can directly damage buildings and infrastructure in their path, and the secondary effects — blocked roads, broken pipes, downed power lines — can disrupt far larger areas. Road construction is a common trigger, as excavation and infill weaken slopes. Landslide susceptibility maps can direct new development away from high-risk zones and identify where slope stabilization or vegetation measures are warranted.
+
+**How is this made?**
+
+The model uses a fuzzy heuristic approach combining five globally available inputs: slope (from the Viewfinder Panoramas DEM, aggregated to the maximum 30-arc-second cell value), lithological class (reclassified from Bouysse's Geological Map of the World into five strength levels), distance to fault lines, presence of OSM highway segments, and forest loss (from the Hansen dataset, 2000–2013). Non-slope variables are combined with a fuzzy gamma operator (γ = 0.9), then multiplied by the transformed slope variable to ensure flat terrain cannot receive high susceptibility scores. The resulting index is classified into five breakpoints (0.11, 0.49, 0.671, 0.75) so that each class covers roughly half the area of the previous one. The model achieves an AUC of 0.82 on the classified output, validated against 1,194 global landslide events.
+
+The susceptibility formula is:
+
+$Susceptibility = \left(1 - \prod_{i}^{n} (1 - X_i)\right)^{0.9} \cdot \left( \prod_{i}^{n} X_i \right)^{0.1} \cdot S$
+
+where $X_i$ is the transformed non-slope variable $i$ and $S$ is the transformed slope variable.^[The fuzzy gamma operator combines the probability that any of a set of events happen (the left term, analogous to a union) with the probability that all occur (the right term, analogous to an intersection), weighted by $\gamma = 0.9$. Full form: $\left(1 - \prod_{i}^{n} (1 - X_i)\right)^\gamma \cdot \left( \prod_{i}^{n} X_i \right)^{1-\gamma}$. See [Esri's documentation on fuzzy overlay](https://pro.arcgis.com/en/pro-app/latest/tool-reference/spatial-analyst/applying-fuzzy-logic-to-overlay-rasters.htm) for further explanation.]
+
+**How should we interpret it?**
+
+Susceptibility measures how prone a site is to landslide formation given its intrinsic properties — it does not indicate probability over a time period. The very high class covers approximately 3% of global land area and has a positive likelihood ratio about 100 times greater than the very low class. Because the model uses globally available data, it cannot capture fine-grained soil heterogeneity within grid cells, and does not differentiate between landslide types.
+
+**Under the hood**
+
+[`tasks/landslide/collection.py`](../tasks/landslide/collection.py) downloads the pre-classified landslide susceptibility GeoTIFF from a public GCS bucket and clips it to the AOI using `rasterio.mask`. [`tasks/landslide/analysis.py`](../tasks/landslide/analysis.py) computes summary statistics (min, percentiles, mean) over the clipped raster. The susceptibility map and the built-up area overlay are rendered in R via [`core/R/`](../core/R/) using the `landslides` layer definition in [`source/layers.yml`](../source/layers.yml). The built-up overlay is derived by masking the susceptibility raster to the WSF Evolution footprint.
+
+**Key outputs**
+
+- `mnt/{scan-id}/02-process-output/spatial/{city}_landslide.tif` — landslide susceptibility raster (~1km, 5-class)
+- `mnt/{scan-id}/03-render-output/maps/landslides.png` — susceptibility map
+- `mnt/{scan-id}/03-render-output/maps/landslides_builtup.png` — susceptibility overlaid with built-up area
+
+**Source Data Citation**
+
+[@stanley2017heuristic]
+
+
+----
+
+## Earthquake Events
+
+<!-- chart examples -->
+
+![Earthquake Events](image/2026-06-philippines-manila/03-render-output/plots/ngdc-earthquake-scatter.png){#fig-eq .lightbox height=300}
+
+
+| Dataset | Measurement | Units | Source | Release Year | Years of Data | Coverage | Resolution | Task |
+|------------|------------|------------|------------|------------|------------|------------|------------|--------|
+| NGDC/WDS Global Significant Earthquake Database | Magnitude, depth, fatalities, damage level | — | [NOAA NCEI](https://www.ngdc.noaa.gov/hazel/hazard-service/api/v1/earthquakes) | Ongoing | 1900–present | Global | — | [tasks/earthquake/](../tasks/earthquake/) |
+| USGS FDSN Earthquake Catalog | Magnitude, depth | — | [USGS](https://earthquake.usgs.gov/fdsnws/event/1/) | Ongoing | 1900–present | Global | — | [tasks/earthquake/](../tasks/earthquake/) |
+
+
+**What is it?**
+
+A scatter chart of significant earthquakes within 500km of the city, drawn from a merged catalog of the USGS FDSN (comprehensive, including small events) and the NOAA NCEI/WDS Global Significant Earthquake Database (curated, with damage and casualty metadata). Events appearing in both sources are deduplicated using a proximity and magnitude threshold. The NCEI database defines damage levels by monetary cost: limited (<$1M), moderate ($1–5M), severe ($5–24M), extreme ($25M+).
+
+**Why use it?**
+
+The earthquake catalog provides historical context for seismic activity in and around the city. Combined with the [Seismic Hazard](#seismic-hazard) and [Liquefaction](#liquefaction-susceptibility) maps, it helps establish whether past events have affected the city and at what magnitude and depth. Seismic risk in cities has grown largely due to urbanization, poor land-use planning, and inadequate building codes — understanding the historical record supports investment in retrofitting and preparedness.
+
+**How is this made?**
+
+The USGS API is queried for all earthquakes of magnitude ≥ 1.0 within a 500km radius of the city centroid, back to 1900. The NCEI API is queried for the same period globally and results are filtered spatially. Events are merged and deduplicated: events within 1 day, 50km, and 0.8 magnitude units of each other are treated as the same event, retaining the NCEI row (which carries richer damage metadata).
+
+**Under the hood**
+
+[`tasks/earthquake/collection.R`](../tasks/earthquake/collection.R) queries the USGS FDSN REST API (`earthquake.usgs.gov/fdsnws/event/1/query`) and the NOAA NCEI Hazard Service API (`ngdc.noaa.gov/hazel/hazard-service/api/v1/earthquakes`) using the `httr2` package, with paginated requests for the NCEI endpoint. The merged catalog is deduplicated by matching events within a 1-day window, 50km radius, and 0.8-magnitude tolerance, preferring NCEI rows for their richer damage fields. The output CSV uses the NCEI column schema with `NA` values for USGS-only events. The scatter chart is rendered by [`tasks/earthquake/charts/index.qmd`](../tasks/earthquake/charts/index.qmd), plotting magnitude vs. year and encoding depth and damage level visually.
+
+**Key outputs**
+
+- `mnt/{scan-id}/02-process-output/tabular/{city}_earthquake.csv` — merged USGS + NCEI earthquake catalog
+- `mnt/{scan-id}/03-render-output/plots/ngdc-earthquake-scatter.png` — earthquake scatter chart
+
+**Source data citation**
+
+[@ncei_earthquake; @usgs_fdsn]
+
+----
+
+## Liquefaction Susceptibility
+
+<!-- chart examples -->
+
+::: { #fig-liquefaction layout-ncol="2" layout-valign="center"}
+![Liquefaction Susceptibility](image/2026-06-philippines-manila/03-render-output/maps/liquefaction.png){#fig-liq .lightbox height=300}
+
+![Liquefaction Exposure to Built Up Area](image/2026-06-philippines-manila/03-render-output/maps/liquefaction_builtup.png){#fig-liq-uba .lightbox height=300}
+
+Liquefaction hazard and exposure
+:::
+
+| Dataset | Measurement | Units | Source | Release Year | Years of Data | Coverage | Resolution | Task |
+|------------|------------|------------|------------|------------|------------|------------|------------|--------|
+| Global Liquefaction Susceptibility Map | Susceptibility class | Ordinal (very low–very high) | [Zenodo (Zhu et al.)](https://zenodo.org/record/2583746) | 2019 | — | Global | ~1.2km | [tasks/liquefaction/](../tasks/liquefaction/) |
+
+
+**What is it?**
+
+A map showing where soils are most susceptible to liquefaction — the process by which strong earthquake vibrations temporarily convert water-saturated sediment into a fluid-like state, causing the ground to lose its load-bearing capacity. When liquefaction occurs, buildings and bridges can tilt or collapse, and gentle slopes can begin to flow. This map classifies susceptibility into five levels (very low to very high) based on soil and terrain characteristics, independent of any specific earthquake. Liquefaction is most commonly triggered by earthquakes, but non-seismic loads — such as dam failures and mine tailings impoundments — can also raise pore water pressure sufficiently to induce it.^[Kramer, Steven Lawrence. 1985. ["Liquefaction of Sands Due to Non-seismic Loading."](https://www.proquest.com/openview/bd9efecaff7df535c0654c9f582ed1ff/1) University of Washington.]
+
+**Why use it?**
+
+While seismic hazard is roughly uniform across a city's area, liquefaction susceptibility varies considerably based on soil type, saturation, and drainage. Understanding which areas are more susceptible guides decisions on building codes, foundation design, and soil improvement. The three general responses are: avoiding susceptible areas, engineering more resistant foundations, and strengthening the soil through drainage, densification, or replacement.^[Johansson, Jörgen. 2000. [Soil Liquefaction](https://depts.washington.edu/liquefy/html/how/how1.html). University of Washington.]
+
+**How is this made?**
+
+The Zhu et al. model uses geospatial regression trained on observed liquefaction (and non-liquefaction) from 27 earthquake events in six countries. The coastal model (within 20km of the sea) uses precipitation, distance to water bodies, and time-averaged shear wave velocity $V_{S30}$ (approximated from slope); the inland model replaces distance to water bodies with water table depth. Because the trained model requires peak ground velocity (PGV) as an earthquake loading proxy, PGV is removed from the final susceptibility output to produce a site-characteristic rather than event-specific map. The resulting values are classified into five ordinal levels.
+
+**How should we interpret it?**
+
+*Susceptibility* differs from *probability*: susceptibility is a time-independent characteristic of the site, while probability would incorporate the likelihood of a triggering earthquake. High liquefaction susceptibility in a low-seismicity area does not mean liquefaction is likely — view this map alongside the [Seismic Hazard](#seismic-hazard) map. The 1.2km resolution and the use of slope-derived $V_{S30}$ (rather than in-situ measurements) mean that significant within-cell variation may exist.
+
+**Under the hood**
+
+[`tasks/liquefaction/collection.py`](../tasks/liquefaction/collection.py) downloads the pre-classified liquefaction susceptibility GeoTIFF from a public GCS bucket and clips it to the AOI using `rasterio.mask`. The output is a single-band raster with five ordinal class values. The susceptibility map and built-up area overlay are rendered in R via [`core/R/`](../core/R/) using the `liquefaction` layer definition in [`source/layers.yml`](../source/layers.yml). The built-up overlay is derived by masking the susceptibility raster to the WSF Evolution footprint, consistent with the landslide built-up overlay.
+
+**Key outputs**
+
+- `mnt/{scan-id}/02-process-output/spatial/{city}_liquefaction.tif` — liquefaction susceptibility raster (~1.2km, 5-class)
+- `mnt/{scan-id}/03-render-output/maps/liquefaction.png` — susceptibility map
+- `mnt/{scan-id}/03-render-output/maps/liquefaction_builtup.png` — susceptibility overlaid with built-up area
+
+**Source data citation**
+
+[@zorn_2019_2583746]
+
+
+## Seismic Hazard
+
+<!-- chart examples -->
+
+
+![Seismic Hazard](image/2026-06-philippines-manila/03-render-output/maps/seismic_hazard.png){#fig-seismic .lightbox height=300}
+
+
+
+| Dataset | Measurement | Units | Source | Release Year | Years of Data | Coverage | Resolution | Task |
+|------------|------------|------------|------------|------------|------------|------------|------------|--------|
+| GEM Seismic Hazard Map (v2023.1) | Peak Ground Acceleration (PGA) at 10% probability of exceedance in 50 years on reference rock | g | [Global Earthquake Model / OpenQuake](https://maps.openquake.org/map/global-seismic-hazard-map/) | 2023 | — | Global | ~3 arc-min (~5km) | [tasks/seismic_hazard/](../tasks/seismic_hazard/) |
+
+
+**What is it?**
+
+A map of Peak Ground Acceleration (PGA) representing the seismic shaking intensity with a 10% probability of being exceeded in 50 years — corresponding to a ~475-year return period — on reference rock conditions (shear wave velocity 760–800 m/s). PGA is the standard metric for structural design and seismic risk assessments. An earthquake with moderate damage potential (PGA ~0.1–0.2g) can cause structural damage to unreinforced masonry and movement of wood-frame structures.
+
+**Why use it?**
+
+Seismic hazard is the foundation for understanding earthquake risk to people and assets. By itself it describes the shaking potential; combined with [Liquefaction Susceptibility](#liquefaction-susceptibility) and building inventory data, it enables fuller risk assessment. Seismic risk in cities has grown primarily due to rapid urbanization, informal construction, and the concentration of population in poorly engineered buildings. This map provides the spatial baseline for prioritizing seismic retrofitting and resilient design standards.
+
+**How is this made?**
+
+The GEM hazard model is produced using OpenQuake, an open-source probabilistic seismic hazard analysis platform. It incorporates global seismicity catalogs, fault source models, and ground motion prediction equations. The 2023 version covers the globe at ~3 arc-minute resolution. The City Scan pipeline downloads and clips the `v2023_1_pga_475_rock_3min.tif` raster to the AOI.
+
+**How should we interpret it?**
+
+The map shows relative seismic shaking intensity across the city at the 475-year return period. Higher PGA values indicate areas with greater expected shaking — though at the ~5km resolution, the map is most useful for city-to-city comparison and broad zoning rather than site-specific structural design. Combine with the Liquefaction Susceptibility map to identify where shaking may be amplified by soil conditions.
+
+**Under the hood**
+
+[`tasks/seismic_hazard/collection.py`](../tasks/seismic_hazard/collection.py) downloads the GEM 2023 PGA raster (`v2023_1_pga_475_rock_3min.tif`) from the OpenQuake public release, opens it via `rasterio`, and clips it to the AOI using `rasterio.windows`. The seismic hazard map is rendered in R via [`core/R/map-seismic-hazard.R`](../core/R/map-seismic-hazard.R) using the `seismic_hazard` layer definition in [`source/layers.yml`](../source/layers.yml).
+
+**Key outputs**
+
+- `mnt/{scan-id}/02-process-output/spatial/{city}_seismic_hazard.tif` — PGA raster (~5km)
+- `mnt/{scan-id}/03-render-output/maps/seismic_hazard.png` — seismic hazard choropleth map
+
+**Source data citation**
+
+[@silva2023global]
+
+-----
+
+## Road Network Criticality
+
+<!-- chart examples -->
+
+::: {#fig-road layout-ncol="2" layout-valign="center"}
+![Road Network Criticality](image/2026-06-philippines-manila/03-render-output/maps/roads.png){#fig-road-crit .lightbox height=300}
+
+![Major roads](image/2026-06-philippines-manila/03-render-output/maps/roads_network.png){#fig-road-net .lightbox height=300}
+:::
+
+| Dataset | Measurement | Units | Source | Release Year | Years of Data | Coverage | Resolution | Task |
+|------------|------------|------------|------------|------------|------------|------------|------------|--------|
+| OpenStreetMap | Road network geometry | — | [OSM via OSMnx](https://geoffboeing.com/2016/11/osmnx-python-street-networks/) | Ongoing | Current snapshot | Global | — | [tasks/accessibility/](../tasks/accessibility/) |
+
+
+**What is it?**
+
+A map showing the relative importance of each road segment to the city's overall road network, measured by edge betweenness centrality. Betweenness is the share of all shortest-path trips (between intersections) that pass through a given road segment. Higher percentages indicate segments whose obstruction would disrupt travel for a larger proportion of the city.
+
+**Why use it?**
+
+Road networks are critical for the movement of people and goods, emergency response, and evacuation. A non-critical street obstruction may affect only nearby residents; the obstruction of a highly critical segment during a flood or earthquake could broadly disrupt economic and social life and impede rescue operations. Identifying critical segments guides investment in resilience measures — elevating flood-exposed sections, adding redundant routes, or siting transit infrastructure on well-connected corridors.
+
+**How is this made?**
+
+The OSM road network is extracted for primary and secondary road types within the city AOI. The edge betweenness centrality algorithm maps the shortest path between all intersection pairs (or a 500-sample approximation for large cities, shown to produce similar results). Each segment's betweenness score is expressed as the percentage of total trips using that segment. The road network and centrality values are saved to a GeoPackage for mapping.
+
+**How should we interpret it?**
+
+Cities with grid networks or many alternative routes show lower maximum betweenness scores — fewer segments are truly critical. Cities with radial or tree-like structures concentrate betweenness on a small number of segments. This analysis treats all road segments and intersections equally, which does not reflect capacity differences between, say, a motorway and a residential street. Trip distribution also differs from shortest-path logic in practice; congestion, preferences, and road quality all affect actual route choice.
+
+**Under the hood**
+
+[`tasks/accessibility/collection.py`](../tasks/accessibility/collection.py) downloads the OSM road network graph via `ox.graph_from_polygon()` using OSMnx, with a 5km buffer around the AOI. The graph is saved as both a GeoPackage (`{city}_nodes_and_edges.gpkg`) and a GraphML file. [`tasks/accessibility/analysis.py`](../tasks/accessibility/analysis.py) computes edge and node betweenness centrality via `nx.edge_betweenness_centrality()` and `nx.betweenness_centrality()` from NetworkX, using a sample of 500 intersection nodes for large networks to keep computation tractable. Centrality values are joined back to the edges GeoDataFrame and saved to `{city}_nodes_and_edges_centralities.gpkg`. The road criticality and network maps are rendered in R via [`core/R/`](../core/R/) using the `roads` and `roads_network` layer definitions in [`source/layers.yml`](../source/layers.yml).
+
+**Key outputs**
+
+- `mnt/{scan-id}/02-process-output/spatial/{city}_nodes_and_edges_centralities.gpkg` — road network with betweenness centrality
+- `mnt/{scan-id}/03-render-output/maps/roads.png` — road criticality choropleth map
+- `mnt/{scan-id}/03-render-output/maps/roads_network.png` — major road network map
+
+**Source data citation**
+
+[@OpenStreetMap; @osmnx_2025]
+
+-----
+
+## Drought
+
+<!-- chart examples -->
+
+
+![Drought](image/2026-06-philippines-manila/03-render-output/maps/drought.png){#fig-drought .lightbox height=300}
+
+| Dataset | Measurement | Units | Source | Release Year | Years of Data | Coverage | Resolution | Task |
+|------------|------------|------------|------------|------------|------------|------------|------------|--------|
+| Sentinel-2 Harmonized (ESA, via GEE) | Normalized Difference Moisture Index (NDMI) | Dimensionless (−1 to 1) | [European Space Agency / Copernicus](https://dataspace.copernicus.eu/explore-data/data-collections/sentinel-data/sentinel-2) | Ongoing | 2017–2024 | Global | 10m | [tasks/ndxi/](../tasks/ndxi/) |
+
+
+**What is it?**
+
+The Normalized Difference Moisture Index (NDMI) measures moisture content in vegetation using Sentinel-2 near-infrared and shortwave infrared bands:
+
+$$NDMI = \frac{NIR - SWIR}{NIR + SWIR}$$
+
+This map shows the seasonal (summer) median NDMI composite averaged over 2017–2024. Negative values indicate water-stressed vegetation; positive values indicate well-watered or potentially waterlogged vegetation.
+
+**Why use it?**
+
+Moisture stress in vegetation affects agricultural productivity, ecosystem resilience, and wildfire risk. Areas with persistently low NDMI — particularly during dry seasons — are more susceptible to vegetation loss and combustion. NDMI is especially useful as a precursor indicator when combined with the [Fire Weather Index](#historical-burnt-area--fire-weather-index) and [Burnability](#burnability) layers.
+
+**How is this made?**
+
+Sentinel-2 Harmonized imagery is filtered to scenes with less than 10% cloud cover for the summer season (2017–2024). Clouds are masked using the QA60 band. Median composites are computed per season and NDMI is calculated as `(B8 − B11) / (B8 + B11)`, using Band 8 (NIR) and Band 11 (SWIR). The resulting composite is exported at 10m and saved as `{city}_ndmi_season.tif`.
+
+**How should we interpret it?**
+
+NDMI ranges from −1 to 1. Values below 0 indicate water stress; values approaching −1 represent severely stressed or bare land. Because the map shows a seasonal median, it reflects typical conditions during the hottest months — areas that are chronically dry will show consistently low values.
+
+**Under the hood**
+
+[`tasks/ndxi/collection.py`](../tasks/ndxi/collection.py) handles both NDVI and NDMI, selecting the appropriate Sentinel-2 band pair via the `INDEX_BANDS` dictionary (`ndmi` uses B8 NIR and B11 SWIR). It builds a Sentinel-2 Harmonized collection filtered to the summer season and scenes with less than 10% cloud cover, applies the QA60-based cloud mask via `maskS2clouds()`, and computes the seasonal median composite server-side in GEE using `fns.Composite`. The NDMI composite is exported at 10m via `fns.tiled_collection()` and saved as `{city}_ndmi_season.tif`. The drought map is rendered in R via [`core/R/`](../core/R/) using the `drought` layer definition in [`source/layers.yml`](../source/layers.yml).
+
+**Key outputs**
+
+- `mnt/{scan-id}/02-process-output/spatial/{city}_ndmi_season.tif` — seasonal NDMI raster (10m)
+- `mnt/{scan-id}/03-render-output/maps/drought.png` — NDMI drought map
+
+**Source data citation**
+
+[@esa2020ndmi]
+
+
+-----
+
+## Burnability
+
+<!-- chart examples -->
+
+
+![Burnability Factor](image/2026-06-philippines-manila/03-render-output/maps/burnable.png){#fig-burn .lightbox height=300}
+
+| Dataset | Measurement | Units | Source | Release Year | Years of Data | Coverage | Resolution | Task |
+|------------|------------|------------|------------|------------|------------|------------|------------|--------|
+| ESA CCI Land Cover v2.1.1 | Land cover class → burnability score | 0–1 (7-level ordinal) | [ESA Climate Change Initiative](https://www.esa-landcover-cci.org/) | 2020 | 2016–2020 | Global | ~300m | [tasks/landcover_burn/](../tasks/landcover_burn/) |
+
+
+**What is it?**
+
+A raster map showing the potential for combustion of each land area based on its land cover type. The 2020 ESA CCI land cover classification is reclassified into a burnability score from 0 to 1 using a mapping derived from global wildfire occurrence research. Dense closed forest receives the highest score (1.0); urban and permanent water bodies receive 0.
+
+**Why use it?**
+
+Burnability captures fuel availability — one of the three key components of wildfire risk alongside ignition sources and atmospheric conditions. Areas with high burnability scores that also experience high Fire Weather Index values or low NDMI represent zones of compounded wildfire potential. This is especially relevant at the urban-rural interface where vegetation encroaches on settled areas.
+
+**How is this made?**
+
+The ESA CCI 2020 land cover raster is downloaded from GCS and clipped to the AOI. Each pixel's class code is mapped to a burnability score using the following scheme, based on Gannon et al. (2021) and historical MODIS wildfire intensity patterns:
+
+| Score | Land cover classes |
+|-------|-------------------|
+| 0     | Urban, bare areas, permanent water, snow/ice |
+| 0.16  | Sparse shrubland |
+| 0.33  | Sparse vegetation, sparse forest |
+| 0.50  | Mosaic cropland/vegetation, shrubland, wetlands |
+| 0.66  | Rainfed/irrigated cropland, grassland, tree cover types |
+| 0.83  | Closed broadleaved forest types, flooded forest |
+| 1.0   | Closed evergreen broadleaved forest |
+
+**How should we interpret it?**
+
+The burnability score represents relative fuel load and ignition potential given the land cover type — it does not predict that a fire will occur. High-burnability areas near urban edges are most actionable for vegetation management and firebreak planning. Use alongside the [FWI chart](#historical-burnt-area--fire-weather-index) and [Drought map](#drought) for a fuller assessment of wildfire conditions.
+
+**Under the hood**
+
+[`tasks/landcover_burn/collection.py`](../tasks/landcover_burn/collection.py) reads the ESA CCI 2020 land cover GeoTIFF (`ESACCI.tif`) from a GCS bucket via GDAL's `/vsigs/` virtual file system, clips it to the AOI using `rasterio.mask`, and reclassifies each pixel's integer class code to a burnability float score using the `CLASS_TO_BURN` lookup dictionary. The reclassified raster is saved as `{city}_burnable.tif`. The burnability map is rendered in R via [`core/R/`](../core/R/) using the `burnable` layer definition in [`source/layers.yml`](../source/layers.yml).
+
+**Key outputs**
+
+- `mnt/{scan-id}/02-process-output/spatial/{city}_burnable.tif` — burnability score raster (~300m, 0–1)
+- `mnt/{scan-id}/03-render-output/maps/burnable.png` — burnability choropleth map
+
+**Source data citation**
+
+[@zanaga_2021_ESA_Landcover; @gannon_global_2021]
+
+## Historical Burnt Area & Fire Weather Index
+
+<!-- chart examples -->
+
+::: { #fig-fwi layout-ncol="2" layout-valign="center"}
+
+![History of Fire (MODIS Burnt Area)](image/2026-06-philippines-manila/03-render-output/maps/burnt_area.png){#fig-burnt .lightbox height=300}
+
+![Fire Weather Index](image/2026-06-philippines-manila/03-render-output/plots/nasa-fwi.png){#fig-fwi-chart .lightbox height=300}
+
+:::
+
+| Dataset | Measurement | Units | Source | Release Year | Years of Data | Coverage | Resolution | Task |
+|------------|------------|------------|------------|------------|------------|------------|------------|--------|
+| GlobFire (MODIS MCD64A1) | Historical fire event centroids with date, size, and satellite source | Date, area (ha) | [GlobFire / University of Maryland](https://www.globalfiredata.org/) | Ongoing | 2001–2020 | Global | ~500m | [tasks/burned_area/](../tasks/burned_area/) |
+| Global Fire Weather Database (GFWED) | NASA GEOS-5 daily FWI resampled to weekly 95th percentile | Unitless | [NASA GFWED](https://data.giss.nasa.gov/impacts/gfwed/) | 2015 | 2016–2021 | Global | 0.5° × 2/3° | [tasks/fwi/](../tasks/fwi/) |
+
+
+**What is it?**
+
+Two complementary fire risk indicators:
+
+- **Historical Burnt Area**: A map of fire event centroids from the GlobFire dataset, derived from MODIS MCD64A1 monthly burned area product. Each point represents a distinct fire event, showing where fires have historically occurred in and around the city.
+
+- **Fire Weather Index (FWI)**: A seasonal chart of the weekly 95th-percentile FWI from NASA's GEOS-5 atmospheric reanalysis (2016–2021). The FWI combines fuel moisture, wind, and buildup index into a single measure of wildfire potential. Values are categorized as Very Low (<5.2), Low (5.2–11.2), Moderate (11.2–21.3), High (21.3–38.0), Very High (38.0–50), and Extreme (>50).
+
+**Why use it?**
+
+Wildfires are becoming more frequent and destructive globally, with climate-driven increases in temperature and drought extending fire seasons. The historical fire map shows where burning has occurred, which may reflect recurring ignition sources (agricultural clearing, power lines, dry grasslands) or seasonal fire corridors. The FWI chart reveals which months have the highest atmospheric potential for wildfire — a critical complement to burnability and drought maps, since not all high-FWI days result in fires.
+
+**How is this made?**
+
+For burnt area, GlobFire FlatGeobuf files are downloaded from a public GCS bucket for each month from 2001 to 2020, filtered to a 1-degree buffer around the AOI. Fire event records are compiled into a GeoPackage and CSV. 
+
+For the FWI, NASA GEOS-5 daily FWI rasters are downloaded from GCS, clipped to the AOI, and a 95th-percentile value is extracted per week, then averaged across years to produce the seasonal FWI profile shown in the chart.
+
+**How should we interpret it?**
+
+The FWI is a relative index calibrated to local baseline conditions — months with higher values indicate relatively elevated fire weather risk. It captures atmospheric conditions only and does not account for vegetation availability, ignition sources, or fire management. FWI values must be interpreted locally: absolute values are not directly comparable between cities or regions. The historical fire map provides empirical grounding; the absence of fire events in a high-burnability area may reflect fire suppression, or simply that ignition conditions have not yet coincided with high fuel loads.
+
+**Under the hood**
+
+For burnt area, [`tasks/burned_area/collection.py`](../tasks/burned_area/collection.py) iterates over year-month combinations from 2001 to 2020, reading monthly GlobFire FlatGeobuf files from a public GCS bucket (`city-scan-global-public/globfire_fgb/`). Each file is read with `geopandas.read_file()` filtered to a bounding box 1° around the AOI. All records are compiled into a GeoDataFrame, saved as `{city}_globfire_centroids.gpkg` and a CSV equivalent. The burnt area map is rendered in R via [`core/R/`](../core/R/).
+
+For the FWI, [`tasks/fwi/collection.py`](../tasks/fwi/collection.py) downloads daily NASA GEOS-5 FWI GeoTIFFs from GCS for the configured year range via GDAL `/vsicurl/`, clips each to the AOI, and assembles a dictionary keyed by date string. [`tasks/fwi/analysis.py`](../tasks/fwi/analysis.py) stacks all daily rasters along the time axis and computes a per-pixel 98.6th-percentile summary raster (`generate_nth_raster()`), plus a weekly 95th-percentile time series (`compute_weekly_percentiles()`). The seasonal FWI chart is rendered by [`tasks/fwi/charts/index.qmd`](../tasks/fwi/charts/index.qmd) with FWI risk category bands (Very Low through Extreme) as background shading.
+
+**Key outputs**
+
+- `mnt/{scan-id}/02-process-output/spatial/{city}_globfire_centroids.gpkg` — MODIS fire event centroids (GeoPackage)
+- `mnt/{scan-id}/02-process-output/tabular/{city}_globfire_centroids.csv` — fire event table (date, area, source)
+- `mnt/{scan-id}/02-process-output/spatial/{city}_fwi_{percentile}.tif` — FWI percentile raster
+- `mnt/{scan-id}/02-process-output/tabular/{city}_fwi_weekly_95.csv` — weekly 95th-percentile FWI values
+- `mnt/{scan-id}/03-render-output/maps/burnt_area.png` — historical fire event map
+- `mnt/{scan-id}/03-render-output/plots/nasa-fwi.png` — seasonal FWI chart
+
+**Source data citation**
+
+[@globfireFWI_2015; @gfwed_globfire]
+
+

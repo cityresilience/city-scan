@@ -1,6 +1,90 @@
 # Tasks & Structure Overview
 
+## The City Scan Structure
 
-{{< placeholder 400 200 >}}
+City Scan is a standardized analytical framework for rapidly generating multi-thematic profiles of cities. Each scan draws on globally available geospatial datasets — satellite imagery, open administrative records, gridded models, and remote APIs — to produce a consistent set of maps, charts, and summary statistics across five thematic domains: population and demographics, economic activity, built form, climate conditions, and risk identification.
 
-{{< lipsum 2 >}}
+The pipeline is organized into discrete **tasks**, each responsible for a single dataset: downloading, clipping to the city's area of interest (AOI), processing, and writing standardized outputs to `mnt/{scan-id}/02-process-output/` (spatial and tabular data) and `03-render-output/` (maps and charts). Tasks are run independently and share outputs only through well-defined file naming conventions. This design means individual tasks can be updated, replaced, or skipped without affecting unrelated outputs.
+
+This section provides a navigable overview of the documentation. Each chapter below corresponds to a thematic module; each listed item links to its documentation section covering what the layer is, why it is used, how it is produced, and the specific task scripts and output files involved.
+
+---
+
+## [Population & Demographics](population-demographic.qmd)
+
+Covers population size, spatial distribution, age structure, and relative wealth within the city, drawing on gridded population products, city-level economic databases, and machine learning wealth estimates.
+
+| Section | Description |
+|---------|-------------|
+| [Population Growth (Oxford Economics)](population-demographic.qmd#population-growth-oxford-economics) | Annual population time series 2000–2040 at functional urban area level |
+| [Population Growth (WorldPop)](population-demographic.qmd#population-growth-worldpop) | Gridded annual population totals within the AOI (1km and 100m) |
+| [Population Density](population-demographic.qmd#population-density) | Current-year 100m raster of residential population counts |
+| [Population–Urban Growth Ratio](population-demographic.qmd#populationurban-growth-ratio) | Comparison of population growth rate vs. urban footprint growth rate |
+| [Historical Population (GHS-POP)](population-demographic.qmd#historical-population-ghs-pop) | Long-run population rasters in 5-year snapshots from 1975 to 2030 |
+| [Population Distribution by Age and Sex](population-demographic.qmd#population-distribution-by-age-and-sex) | Age pyramid, dependency ratios, and age-structure time series |
+| [Relative Wealth](population-demographic.qmd#relative-wealth) | Micro-estimated household wealth index at ~2.4km resolution |
+
+---
+
+## [Economic Activity](economic-activity.qmd)
+
+Covers economic hotspots, growth trends, gridded GDP, sectoral composition, employment, and household income, combining satellite-derived proxies with city-level economic databases.
+
+| Section | Description |
+|---------|-------------|
+| [Economic Hotspots](economic-activity.qmd#economic-hotspots) | Cumulative 10-year nighttime radiance as a proxy for economic concentration |
+| [Economic Change](economic-activity.qmd#economic-change) | Linear trend in nighttime radiance indicating areas of growth or decline |
+| [GDP Total & GDP per Capita](economic-activity.qmd#gdp-total--gdp-per-capita-ppp) | Gridded PPP-adjusted GDP at ~1km and ~10km resolution |
+| [GDP Sectoral](economic-activity.qmd#gdp-sectoral) | Spatially distributed GDP by agriculture, industry, and services (~1km) |
+| [GDP Total and Per Capita Growth (Oxford)](economic-activity.qmd#gdp-total-and-per-capita-growth-oxford) | City-level GDP and GDP per capita time series 2000–2040 |
+| [Gross Value Added (Oxford)](economic-activity.qmd#gross-value-added-oxford) | Sectoral GVA shares revealing economic structure and benchmarks |
+| [Employment (Oxford)](economic-activity.qmd#employment-oxford) | Total employment time series and sectoral employment composition |
+| [Household Income (Oxford)](economic-activity.qmd#household-income-oxford) | Distribution of households across income bands, 2002–2021 |
+
+---
+
+## [Built Form](built-form.qmd)
+
+Covers urban expansion, land cover composition, road network structure, intersection density, and accessibility to essential services.
+
+| Section | Description |
+|---------|-------------|
+| [Urban Extent and Change (WSF)](built-form.qmd#urban-extent-and-change-wsf) | Year of urbanization from 1985 to 2025 (Evolution, Tracker, Harmonized) |
+| [Land Cover](built-form.qmd#land-cover) | ESA WorldCover 10m classification into 11 land cover types |
+| [Road Network and Orientation](built-form.qmd#road-network-and-orientation) | OSM road network map and street bearing compass rose |
+| [Intersection Density](built-form.qmd#intersection-density) | Road intersection count per km² as a measure of network connectivity |
+| [Accessibility to Education & Healthcare](built-form.qmd#accessibility-to-education--healthcare) | Network-based isochrones to nearest school and health facility |
+
+---
+
+## [Climate Conditions](climate-condition.qmd)
+
+Covers renewable energy potential, air quality, urban heat, vegetation health, and forest change — key indicators of livability, sustainability, and environmental quality.
+
+| Section | Description |
+|---------|-------------|
+| [Solar PV Potential](climate-condition.qmd#solar-pv-potential) | Long-run mean daily PV yield and seasonal availability (kWh/kWp) |
+| [Air Quality](climate-condition.qmd#air-quality) | Annual PM2.5 concentration, local variation, and 10-year trend |
+| [Summer Land Surface Temperature](climate-condition.qmd#summer-land-surface-temperature) | Mean summer surface temperature composite 2017–2024 at 30m |
+| [Green Space (NDVI)](climate-condition.qmd#green-space-ndvi) | Seasonal vegetation density from Sentinel-2 at 10m |
+| [Forests & Deforestation](climate-condition.qmd#forests--deforestation) | Current forest cover (~2023) and year of tree cover loss (2001–2024) |
+
+---
+
+## [Risk Identification](risk-identification.qmd)
+
+Covers physical hazards including flooding, terrain, geological risks, road criticality, and fire-related conditions — the foundation for understanding where people and assets are most exposed.
+
+| Section | Description |
+|---------|-------------|
+| [Flood Events](risk-identification.qmd#flood-events) | Historical large flood events from the Dartmouth Flood Observatory |
+| [Flood Hazards & Exposure (Fathom)](risk-identification.qmd#flood-hazards--exposure-fathom) | Fluvial, pluvial, and coastal flood hazard at three return periods, with population, built-up, infrastructure, and GDP exposure overlays |
+| [Elevation and Slope](risk-identification.qmd#elevation-and-slope) | Bare-earth elevation and terrain slope from FABDEM at ~30m |
+| [Landslide Susceptibility](risk-identification.qmd#landslide-susceptibility) | Five-class susceptibility index from NASA's heuristic model (~1km) |
+| [Earthquake Events](risk-identification.qmd#earthquake-events) | Merged USGS + NCEI earthquake catalog within 500km of the city |
+| [Liquefaction Susceptibility](risk-identification.qmd#liquefaction-susceptibility) | Soil liquefaction susceptibility from Zhu et al. geospatial model (~1.2km) |
+| [Seismic Hazard](risk-identification.qmd#seismic-hazard) | GEM probabilistic PGA at 475-year return period (~5km) |
+| [Road Network Criticality](risk-identification.qmd#road-network-criticality) | Edge betweenness centrality identifying the most critical road segments |
+| [Drought](risk-identification.qmd#drought) | Seasonal NDMI moisture index as a proxy for vegetation water stress |
+| [Burnability](risk-identification.qmd#burnability) | ESA CCI land cover reclassified to fuel availability scores (0–1) |
+| [Historical Burnt Area & Fire Weather Index](risk-identification.qmd#historical-burnt-area--fire-weather-index) | MODIS fire event history and weekly FWI seasonal profile |

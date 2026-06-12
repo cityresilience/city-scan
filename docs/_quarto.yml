@@ -46,7 +46,6 @@ book:
         - built-form.qmd
         - climate-condition.qmd
         - risk-identification.qmd
-        - multi-analysis.qmd
     - part: "Understanding the Repo"
       chapters: 
         - repo-structure.qmd
