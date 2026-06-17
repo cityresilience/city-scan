@@ -13,4 +13,4 @@ format:
     self-contained: true
     toc: true
     toc-location: left
-    toc-depth: 3
+    toc-depth: 4

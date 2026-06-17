@@ -34,8 +34,23 @@ lines <- c(
   "source(here::here(\"core/R/fns.R\"))",
   "dir.create(here(\"03-render-output\", \"plots\"), recursive = TRUE, showWarnings = FALSE)",
   "knitr::opts_chunk$set(error = TRUE)",
+  "source(here::here(\"core/R/benchmark-assembly.R\"))",
   "```",
   ""
+)
+
+# Tasks with a full custom qmd in scan-calculations/ (replaces the task include)
+custom_includes <- c(
+  demographics = "demographics_charts.qmd",
+  fathom       = "fathom_charts.qmd",
+  earthquake   = "earthquake_charts.qmd"
+)
+
+# Tasks that get an extra note file appended after the standard task include
+note_includes <- c(
+  worldpop  = "worldpop_density_note.qmd",
+  elevation = "elevation_note.qmd",
+  slope     = "slope_note.qmd"
 )
 
 # Read basic_info.yml for conditional sections
@@ -47,11 +62,23 @@ for (task in order$sections) {
   # Skip oxford if city is not in Oxford Economics
   if (task == "oxford" && !isTRUE(basic_info$in_oxford)) next
 
-  # Check charts/index.qmd exists for this task
+  # Check charts/index.qmd exists for this task (proxy for "was the task run?")
   task_qmd <- file.path(city_root, "tasks", task, "charts", "index.qmd")
   if (!file.exists(task_qmd)) next
 
-  lines <- c(lines, paste0("{{< include ../tasks/", task, "/charts/index.qmd >}}"), "")
+  if (task %in% names(custom_includes)) {
+    # Use the improved custom qmd instead of the raw task include
+    lines <- c(lines, paste0("{{< include ", custom_includes[task], " >}}"), "")
+  } else {
+    # Standard task include
+    lines <- c(lines, paste0("{{< include ../tasks/", task, "/charts/index.qmd >}}"), "")
+  }
+
+  # Append note file if one exists for this task
+  if (task %in% names(note_includes)) {
+    lines <- c(lines, paste0("{{< include ", note_includes[task], " >}}"), "")
+  }
+
   n_tasks <- n_tasks + 1
 }
 

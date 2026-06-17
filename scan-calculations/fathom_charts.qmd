@@ -1,0 +1,371 @@
+---
+df-print: paged
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+## Urban Flooding
+
+```{r}
+#| label: setup-fathom
+#| include: false
+if (file.exists("_quarto.yml")) here::i_am("scan-calculations/fathom_charts.qmd")
+if (!exists("aoi")) {
+  source(here::here("core/R/setup.R"))
+}
+```
+
+```{r}
+#| label: data-loading-fathom
+#| include: false
+# Read CSVs produced by --multianalysis
+fu <- tryCatch(read_csv(file.path(tabular_dir, paste0(city_string, "_fu.csv")), show_col_types = FALSE), error = function(e) tibble())
+pu <- tryCatch(read_csv(file.path(tabular_dir, paste0(city_string, "_pu.csv")), show_col_types = FALSE), error = function(e) tibble())
+cu <- tryCatch(read_csv(file.path(tabular_dir, paste0(city_string, "_cu.csv")), show_col_types = FALSE), error = function(e) tibble())
+comb <- tryCatch(read_csv(file.path(tabular_dir, paste0(city_string, "_comb.csv")), show_col_types = FALSE), error = function(e) tibble())
+pufu <- tryCatch(read_csv(file.path(tabular_dir, paste0(city_string, "_pufu.csv")), show_col_types = FALSE), error = function(e) tibble())
+
+# Flood probability + total data
+flood_type_labels <- c(fluvial = "River", pluvial = "Rainwater", coastal = "Coastal", combined = "Combined")
+flood_prob_data <- list()
+flood_total_data <- list()
+for (ft_name in c("fu", "pu", "cu", "comb")) {
+  prob_file <- file.path(tabular_dir, paste0(ft_name, "_prob.csv"))
+  total_file <- file.path(tabular_dir, paste0(ft_name, "_total.csv"))
+  if (file.exists(prob_file)) flood_prob_data[[ft_name]] <- read_csv(prob_file, show_col_types = FALSE)
+  if (file.exists(total_file)) flood_total_data[[ft_name]] <- read_csv(total_file, show_col_types = FALSE)
+}
+
+# Return period colors and linetypes
+prob_colors <- c("1-in-1,000 year" = "#9ECAE1", "1-in-100 year" = "#3182BD", "1-in-10 year" = "#08306B")
+prob_linetypes <- c("1-in-1,000 year" = "solid", "1-in-100 year" = "dashed", "1-in-10 year" = "dotted")
+
+# Infrastructure + flood CSVs
+.find_csv <- function(pattern) {
+  f <- list.files(tabular_dir, full.names = TRUE) %>% str_subset(pattern)
+  if (length(f) == 1) tryCatch(read_csv(f, show_col_types = FALSE), error = function(e) NULL) else NULL
+}
+flood_road <- .find_csv("flood_road")
+flood_osm  <- .find_csv("flood_osm")
+flood_pop  <- .find_csv("flood_pop")
+
+flood_type_display <- c(fluvial = "Fluvial", pluvial = "Pluvial", coastal = "Coastal", comb = "Combined")
+
+# Helper: plot max probability chart for a flood type
+.flood_max_plot <- function(df, ft_key, ft_label) {
+  if (is.null(df) || nrow(df) == 0 || !any(df$exposed_km2 > 0, na.rm = TRUE)) {
+    print_text(paste_bold(paste("No", ft_label, "flood data available")))
+    return(invisible(NULL))
+  }
+
+  p <- df %>%
+    ggplot() +
+    geom_line(aes(x = year, y = exposed_km2)) +
+    scale_x_continuous(breaks = seq(1985, 2020, 5), minor_breaks = seq(1985, 2021, 1)) +
+    scale_y_continuous(labels = scales::comma, expand = expansion(c(0.05, 0.05))) +
+    theme_minimal() +
+    labs(title = "", y = bquote('Exposed'~km^2)) +
+    theme(axis.line = element_line(linewidth = .5, color = "black"), axis.title.x = element_blank())
+
+  ggsave(here("03-render-output", "plots", paste0("wsf-", ft_key, "-plot.png")), plot = p, device = "png",
+         width = 4, height = 3.5, units = "in", dpi = "print")
+  print(p)
+  cat("\n\n")
+
+  if (!"percent_exposed" %in% names(df)) return(invisible(NULL))
+  df_sorted <- df %>% filter(!is.na(percent_exposed)) %>% arrange(year)
+  if (nrow(df_sorted) == 0) return(invisible(NULL))
+  first_row <- head(df_sorted, 1)
+  last_row <- tail(df_sorted, 1)
+  print_paged_df(bind_rows(first_row, last_row))
+  print_text(glue("In {paste_bold(first_row$year)}, {paste_bold(round(first_row$exposed_km2, 2))} km² of the built-up area ({paste_bold(first_row$percent_exposed)}) was exposed to {tolower(ft_label)} flooding at a minimum depth of 15 cm"))
+  print_text(glue("In {paste_bold(last_row$year)}, {paste_bold(round(last_row$exposed_km2, 2))} km² of the built-up area ({paste_bold(last_row$percent_exposed)}) was exposed"))
+}
+
+# Helper: plot return period chart for a flood type
+.flood_rp_plot <- function(ft_key, ft_label) {
+  prob_file <- file.path(tabular_dir, paste0(ft_key, "_prob.csv"))
+  if (!file.exists(prob_file)) return(invisible(NULL))
+
+  prob_df <- read_csv(prob_file, col_types = cols())
+  if ("0.1-1%" %in% names(prob_df) && !"1-in-1,000 year" %in% names(prob_df)) {
+    prob_df <- prob_df %>% rename(
+      `1-in-1,000 year` = `0.1-1%`, `1-in-100 year` = `1-10%`, `1-in-10 year` = `>10%`)
+  }
+  rp_cols <- intersect(c("1-in-1,000 year", "1-in-100 year", "1-in-10 year"), names(prob_df))
+  prob_df <- prob_df %>%
+    pivot_longer(cols = all_of(rp_cols), names_to = "probability", values_to = "area_km2") %>%
+    mutate(probability = factor(probability, levels = c("1-in-1,000 year", "1-in-100 year", "1-in-10 year")))
+
+  p <- prob_df %>%
+    ggplot(aes(x = yearName, y = area_km2, color = probability, linetype = probability, group = probability)) +
+    geom_line(linewidth = 0.8) +
+    scale_x_continuous(breaks = seq(1984, 2024, 10)) +
+    scale_y_continuous(labels = scales::comma, expand = expansion(c(0.05, 0.05))) +
+    scale_color_manual(values = prob_colors) +
+    scale_linetype_manual(values = prob_linetypes) +
+    theme_minimal() +
+    labs(title = paste0("Built-up area exposed to ", tolower(ft_label), " flooding"),
+         y = bquote('Exposed urban built-up area,'~km^2),
+         color = NULL, linetype = NULL) +
+    theme(axis.line = element_line(linewidth = .5, color = "black"),
+          axis.title.x = element_blank(),
+          legend.position = "bottom")
+
+  ggsave(here("03-render-output", "plots", paste0("wsf-", ft_key, "-prob-plot.png")), plot = p, device = "png",
+         width = 5, height = 4, units = "in", dpi = "print")
+  print(p)
+  cat("\n\n")
+
+  last_row <- prob_df %>% filter(yearName == max(yearName))
+  for (rp in rp_cols) {
+    val <- last_row %>% filter(probability == rp) %>% pull(area_km2)
+    if (length(val) == 0) next
+    print_text(paste0(ft_label, " ", paste_bold(rp), " return period: ", paste_bold(round(val, 2)), " km² exposed by ", max(prob_df$yearName)))
+  }
+}
+
+# Helper: print population table + text for a flood type
+.flood_pop_table <- function(ft_key) {
+  if (is.null(flood_pop) || nrow(flood_pop) == 0) return(invisible(NULL))
+  pop_ft <- flood_pop %>% filter(str_detect(type, ft_key))
+  if (nrow(pop_ft) > 0) {
+    print_paged_df(pop_ft)
+    print_text(paste("Percentage of population dense areas (>60th percentile density) in flood zone:",
+      paste_bold(paste0(round(pop_ft$exposed_dense_pop_pct[1], 1), "%"))))
+  }
+}
+
+# Helper: print Flood + WSF stats table for a flood type
+.flood_wsf_table <- function(ft_key) {
+  if (!exists("flood_total_data") || length(flood_total_data) == 0) return(invisible(NULL))
+  if (!(ft_key %in% names(flood_total_data))) return(invisible(NULL))
+  ft_label_map <- c(fu = "River", pu = "Rainwater", cu = "Coastal", comb = "Combined")
+  ft_label <- ft_label_map[ft_key]
+  cat(paste0("\n\n**", ft_label, " — Flood + WSF Stats**\n\n"))
+  print_paged_df(flood_total_data[[ft_key]])
+}
+
+# Helper: print infrastructure tables + text for a flood type
+.flood_infra_table <- function(ft_key) {
+  ft_pattern <- paste0("^", ft_key)
+  flood_label <- c(fluvial = "riverine", pluvial = "surface water", coastal = "coastal", comb = "riverine, surface water, or coastal")[[ft_key]]
+
+  has_data <- FALSE
+
+  if (!is.null(flood_road) && nrow(flood_road) > 0) {
+    road_ft <- flood_road %>% filter(str_detect(type, ft_pattern))
+    if (nrow(road_ft) > 0) {
+      cat("\n\n**Roads in Flood Zone**\n\n")
+      print_paged_df(road_ft)
+      has_data <- TRUE
+    }
+  }
+  if (!is.null(flood_osm) && nrow(flood_osm) > 0) {
+    osm_ft <- flood_osm %>% filter(str_detect(type, ft_pattern))
+    if (nrow(osm_ft) > 0) {
+      cat("\n\n**Infrastructure in Flood Zone**\n\n")
+      print_paged_df(osm_ft %>% select(-type))
+      has_data <- TRUE
+    }
+  }
+
+  if (!has_data) return(invisible(NULL))
+
+  road_str <- NULL
+  if (!is.null(flood_road) && nrow(flood_road) > 0) {
+    road_row <- flood_road %>% filter(str_detect(type, ft_pattern))
+    if (nrow(road_row) > 0) road_str <- paste0(round(road_row$percentage_in_flood_zones[1], 1), "% of major roads")
+  }
+  osm_parts <- c()
+  if (!is.null(flood_osm) && nrow(flood_osm) > 0) {
+    osm_ft <- flood_osm %>% filter(str_detect(type, ft_pattern))
+    for (poi_name in c("schools", "health", "fire", "police")) {
+      row <- osm_ft %>% filter(poi == poi_name)
+      if (nrow(row) > 0) {
+        poi_label <- c(schools = "schools", health = "health facilities", fire = "fire stations", police = "police stations")[[poi_name]]
+        osm_parts <- c(osm_parts, paste(row$pois_in_flood_zone[1], "in", row$total_pois[1], poi_label))
+      }
+    }
+  }
+  all_parts <- c(road_str, osm_parts)
+  if (length(all_parts) > 0) {
+    print_text(paste(paste_bold(paste_and(all_parts)),
+      "are located in a", paste_bold(flood_label), "flood risk zone with a minimum depth of 15 cm"))
+  }
+}
+```
+
+### Urban Built-up Area Exposed to Flooding
+
+#### Combined River, Rainwater, and Coastal Flooding
+
+```{r}
+#| label: flood-built-up-combined
+#| results: asis
+
+if (!exists('pufu') || is.null(pufu) || nrow(pufu) == 0) {
+  print_text(paste_bold('No Combined flood data available'))
+} else {
+  pufu_plot <- pufu %>%
+    ggplot(aes(x = year, y = exposed_km2, color = type)) +
+    geom_line(data = \(d) filter(d, type == "Combined")) +
+    geom_point(data = \(d) filter(d, type != "Combined")) +
+    scale_x_continuous(breaks = seq(1985, 2020, 5), minor_breaks = seq(1985, 2021, 1)) +
+    scale_y_continuous(labels = scales::comma, limits = c(0, NA), expand = expansion(c(0, 0.05))) +
+    scale_color_manual(values = c(River = "#F8766D", Rainwater = "#619CFF", Coastal = "#00BA38", Combined = "black")) +
+    theme_minimal() +
+    theme(legend.position = "bottom") +
+    labs(title = "", y = bquote('Exposed'~km^2), color = "") +
+    theme(axis.line = element_line(linewidth = .5, color = "black"), axis.title.x = element_blank())
+  ggsave(here("03-render-output", "plots", "wsf-pufu-plot.png"), plot = pufu_plot, device = "png",
+         width = 4, height = 3.5, units = "in", dpi = "print")
+  print(pufu_plot)
+  cat("\n\n")
+
+  comb_sorted <- comb %>% filter(!is.na(percent_exposed)) %>% arrange(year)
+  first_row <- head(comb_sorted, 1)
+  last_row <- tail(comb_sorted, 1)
+  print_paged_df(bind_rows(first_row, last_row))
+  print_text(glue("In {paste_bold(first_row$year)}, {paste_bold(round(first_row$exposed_km2, 2))} km² of the built-up area ({paste_bold(first_row$percent_exposed)}) was exposed to riverine, surface water, or coastal flooding at a minimum depth of 15 cm"))
+  print_text(glue("In {paste_bold(last_row$year)}, {paste_bold(round(last_row$exposed_km2, 2))} km² of the built-up area ({paste_bold(last_row$percent_exposed)}) was exposed"))
+}
+
+if (!exists("flood_total_data") || length(flood_total_data) == 0) {
+  print_text(paste_bold("No harmonized flood total data available"))
+} else {
+  ft_label_map <- c(fu = "River", pu = "Rainwater", cu = "Coastal", comb = "Combined")
+  flood_total_labeled <- flood_total_data
+  names(flood_total_labeled) <- ft_label_map[names(flood_total_labeled)]
+  flood_total <- bind_rows(flood_total_labeled, .id = "type")
+
+  flood_harm_plot <- flood_total %>%
+    ggplot(aes(x = Year, y = uba_km2_exposed, color = type)) +
+    geom_line(data = \(d) filter(d, type == "Combined")) +
+    geom_point(data = \(d) filter(d, type != "Combined")) +
+    scale_x_continuous(breaks = seq(1985, 2025, 5), minor_breaks = seq(1985, 2025, 1)) +
+    scale_y_continuous(labels = scales::comma, limits = c(0, NA), expand = expansion(c(0, 0.05))) +
+    scale_color_manual(values = c(River = "#F8766D", Rainwater = "#619CFF", Coastal = "#00BA38", Combined = "black")) +
+    theme_minimal() +
+    labs(title = "",
+         y = bquote('Exposed Urban Built-up Area,'~km^2),
+         color = NULL) +
+    theme(axis.line = element_line(linewidth = .5, color = "black"),
+          axis.title.x = element_blank(),
+          legend.position = "bottom")
+  ggsave(here("03-render-output", "plots", "wsf-flood-harmonized-plot.png"), plot = flood_harm_plot, device = "png",
+         width = 5, height = 4, units = "in", dpi = "print")
+  print(flood_harm_plot)
+  cat("\n\n")
+
+  for (ft in names(flood_total_labeled)) {
+    d <- flood_total_labeled[[ft]]
+    print_text(paste0(
+      paste_bold(ft), ": from ", paste_bold(round(d$uba_km2_exposed[1], 2)), " km² exposed in ",
+      d$Year[1], " to ", paste_bold(round(tail(d$uba_km2_exposed, 1), 2)), " km² in ",
+      tail(d$Year, 1), " (", paste_bold(tail(d$percent_uba_exposed, 1)), " of built-up area)"))
+  }
+}
+
+.flood_wsf_table("comb")
+```
+
+#### Urban Built-up Area Exposed to River Flooding
+
+```{r}
+#| label: flood-built-up-river
+#| results: asis
+.flood_max_plot(fu, "fu", "River")
+.flood_rp_plot("fu", "Fluvial")
+.flood_wsf_table("fu")
+```
+
+#### Urban Built-up Area Exposed to Rainwater Flooding
+
+```{r}
+#| label: flood-built-up-rainwater
+#| results: asis
+.flood_max_plot(pu, "pu", "Rainwater")
+.flood_rp_plot("pu", "Pluvial")
+.flood_wsf_table("pu")
+```
+
+#### Urban Built-up Area Exposed to Coastal Flooding
+
+```{r}
+#| label: flood-built-up-coastal
+#| results: asis
+.flood_max_plot(cu, "cu", "Coastal")
+.flood_rp_plot("cu", "Coastal")
+.flood_wsf_table("cu")
+```
+
+### Population Exposed to Flooding
+
+#### Population Exposed to Combined River, Rainwater, and Coastal Flooding
+
+```{r}
+#| label: flood-pop-combined
+#| results: asis
+.flood_pop_table("comb")
+```
+
+#### Population Exposed to River Flooding
+
+```{r}
+#| label: flood-pop-river
+#| results: asis
+.flood_pop_table("fluvial")
+```
+
+#### Population Exposed to Rainwater Flooding
+
+```{r}
+#| label: flood-pop-rainwater
+#| results: asis
+.flood_pop_table("pluvial")
+```
+
+#### Population Exposed to Coastal Flooding
+
+```{r}
+#| label: flood-pop-coastal
+#| results: asis
+.flood_pop_table("coastal")
+```
+
+### Infrastructure Assets Exposed to Flooding
+
+#### Infrastructure Assets Exposed to Combined River, Rainwater, and Coastal Flooding
+
+```{r}
+#| label: flood-infra-combined
+#| results: asis
+.flood_infra_table("comb")
+```
+
+#### Infrastructure Assets Exposed to River Flooding
+
+```{r}
+#| label: flood-infra-river
+#| results: asis
+.flood_infra_table("fluvial")
+```
+
+#### Infrastructure Assets Exposed to Rainwater Flooding
+
+```{r}
+#| label: flood-infra-rainwater
+#| results: asis
+.flood_infra_table("pluvial")
+```
+
+#### Infrastructure Assets Exposed to Coastal Flooding
+
+```{r}
+#| label: flood-infra-coastal
+#| results: asis
+.flood_infra_table("coastal")
+```

@@ -1,0 +1,18 @@
+```{r}
+#| label: elevation-note
+#| results: asis
+if (!is.null(elevation) && nrow(elevation) > 0) {
+  elev_sorted  <- elevation %>% arrange(desc(percent))
+  e1_bin <- as.character(elev_sorted$Bin[1])
+  e1_pct <- scales::percent(elev_sorted$percent[1], accuracy = 0.1)
+  e2_bin <- as.character(elev_sorted$Bin[2])
+  e2_pct <- scales::percent(elev_sorted$percent[2], accuracy = 0.1)
+  e3_bin <- as.character(elev_sorted$Bin[3])
+  e3_pct <- scales::percent(elev_sorted$percent[3], accuracy = 0.1)
+  elev_low  <- as.character(elevation$Bin[1])
+  elev_high <- as.character(elevation$Bin[nrow(elevation)])
+
+  print_text(glue("{paste_bold(city)}'s terrain spans from {paste_bold(elev_low)} to {paste_bold(elev_high)} meters above sea level."))
+  print_text(paste0("The dominant elevation band is ", paste_bold(e1_bin), " m (", paste_bold(e1_pct), "), followed by ", paste_bold(e2_bin), " m (", paste_bold(e2_pct), ") and ", paste_bold(e3_bin), " m (", paste_bold(e3_pct), ")."))
+}
+```

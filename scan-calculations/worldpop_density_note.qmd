@@ -1,0 +1,10 @@
+```{r}
+#| label: worldpop-density-note
+#| results: asis
+if (exists("density") && nrow(density) > 0) {
+  city_dens <- density %>% filter(Location == city, !is.na(Density)) %>% slice(1) %>% pull(Density)
+  if (length(city_dens) > 0 && !is.na(city_dens[1])) {
+    print_text(glue("{paste_bold(city)} has a population density of {paste_bold(scales::comma(round(city_dens[1])))} people per km²"))
+  }
+}
+```

@@ -1,0 +1,24 @@
+```{r}
+#| label: slope-note
+#| results: asis
+if (!is.null(slope) && nrow(slope) > 0) {
+  sl_sorted <- slope %>% arrange(desc(percent))
+  s1_bin <- as.character(sl_sorted$Bin[1])
+  s1_pct <- scales::percent(sl_sorted$percent[1], accuracy = 0.1)
+  s2_bin <- as.character(sl_sorted$Bin[2])
+  s2_pct <- scales::percent(sl_sorted$percent[2], accuracy = 0.1)
+
+  flat_pct  <- slope %>% filter(Slope < 5)  %>% summarize(pct = sum(percent)) %>% pull(pct)
+  steep_pct <- slope %>% filter(Slope >= 10) %>% summarize(pct = sum(percent)) %>% pull(pct)
+
+  terrain_desc <- dplyr::case_when(
+    flat_pct > 0.8 ~ "predominantly flat",
+    flat_pct > 0.6 ~ "mostly gently sloping",
+    flat_pct > 0.4 ~ "moderately varied",
+    TRUE ~ "hilly to steep"
+  )
+
+  print_text(glue("{paste_bold(city)} has {paste_bold(terrain_desc)} terrain, with {paste_bold(scales::percent(flat_pct, accuracy = 0.1))} of the area having slopes below 5°."))
+  print_text(paste0("The most common slope category is ", paste_bold(s1_bin), "° (", paste_bold(s1_pct), "), followed by ", paste_bold(s2_bin), "° (", paste_bold(s2_pct), "), with only ", paste_bold(scales::percent(steep_pct, accuracy = 0.1)), " of the area exceeding 10°."))
+}
+```
