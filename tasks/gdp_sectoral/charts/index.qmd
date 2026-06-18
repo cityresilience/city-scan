@@ -28,7 +28,8 @@ if (!exists("aoi")) {
 #| results: hide
 flood_gdp_sect <- tryCatch(
   read_csv(file.path(tabular_dir, "flood_gdp_sectoral.csv"), show_col_types = FALSE),
-  error = function(e) tibble())
+  error = function(e) tibble(flood_type = character(), sector = character(),
+                             year = integer(), pct_high_gdp_in_flood = numeric()))
 
 sector_colors <- c(Agriculture = "#2ca02c", Industry = "#ff7f0e", Service = "#800000")
 sector_linetypes <- c(Agriculture = "solid", Industry = "dashed", Service = "dotted")

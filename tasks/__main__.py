@@ -91,6 +91,8 @@ def main():
                 ("--render charts",      "Render task charts (requires task name)"),
                 ("--parallel",           "Run tasks concurrently with TUI"),
                 ("--upload",             "Upload to GCS: with task=new outputs; with --render=new renders; alone=backfill all"),
+                ("--gcs",                "Connect to a scan stored in GCS (requires --scan-id)"),
+                ("--download=01,02",     "Pull GCS folders to local (symmetric to --upload)"),
                 ("-e",                   "Use existing city folder (skip folder prompt)"),
                 ("-t",                   "Shortcut for --sync tasks"),
                 ("-k / --keep",          "Run with code already in city folder (no sync)"),
@@ -148,6 +150,28 @@ def main():
     print(f"\n  {header}")
     print(f"  {'─'*40}")
 
+    # =========================================================
+    # GCS CONNECT (--gcs): bootstrap a GCS-hosted scan locally
+    # =========================================================
+    if flags['gcs']:
+        from core.py.gcs_module import download_scan_folder
+        # --render reads 02 (process-output); stream it from GCS unless downloaded
+        streaming = bool(flags['render_targets']) and "02" not in flags['download']
+        # 01 is always local. Explicit --download=01 forces overwrite; when
+        # streaming a render, keep existing 01 silently (no overwrite prompt).
+        ov01 = True if "01" in flags['download'] else (False if streaming else None)
+        download_scan_folder(scan_id, "01", overwrite=ov01)
+        # Explicit pulls (--download=02,03)
+        for folder in flags['download']:
+            if folder == "01":
+                continue
+            download_scan_folder(scan_id, folder, overwrite=True)
+        if streaming:
+            os.environ['USE_GCS'] = 'true'
+            print("  STREAMING DATA FROM GCS")
+        elif flags['run_all'] or flags['step']:
+            print("  connecting to scan in GCS bucket")
+
     # Validate --scan-id if provided
     if INPUTS.name == "inputs" and scan_id:
         if not (OUTPUTS / scan_id).exists():
@@ -166,12 +190,19 @@ def main():
             _resolved.append(alias[0])
         else:
             _resolved.append(t)
-    sync_tasks = None if flags['run_all'] or not scan_id else (_resolved or None)
+    # --gcs bootstrap: copy the whole project (core/source/tasks/scan-calculations)
+    # into mnt without prompting — but ONLY the first time (when it's not there yet)
+    gcs_needs_sync = bool(flags['gcs'] and scan_id and not (
+        (OUTPUTS / scan_id / "source").exists() and (OUTPUTS / scan_id / "tasks").exists()))
+
+    sync_tasks = None if flags['run_all'] or gcs_needs_sync or not scan_id else (_resolved or None)
+    _sync_targets = (["tasks", "source", "core", "scan-calculations"]
+                     if gcs_needs_sync else (flags['sync_targets'] or None))
 
     scan = Scan(scan_id=scan_id, sync_tasks=sync_tasks,
-                skip_sync=(bool(flags['render_targets']) or flags['keep_as_is']) and not flags['sync_targets'],
+                skip_sync=((bool(flags['render_targets']) or flags['keep_as_is']) and not flags['sync_targets']) and not gcs_needs_sync,
                 use_existing=flags['use_existing'],
-                sync_targets=flags['sync_targets'] or None)
+                sync_targets=_sync_targets)
 
     # Set up file logging in city folder
     city_dir = os.path.dirname(str(scan.input_dir))
@@ -193,8 +224,9 @@ def main():
     if flags['upload_enabled'] and not flags['render_targets'] and not flags['run_all']:
         positional = [a for a in args if not a.startswith("-") and a != scan_id]
         if not positional:
-            from core.py.gcs_module import upload_task_outputs
+            from core.py.gcs_module import upload_inputs, upload_task_outputs
             logger.info(f"Backfill upload: pushing all existing files for {scan.cityscan_id}")
+            upload_inputs(scan)
             upload_task_outputs(scan, task_name="backfill", files_before=None)
             return
 
@@ -341,6 +373,11 @@ def main():
             skip_tasks |= GCS_TASKS
 
     print(f"  {'─'*40}\n")
+
+    # Upload inputs once per run (static; not part of the per-task diff)
+    if flags['upload_enabled']:
+        from core.py.gcs_module import upload_inputs
+        upload_inputs(scan)
 
     # --- Run tasks ---
     if flags['parallel_mode'] and len(task_names) > 1:

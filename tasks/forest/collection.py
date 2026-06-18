@@ -35,6 +35,7 @@ def datacollection(
     # Forest cover 2023
     tif_fc23 = os.path.join(spatial_dir, f"{city_name}_forest_cover23.tif")
     fc23_rio = fns.tiled_collection(forestCover23, aoi, scale=30, resampling=Resampling.nearest)
+    fc23_rio = fc23_rio.rio.clip(aoi.to_crs(fc23_rio.rio.crs).geometry, drop=True)
     fc23_rio = fc23_rio.fillna(0).round().astype(np.int8)
     fc23_rio.rio.write_nodata(0, inplace=True)
     fc23_rio.rio.to_raster(tif_fc23)
@@ -43,6 +44,7 @@ def datacollection(
     # Deforestation year
     tif_defor = os.path.join(spatial_dir, f"{city_name}_deforestation.tif")
     defor_rio = fns.tiled_collection(deforestation_year, aoi, scale=30, resampling=Resampling.nearest)
+    defor_rio = defor_rio.rio.clip(aoi.to_crs(defor_rio.rio.crs).geometry, drop=True)
     defor_rio = defor_rio.fillna(0).round().astype(np.int16)
     defor_rio.rio.write_nodata(0, inplace=True)
     defor_rio.rio.to_raster(tif_defor)

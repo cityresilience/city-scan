@@ -28,9 +28,12 @@ wp_ridge <- tryCatch(
   read_csv(file.path(tabular_dir, paste0(city_string, "_pop_density_pixels.csv")), show_col_types = FALSE),
   error = function(e) tibble())
 
+empty_pop_tbl <- tibble(Year = integer(), Population = numeric(), Location = character(),
+                        Country = character(), Group = character(), Source = character())
+
 pop_longitude <- tryCatch(
   read_csv(file.path(tabular_dir, paste0(city_string, "_pop_benchmark.csv")), show_col_types = FALSE),
-  error = function(e) tibble())
+  error = function(e) empty_pop_tbl)
 
 density <- tryCatch(
   read_csv(file.path(tabular_dir, paste0(city_string, "_density_benchmark.csv")), show_col_types = FALSE),
@@ -38,7 +41,7 @@ density <- tryCatch(
 
 pop_growth <- tryCatch(
   read_csv(file.path(tabular_dir, paste0(city_string, "_pop_growth.csv")), show_col_types = FALSE),
-  error = function(e) tibble())
+  error = function(e) empty_pop_tbl)
 ```
 
 ### Population Growth

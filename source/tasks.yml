@@ -18,6 +18,7 @@ gcs_tasks:
   - fathom
   - landcover_burn
   - basic_info
+  - benchmark
   - oxford
   - coastal_erosion
   - sea_level_rise
@@ -48,4 +49,5 @@ dependencies:
   fathom: [wsf, worldpop, accessibility]
   slope: [elevation]
   worldpop: [wsf, oxford]
+  benchmark: [basic_info, oxford, worldpop]
   landcover_burn: [landcover]

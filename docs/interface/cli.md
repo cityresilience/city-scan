@@ -82,7 +82,19 @@ scan fathom --multianalysis --scan-id 2026-04-namibia-windhoek
 | `--render {target}` | Render: `maps`, `scan-calculations`, or `charts` |
 | `--parallel` | Run tasks concurrently with TUI |
 | `--upload` | Upload outputs to GCS after each step |
+| `--gcs` | Connect to a scan that lives in GCS — see below |
+| `--download={folders}` | Pull GCS folders to local, e.g. `--download=01,02` |
 | `--list` | Show available tasks and their steps |
+
+## GCS sync (`--gcs` / `--download`)
+
+`--download` = the explicit pull, symmetric to `--upload`:
+
+- `--gcs --render` → stream 02/03 to R (nothing downloaded except 01)
+- `--gcs --download=01,02 --render` → download 01,02, then render local
+- `--gcs --download=02` → just pull 02 local (inspect/work, no render)
+- `--gcs --parallel` → rejected
+- `--gcs --collect`/`--all` → bootstrap 01, run locally, print "connecting to scan in GCS bucket"
 
 ## Note
 

@@ -4,6 +4,7 @@
 
 sections:
   # - basic_info        # Area, Climate Zone, Setup
+  - benchmark         # Benchmark Cities (peer set used by population + oxford)
   - worldpop          # Population Data, Distribution
   - demographics      # Age-Sex Distribution, Demographic Indicators
   - oxford            # Benchmark Cities, GDP, Employment, Inequality

@@ -112,7 +112,7 @@ def _process_year(
     for rp in flood_rps:
 
         # ---------------------------------------------------
-        # 1️⃣ Collect tile paths for this return period
+        # 1. Collect tile paths for this return period
         # ---------------------------------------------------
         def _build_tile_paths(naming):
             """Build tile paths using 'flat' or 'folder' naming."""
@@ -146,7 +146,7 @@ def _process_year(
             naming_attempts = ["folder"]
 
         # ---------------------------------------------------
-        # 2️⃣ Mosaic tiles (CRITICAL alignment step)
+        # 2. Mosaic tiles (CRITICAL alignment step)
         # ---------------------------------------------------
         tmp_mosaic_name = (
             f"tmp_{city_name}_{flood_type}_{year}"
@@ -179,7 +179,7 @@ def _process_year(
             continue
 
         # ---------------------------------------------------
-        # 3️⃣ Mask mosaic to AOI (ensures identical grid)
+        # 3. Mask mosaic to AOI (ensures identical grid)
         # ---------------------------------------------------
         try:
             with rasterio.open(tmp_mosaic_path) as src:
@@ -201,7 +201,7 @@ def _process_year(
             continue
 
         # ---------------------------------------------------
-        # 4️⃣ Apply threshold + probability weighting
+        # 4. Apply threshold + probability weighting
         # ---------------------------------------------------
         out_image, out_meta = apply_flood_threshold(
             out_image,
@@ -232,7 +232,7 @@ def _process_year(
             pass
 
     # -------------------------------------------------------
-    # 5️⃣ Composite across return periods (from temp files)
+    # 5. Composite across return periods (from temp files)
     # -------------------------------------------------------
     if not rp_temp_files:
         logger.warning(
@@ -263,7 +263,7 @@ def _process_year(
             pass
 
     # -------------------------------------------------------
-    # 6️⃣ Reproject to UTM (same as old code)
+    # 6. Reproject to UTM (same as old code)
     # -------------------------------------------------------
     utm_output = output_raster.replace(".tif", "_utm.tif")
 
@@ -408,54 +408,85 @@ def datacollection(
         """Merge multi-band flood TIFs (max across flood types, per RP band).
 
         Each TIF has: band 1 = max_probability, band 2+ = per-RP binary (r10, r100, r1000).
-        Aligns by band description and takes max across flood types.
+        Flood types can differ in BOTH which RP bands exist (a type may be missing
+        r100 where no Fathom tiles exist there) and their extent, so align by band
+        description and take max across types over the UNION extent.
+
+        rasterio.merge does the union/pad/max per band. Because flood types can
+        have different band counts, a single positional merge won't work — instead
+        merge once per band description over single-band views, passing one shared
+        union bounds so every band lands on the same grid (and can be stacked).
+        All types share the same Fathom grid + resolution, so merge copies pixels
+        without resampling (binary RP bands stay 0/1).
         """
-        # Collect all unique band descriptions across TIFs
-        all_bands = {}  # {description: [(tif_path, band_index), ...]}
-        for p in tif_list:
-            with rasterio.open(p) as src:
-                for i in range(1, src.count + 1):
-                    desc = src.descriptions[i - 1] or f"band_{i}"
-                    all_bands.setdefault(desc, []).append((p, i))
+        from rasterio.merge import merge
+        from rasterio.io import MemoryFile
 
-        # Ensure max_probability is first, then sorted RP bands
-        band_order = ["max_probability"] + sorted(
-            [b for b in all_bands if b != "max_probability"],
-            key=lambda x: int(x.replace("r", "")) if x.startswith("r") else 0
-        )
-
-        # Read band 1 from first TIF to get grid/meta
-        with rasterio.open(tif_list[0]) as ref:
-            ref_meta = ref.meta.copy()
-            h, w = ref.height, ref.width
-            ref_transform = ref.transform
-
-        merged_arrays = []
-        band_descs = []
-
-        for desc in band_order:
-            if desc not in all_bands:
-                continue
-            # Stack this band from all flood types, take max
-            stack = []
-            for p, idx in all_bands[desc]:
-                try:
-                    with rasterio.open(p) as src:
-                        stack.append(src.read(idx).astype(np.float32))
-                except Exception:
-                    continue
-            if not stack:
-                continue
-            combined = np.maximum.reduce(stack)
-            merged_arrays.append(combined)
-            band_descs.append(desc)
-
-        if not merged_arrays:
+        if not tif_list:
             return
 
-        ref_meta.update({"count": len(merged_arrays), "dtype": "float32"})
-        with rasterio.open(output_path, 'w', **ref_meta) as dst:
-            for i, (arr, desc) in enumerate(zip(merged_arrays, band_descs), 1):
+        # Map each band description to the (tif, band index) pairs that contain it
+        band_sources = {}  # desc -> [(path, band_idx), ...]
+        base_profile = None
+        res = None
+        bounds_list = []
+        for p in tif_list:
+            with rasterio.open(p) as src:
+                bounds_list.append(src.bounds)
+                if base_profile is None:
+                    base_profile = src.profile.copy()
+                    res = src.res
+                for i in range(1, src.count + 1):
+                    desc = src.descriptions[i - 1] or f"band_{i}"
+                    band_sources.setdefault(desc, []).append((p, i))
+
+        # max_probability first, then return-period bands ascending
+        band_order = ["max_probability"] + sorted(
+            [d for d in band_sources if d != "max_probability"],
+            key=lambda x: int(x.replace("r", "")) if x.startswith("r") else 0
+        )
+        band_order = [d for d in band_order if d in band_sources]
+
+        # One shared union extent (left, bottom, right, top) so every band aligns
+        union_bounds = (
+            min(b.left for b in bounds_list),
+            min(b.bottom for b in bounds_list),
+            max(b.right for b in bounds_list),
+            max(b.top for b in bounds_list),
+        )
+        nodata = base_profile.get("nodata")
+
+        # Per band: pull each contributing band into a single-band dataset, then
+        # merge(method='max') over the shared union grid
+        out_bands = []
+        out_transform = None
+        for desc in band_order:
+            mems, datasets = [], []
+            try:
+                for p, idx in band_sources[desc]:
+                    with rasterio.open(p) as src:
+                        data = src.read(idx)
+                        prof = src.profile.copy()
+                    prof.update(count=1)
+                    mem = MemoryFile()
+                    ds = mem.open(**prof)
+                    ds.write(data, 1)
+                    mems.append(mem)
+                    datasets.append(ds)
+                arr, out_transform = merge(datasets, bounds=union_bounds, res=res,
+                                           nodata=nodata, method='max')
+                out_bands.append(arr[0])
+            finally:
+                for ds in datasets:
+                    ds.close()
+                for mem in mems:
+                    mem.close()
+
+        out_profile = base_profile.copy()
+        out_profile.update(count=len(out_bands), height=out_bands[0].shape[0],
+                           width=out_bands[0].shape[1], transform=out_transform)
+        with rasterio.open(output_path, 'w', **out_profile) as dst:
+            for i, (arr, desc) in enumerate(zip(out_bands, band_order), 1):
                 dst.write(arr, i)
                 dst.set_band_description(i, desc)
 
@@ -463,15 +494,20 @@ def datacollection(
         for year in flood_years:
 
             if year <= 2020:
+                comb_types = [
+                    ft for ft in flood_types
+                    if exists(f'{spatial_dir}/{city_name}_{ft}_{year}.tif')
+                ]
                 comb_list = [
                     f'{spatial_dir}/{city_name}_{ft}_{year}.tif'
-                    for ft in flood_types
-                    if exists(f'{spatial_dir}/{city_name}_{ft}_{year}.tif')
+                    for ft in comb_types
                 ]
 
                 if comb_list:
+                    logger.info(f"Flood Types: combined ({', '.join(comb_types)})")
                     comb_path = f'{spatial_dir}/{city_name}_comb_{year}.tif'
                     _combine_flood_rasters(comb_list, comb_path)
+                    logger.info(f"Generated: {os.path.basename(comb_path)}")
 
                     raster_pro.reproject_raster(
                         comb_path,
@@ -481,15 +517,20 @@ def datacollection(
 
             else:
                 for ssp in flood_ssps:
+                    comb_types = [
+                        ft for ft in flood_types
+                        if exists(f'{spatial_dir}/{city_name}_{ft}_{year}_ssp{ssp}.tif')
+                    ]
                     comb_list = [
                         f'{spatial_dir}/{city_name}_{ft}_{year}_ssp{ssp}.tif'
-                        for ft in flood_types
-                        if exists(f'{spatial_dir}/{city_name}_{ft}_{year}_ssp{ssp}.tif')
+                        for ft in comb_types
                     ]
 
                     if comb_list:
+                        logger.info(f"Flood Types: combined ({', '.join(comb_types)})")
                         comb_path = f'{spatial_dir}/{city_name}_comb_{year}_ssp{ssp}.tif'
                         _combine_flood_rasters(comb_list, comb_path)
+                        logger.info(f"Generated: {os.path.basename(comb_path)}")
 
                         raster_pro.reproject_raster(
                             f'{spatial_dir}/{city_name}_comb_{year}_ssp{ssp}.tif',

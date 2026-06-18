@@ -57,7 +57,7 @@ flood_type_display <- c(fluvial = "Fluvial", pluvial = "Pluvial", coastal = "Coa
 .flood_max_plot <- function(df, ft_key, ft_label) {
   if (is.null(df) || nrow(df) == 0 || !any(df$exposed_km2 > 0, na.rm = TRUE)) {
     print_text(paste_bold(paste("No", ft_label, "flood data available")))
-    return()
+    return(invisible(NULL))
   }
 
   p <- df %>%
@@ -74,9 +74,9 @@ flood_type_display <- c(fluvial = "Fluvial", pluvial = "Pluvial", coastal = "Coa
   print(p)
   cat("\n\n")
 
-  if (!"percent_exposed" %in% names(df)) return()
+  if (!"percent_exposed" %in% names(df)) return(invisible(NULL))
   df_sorted <- df %>% filter(!is.na(percent_exposed)) %>% arrange(year)
-  if (nrow(df_sorted) == 0) return()
+  if (nrow(df_sorted) == 0) return(invisible(NULL))
   first_row <- head(df_sorted, 1)
   last_row <- tail(df_sorted, 1)
   print_paged_df(bind_rows(first_row, last_row))
@@ -87,7 +87,7 @@ flood_type_display <- c(fluvial = "Fluvial", pluvial = "Pluvial", coastal = "Coa
 # Helper: plot return period chart for a flood type
 .flood_rp_plot <- function(ft_key, ft_label) {
   prob_file <- file.path(tabular_dir, paste0(ft_key, "_prob.csv"))
-  if (!file.exists(prob_file)) return()
+  if (!file.exists(prob_file)) return(invisible(NULL))
 
   prob_df <- read_csv(prob_file, col_types = cols())
   if ("0.1-1%" %in% names(prob_df) && !"1-in-1,000 year" %in% names(prob_df)) {
@@ -129,7 +129,7 @@ flood_type_display <- c(fluvial = "Fluvial", pluvial = "Pluvial", coastal = "Coa
 
 # Helper: print population table + text for a flood type
 .flood_pop_table <- function(ft_key) {
-  if (is.null(flood_pop) || nrow(flood_pop) == 0) return()
+  if (is.null(flood_pop) || nrow(flood_pop) == 0) return(invisible(NULL))
   pop_ft <- flood_pop %>% filter(str_detect(type, ft_key))
   if (nrow(pop_ft) > 0) {
     cat("\n\n#### Population Exposure\n\n")
@@ -141,8 +141,8 @@ flood_type_display <- c(fluvial = "Fluvial", pluvial = "Pluvial", coastal = "Coa
 
 # Helper: print Flood + WSF stats table for a flood type
 .flood_wsf_table <- function(ft_key) {
-  if (!exists("flood_total_data") || length(flood_total_data) == 0) return()
-  if (!(ft_key %in% names(flood_total_data))) return()
+  if (!exists("flood_total_data") || length(flood_total_data) == 0) return(invisible(NULL))
+  if (!(ft_key %in% names(flood_total_data))) return(invisible(NULL))
   ft_label_map <- c(fu = "River", pu = "Rainwater", cu = "Coastal", comb = "Combined")
   ft_label <- ft_label_map[ft_key]
   cat(paste0("\n\n#### ", ft_label, " — Flood + WSF Stats\n\n"))
@@ -174,7 +174,7 @@ flood_type_display <- c(fluvial = "Fluvial", pluvial = "Pluvial", coastal = "Coa
     }
   }
 
-  if (!has_data) return()
+  if (!has_data) return(invisible(NULL))
 
   # Narrative text after tables
   road_str <- NULL
