@@ -56,10 +56,8 @@ book:
         - case-multiple-philippines.qmd
     - part: "Collaborating"
       chapters:
-        - git-guide.qmd
-        - reporting-issues.qmd
         - contributing.qmd
-        - sharing-the-guide.qmd
+        - reporting-issues.qmd
         - editing-this-reference.qmd
     - references.qmd
 

@@ -1,6 +1,6 @@
 # Contributing
 
-We welcome contributions to City Scan — from new data layers to documentation improvements.
+We welcome contributions to City Scan, from new data layers to documentation improvements.
 
 This document explains how to add new analytical modules to the `tasks` framework and integrate them into the pipeline.
 
@@ -19,17 +19,18 @@ Before you start, let's ensure we are on the same page on the branching system. 
 ```
 main          → stable / production-like
   │
-  └── new_structure   → This is where our initiative lives
+  └── unified   → This is where our initiative lives
          │
-         ├── new_structure_alice
-         ├── new_structure_bob
-         └── new_structure_charlie
+         ├── unified_alice
+         ├── unified_bob
+         ├── unified_issue_19
+         └── unified_charlie
 ```
 
 
 No one touches `main` directly.
 
-No one pushes to `new_structure` without review.
+No one pushes to `unified` without review.
 
 
 ---------
@@ -41,20 +42,22 @@ No one pushes to `new_structure` without review.
 
 ```bash
 git fetch origin
-git checkout new_structure
+git checkout unified
 git pull
 ```
 
 #### Step 2 — Create their personal branch
 
 ```bash
-git checkout -b new_structure_alice
+git checkout -b unified_alice
 ```
 
 Naming convention:
 
 ```
-new_structure_<name>
+unified_<name>
+# or
+unified_<issue>
 ```
 
 ---------
@@ -72,7 +75,7 @@ git commit -m "Implement accessibility data parser"
 #### Step 4 — Push their branch
 
 ```bash
-git push -u origin new_structure_alice
+git push -u origin unified_alice
 ```
 
 #### Step 5 — Open a Pull Request
@@ -80,11 +83,11 @@ git push -u origin new_structure_alice
 On GitHub / GitLab:
 
 ```
-FROM: new_structure_alice
-TO:   new_structure
+FROM: unified_alice
+TO:   unified
 ```
 
-Daniel will review your code.
+Someone will review your code.
 
 ---------
 
@@ -94,8 +97,8 @@ Daniel will review your code.
 | Rule                                 | Why                   |
 | ------------------------------------ | --------------------- |
 | No direct commits to `main`          | Prevent breaking prod |
-| No direct commits to `new_structure` | Forces review         |
-| Always branch from `new_structure`   | Prevents divergence   |
+| No direct commits to `unified`       | Forces review         |
+| Always branch from `unified`         | Prevents divergence   |
 | Small PRs                            | Easier review         |
 | One feature per branch               | No tangled work       |
 
@@ -104,16 +107,20 @@ Daniel will review your code.
 
 
 ## Task Architecture
-The idea is to transfer what previously live in `backend/` folder into their new house: `tasks/` folder. 
-Each task module must follow the standard structure:
+
+Each task module lives in its own folder under `tasks/` and follows this standard structure:
 
 ```
 tasks/
-└── <module_name>/
-    ├── __init__.py
-    ├── datacollection.py
-    ├── dataanalysis.py
-    └── datavisualization.py
+└── <task_name>/
+    ├── __init__.py          # registers collect(), analyze() entry points
+    ├── collection.py        # downloads and clips data to AOI  (.py or .R)
+    ├── analysis.py          # computes statistics and generates outputs  (.py or .R)
+    ├── maps.yml             # [optional] map layers this task contributes
+    ├── multianalysis.R      # [optional] cross-task R post-processing
+    └── charts/              # [optional] Quarto charts for the scan report
+        ├── _quarto.yml
+        └── index.qmd
 ```
 
 Example:
@@ -122,33 +129,38 @@ Example:
 tasks/air_quality/
 ```
 
-Reference implementation: `tasks/air_quality` 
+Reference implementation: `tasks/air_quality`
 
 ### File Responsibilities
 
-| File                   | Responsibility                         |
-| ---------------------- | -------------------------------------- |
-| `datacollection.py`    | Download / load raw data, either via cloud storage, API, direct download, etc. & clip to AOI |
-| `dataanalysis.py`      | Perform numerical/statistical/spatial analysis |
-| `datavisualization.py` | Generate maps & plots, not as a final polished product, but as an exploratory data analysis effort. Later, we will polish more in frontend.                  |
-| `__init__.py`          | Module registration                    |
+| File                | Responsibility                                                                 |
+| ------------------- | ------------------------------------------------------------------------------ |
+| `collection.py`     | Download / load raw data (cloud storage, API, direct download, etc.) and clip to AOI |
+| `analysis.py`       | Perform numerical / statistical / spatial analysis; write CSVs and spatial files |
+| `maps.yml`          | Declare which map layers this task contributes and any custom map-render scripts |
+| `charts/index.qmd`  | Quarto charts rendered into the combined scan report                           |
+| `multianalysis.R`   | Cross-task post-processing that depends on outputs from other tasks            |
+| `__init__.py`       | Module registration — exposes `collect()` and `analyze()` entry points        |
 
+Both `collection.py` and `analysis.py` may be Python **or** R scripts; the pipeline dispatches accordingly.
 
 ---------
 
 ## Linking a New Module to `__main__.py`
 
-Each datacollection, dataanlysis, and datavisualization functions are orchestrated from each folder's `tasks/{task_name}/__init__.py`. Then, all task modules are orchestrated from `tasks/main.py`.
+Each `collect()` and `analyze()` function is registered in `tasks/{task_name}/__init__.py`. All task modules are then discovered automatically at startup by `tasks/__main__.py`, which scans `tasks/` for subdirectories containing an `__init__.py`.
 
 To integrate a new module:
 
-1. Import the module’s pipeline functions in `__init__.py`
-2. Call them in the execution sequence
+1. Implement `collection.py` and `analysis.py` inside your task folder
+2. Expose `collect()` and `analyze()` in `__init__.py`
+3. Register the task in `source/tasks.yml` (auth requirements, aliases, dependencies)
 
+The two-phase pipeline **must be preserved**:
 
-This three-stage pipeline **must be preserved**:
+> **Collection → Analysis**
 
-> **Collection → Analysis → Visualization**
+Visualization (maps and charts) is handled separately via `maps.yml` / `charts/` and rendered with `--render maps` or `--render scan-calculations`.
 
 ---------
 
@@ -157,16 +169,18 @@ This three-stage pipeline **must be preserved**:
 
 ### Required Function Signatures
 
-All modules must use these standard arguments:
+All Python modules must use these standard arguments:
 
-| Parameter                     | Purpose                   |
-| ----------------------------- | ------------------------- |
-| `city_name: str`              | City identifier           |
-| `output_dir: str`             | Root output directory     |
-| `aoi: GeoDataFrame`           | Area of interest          |
-| `return_*` flags              | Enable standalone testing |
+| Parameter                     | Purpose                                      |
+| ----------------------------- | -------------------------------------------- |
+| `city_name: str`              | City identifier                              |
+| `output_dir: str`             | Root output directory (`mnt/<scan_id>/`)     |
+| `aoi: GeoDataFrame`           | Area of interest geometry                    |
+| `return_*` flags              | Enable standalone testing without full pipeline |
 
-This ensures consistent orchestration.
+R scripts receive equivalent values via `core/R/setup.R`, which loads the AOI, sets directory paths, and initialises shared packages.
+
+This ensures consistent orchestration across both Python and R tasks.
 
 ---------
 
@@ -241,7 +255,7 @@ ghs_builtup
 elevation
 ```
 
-Follow the standard layout shown in `structure.txt` .
+After creating your folder, register the task in `source/tasks.yml`. This is where auth requirements (`gee`, `gcs`), CLI aliases, and inter-task dependencies are declared. The pipeline discovers tasks automatically by scanning `tasks/` for subdirectories with an `__init__.py`, but `source/tasks.yml` controls how they behave at runtime.
 
 ---------
 

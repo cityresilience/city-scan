@@ -1,16 +1,24 @@
 # Repository Structure
 
+This page is a navigational reference for the City Scan codebase. It maps every top-level directory and key file to its purpose, so you know where to look — and what to edit — when something needs fixing or adjusting. For how these pieces connect at runtime (task orchestration, inter-module calls, CLI flags), see [task-dependency.qmd](task-dependency.qmd).
+
 ```
-city-scan-automation/
-├── tasks/
-├── core/
-├── source/
-├── inputs/
-├── mnt/
-├── scan-calculations/
-├── templates/
-├── docs/
-└── logs/
+city-scan/
+├── tasks/               # per-topic data collection, analysis, and visualization modules
+├── core/                # shared infrastructure: Python utilities, R functions, CLI
+├── source/              # canonical config files copied into each city folder on first run
+├── inputs/              # user-provided config and AOI for the current scan
+├── mnt/                 # auto-generated per-city output folders
+├── scan-calculations/   # Quarto project that assembles per-task outputs into a report
+├── templates/           # boilerplate starters to copy into inputs/
+├── docs/                # this documentation site
+├── notebook/            # exploratory Jupyter notebooks (unmaintained)
+├── old_docs/            # archived documentation and CHANGELOG
+├── logs/                # run logs (auto-created on first run)
+├── bootstrap.sh         # one-time system dependency installer (macOS / Linux / WSL)
+├── orchestrator.sh      # Python venv setup via pyenv
+├── pyproject.toml       # package metadata and `scan` CLI entry point
+└── requirements.txt     # Python dependencies
 ```
 
 ---
@@ -19,39 +27,40 @@ city-scan-automation/
 
 ```
 tasks/
-├── elevation/
-│   ├── __init__.py
-│   ├── collection.py
-│   ├── analysis.py
-│   ├── maps.yml
-│   └── charts/
+├── __main__.py          # CLI entry point: parses flags, dispatches to core/config/run.py
+├── __init__.py          # package init
+├── contributing.md      # task contribution guide
+├── <task_name>/
+│   ├── __init__.py      # registers collect(), analyze(), visualize() entry points
+│   ├── collection.py    # downloads and clips data to AOI  (.py or .R)
+│   ├── analysis.py      # computes statistics and generates CSVs  (.py or .R)
+│   ├── maps.yml         # [optional] map layers this task contributes + custom map scripts
+│   ├── multianalysis.R  # [optional] cross-task R post-processing (e.g. flood exposure)
+│   └── charts/          # [optional] Quarto charts rendered into the scan-calculations report
 │       ├── _quarto.yml
 │       └── index.qmd
-├── fathom/
-│   ├── __init__.py
-│   ├── collection.py
-│   ├── analysis.py
-│   ├── multianalysis.R
-│   ├── maps.yml
-│   └── charts/
-│       ├── _quarto.yml
-│       └── index.qmd
-├── worldpop/
-├── wsf/
-├── earthquake/        # R-based collection
-├── oxford/            # R-based collection
 └── ...
 ```
 
-- Each scan topic is a self-contained module
-- `__init__.py` registers entry points: `collect()`, `analyze()`, `visualize()`
-- `collection.py` (or `.R`) downloads and clips data to AOI
-- `analysis.py` (or `.R`) computes statistics and generates CSVs
-- `maps.yml` declares the layers this task contributes (matched against `source/layers.yml`) and any custom map scripts
-- `charts/index.qmd` renders Quarto charts for the scan-calculations report
-- Some tasks have `multianalysis.R` for cross-task R-based post-processing (e.g. fathom flood exposure)
+Tasks present in the repo (36 modules):
+`accessibility` `air_quality` `basic_info` `buildings` `burned_area` `coastal_erosion`
+`cyclones` `demographics` `earthquake` `elevation` `fathom` `flood_events` `forest`
+`fwi` `gdp_gridded` `gdp_sectoral` `ghs_builtup` `ghs_population` `groundwater`
+`landcover` `landcover_burn` `landslide` `liquefaction` `lst` `ndxi` `nightlight`
+`oxford` `rwi` `sea_level_rise` `seismic_hazard` `slope` `solar` `water_risk`
+`worldpop` `wsf`
+
+For what each task produces, see the **Tasks & Data Layers** section:
+
+
+[Population & Demographics](population-demographic.qmd) ·
+[Economic Activity](economic-activity.qmd) ·
+[Built Form](built-form.qmd) ·
+[Climate Conditions](climate-condition.qmd) ·
+[Risk Identification](risk-identification.qmd)
+
 - Tasks are auto-registered via `source/tasks.yml`
-- CLI entry point: `tasks/__main__.py` (parses flags, dispatches to `core/config/run.py`)
+- Task dependencies and the orchestration graph are documented in [task-dependency.qmd](task-dependency.qmd)
 
 ---
 
@@ -61,92 +70,90 @@ tasks/
 
 ```
 core/config/
-├── scan.py
-├── auth.py
-├── paths.py
-├── tasks.py
-├── cli.py
-├── run.py
-├── multitask.py
-├── inputs.py
-├── sync.py
-├── check_env.py
-└── utils.py
+├── scan.py        # Scan class: loads AOI, reads city config, creates city output folders in mnt/
+├── auth.py        # GEE and GCS authentication (tiered: existing creds → gcloud ADC → fail-fast)
+├── paths.py       # auto-detects input/output directories based on project structure
+├── tasks.py       # task registry (reads source/tasks.yml)
+├── cli.py         # CLI flag parsing — single source of truth for all flags
+├── run.py         # run_task(), run_multicity() execution logic
+├── multitask.py   # parallel task runner with TUI for --parallel flag
+├── inputs.py      # prepare_inputs(): stages user inputs into the city folder
+├── sync.py        # sync_project_files() for --sync flag
+├── check_env.py   # environment preflight for --check flag
+├── gdal_auth.py   # configures GDAL for /vsigs/ access to private GCS buckets
+└── utils.py       # shared slugify() and other helpers
 ```
-
-- `scan.py` — Scan class: loads AOI, city config, creates city output folders in `mnt/`
-- `auth.py` — initializes GEE and GCS authentication (tiered: existing creds → gcloud ADC → fail-fast)
-- `paths.py` — auto-detects input/output directories based on project structure
-- `tasks.py` — task registry (reads `source/tasks.yml`)
-- `cli.py` — CLI flag parsing (single source of truth for all flags)
-- `run.py` — `run_task()`, `run_multicity()` execution logic
-- `multitask.py` — parallel task runner with TUI for `--parallel` flag
-- `inputs.py` — `prepare_inputs()` for staging user inputs into city folders
-- `sync.py` — `sync_project_files()` for `--sync` flag
-- `check_env.py` — environment preflight for `--check` flag
-- `utils.py` — shared `slugify()` and other helpers
 
 ### core/py/
 
 ```
 core/py/
-├── log_module.py
-├── error_tracker.py
-├── gcs_module.py
-├── aoi_module.py
-├── osm_client.py
-├── osm_pbf.py
-├── aoi_buffer.py
-├── gee_fns.py
-├── raster_module.py
-└── gdal_auth.py
+├── log_module.py          # logging setup (console + rotating file output)
+├── error_tracker.py       # counts errors per task; surfaces OK / WARNING / ERROR / NO_DATA status
+├── gcs_module.py          # GCS upload/download, file tracking for --upload flag
+├── aoi_module.py          # detects country name(s) and ISO3 codes from AOI intersection
+├── aoi_buffer.py          # AOI buffer utilities in meters for OSM queries
+├── aoi_helper.py          # AOI geometry helper functions
+├── osm_client.py          # unified OSM access (routes to Geofabrik PBF or Overpass by AOI size)
+├── osm_pbf.py             # Geofabrik PBF download + attribute filter helpers
+├── gee_fns.py             # GEE tiling helpers (make_tiles, tiled_collection)
+├── raster_module.py       # raster mosaic, masking, GCS-safe operations
+├── check_layers.py        # validates layer outputs against expected spec
+├── clean.py               # shared data-cleaning utilities
+└── convert_shp_to_fgb.py  # shapefile → FlatGeobuf conversion helper
 ```
-
-- `log_module.py` — logging setup (console + rotating file output)
-- `error_tracker.py` — counts errors per task, surfaces OK / WARNING / ERROR / NO_DATA status
-- `gcs_module.py` — GCS upload/download, file tracking for `--upload` flag
-- `aoi_module.py` — detects country name(s) and ISO3 codes from AOI intersection (multi-country aware)
-- `osm_client.py` — unified OSM access (routes to Geofabrik PBF for large AOIs, Overpass otherwise)
-- `osm_pbf.py` — Geofabrik PBF download + attribute filter helpers
-- `aoi_buffer.py` — AOI buffer utilities in meters for OSM queries
-- `gee_fns.py` — GEE tiling helpers (`make_tiles`, `tiled_collection`)
-- `raster_module.py` — raster mosaic, masking, GCS-safe operations
-- `gdal_auth.py` — configures GDAL for `/vsigs/` access to private GCS buckets
 
 ### core/R/
 
 ```
 core/R/
-├── setup.R
-├── fns.R
-├── pre-mapping.R
-├── maps-static.R
-├── map-flooding.R
-├── map-elevation.R
-├── map-sectoral-gdp-flood.R
-├── map-schools-health-proximity.R
-├── benchmark-helper.R
-├── pop-backup.R
-├── global-data-paths.R
-└── ...
+├── setup.R              # R session init: loads packages, reads AOI, sets directory paths
+├── fns.R                # core shared functions (plot_static_layer, cell_aggregate, h3_aggregate, …)
+├── fns-*.R              # extended function libraries — 10 files covering:
+│                        #   aggregation, charts, geometry, maps-aes, maps-static,
+│                        #   maps-web, population, text, utilities, web
+├── pre-mapping.R        # data preprocessing before mapping (combine flood zones, WSF edits, …)
+├── pre-charting.R       # data preprocessing before chart rendering
+├── maps-static.R        # orchestrates static map generation: standard loop + custom scripts
+├── maps-web.R           # web map rendering
+├── map-*.R              # custom map scripts for layers needing special handling (13 files):
+│                        #   building-footprints, coastal-erosion, deforestation, economic-activity-*,
+│                        #   elevation, flooding, gdp-flood, ghs-expansion, historical-burnt-area,
+│                        #   intersections, isochrones, schools-health-proximity,
+│                        #   sectoral-gdp-flood, seismic-hazard
+├── chart-*.R            # chart generators per data type (13 files):
+│                        #   age-sex-distribution, earthquakes, elevation, flood-archive,
+│                        #   flooding, fwi, groundwater, landcover, slope, solar-pv, urban-extent
+├── data-*.R             # data processing helpers (6 files):
+│                        #   coastal-erosion, collection, flood-wsf-probability,
+│                        #   gridded-gdp, slr-clip, wsf-harmonized
+├── benchmark-assembly.R # benchmark city assembly
+├── benchmark-helper.R   # benchmark city selection and Oxford lookup (diacritic-insensitive)
+├── gcs-auth.R           # GCS authentication for R
+├── gcs-overrides.R      # per-city GCS path overrides
+├── pop-backup.R         # population fallback functions (UN data, citypopulation.de, GHS-POP)
+├── population-growth.R  # population growth rate calculations
+├── write-population.R   # writes population outputs
+├── global-data-paths.R  # data path configuration shared across R scripts
+├── clean-tabular.R      # tabular data cleaning
+├── pdf-prep.R           # PDF export preparation
+├── plots.R              # shared plotting utilities
+├── rename-generic.R     # layer/file renaming helpers
+├── in_design.R          # design system utilities
+└── transparencies.R     # color and transparency configuration
 ```
 
-- `setup.R` — R session setup: loads packages, reads AOI, sets directory paths
-- `fns.R` — `plot_static_layer()`, `prepare_parameters()`, `parse_agg_fun()`, `cell_aggregate()`, `hexbin_aggregate()`, `h3_aggregate()`, and other shared helpers
-- `pre-mapping.R` — data preprocessing before mapping (combine flood zones, edit WSF tracker, adjust deforestation years)
-- `maps-static.R` — orchestrates static map generation: standard layers loop + custom map scripts
-- `map-*.R` — custom map scripts for layers that need special handling (flood overlays, sectoral GDP, schools/health proximity, etc.)
-- `benchmark-helper.R` — benchmark city selection and Oxford lookup (diacritic-insensitive)
-- `pop-backup.R` — population fallback functions (UN data, citypopulation.de, GHS-POP)
+- Edit `map-*.R` to customise the rendering of specific layers
+- Edit `fns.R` / `fns-*.R` for shared plotting and aggregation logic
+- `maps-static.R` is the orchestration entry point for all static maps
 
 ### core/ojs/
 
 ```
 core/ojs/
-└── plots.js
+├── dataloader.js   # data-loading utilities for Observable JS charts
+└── plots.js        # D3-based interactive chart definitions used in the web report
 ```
-
-- Observable JS interactive charts (D3-based) used in the web report
 
 ---
 
@@ -154,19 +161,19 @@ core/ojs/
 
 ```
 source/
-├── layers.yml
-├── tasks.yml
-├── generic-text.yml
-├── custom.scss
-└── pagedtable-fix.scss
+├── layers.yml                           # map layer styling: palettes, breaks, labels, fuzzy_string per layer
+├── tasks.yml                            # task registry: auth requirements, aliases, dependencies
+├── generic-text.yml                     # report text templates per section
+├── countries_economies_classification.csv  # country/economy classification lookup
+├── slide-list.csv                       # slide/report section configuration
+├── output-check.qmd                     # Quarto quality-assurance template
+├── pagedtable-fix.scss                  # Bootstrap table styling overrides
+└── pagedtable.css                       # paged table base styles
 ```
 
-- Canonical config files, copied to each city folder on first run
-- `layers.yml` — map layer styling (palettes, breaks, labels, fuzzy_string per layer)
-- `tasks.yml` — task config (auth requirements, aliases, dependencies)
-- `generic-text.yml` — report text templates per section
-- `custom.scss` — report CSS styling
-- `pagedtable-fix.scss` — Bootstrap table styling overrides
+- These files are copied into each city folder on first run
+- Edit `layers.yml` to adjust map symbology; edit `tasks.yml` to change task auth or dependencies
+- `generic-text.yml` holds the boilerplate narrative text that appears in scan reports
 
 ---
 
@@ -174,17 +181,14 @@ source/
 
 ```
 inputs/
-├── city_inputs.yml
-├── multi_inputs.yml
-├── menu.yml
-└── AOI/
+├── city_inputs.yml   # single-city config: name, AOI, year ranges, flood/accessibility/benchmark params
+├── multi_inputs.yml  # multi-city batch config: city list (or multipolygon file) + shared settings
+├── menu.yml          # toggle which tasks to enable or disable
+└── AOI/              # boundary shapefile(s) for the city or cities
 ```
 
-- User-facing configuration for new scans (not tracked in git — see `templates/` for starting copies)
-- `city_inputs.yml` — single-city config: name, AOI, year ranges, flood/accessibility/benchmark params
-- `multi_inputs.yml` — multi-city batch config: city list (or multipolygon file) + shared settings
-- `menu.yml` — toggle which tasks to enable or disable
-- `AOI/` — boundary shapefile(s) for the city or cities
+- User-facing configuration for each new scan — not tracked in git
+- Copy from `templates/` and edit before running; see [inputs-config.qmd](inputs-config.qmd) for field reference
 
 ---
 
@@ -192,27 +196,22 @@ inputs/
 
 ```
 mnt/
-└── 2026-03-tunisia-tunis/
-    ├── 01-user-input/
+└── <scan-id>/                   # e.g. 2026-03-morocco-rabat
+    ├── 01-user-input/           # copy of inputs/ staged for this scan
     ├── 02-process-output/
-    │   ├── spatial/
-    │   └── tabular/
+    │   ├── spatial/             # rasters and vector files (.tif, .gpkg, .fgb)
+    │   └── tabular/             # CSVs and statistics
     ├── 03-render-output/
-    │   ├── maps/
-    │   └── plots/
-    ├── tasks/
-    ├── core/
-    ├── source/
-    └── scan-calculations/
+    │   ├── maps/                # static map PNGs
+    │   └── plots/               # chart PNGs
+    ├── tasks/                   # synced copy of tasks/ for this scan
+    ├── core/                    # synced copy of core/
+    ├── source/                  # synced copy of source/
+    └── scan-calculations/       # synced copy of scan-calculations/
 ```
 
-- City output folders, auto-created per scan by the `Scan` class
-- Each city gets its own copy of `tasks/`, `core/`, `source/`, `scan-calculations/`
-- `01-user-input/` — copied from `inputs/`
-- `02-process-output/spatial/` — rasters and vector data (.tif, .gpkg, .fgb)
-- `02-process-output/tabular/` — CSVs and statistics
-- `03-render-output/maps/` — static map PNGs
-- `03-render-output/plots/` — chart PNGs
+- City output folders are auto-created per scan by the `Scan` class
+- Each city gets an isolated copy of `tasks/`, `core/`, `source/`, `scan-calculations/` so scans are reproducible without re-syncing
 
 ---
 
@@ -220,15 +219,14 @@ mnt/
 
 ```
 scan-calculations/
-├── _quarto.yml
-├── sections.yml
-├── generate-index.R
-└── ...
+├── _quarto.yml       # Quarto project config
+├── sections.yml      # defines which tasks appear in the report and in what order
+├── generate-index.R  # reads sections.yml and assembles per-task qmds into index.qmd
+└── ...               # per-task chart qmds assembled at render time
 ```
 
-- Quarto project that compiles per-task `charts/index.qmd` into a single combined HTML report
-- `sections.yml` defines which tasks appear and in what order
-- `generate-index.R` reads `sections.yml` and assembles the per-task qmds into `index.qmd`
+- Quarto project that compiles per-task `charts/index.qmd` files into a single combined HTML report
+- `sections.yml` is the place to reorder or exclude tasks from the final report
 
 ---
 
@@ -236,15 +234,14 @@ scan-calculations/
 
 ```
 templates/
-├── city_inputs.yml
-├── multi_inputs.yml
-├── menu.yml
-├── manual-text.md
-└── README.md
+├── city_inputs.yml   # starter single-city config
+├── multi_inputs.yml  # starter multi-city config
+├── menu.yml          # starter task menu
+├── manual-text.md    # starter manual narrative text
+└── README.md         # template usage notes
 ```
 
-- Boilerplate input configs and starter files
-- Copy `city_inputs.yml`, `multi_inputs.yml`, `menu.yml` to `inputs/` and edit before running
+- Copy these to `inputs/` and edit before each scan; `inputs/` itself is git-ignored
 
 ---
 
@@ -252,15 +249,40 @@ templates/
 
 ```
 docs/
-├── README.md
-├── CHANGELOG.md
-├── getting-started/
-├── interface/
-├── reference/
-└── archived/
+├── index.qmd                  # documentation home
+├── _quarto.yml                # Quarto book config
+├── tasks-structure-overview.qmd
+├── repo-structure.qmd         # this file
+├── task-dependency.qmd        # orchestration and inter-module dependency graph
+├── inputs-config.qmd          # city_inputs.yml / multi_inputs.yml / menu.yml reference
+├── setting-up.qmd
+├── running-first-cityscan.qmd
+├── standard-cityscan.qmd
+├── custom-cityscan.qmd
+├── multiple-cityscan.qmd
+├── population-demographic.qmd # Tasks & Data Layers — domain pages
+├── economic-activity.qmd
+├── built-form.qmd
+├── climate-condition.qmd
+├── risk-identification.qmd
+├── at-a-glance.qmd
+├── data-wiki.qmd              # comprehensive data source reference
+├── datalayer-references.qmd
+├── contributing.qmd
+├── git-guide.qmd
+├── editing-this-reference.qmd
+├── sharing-the-guide.qmd
+├── reporting-issues.qmd
+├── examples-cityscan.qmd
+├── case-standard-rabat.qmd
+├── case-multiple-philippines.qmd
+├── references.bib
+├── references.qmd
+├── image/                     # documentation images
+└── reference/                 # supplementary references (maps-customization, workflow diagrams)
 ```
 
-See [docs/README.md](../README.md) for the full index.
+Publish with `quarto publish gh-pages` from the repo root.
 
 ---
 
@@ -268,10 +290,15 @@ See [docs/README.md](../README.md) for the full index.
 
 ```
 logs/
-├── app.log
-└── task_report.txt
+├── app.log           # full run log (overwrites each run)
+└── task_report.txt   # per-task status summary: status, source, messages, last update
 ```
 
-- Auto-created on first task run
-- `app.log` — full run log (overwrites per run)
-- `task_report.txt` — per-task status summary (status, source, messages, last update)
+Auto-created on first task run.
+
+---
+
+## notebook/ and old_docs/
+
+- `notebook/` — exploratory Jupyter notebooks used during development; **unmaintained** and not part of the production pipeline
+- `old_docs/` — archived documentation and CHANGELOG; superseded by this docs site

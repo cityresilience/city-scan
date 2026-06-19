@@ -1,5 +1,0 @@
-# Sharing the Guide
-
-How to share, publish, and distribute the City Scan Cookbook with your team and stakeholders.
-
-{{< lipsum >}}

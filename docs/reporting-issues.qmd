@@ -1,5 +1,12 @@
 # Reporting Issues
 
-How to report bugs, request features, and ask questions about City Scan.
+Found a bug, have a feature request, or need help? Use the GitHub issue tracker.
 
-{{< lipsum >}}
+1. Go to [`github.com/cityresilience/city-scan/issues`](https://github.com/cityresilience/city-scan/issues)
+2. Click **New issue**
+3. Describe the problem or request clearly — include steps to reproduce for bugs, and the city name / scan ID if relevant
+4. Assign the issue to yourself or a relevant team member
+
+
+
+

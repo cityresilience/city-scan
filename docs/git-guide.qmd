@@ -1,5 +1,0 @@
-# Git Guide
-
-A practical Git reference for City Scan contributors, covering branching strategy, commit conventions, and common workflows.
-
-{{< lipsum >}}

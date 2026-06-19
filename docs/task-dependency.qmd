@@ -1,218 +1,233 @@
-# Orchestration Dependency Graph
+# Orchestration & Dependency Flow
 
+This page explains what happens under the hood when you run a `scan` command — the sequence of phases, what each phase does, and how inputs, flags, tasks, core modules, and config files interact to produce outputs. For where each file lives, see [repo-structure.qmd](repo-structure.qmd).
 
-## Dependencies used by the orchestration layer
+---
 
-```
-requirements.txt (orchestration-critical subset)
-├── PyYAML==6.0.1              ← reads city_inputs.yml, menu.yml,
-│                                tasks.yml, multi_inputs.yml, layers.yml
-├── geopandas==1.0.1           ← AOI loading + multipolygon handling
-│                                (Scan.aoi, run_multicity, find_country)
-├── earthengine-api>=1.6.12    ← core/config/auth.py::init_gee()
-├── google-cloud-storage       ← core/config/auth.py::init_gcs(),
-│     ==2.16.0                   core/py/gcs_module.py (upload)
-├── rasterio==1.3.8            ← raster I/O for collection/analysis
-├── shapely==2.0.4             ← AOI geometry ops
-└── fiona==1.10.1              ← shp/gpkg read
+## 1. Entry point and flag dispatch
+
+Every run starts the same way:
+
+```python
+python -m tasks [flags] [task_names]
+# or equivalently:
+scan [flags] [task_names]          # via pyproject.toml entry point
 ```
 
-Standard-library orchestration modules: `argparse`-style parsing (custom in
-`core/config/cli.py`), `importlib` (task discovery), `subprocess` (R/Quarto),
-`threading` / `concurrent.futures` (parallel mode), `termios` / `tty` /
-`select` (TUI keybinds), `logging`, `pathlib`, `shutil`.
+`main()` in `tasks/__main__.py` handles all dispatch. The first thing it does is parse flags via `validate_args()` + `parse_args()` in `core/config/cli.py`, which returns a `flags` dict. Several invocations resolve and exit before any scan state is created:
 
-## Flag targets (from `core/config/cli.py`)
+| Invocation | Behavior |
+|---|---|
+| `--help` / no args | prints usage, exits |
+| `--check [r\|python\|gee\|gcs\|quarto\|inputs]` | runs environment preflight (`core/config/check_env.py`), exits 0/1 |
+| `--list tasks\|cities\|flags` | prints task registry, `mnt/` folders, or flag list, exits |
+| `--multicity` | reads `inputs/multi_inputs.yml`, runs one subprocess per city, exits — see [Multi-city mode](#multi-city-batch-mode) |
 
-```
---sync     ∈ { tasks, source, core, scan-calculations }   (SYNC_TARGETS)
-             • no target  → all four
-             • -t         → shortcut for `--sync tasks`
---render   ∈ { maps, scan-calculations, charts }          (render_targets)
-             • maps                → Rscript core/R/maps-static.R
-             • scan-calculations   → quarto render scan-calculations/
-             • charts <task>       → quarto render tasks/<task>/charts/index.qmd
---scan-id  <id>      target existing city folder in mnt/
---all                run every task enabled in menu.yml
---multicity          batch from inputs/multi_inputs.yml
---collect / --analyze / --multianalysis   single-phase run
---parallel           multitask.py TUI runner
---upload             gcs_module.upload_task_outputs()
--e                   use existing city folder (skip folder prompt)
--k / --keep          run with code already in city folder (skip sync)
--t                   shortcut for `--sync tasks`
---list     ∈ { tasks, cities, flags }
-```
+All other invocations proceed to scan initialization.
 
-## Orchestration graph
+**Main-path flags** (control behavior without short-circuiting):
 
-```
-                                USER CLI
-                                python -m tasks ...
-                        (or `scan ...` via pyproject entry point)
-                                        │
-                                        ▼
-┌──────────────────────────────────────────────────────────────────────────────────────┐
-│  tasks/__main__.py                                                                   │
-│    main()  — dispatches based on flags                                               │
-└──────────────────────────────────────────────────────────────────────────────────────┘
-        │            │            │                    │                          │
-        ▼            ▼            ▼                    ▼                          ▼
-    [--help]    [--list X]  [validate+parse]        [normal]                   [MULTI]
-                                │                      │                          │
-                                ▼                      │                          ▼
-┌───────────────────────────────────────────┐          │    ┌──────────────────────────────────────────────┐
-│  core/config/cli.py                       │          │    │ core/py/run.py                               │
-│    KNOWN_FLAGS, SYNC_TARGETS (const)      │          │    │   run_multicity(path, args, flags)           │
-│    validate_args(args) → err|None         │          │    │     ├─ reads inputs/multi_inputs.yml         │
-│    parse_args(args)    → flags dict       │          │    │     ├─ gpd.read_file  (multipolygon mode)    │
-│      flags: sync_targets, keep_as_is,     │          │    │     ├─ find_country()                        │
-│        use_existing, upload_enabled,      │          │    │     ├─ scan_init()                           │
-│        parallel_mode, auto_exit, run_all, │          │    │     ├─ prepare_inputs()                      │
-│        multicity, step, scan_id,          │          │    │     └─ subprocess: `scan --scan-id <id> ...` │
-│        render_targets, task_names         │          │    │         (loops per city, falls back into     │
-└───────────────────────────────────────────┘          │    │          the [normal] path)                  │
-                                │                      │    └──────────────────────────────────────────────┘
-                                │                      │                          │
-                                └──────────────────────┼──────────────────────────┘
-                                                       ▼
-┌────────────────────────────────────────────────────────────────────┐
-│  core/config/scan.py                                               │
-│    scan_init(country, city, use_existing) → scan_id                │
-│      (prompts [e]xisting / [n]ew unless use_existing or non-tty)   │
-│                                                                    │
-│    class Scan:                                                     │
-│      __init__(scan_id, sync_tasks, skip_sync,                      │
-│               use_existing, sync_targets)                          │
-│        ├─→ prepare_inputs()      (core/config/inputs.py)           │
-│        ├─→ find_country()        (core/py/aoi_module.py)           │
-│        ├─→ scan_init()           (self)                            │
-│        ├─→ sync_project_files()  (core/config/sync.py)  [skippable]│
-│        └─ attrs: city_dir, input_dir, output_dir, render_dir,      │
-│           spatial_dir, tabular_dir, menu, sources, font_dict       │
-└────────────────────────────────────────────────────────────────────┘
-                                                      │
-                 ┌────────────────────────────────────┼────────────────────────────────────┐
-                 ▼                                    ▼                                    ▼
-┌─────────────────────────────────┐ ┌─────────────────────────────────┐ ┌───────────────────────────────────────┐
-│ core/config/paths.py            │ │ core/config/inputs.py           │ │ core/config/sync.py                   │
-│   PROJECT_ROOT                  │ │   prepare_inputs(               │ │   SKIP_PATTERNS                       │
-│   INPUTS  (auto-detect:         │ │     dest, city_inputs,          │ │   _ignore(dir, files)                 │
-│     inputs/  OR  01-user-input/)│ │     source_dir,                 │ │   sync_project_files(                 │
-│   OUTPUTS (mnt/  OR  city       │ │     aoi_dir, wards_dir,         │ │     city_root,                        │
-│            parent)              │ │     override)                   │ │     sync_targets,                     │
-│                                 │ │                                 │ │     sync_tasks)                       │
-│ core/config/utils.py            │ │   writes city_inputs.yml,       │ │                                       │
-│   slugify(name)                 │ │   copies AOI/menu/wards into    │ │   sync_targets ∈ {                    │
-│                                 │ │   01-user-input/                │ │     tasks, source, core,              │
-│                                 │ │                                 │ │     scan-calculations                 │
-│                                 │ │                                 │ │   }   (from cli.py SYNC_TARGETS)      │
-│                                 │ │                                 │ │                                       │
-│                                 │ │                                 │ │   sync_tasks = list of task folders   │
-│                                 │ │                                 │ │                 or None (all tasks)   │
-│                                 │ │                                 │ │                                       │
-│                                 │ │                                 │ │   modes:                              │
-│                                 │ │                                 │ │     sync_targets set  → explicit      │
-│                                 │ │                                 │ │     first run         → all 4 targets │
-│                                 │ │                                 │ │     non-tty           → tasks only    │
-│                                 │ │                                 │ │     else → prompt [t/o/k/a]:          │
-│                                 │ │                                 │ │       [t] tasks only                  │
-│                                 │ │                                 │ │       [o] override all                │
-│                                 │ │                                 │ │       [k] keep as-is                  │
-│                                 │ │                                 │ │       [a] abort                       │
-└─────────────────────────────────┘ └─────────────────────────────────┘ └───────────────────────────────────────┘
+| Flag | Effect |
+|---|---|
+| `--scan-id <id>` | target an existing city folder in `mnt/`; skips the new/existing prompt |
+| `-e` | use existing city folder (non-interactive equivalent of choosing `[e]`) |
+| `--sync [tasks\|source\|core\|scan-calculations]` | explicitly control what gets copied to the city folder |
+| `-t` | shortcut for `--sync tasks` |
+| `-k` / `--keep` | skip sync entirely; run with whatever code is already in the city folder |
+| `--all` | run every task currently enabled in `menu.yml` |
+| `--collect` / `--analyze` / `--multianalysis` | run one execution phase only |
+| `--parallel` | use the TUI parallel runner instead of serial execution |
+| `--upload` | upload task outputs to GCS after each task completes |
+| `--render maps\|scan-calculations\|charts <task>` | render maps or the HTML report (can combine with tasks or run standalone) |
 
-                                                      │
-                                  (back in __main__.py after Scan init)
-                                                      ▼
-        ┌──────────────────┬───────────────────┬───────────────────┬───────────────────┐
-        ▼                  ▼                   ▼                   ▼                   ▼
- [--sync targets]   [--upload only]     [--render targets]   [--all / tasks]       [default]
+---
 
- returns after       backfill upload     calls Rscript        resolves task list   run collect+analyze
- sync_project_       of whole city       / quarto per         from menu.yml +      serially per task
- files() ran in      output dir via      target (see Flag     args via             (uses TASK_REGISTRY,
- Scan init           gcs_module          targets block)       TASK_REGISTRY +      gates by auth)
-                                                              topo_sort()
-                                                      │                   │                   │
-                                                      │                   └─────────┬─────────┘
-                                                      │                             ▼
-                                                      │       ┌────────────────────────────────────────────┐
-                                                      │       │ core/config/tasks.py                       │
-                                                      │       │   TASK_REGISTRY     ALIASES                │
-                                                      │       │   GEE_TASKS         GCS_TASKS              │
-                                                      │       │   MENU_KEYS         TASK_DEPENDENCIES      │
-                                                      │       │   discover_tasks()                         │
-                                                      │       │   menu_enabled(menu, name)                 │
-                                                      │       │   topo_sort(names, deps)                   │
-                                                      │       │   ← source/tasks.yml                       │
-                                                      │       └────────────────────────────────────────────┘
-                                                      │                             │
-                                                      │                             ▼
-                                                      │       ┌────────────────────────────────────────────┐
-                                                      │       │ core/config/auth.py                        │
-                                                      │       │   init_gee()     init_gcs()                │
-                                                      │       └────────────────────────────────────────────┘
-                                                      │                             │
-                                                      │                 ┌───────────┴──────────┐
-                                                      ▼                 ▼                      ▼
-                        ┌────────────────────────────────────────┐   [serial]              [parallel]
-                        │ subprocess:                            │      │                      │
-                        │   Rscript   core/R/maps-static.R       │      ▼                      ▼
-                        │   quarto    render scan-calculations/  │   ┌──────────────┐   ┌──────────────────────────────────────────┐
-                        │   quarto    render tasks/<t>/charts/   │   │ run_task(    │   │ core/py/multitask.py                     │
-                        └────────────────────────────────────────┘   │   name,      │   │   run_parallel(task_names, scan, step,   │
-                                                      │              │   scan,      │   │                 run_task_fn, skip_tasks, │
-                                                      ▼              │   step)      │   │                 auto_exit)               │
-                        ┌────────────────────────────────────────┐   └──────────────┘   │     ├ TaskState                          │
-                        │ core/py/gcs_module.py                  │          │           │     ├ TaskLogHandler                     │
-                        │   get_all_files(dir)                   │          │           │     ├ worker()  per task thread          │
-                        │   upload_task_outputs(scan, task,      │          │           │     ├ Semaphores  (gee / gcs / osm)      │
-                        │                       step,            │          │           │     ├ TUI loop  (termios/tty/select)     │
-                        │                       files_before)    │          │           │     └ collect_results                    │
-                        └────────────────────────────────────────┘          │           └──────────────────────────────────────────┘
-                                                                            │                        │
-                                                                            ▼                        │
-                                               ┌────────────────────────────────────────────┐        │
-                                               │ core/py/run.py                             │◀───────┘
-                                               │   run_task(name, scan, step)               │
-                                               │     ├ importlib.import_module              │
-                                               │     ├ ErrorTracker() context mgr           │
-                                               │     └ dispatches to task module:           │
-                                               │         collect / analyze / multianalysis  │
-                                               └────────────────────────────────────────────┘
-                                                                  │
-                                                                  ▼
-                                               ┌────────────────────────────────────────────┐
-                                               │ tasks/{name}/                              │
-                                               │   __init__.py  →  collection.py            │
-                                               │                   analysis.py              │
-                                               │                   multianalysis.R          │
-                                               │                   charts/index.qmd         │
-                                               └────────────────────────────────────────────┘
+## 2. Scan initialization
 
-                                  BACK IN __main__.py (after runs)
-                                                  │
-                                                  ▼
-                        ┌────────────────────────────────────────────────────────┐
-                        │  summary table → logger                                │
-                        │  logs/task_report.txt                                  │
-                        │    (task | step | status | source | msg | timestamp)   │
-                        └────────────────────────────────────────────────────────┘
-```
+After flag parsing, `main()` instantiates `Scan` (defined in `core/config/scan.py`). The `Scan` object is the city context — it carries directory paths, city metadata, and loaded config — and is passed into every subsequent step.
 
-## Utilities (used throughout)
+**`Scan.__init__()` runs in this order:**
+
+1. **Resolve scan ID**
+   - If `--scan-id` was given → uses `mnt/<scan_id>/01-user-input/` as the input source
+   - Otherwise → calls `scan_init()`, which searches `mnt/` for folders matching the `{country}-{city}` suffix, then either prompts `[e]xisting / [n]ew` (interactive) or auto-creates (non-TTY or `-e` flag)
+   - Scan ID format: `YYYY-MM-{country}-{city}` for single-country, `YYYY-MM-{city}` for multi-country AOIs
+
+2. **Load city config** — reads `city_inputs.yml` → sets `city_name`, `first_year`, `last_year`, `flood_threshold`, `flood_year`, `flood_ssp`, `flood_return_periods`, `fwi_first_year`, `fwi_last_year`, and other city parameters
+
+3. **Load AOI** — reads the boundary shapefile from `01-user-input/AOI/`
+
+4. **Resolve country** — calls `find_country()` (`core/py/aoi_module.py`) which intersects the AOI against a country boundaries dataset → sets `country_iso3`, `country_name`, `country_iso3_list`, `multi_country`
+
+5. **Create output directories**
+   ```
+   mnt/<scan_id>/
+   ├── 02-process-output/spatial/
+   ├── 02-process-output/tabular/
+   ├── 03-render-output/maps/
+   └── 03-render-output/plots/
+   ```
+
+6. **Sync project files** — calls `sync_project_files()` (`core/config/sync.py`), skipped if `--keep` or render-only mode
+
+7. **Load runtime config** — reads `menu.yml` → `scan.menu`; reads `source/layers.yml` → `scan.sources`
+
+### File sync decision logic
+
+On each run (unless `--keep`), the pipeline decides what code to copy into the city folder:
 
 ```
-core/py/log_module.py    setup_logger(name), set_log_dir(path),
-                         _file_handler (module-level)
-core/py/error_tracker.py ErrorTracker()  — context manager, captures
-                         status + messages per phase
-core/py/aoi_module.py    find_country(aoi) → (iso3, name, iso3_list)
-core/py/gcs_module.py    get_all_files(dir), upload_task_outputs(
-                          scan, task_name, step, files_before)
-core/config/gdal_auth.py GDAL cloud config for /vsicurl/ reads
+--sync targets given explicitly   →  copy only those targets
+no project files in city folder   →  copy all four (first run)
+non-interactive / no TTY          →  tasks only
+interactive prompt:
+  [t]  tasks only
+  [o]  override all  (01-user-input/ is never touched)
+  [k]  keep as-is
+  [a]  abort
 ```
 
-Legend: boxes = files, indented lines = functions/attrs within that file.
-Arrows = import/call direction.
+Sync targets: `tasks/`, `core/`, `source/`, `scan-calculations/`. A `.here` marker file is also written so R's `here` package resolves paths correctly.
+
+---
+
+## 3. Task resolution and dependency ordering
+
+With the `Scan` object ready, `main()` resolves the final list of tasks to execute:
+
+**Step 1 — Collect names** from either positional CLI args or `--all` (which reads `scan.menu` and filters by `menu_enabled()`).
+
+**Step 2 — Expand aliases** via `ALIASES` in `core/config/tasks.py` (sourced from `source/tasks.yml`):
+
+| CLI name | Resolves to | Notes |
+|---|---|---|
+| `population` | `worldpop` | folder remapped |
+| `slr` | `sea_level_rise` | folder remapped |
+| `green` | `ndxi` | uses `collect_ndvi` / `analyze_ndvi` functions |
+| `ndmi` | `ndxi` | uses `collect_ndmi` function |
+
+**Step 3 — Auto-discover multianalysis** — if `--multianalysis` is given with no task names, the pipeline scans task folders for `multianalysis.R` or `multianalysis.py` and adds those tasks automatically.
+
+**Step 4 — Topological sort** via `topo_sort()` in `core/config/tasks.py`. Dependencies are declared in `source/tasks.yml`:
+
+| Task | Depends on |
+|---|---|
+| `fathom` | `wsf`, `worldpop`, `accessibility` |
+| `worldpop` | `wsf`, `oxford` |
+| `slope` | `elevation` |
+| `landcover_burn` | `landcover` |
+
+The sorted order guarantees that a dependency's outputs exist before the dependent task runs.
+
+**The task registry** is built at startup by `discover_tasks()` scanning `tasks/` for subdirectories with `__init__.py`, then merging aliases. Each entry maps:
+```
+task_name → (module_path, collect_fn, analyze_fn, visualize_fn, run_fn, charts_qmd_path)
+```
+Any function slot is `None` if the task doesn't implement that phase.
+
+---
+
+## 4. Authentication
+
+Before executing tasks, `main()` checks whether any task in the run requires GEE or GCS access (using `GEE_TASKS` and `GCS_TASKS` sets read from `source/tasks.yml`) and initializes credentials accordingly.
+
+**GEE tasks** (`elevation`, `forest`, `landcover`, `lst`, `green`, `ndmi`, `nightlight`, `water_risk`):
+Calls `init_gee()` in `core/config/auth.py`, which tries credentials in this order:
+
+```
+1. Cloud Run service account  (K_SERVICE env var present)
+2. GOOGLE_APPLICATION_CREDENTIALS  (env var pointing to a key file)
+3. local gcloud ADC  (gcloud auth application-default login)
+→ fail-fast with message: run `scan --check gee`
+```
+
+**GCS tasks** (`wsf`, `fathom`, `landcover_burn`, `basic_info`, `oxford`, `coastal_erosion`, `sea_level_rise`, `elevation`):
+Calls `init_gcs()`, which verifies that ADC credentials exist and sets `GOOGLE_APPLICATION_CREDENTIALS` so GDAL can read from `/vsigs/` paths.
+
+---
+
+## 5. Task execution
+
+### Serial mode (default)
+
+```
+for task_name in topo_sorted_tasks:
+    result = run_task(task_name, scan, step)   # core/config/run.py
+    if --upload:
+        upload_task_outputs(scan, task_name, step, ...)
+```
+
+Each task is exception-isolated — a failure in one task is caught and logged, and execution continues with the next task.
+
+### Parallel mode (`--parallel`)
+
+Calls `run_parallel()` in `core/config/multitask.py`:
+
+- Each task runs in its own thread
+- Concurrency is **semaphore-gated per resource type**: separate semaphores for GEE, GCS, and OSM prevent rate-limit collisions
+- A live TUI shows per-task status and lets you stream a task's log to the screen by pressing its key
+- `--auto-exit` skips the "press any key to exit" pause; this flag is auto-injected when `--multicity --parallel` is combined to prevent blocking between cities
+
+### Inside `run_task()` (`core/config/run.py`)
+
+1. Imports the task module: `importlib.import_module(module_path)`
+2. Wraps each phase in `ErrorTracker()` — captures status (`OK` / `WARNING` / `ERROR` / `NO_DATA`) and any messages
+3. Dispatches based on `step`:
+
+| `step` value | What runs |
+|---|---|
+| `None` (default) | `collect` then `analyze` in sequence |
+| `"collect"` | collect phase only |
+| `"analyze"` | analyze phase only |
+| `"multianalysis"` | `multianalysis.R` or `.py` via subprocess; output streamed live; any "Error" string triggers WARN status |
+| `"charts"` | `quarto render tasks/<task>/charts/index.qmd` |
+
+4. Returns `{phase: status, _messages: {...}, _source: "..."}` — the source label comes from `scan.sources[task_name]`
+
+### Render path (`--render`)
+
+Render targets run via subprocess after task execution (or standalone):
+
+| Target | Command |
+|---|---|
+| `maps` | `Rscript core/R/maps-static.R` |
+| `scan-calculations` | `quarto render scan-calculations/` |
+| `charts <task>` | `quarto render tasks/<task>/charts/index.qmd` |
+
+---
+
+## 6. Outputs
+
+All outputs land under the city folder in `mnt/`:
+
+```
+mnt/<scan_id>/
+├── 02-process-output/
+│   ├── spatial/     ← rasters and vector files from collect / analyze
+│   └── tabular/     ← CSVs and statistics from analyze
+└── 03-render-output/
+    ├── maps/        ← static map PNGs from --render maps
+    └── plots/       ← chart PNGs from --render charts / scan-calculations
+```
+
+A run summary is also appended to `logs/task_report.txt`:
+```
+task | step | status | source | message | timestamp
+```
+
+---
+
+## Multi-city batch mode
+
+`--multicity` is an early-exit path that runs the entire pipeline once per city by spawning subprocesses. `run_multicity()` in `core/config/run.py`:
+
+1. Reads `inputs/multi_inputs.yml`
+2. Resolves city list — two modes (combinable):
+   - **multipolygon**: reads a GeoDataFrame; auto-extracts each row as a city AOI shapefile to `inputs/AOI/{city_slug}/`
+   - **cities list**: uses pre-made AOI folders already present in `inputs/AOI/`
+3. For each city:
+   - Calls `scan_init()` to get or create the scan ID
+   - Calls `prepare_inputs()` to write `city_inputs.yml` into the city's input folder
+   - Spawns: `python -m tasks --scan-id <id> <passthrough_args>`
+   - Passthrough args = all original args except `--multicity`
+4. If `--parallel` is in passthrough args and `--auto-exit` is absent, `--auto-exit` is injected automatically to prevent the TUI from blocking between cities
