@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -41,10 +41,10 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-b95cbf176b21d35b97d826ad6b6af685.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-0c4bb16d4a1e9fb2fb50ff9ab29e58a5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -275,7 +275,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./task-dependency.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Orchestration Dependency Graph</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Orchestration &amp; Dependency Flow</span></span></a>
   </div>
 </li>
       </ul>
@@ -314,8 +314,8 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./git-guide.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Git Guide</span></span></a>
+  <a href="./contributing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Contributing</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -326,20 +326,8 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./contributing.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Contributing</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./sharing-the-guide.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Sharing the Guide</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="./editing-this-reference.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Editing This Reference</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Editing This Reference</span></span></a>
   </div>
 </li>
       </ul>
@@ -375,6 +363,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#templates" id="toc-templates" class="nav-link" data-scroll-target="#templates"><span class="header-section-number">16.7</span> templates/</a></li>
   <li><a href="#docs" id="toc-docs" class="nav-link" data-scroll-target="#docs"><span class="header-section-number">16.8</span> docs/</a></li>
   <li><a href="#logs" id="toc-logs" class="nav-link" data-scroll-target="#logs"><span class="header-section-number">16.9</span> logs/</a></li>
+  <li><a href="#notebook-and-old_docs" id="toc-notebook-and-old_docs" class="nav-link" data-scroll-target="#notebook-and-old_docs"><span class="header-section-number">16.10</span> notebook/ and old_docs/</a></li>
   </ul>
 </nav>
     </div>
@@ -400,52 +389,46 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<pre><code>city-scan-automation/
-├── tasks/
-├── core/
-├── source/
-├── inputs/
-├── mnt/
-├── scan-calculations/
-├── templates/
-├── docs/
-└── logs/</code></pre>
+<p>This page is a navigational reference for the City Scan codebase. It maps every top-level directory and key file to its purpose, so you know where to look — and what to edit — when something needs fixing or adjusting. For how these pieces connect at runtime (task orchestration, inter-module calls, CLI flags), see <a href="./task-dependency.html">task-dependency.qmd</a>.</p>
+<pre><code>city-scan/
+├── tasks/               # per-topic data collection, analysis, and visualization modules
+├── core/                # shared infrastructure: Python utilities, R functions, CLI
+├── source/              # canonical config files copied into each city folder on first run
+├── inputs/              # user-provided config and AOI for the current scan
+├── mnt/                 # auto-generated per-city output folders
+├── scan-calculations/   # Quarto project that assembles per-task outputs into a report
+├── templates/           # boilerplate starters to copy into inputs/
+├── docs/                # this documentation site
+├── notebook/            # exploratory Jupyter notebooks (unmaintained)
+├── old_docs/            # archived documentation and CHANGELOG
+├── logs/                # run logs (auto-created on first run)
+├── bootstrap.sh         # one-time system dependency installer (macOS / Linux / WSL)
+├── orchestrator.sh      # Python venv setup via pyenv
+├── pyproject.toml       # package metadata and `scan` CLI entry point
+└── requirements.txt     # Python dependencies</code></pre>
 <hr>
 <section id="tasks" class="level2" data-number="16.1">
 <h2 data-number="16.1" class="anchored" data-anchor-id="tasks"><span class="header-section-number">16.1</span> tasks/</h2>
 <pre><code>tasks/
-├── elevation/
-│   ├── __init__.py
-│   ├── collection.py
-│   ├── analysis.py
-│   ├── maps.yml
-│   └── charts/
+├── __main__.py          # CLI entry point: parses flags, dispatches to core/config/run.py
+├── __init__.py          # package init
+├── contributing.md      # task contribution guide
+├── &lt;task_name&gt;/
+│   ├── __init__.py      # registers collect(), analyze(), visualize() entry points
+│   ├── collection.py    # downloads and clips data to AOI  (.py or .R)
+│   ├── analysis.py      # computes statistics and generates CSVs  (.py or .R)
+│   ├── maps.yml         # [optional] map layers this task contributes + custom map scripts
+│   ├── multianalysis.R  # [optional] cross-task R post-processing (e.g. flood exposure)
+│   └── charts/          # [optional] Quarto charts rendered into the scan-calculations report
 │       ├── _quarto.yml
 │       └── index.qmd
-├── fathom/
-│   ├── __init__.py
-│   ├── collection.py
-│   ├── analysis.py
-│   ├── multianalysis.R
-│   ├── maps.yml
-│   └── charts/
-│       ├── _quarto.yml
-│       └── index.qmd
-├── worldpop/
-├── wsf/
-├── earthquake/        # R-based collection
-├── oxford/            # R-based collection
 └── ...</code></pre>
+<p>Tasks present in the repo (36 modules): <code>accessibility</code> <code>air_quality</code> <code>basic_info</code> <code>buildings</code> <code>burned_area</code> <code>coastal_erosion</code> <code>cyclones</code> <code>demographics</code> <code>earthquake</code> <code>elevation</code> <code>fathom</code> <code>flood_events</code> <code>forest</code> <code>fwi</code> <code>gdp_gridded</code> <code>gdp_sectoral</code> <code>ghs_builtup</code> <code>ghs_population</code> <code>groundwater</code> <code>landcover</code> <code>landcover_burn</code> <code>landslide</code> <code>liquefaction</code> <code>lst</code> <code>ndxi</code> <code>nightlight</code> <code>oxford</code> <code>rwi</code> <code>sea_level_rise</code> <code>seismic_hazard</code> <code>slope</code> <code>solar</code> <code>water_risk</code> <code>worldpop</code> <code>wsf</code></p>
+<p>For what each task produces, see the <strong>Tasks &amp; Data Layers</strong> section:</p>
+<p><a href="./population-demographic.html">Population &amp; Demographics</a> · <a href="./economic-activity.html">Economic Activity</a> · <a href="./built-form.html">Built Form</a> · <a href="./climate-condition.html">Climate Conditions</a> · <a href="./risk-identification.html">Risk Identification</a></p>
 <ul>
-<li>Each scan topic is a self-contained module</li>
-<li><code>__init__.py</code> registers entry points: <code>collect()</code>, <code>analyze()</code>, <code>visualize()</code></li>
-<li><code>collection.py</code> (or <code>.R</code>) downloads and clips data to AOI</li>
-<li><code>analysis.py</code> (or <code>.R</code>) computes statistics and generates CSVs</li>
-<li><code>maps.yml</code> declares the layers this task contributes (matched against <code>source/layers.yml</code>) and any custom map scripts</li>
-<li><code>charts/index.qmd</code> renders Quarto charts for the scan-calculations report</li>
-<li>Some tasks have <code>multianalysis.R</code> for cross-task R-based post-processing (e.g.&nbsp;fathom flood exposure)</li>
 <li>Tasks are auto-registered via <code>source/tasks.yml</code></li>
-<li>CLI entry point: <code>tasks/__main__.py</code> (parses flags, dispatches to <code>core/config/run.py</code>)</li>
+<li>Task dependencies and the orchestration graph are documented in <a href="./task-dependency.html">task-dependency.qmd</a></li>
 </ul>
 <hr>
 </section>
@@ -454,201 +437,215 @@ ul.task-list li input[type="checkbox"] {
 <section id="coreconfig" class="level3" data-number="16.2.1">
 <h3 data-number="16.2.1" class="anchored" data-anchor-id="coreconfig"><span class="header-section-number">16.2.1</span> core/config/</h3>
 <pre><code>core/config/
-├── scan.py
-├── auth.py
-├── paths.py
-├── tasks.py
-├── cli.py
-├── run.py
-├── multitask.py
-├── inputs.py
-├── sync.py
-├── check_env.py
-└── utils.py</code></pre>
-<ul>
-<li><code>scan.py</code> — Scan class: loads AOI, city config, creates city output folders in <code>mnt/</code></li>
-<li><code>auth.py</code> — initializes GEE and GCS authentication (tiered: existing creds → gcloud ADC → fail-fast)</li>
-<li><code>paths.py</code> — auto-detects input/output directories based on project structure</li>
-<li><code>tasks.py</code> — task registry (reads <code>source/tasks.yml</code>)</li>
-<li><code>cli.py</code> — CLI flag parsing (single source of truth for all flags)</li>
-<li><code>run.py</code> — <code>run_task()</code>, <code>run_multicity()</code> execution logic</li>
-<li><code>multitask.py</code> — parallel task runner with TUI for <code>--parallel</code> flag</li>
-<li><code>inputs.py</code> — <code>prepare_inputs()</code> for staging user inputs into city folders</li>
-<li><code>sync.py</code> — <code>sync_project_files()</code> for <code>--sync</code> flag</li>
-<li><code>check_env.py</code> — environment preflight for <code>--check</code> flag</li>
-<li><code>utils.py</code> — shared <code>slugify()</code> and other helpers</li>
-</ul>
+├── scan.py        # Scan class: loads AOI, reads city config, creates city output folders in mnt/
+├── auth.py        # GEE and GCS authentication (tiered: existing creds → gcloud ADC → fail-fast)
+├── paths.py       # auto-detects input/output directories based on project structure
+├── tasks.py       # task registry (reads source/tasks.yml)
+├── cli.py         # CLI flag parsing — single source of truth for all flags
+├── run.py         # run_task(), run_multicity() execution logic
+├── multitask.py   # parallel task runner with TUI for --parallel flag
+├── inputs.py      # prepare_inputs(): stages user inputs into the city folder
+├── sync.py        # sync_project_files() for --sync flag
+├── check_env.py   # environment preflight for --check flag
+├── gdal_auth.py   # configures GDAL for /vsigs/ access to private GCS buckets
+└── utils.py       # shared slugify() and other helpers</code></pre>
 </section>
 <section id="corepy" class="level3" data-number="16.2.2">
 <h3 data-number="16.2.2" class="anchored" data-anchor-id="corepy"><span class="header-section-number">16.2.2</span> core/py/</h3>
 <pre><code>core/py/
-├── log_module.py
-├── error_tracker.py
-├── gcs_module.py
-├── aoi_module.py
-├── osm_client.py
-├── osm_pbf.py
-├── aoi_buffer.py
-├── gee_fns.py
-├── raster_module.py
-└── gdal_auth.py</code></pre>
-<ul>
-<li><code>log_module.py</code> — logging setup (console + rotating file output)</li>
-<li><code>error_tracker.py</code> — counts errors per task, surfaces OK / WARNING / ERROR / NO_DATA status</li>
-<li><code>gcs_module.py</code> — GCS upload/download, file tracking for <code>--upload</code> flag</li>
-<li><code>aoi_module.py</code> — detects country name(s) and ISO3 codes from AOI intersection (multi-country aware)</li>
-<li><code>osm_client.py</code> — unified OSM access (routes to Geofabrik PBF for large AOIs, Overpass otherwise)</li>
-<li><code>osm_pbf.py</code> — Geofabrik PBF download + attribute filter helpers</li>
-<li><code>aoi_buffer.py</code> — AOI buffer utilities in meters for OSM queries</li>
-<li><code>gee_fns.py</code> — GEE tiling helpers (<code>make_tiles</code>, <code>tiled_collection</code>)</li>
-<li><code>raster_module.py</code> — raster mosaic, masking, GCS-safe operations</li>
-<li><code>gdal_auth.py</code> — configures GDAL for <code>/vsigs/</code> access to private GCS buckets</li>
-</ul>
+├── log_module.py          # logging setup (console + rotating file output)
+├── error_tracker.py       # counts errors per task; surfaces OK / WARNING / ERROR / NO_DATA status
+├── gcs_module.py          # GCS upload/download, file tracking for --upload flag
+├── aoi_module.py          # detects country name(s) and ISO3 codes from AOI intersection
+├── aoi_buffer.py          # AOI buffer utilities in meters for OSM queries
+├── aoi_helper.py          # AOI geometry helper functions
+├── osm_client.py          # unified OSM access (routes to Geofabrik PBF or Overpass by AOI size)
+├── osm_pbf.py             # Geofabrik PBF download + attribute filter helpers
+├── gee_fns.py             # GEE tiling helpers (make_tiles, tiled_collection)
+├── raster_module.py       # raster mosaic, masking, GCS-safe operations
+├── check_layers.py        # validates layer outputs against expected spec
+├── clean.py               # shared data-cleaning utilities
+└── convert_shp_to_fgb.py  # shapefile → FlatGeobuf conversion helper</code></pre>
 </section>
 <section id="corer" class="level3" data-number="16.2.3">
 <h3 data-number="16.2.3" class="anchored" data-anchor-id="corer"><span class="header-section-number">16.2.3</span> core/R/</h3>
 <pre><code>core/R/
-├── setup.R
-├── fns.R
-├── pre-mapping.R
-├── maps-static.R
-├── map-flooding.R
-├── map-elevation.R
-├── map-sectoral-gdp-flood.R
-├── map-schools-health-proximity.R
-├── benchmark-helper.R
-├── pop-backup.R
-├── global-data-paths.R
-└── ...</code></pre>
+├── setup.R              # R session init: loads packages, reads AOI, sets directory paths
+├── fns.R                # core shared functions (plot_static_layer, cell_aggregate, h3_aggregate, …)
+├── fns-*.R              # extended function libraries — 10 files covering:
+│                        #   aggregation, charts, geometry, maps-aes, maps-static,
+│                        #   maps-web, population, text, utilities, web
+├── pre-mapping.R        # data preprocessing before mapping (combine flood zones, WSF edits, …)
+├── pre-charting.R       # data preprocessing before chart rendering
+├── maps-static.R        # orchestrates static map generation: standard loop + custom scripts
+├── maps-web.R           # web map rendering
+├── map-*.R              # custom map scripts for layers needing special handling (13 files):
+│                        #   building-footprints, coastal-erosion, deforestation, economic-activity-*,
+│                        #   elevation, flooding, gdp-flood, ghs-expansion, historical-burnt-area,
+│                        #   intersections, isochrones, schools-health-proximity,
+│                        #   sectoral-gdp-flood, seismic-hazard
+├── chart-*.R            # chart generators per data type (13 files):
+│                        #   age-sex-distribution, earthquakes, elevation, flood-archive,
+│                        #   flooding, fwi, groundwater, landcover, slope, solar-pv, urban-extent
+├── data-*.R             # data processing helpers (6 files):
+│                        #   coastal-erosion, collection, flood-wsf-probability,
+│                        #   gridded-gdp, slr-clip, wsf-harmonized
+├── benchmark-assembly.R # benchmark city assembly
+├── benchmark-helper.R   # benchmark city selection and Oxford lookup (diacritic-insensitive)
+├── gcs-auth.R           # GCS authentication for R
+├── gcs-overrides.R      # per-city GCS path overrides
+├── pop-backup.R         # population fallback functions (UN data, citypopulation.de, GHS-POP)
+├── population-growth.R  # population growth rate calculations
+├── write-population.R   # writes population outputs
+├── global-data-paths.R  # data path configuration shared across R scripts
+├── clean-tabular.R      # tabular data cleaning
+├── pdf-prep.R           # PDF export preparation
+├── plots.R              # shared plotting utilities
+├── rename-generic.R     # layer/file renaming helpers
+├── in_design.R          # design system utilities
+└── transparencies.R     # color and transparency configuration</code></pre>
 <ul>
-<li><code>setup.R</code> — R session setup: loads packages, reads AOI, sets directory paths</li>
-<li><code>fns.R</code> — <code>plot_static_layer()</code>, <code>prepare_parameters()</code>, <code>parse_agg_fun()</code>, <code>cell_aggregate()</code>, <code>hexbin_aggregate()</code>, <code>h3_aggregate()</code>, and other shared helpers</li>
-<li><code>pre-mapping.R</code> — data preprocessing before mapping (combine flood zones, edit WSF tracker, adjust deforestation years)</li>
-<li><code>maps-static.R</code> — orchestrates static map generation: standard layers loop + custom map scripts</li>
-<li><code>map-*.R</code> — custom map scripts for layers that need special handling (flood overlays, sectoral GDP, schools/health proximity, etc.)</li>
-<li><code>benchmark-helper.R</code> — benchmark city selection and Oxford lookup (diacritic-insensitive)</li>
-<li><code>pop-backup.R</code> — population fallback functions (UN data, citypopulation.de, GHS-POP)</li>
+<li>Edit <code>map-*.R</code> to customise the rendering of specific layers</li>
+<li>Edit <code>fns.R</code> / <code>fns-*.R</code> for shared plotting and aggregation logic</li>
+<li><code>maps-static.R</code> is the orchestration entry point for all static maps</li>
 </ul>
 </section>
 <section id="coreojs" class="level3" data-number="16.2.4">
 <h3 data-number="16.2.4" class="anchored" data-anchor-id="coreojs"><span class="header-section-number">16.2.4</span> core/ojs/</h3>
 <pre><code>core/ojs/
-└── plots.js</code></pre>
-<ul>
-<li>Observable JS interactive charts (D3-based) used in the web report</li>
-</ul>
+├── dataloader.js   # data-loading utilities for Observable JS charts
+└── plots.js        # D3-based interactive chart definitions used in the web report</code></pre>
 <hr>
 </section>
 </section>
 <section id="source" class="level2" data-number="16.3">
 <h2 data-number="16.3" class="anchored" data-anchor-id="source"><span class="header-section-number">16.3</span> source/</h2>
 <pre><code>source/
-├── layers.yml
-├── tasks.yml
-├── generic-text.yml
-├── custom.scss
-└── pagedtable-fix.scss</code></pre>
+├── layers.yml                           # map layer styling: palettes, breaks, labels, fuzzy_string per layer
+├── tasks.yml                            # task registry: auth requirements, aliases, dependencies
+├── generic-text.yml                     # report text templates per section
+├── countries_economies_classification.csv  # country/economy classification lookup
+├── slide-list.csv                       # slide/report section configuration
+├── output-check.qmd                     # Quarto quality-assurance template
+├── pagedtable-fix.scss                  # Bootstrap table styling overrides
+└── pagedtable.css                       # paged table base styles</code></pre>
 <ul>
-<li>Canonical config files, copied to each city folder on first run</li>
-<li><code>layers.yml</code> — map layer styling (palettes, breaks, labels, fuzzy_string per layer)</li>
-<li><code>tasks.yml</code> — task config (auth requirements, aliases, dependencies)</li>
-<li><code>generic-text.yml</code> — report text templates per section</li>
-<li><code>custom.scss</code> — report CSS styling</li>
-<li><code>pagedtable-fix.scss</code> — Bootstrap table styling overrides</li>
+<li>These files are copied into each city folder on first run</li>
+<li>Edit <code>layers.yml</code> to adjust map symbology; edit <code>tasks.yml</code> to change task auth or dependencies</li>
+<li><code>generic-text.yml</code> holds the boilerplate narrative text that appears in scan reports</li>
 </ul>
 <hr>
 </section>
 <section id="inputs" class="level2" data-number="16.4">
 <h2 data-number="16.4" class="anchored" data-anchor-id="inputs"><span class="header-section-number">16.4</span> inputs/</h2>
 <pre><code>inputs/
-├── city_inputs.yml
-├── multi_inputs.yml
-├── menu.yml
-└── AOI/</code></pre>
+├── city_inputs.yml   # single-city config: name, AOI, year ranges, flood/accessibility/benchmark params
+├── multi_inputs.yml  # multi-city batch config: city list (or multipolygon file) + shared settings
+├── menu.yml          # toggle which tasks to enable or disable
+└── AOI/              # boundary shapefile(s) for the city or cities</code></pre>
 <ul>
-<li>User-facing configuration for new scans (not tracked in git — see <code>templates/</code> for starting copies)</li>
-<li><code>city_inputs.yml</code> — single-city config: name, AOI, year ranges, flood/accessibility/benchmark params</li>
-<li><code>multi_inputs.yml</code> — multi-city batch config: city list (or multipolygon file) + shared settings</li>
-<li><code>menu.yml</code> — toggle which tasks to enable or disable</li>
-<li><code>AOI/</code> — boundary shapefile(s) for the city or cities</li>
+<li>User-facing configuration for each new scan — not tracked in git</li>
+<li>Copy from <code>templates/</code> and edit before running; see <a href="./inputs-config.html">inputs-config.qmd</a> for field reference</li>
 </ul>
 <hr>
 </section>
 <section id="mnt" class="level2" data-number="16.5">
 <h2 data-number="16.5" class="anchored" data-anchor-id="mnt"><span class="header-section-number">16.5</span> mnt/</h2>
 <pre><code>mnt/
-└── 2026-03-tunisia-tunis/
-    ├── 01-user-input/
+└── &lt;scan-id&gt;/                   # e.g. 2026-03-morocco-rabat
+    ├── 01-user-input/           # copy of inputs/ staged for this scan
     ├── 02-process-output/
-    │   ├── spatial/
-    │   └── tabular/
+    │   ├── spatial/             # rasters and vector files (.tif, .gpkg, .fgb)
+    │   └── tabular/             # CSVs and statistics
     ├── 03-render-output/
-    │   ├── maps/
-    │   └── plots/
-    ├── tasks/
-    ├── core/
-    ├── source/
-    └── scan-calculations/</code></pre>
+    │   ├── maps/                # static map PNGs
+    │   └── plots/               # chart PNGs
+    ├── tasks/                   # synced copy of tasks/ for this scan
+    ├── core/                    # synced copy of core/
+    ├── source/                  # synced copy of source/
+    └── scan-calculations/       # synced copy of scan-calculations/</code></pre>
 <ul>
-<li>City output folders, auto-created per scan by the <code>Scan</code> class</li>
-<li>Each city gets its own copy of <code>tasks/</code>, <code>core/</code>, <code>source/</code>, <code>scan-calculations/</code></li>
-<li><code>01-user-input/</code> — copied from <code>inputs/</code></li>
-<li><code>02-process-output/spatial/</code> — rasters and vector data (.tif, .gpkg, .fgb)</li>
-<li><code>02-process-output/tabular/</code> — CSVs and statistics</li>
-<li><code>03-render-output/maps/</code> — static map PNGs</li>
-<li><code>03-render-output/plots/</code> — chart PNGs</li>
+<li>City output folders are auto-created per scan by the <code>Scan</code> class</li>
+<li>Each city gets an isolated copy of <code>tasks/</code>, <code>core/</code>, <code>source/</code>, <code>scan-calculations/</code> so scans are reproducible without re-syncing</li>
 </ul>
 <hr>
 </section>
 <section id="scan-calculations" class="level2" data-number="16.6">
 <h2 data-number="16.6" class="anchored" data-anchor-id="scan-calculations"><span class="header-section-number">16.6</span> scan-calculations/</h2>
 <pre><code>scan-calculations/
-├── _quarto.yml
-├── sections.yml
-├── generate-index.R
-└── ...</code></pre>
+├── _quarto.yml       # Quarto project config
+├── sections.yml      # defines which tasks appear in the report and in what order
+├── generate-index.R  # reads sections.yml and assembles per-task qmds into index.qmd
+└── ...               # per-task chart qmds assembled at render time</code></pre>
 <ul>
-<li>Quarto project that compiles per-task <code>charts/index.qmd</code> into a single combined HTML report</li>
-<li><code>sections.yml</code> defines which tasks appear and in what order</li>
-<li><code>generate-index.R</code> reads <code>sections.yml</code> and assembles the per-task qmds into <code>index.qmd</code></li>
+<li>Quarto project that compiles per-task <code>charts/index.qmd</code> files into a single combined HTML report</li>
+<li><code>sections.yml</code> is the place to reorder or exclude tasks from the final report</li>
 </ul>
 <hr>
 </section>
 <section id="templates" class="level2" data-number="16.7">
 <h2 data-number="16.7" class="anchored" data-anchor-id="templates"><span class="header-section-number">16.7</span> templates/</h2>
 <pre><code>templates/
-├── city_inputs.yml
-├── multi_inputs.yml
-├── menu.yml
-├── manual-text.md
-└── README.md</code></pre>
+├── city_inputs.yml   # starter single-city config
+├── multi_inputs.yml  # starter multi-city config
+├── menu.yml          # starter task menu
+├── manual-text.md    # starter manual narrative text
+└── README.md         # template usage notes</code></pre>
 <ul>
-<li>Boilerplate input configs and starter files</li>
-<li>Copy <code>city_inputs.yml</code>, <code>multi_inputs.yml</code>, <code>menu.yml</code> to <code>inputs/</code> and edit before running</li>
+<li>Copy these to <code>inputs/</code> and edit before each scan; <code>inputs/</code> itself is git-ignored</li>
 </ul>
 <hr>
 </section>
 <section id="docs" class="level2" data-number="16.8">
 <h2 data-number="16.8" class="anchored" data-anchor-id="docs"><span class="header-section-number">16.8</span> docs/</h2>
 <pre><code>docs/
-├── README.md
-├── CHANGELOG.md
-├── getting-started/
-├── interface/
-├── reference/
-└── archived/</code></pre>
-<p>See <a href="../README.md">docs/README.md</a> for the full index.</p>
+├── index.qmd                  # documentation home
+├── _quarto.yml                # Quarto book config
+├── tasks-structure-overview.qmd
+├── repo-structure.qmd         # this file
+├── task-dependency.qmd        # orchestration and inter-module dependency graph
+├── inputs-config.qmd          # city_inputs.yml / multi_inputs.yml / menu.yml reference
+├── setting-up.qmd
+├── running-first-cityscan.qmd
+├── standard-cityscan.qmd
+├── custom-cityscan.qmd
+├── multiple-cityscan.qmd
+├── population-demographic.qmd # Tasks &amp; Data Layers — domain pages
+├── economic-activity.qmd
+├── built-form.qmd
+├── climate-condition.qmd
+├── risk-identification.qmd
+├── at-a-glance.qmd
+├── data-wiki.qmd              # comprehensive data source reference
+├── datalayer-references.qmd
+├── contributing.qmd
+├── git-guide.qmd
+├── editing-this-reference.qmd
+├── sharing-the-guide.qmd
+├── reporting-issues.qmd
+├── examples-cityscan.qmd
+├── case-standard-rabat.qmd
+├── case-multiple-philippines.qmd
+├── references.bib
+├── references.qmd
+├── image/                     # documentation images
+└── reference/                 # supplementary references (maps-customization, workflow diagrams)</code></pre>
+<p>Publish with <code>quarto publish gh-pages</code> from the repo root.</p>
 <hr>
 </section>
 <section id="logs" class="level2" data-number="16.9">
 <h2 data-number="16.9" class="anchored" data-anchor-id="logs"><span class="header-section-number">16.9</span> logs/</h2>
 <pre><code>logs/
-├── app.log
-└── task_report.txt</code></pre>
+├── app.log           # full run log (overwrites each run)
+└── task_report.txt   # per-task status summary: status, source, messages, last update</code></pre>
+<p>Auto-created on first task run.</p>
+<hr>
+</section>
+<section id="notebook-and-old_docs" class="level2" data-number="16.10">
+<h2 data-number="16.10" class="anchored" data-anchor-id="notebook-and-old_docs"><span class="header-section-number">16.10</span> notebook/ and old_docs/</h2>
 <ul>
-<li>Auto-created on first task run</li>
-<li><code>app.log</code> — full run log (overwrites per run)</li>
-<li><code>task_report.txt</code> — per-task status summary (status, source, messages, last update)</li>
+<li><code>notebook/</code> — exploratory Jupyter notebooks used during development; <strong>unmaintained</strong> and not part of the production pipeline</li>
+<li><code>old_docs/</code> — archived documentation and CHANGELOG; superseded by this docs site</li>
 </ul>
 
 
@@ -1062,8 +1059,8 @@ ul.task-list li input[type="checkbox"] {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./task-dependency.html" class="pagination-link" aria-label="Orchestration Dependency Graph">
-        <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Orchestration Dependency Graph</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./task-dependency.html" class="pagination-link" aria-label="Orchestration &amp; Dependency Flow">
+        <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Orchestration &amp; Dependency Flow</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

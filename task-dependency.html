@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>17&nbsp; Orchestration Dependency Graph – City Scan Technical Reference</title>
+<title>17&nbsp; Orchestration &amp; Dependency Flow – City Scan Technical Reference</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -22,6 +22,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -41,10 +76,10 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-b95cbf176b21d35b97d826ad6b6af685.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-0c4bb16d4a1e9fb2fb50ff9ab29e58a5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -85,7 +120,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./repo-structure.html">Understanding the Repo</a></li><li class="breadcrumb-item"><a href="./task-dependency.html"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Orchestration Dependency Graph</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./repo-structure.html">Understanding the Repo</a></li><li class="breadcrumb-item"><a href="./task-dependency.html"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Orchestration &amp; Dependency Flow</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -275,7 +310,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./task-dependency.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Orchestration Dependency Graph</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Orchestration &amp; Dependency Flow</span></span></a>
   </div>
 </li>
       </ul>
@@ -314,8 +349,8 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./git-guide.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Git Guide</span></span></a>
+  <a href="./contributing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Contributing</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -326,20 +361,8 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./contributing.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Contributing</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./sharing-the-guide.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Sharing the Guide</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="./editing-this-reference.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Editing This Reference</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Editing This Reference</span></span></a>
   </div>
 </li>
       </ul>
@@ -360,19 +383,31 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#dependencies-used-by-the-orchestration-layer" id="toc-dependencies-used-by-the-orchestration-layer" class="nav-link active" data-scroll-target="#dependencies-used-by-the-orchestration-layer"><span class="header-section-number">17.1</span> Dependencies used by the orchestration layer</a></li>
-  <li><a href="#flag-targets-from-coreconfigcli.py" id="toc-flag-targets-from-coreconfigcli.py" class="nav-link" data-scroll-target="#flag-targets-from-coreconfigcli.py"><span class="header-section-number">17.2</span> Flag targets (from <code>core/config/cli.py</code>)</a></li>
-  <li><a href="#orchestration-graph" id="toc-orchestration-graph" class="nav-link" data-scroll-target="#orchestration-graph"><span class="header-section-number">17.3</span> Orchestration graph</a></li>
-  <li><a href="#utilities-used-throughout" id="toc-utilities-used-throughout" class="nav-link" data-scroll-target="#utilities-used-throughout"><span class="header-section-number">17.4</span> Utilities (used throughout)</a></li>
+  <li><a href="#entry-point-and-flag-dispatch" id="toc-entry-point-and-flag-dispatch" class="nav-link active" data-scroll-target="#entry-point-and-flag-dispatch"><span class="header-section-number">17.1</span> 1. Entry point and flag dispatch</a></li>
+  <li><a href="#scan-initialization" id="toc-scan-initialization" class="nav-link" data-scroll-target="#scan-initialization"><span class="header-section-number">17.2</span> 2. Scan initialization</a>
+  <ul class="collapse">
+  <li><a href="#file-sync-decision-logic" id="toc-file-sync-decision-logic" class="nav-link" data-scroll-target="#file-sync-decision-logic"><span class="header-section-number">17.2.1</span> File sync decision logic</a></li>
+  </ul></li>
+  <li><a href="#task-resolution-and-dependency-ordering" id="toc-task-resolution-and-dependency-ordering" class="nav-link" data-scroll-target="#task-resolution-and-dependency-ordering"><span class="header-section-number">17.3</span> 3. Task resolution and dependency ordering</a></li>
+  <li><a href="#authentication" id="toc-authentication" class="nav-link" data-scroll-target="#authentication"><span class="header-section-number">17.4</span> 4. Authentication</a></li>
+  <li><a href="#task-execution" id="toc-task-execution" class="nav-link" data-scroll-target="#task-execution"><span class="header-section-number">17.5</span> 5. Task execution</a>
+  <ul class="collapse">
+  <li><a href="#serial-mode-default" id="toc-serial-mode-default" class="nav-link" data-scroll-target="#serial-mode-default"><span class="header-section-number">17.5.1</span> Serial mode (default)</a></li>
+  <li><a href="#parallel-mode---parallel" id="toc-parallel-mode---parallel" class="nav-link" data-scroll-target="#parallel-mode---parallel"><span class="header-section-number">17.5.2</span> Parallel mode (<code>--parallel</code>)</a></li>
+  <li><a href="#inside-run_task-coreconfigrun.py" id="toc-inside-run_task-coreconfigrun.py" class="nav-link" data-scroll-target="#inside-run_task-coreconfigrun.py"><span class="header-section-number">17.5.3</span> Inside <code>run_task()</code> (<code>core/config/run.py</code>)</a></li>
+  <li><a href="#render-path---render" id="toc-render-path---render" class="nav-link" data-scroll-target="#render-path---render"><span class="header-section-number">17.5.4</span> Render path (<code>--render</code>)</a></li>
+  </ul></li>
+  <li><a href="#outputs" id="toc-outputs" class="nav-link" data-scroll-target="#outputs"><span class="header-section-number">17.6</span> 6. Outputs</a></li>
+  <li><a href="#multi-city-batch-mode" id="toc-multi-city-batch-mode" class="nav-link" data-scroll-target="#multi-city-batch-mode"><span class="header-section-number">17.7</span> Multi-city batch mode</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./repo-structure.html">Understanding the Repo</a></li><li class="breadcrumb-item"><a href="./task-dependency.html"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Orchestration Dependency Graph</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./repo-structure.html">Understanding the Repo</a></li><li class="breadcrumb-item"><a href="./task-dependency.html"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Orchestration &amp; Dependency Flow</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Orchestration Dependency Graph</span></h1>
+<h1 class="title"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Orchestration &amp; Dependency Flow</span></h1>
 </div>
 
 
@@ -389,207 +424,344 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="dependencies-used-by-the-orchestration-layer" class="level2" data-number="17.1">
-<h2 data-number="17.1" class="anchored" data-anchor-id="dependencies-used-by-the-orchestration-layer"><span class="header-section-number">17.1</span> Dependencies used by the orchestration layer</h2>
-<pre><code>requirements.txt (orchestration-critical subset)
-├── PyYAML==6.0.1              ← reads city_inputs.yml, menu.yml,
-│                                tasks.yml, multi_inputs.yml, layers.yml
-├── geopandas==1.0.1           ← AOI loading + multipolygon handling
-│                                (Scan.aoi, run_multicity, find_country)
-├── earthengine-api&gt;=1.6.12    ← core/config/auth.py::init_gee()
-├── google-cloud-storage       ← core/config/auth.py::init_gcs(),
-│     ==2.16.0                   core/py/gcs_module.py (upload)
-├── rasterio==1.3.8            ← raster I/O for collection/analysis
-├── shapely==2.0.4             ← AOI geometry ops
-└── fiona==1.10.1              ← shp/gpkg read</code></pre>
-<p>Standard-library orchestration modules: <code>argparse</code>-style parsing (custom in <code>core/config/cli.py</code>), <code>importlib</code> (task discovery), <code>subprocess</code> (R/Quarto), <code>threading</code> / <code>concurrent.futures</code> (parallel mode), <code>termios</code> / <code>tty</code> / <code>select</code> (TUI keybinds), <code>logging</code>, <code>pathlib</code>, <code>shutil</code>.</p>
+<p>This page explains what happens under the hood when you run a <code>scan</code> command — the sequence of phases, what each phase does, and how inputs, flags, tasks, core modules, and config files interact to produce outputs. For where each file lives, see <a href="./repo-structure.html">repo-structure.qmd</a>.</p>
+<hr>
+<section id="entry-point-and-flag-dispatch" class="level2" data-number="17.1">
+<h2 data-number="17.1" class="anchored" data-anchor-id="entry-point-and-flag-dispatch"><span class="header-section-number">17.1</span> 1. Entry point and flag dispatch</h2>
+<p>Every run starts the same way:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>python <span class="op">-</span>m tasks [flags] [task_names]</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># or equivalently:</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>scan [flags] [task_names]          <span class="co"># via pyproject.toml entry point</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>main()</code> in <code>tasks/__main__.py</code> handles all dispatch. The first thing it does is parse flags via <code>validate_args()</code> + <code>parse_args()</code> in <code>core/config/cli.py</code>, which returns a <code>flags</code> dict. Several invocations resolve and exit before any scan state is created:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Invocation</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>--help</code> / no args</td>
+<td>prints usage, exits</td>
+</tr>
+<tr class="even">
+<td><code>--check [r\|python\|gee\|gcs\|quarto\|inputs]</code></td>
+<td>runs environment preflight (<code>core/config/check_env.py</code>), exits 0/1</td>
+</tr>
+<tr class="odd">
+<td><code>--list tasks\|cities\|flags</code></td>
+<td>prints task registry, <code>mnt/</code> folders, or flag list, exits</td>
+</tr>
+<tr class="even">
+<td><code>--multicity</code></td>
+<td>reads <code>inputs/multi_inputs.yml</code>, runs one subprocess per city, exits — see <a href="#multi-city-batch-mode">Multi-city mode</a></td>
+</tr>
+</tbody>
+</table>
+<p>All other invocations proceed to scan initialization.</p>
+<p><strong>Main-path flags</strong> (control behavior without short-circuiting):</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Flag</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>--scan-id &lt;id&gt;</code></td>
+<td>target an existing city folder in <code>mnt/</code>; skips the new/existing prompt</td>
+</tr>
+<tr class="even">
+<td><code>-e</code></td>
+<td>use existing city folder (non-interactive equivalent of choosing <code>[e]</code>)</td>
+</tr>
+<tr class="odd">
+<td><code>--sync [tasks\|source\|core\|scan-calculations]</code></td>
+<td>explicitly control what gets copied to the city folder</td>
+</tr>
+<tr class="even">
+<td><code>-t</code></td>
+<td>shortcut for <code>--sync tasks</code></td>
+</tr>
+<tr class="odd">
+<td><code>-k</code> / <code>--keep</code></td>
+<td>skip sync entirely; run with whatever code is already in the city folder</td>
+</tr>
+<tr class="even">
+<td><code>--all</code></td>
+<td>run every task currently enabled in <code>menu.yml</code></td>
+</tr>
+<tr class="odd">
+<td><code>--collect</code> / <code>--analyze</code> / <code>--multianalysis</code></td>
+<td>run one execution phase only</td>
+</tr>
+<tr class="even">
+<td><code>--parallel</code></td>
+<td>use the TUI parallel runner instead of serial execution</td>
+</tr>
+<tr class="odd">
+<td><code>--upload</code></td>
+<td>upload task outputs to GCS after each task completes</td>
+</tr>
+<tr class="even">
+<td><code>--render maps\|scan-calculations\|charts &lt;task&gt;</code></td>
+<td>render maps or the HTML report (can combine with tasks or run standalone)</td>
+</tr>
+</tbody>
+</table>
+<hr>
 </section>
-<section id="flag-targets-from-coreconfigcli.py" class="level2" data-number="17.2">
-<h2 data-number="17.2" class="anchored" data-anchor-id="flag-targets-from-coreconfigcli.py"><span class="header-section-number">17.2</span> Flag targets (from <code>core/config/cli.py</code>)</h2>
-<pre><code>--sync     ∈ { tasks, source, core, scan-calculations }   (SYNC_TARGETS)
-             • no target  → all four
-             • -t         → shortcut for `--sync tasks`
---render   ∈ { maps, scan-calculations, charts }          (render_targets)
-             • maps                → Rscript core/R/maps-static.R
-             • scan-calculations   → quarto render scan-calculations/
-             • charts &lt;task&gt;       → quarto render tasks/&lt;task&gt;/charts/index.qmd
---scan-id  &lt;id&gt;      target existing city folder in mnt/
---all                run every task enabled in menu.yml
---multicity          batch from inputs/multi_inputs.yml
---collect / --analyze / --multianalysis   single-phase run
---parallel           multitask.py TUI runner
---upload             gcs_module.upload_task_outputs()
--e                   use existing city folder (skip folder prompt)
--k / --keep          run with code already in city folder (skip sync)
--t                   shortcut for `--sync tasks`
---list     ∈ { tasks, cities, flags }</code></pre>
+<section id="scan-initialization" class="level2" data-number="17.2">
+<h2 data-number="17.2" class="anchored" data-anchor-id="scan-initialization"><span class="header-section-number">17.2</span> 2. Scan initialization</h2>
+<p>After flag parsing, <code>main()</code> instantiates <code>Scan</code> (defined in <code>core/config/scan.py</code>). The <code>Scan</code> object is the city context — it carries directory paths, city metadata, and loaded config — and is passed into every subsequent step.</p>
+<p><strong><code>Scan.__init__()</code> runs in this order:</strong></p>
+<ol type="1">
+<li><p><strong>Resolve scan ID</strong></p>
+<ul>
+<li>If <code>--scan-id</code> was given → uses <code>mnt/&lt;scan_id&gt;/01-user-input/</code> as the input source</li>
+<li>Otherwise → calls <code>scan_init()</code>, which searches <code>mnt/</code> for folders matching the <code>{country}-{city}</code> suffix, then either prompts <code>[e]xisting / [n]ew</code> (interactive) or auto-creates (non-TTY or <code>-e</code> flag)</li>
+<li>Scan ID format: <code>YYYY-MM-{country}-{city}</code> for single-country, <code>YYYY-MM-{city}</code> for multi-country AOIs</li>
+</ul></li>
+<li><p><strong>Load city config</strong> — reads <code>city_inputs.yml</code> → sets <code>city_name</code>, <code>first_year</code>, <code>last_year</code>, <code>flood_threshold</code>, <code>flood_year</code>, <code>flood_ssp</code>, <code>flood_return_periods</code>, <code>fwi_first_year</code>, <code>fwi_last_year</code>, and other city parameters</p></li>
+<li><p><strong>Load AOI</strong> — reads the boundary shapefile from <code>01-user-input/AOI/</code></p></li>
+<li><p><strong>Resolve country</strong> — calls <code>find_country()</code> (<code>core/py/aoi_module.py</code>) which intersects the AOI against a country boundaries dataset → sets <code>country_iso3</code>, <code>country_name</code>, <code>country_iso3_list</code>, <code>multi_country</code></p></li>
+<li><p><strong>Create output directories</strong></p>
+<pre><code>mnt/&lt;scan_id&gt;/
+├── 02-process-output/spatial/
+├── 02-process-output/tabular/
+├── 03-render-output/maps/
+└── 03-render-output/plots/</code></pre></li>
+<li><p><strong>Sync project files</strong> — calls <code>sync_project_files()</code> (<code>core/config/sync.py</code>), skipped if <code>--keep</code> or render-only mode</p></li>
+<li><p><strong>Load runtime config</strong> — reads <code>menu.yml</code> → <code>scan.menu</code>; reads <code>source/layers.yml</code> → <code>scan.sources</code></p></li>
+</ol>
+<section id="file-sync-decision-logic" class="level3" data-number="17.2.1">
+<h3 data-number="17.2.1" class="anchored" data-anchor-id="file-sync-decision-logic"><span class="header-section-number">17.2.1</span> File sync decision logic</h3>
+<p>On each run (unless <code>--keep</code>), the pipeline decides what code to copy into the city folder:</p>
+<pre><code>--sync targets given explicitly   →  copy only those targets
+no project files in city folder   →  copy all four (first run)
+non-interactive / no TTY          →  tasks only
+interactive prompt:
+  [t]  tasks only
+  [o]  override all  (01-user-input/ is never touched)
+  [k]  keep as-is
+  [a]  abort</code></pre>
+<p>Sync targets: <code>tasks/</code>, <code>core/</code>, <code>source/</code>, <code>scan-calculations/</code>. A <code>.here</code> marker file is also written so R’s <code>here</code> package resolves paths correctly.</p>
+<hr>
 </section>
-<section id="orchestration-graph" class="level2" data-number="17.3">
-<h2 data-number="17.3" class="anchored" data-anchor-id="orchestration-graph"><span class="header-section-number">17.3</span> Orchestration graph</h2>
-<pre><code>                                USER CLI
-                                python -m tasks ...
-                        (or `scan ...` via pyproject entry point)
-                                        │
-                                        ▼
-┌──────────────────────────────────────────────────────────────────────────────────────┐
-│  tasks/__main__.py                                                                   │
-│    main()  — dispatches based on flags                                               │
-└──────────────────────────────────────────────────────────────────────────────────────┘
-        │            │            │                    │                          │
-        ▼            ▼            ▼                    ▼                          ▼
-    [--help]    [--list X]  [validate+parse]        [normal]                   [MULTI]
-                                │                      │                          │
-                                ▼                      │                          ▼
-┌───────────────────────────────────────────┐          │    ┌──────────────────────────────────────────────┐
-│  core/config/cli.py                       │          │    │ core/py/run.py                               │
-│    KNOWN_FLAGS, SYNC_TARGETS (const)      │          │    │   run_multicity(path, args, flags)           │
-│    validate_args(args) → err|None         │          │    │     ├─ reads inputs/multi_inputs.yml         │
-│    parse_args(args)    → flags dict       │          │    │     ├─ gpd.read_file  (multipolygon mode)    │
-│      flags: sync_targets, keep_as_is,     │          │    │     ├─ find_country()                        │
-│        use_existing, upload_enabled,      │          │    │     ├─ scan_init()                           │
-│        parallel_mode, auto_exit, run_all, │          │    │     ├─ prepare_inputs()                      │
-│        multicity, step, scan_id,          │          │    │     └─ subprocess: `scan --scan-id &lt;id&gt; ...` │
-│        render_targets, task_names         │          │    │         (loops per city, falls back into     │
-└───────────────────────────────────────────┘          │    │          the [normal] path)                  │
-                                │                      │    └──────────────────────────────────────────────┘
-                                │                      │                          │
-                                └──────────────────────┼──────────────────────────┘
-                                                       ▼
-┌────────────────────────────────────────────────────────────────────┐
-│  core/config/scan.py                                               │
-│    scan_init(country, city, use_existing) → scan_id                │
-│      (prompts [e]xisting / [n]ew unless use_existing or non-tty)   │
-│                                                                    │
-│    class Scan:                                                     │
-│      __init__(scan_id, sync_tasks, skip_sync,                      │
-│               use_existing, sync_targets)                          │
-│        ├─→ prepare_inputs()      (core/config/inputs.py)           │
-│        ├─→ find_country()        (core/py/aoi_module.py)           │
-│        ├─→ scan_init()           (self)                            │
-│        ├─→ sync_project_files()  (core/config/sync.py)  [skippable]│
-│        └─ attrs: city_dir, input_dir, output_dir, render_dir,      │
-│           spatial_dir, tabular_dir, menu, sources, font_dict       │
-└────────────────────────────────────────────────────────────────────┘
-                                                      │
-                 ┌────────────────────────────────────┼────────────────────────────────────┐
-                 ▼                                    ▼                                    ▼
-┌─────────────────────────────────┐ ┌─────────────────────────────────┐ ┌───────────────────────────────────────┐
-│ core/config/paths.py            │ │ core/config/inputs.py           │ │ core/config/sync.py                   │
-│   PROJECT_ROOT                  │ │   prepare_inputs(               │ │   SKIP_PATTERNS                       │
-│   INPUTS  (auto-detect:         │ │     dest, city_inputs,          │ │   _ignore(dir, files)                 │
-│     inputs/  OR  01-user-input/)│ │     source_dir,                 │ │   sync_project_files(                 │
-│   OUTPUTS (mnt/  OR  city       │ │     aoi_dir, wards_dir,         │ │     city_root,                        │
-│            parent)              │ │     override)                   │ │     sync_targets,                     │
-│                                 │ │                                 │ │     sync_tasks)                       │
-│ core/config/utils.py            │ │   writes city_inputs.yml,       │ │                                       │
-│   slugify(name)                 │ │   copies AOI/menu/wards into    │ │   sync_targets ∈ {                    │
-│                                 │ │   01-user-input/                │ │     tasks, source, core,              │
-│                                 │ │                                 │ │     scan-calculations                 │
-│                                 │ │                                 │ │   }   (from cli.py SYNC_TARGETS)      │
-│                                 │ │                                 │ │                                       │
-│                                 │ │                                 │ │   sync_tasks = list of task folders   │
-│                                 │ │                                 │ │                 or None (all tasks)   │
-│                                 │ │                                 │ │                                       │
-│                                 │ │                                 │ │   modes:                              │
-│                                 │ │                                 │ │     sync_targets set  → explicit      │
-│                                 │ │                                 │ │     first run         → all 4 targets │
-│                                 │ │                                 │ │     non-tty           → tasks only    │
-│                                 │ │                                 │ │     else → prompt [t/o/k/a]:          │
-│                                 │ │                                 │ │       [t] tasks only                  │
-│                                 │ │                                 │ │       [o] override all                │
-│                                 │ │                                 │ │       [k] keep as-is                  │
-│                                 │ │                                 │ │       [a] abort                       │
-└─────────────────────────────────┘ └─────────────────────────────────┘ └───────────────────────────────────────┘
-
-                                                      │
-                                  (back in __main__.py after Scan init)
-                                                      ▼
-        ┌──────────────────┬───────────────────┬───────────────────┬───────────────────┐
-        ▼                  ▼                   ▼                   ▼                   ▼
- [--sync targets]   [--upload only]     [--render targets]   [--all / tasks]       [default]
-
- returns after       backfill upload     calls Rscript        resolves task list   run collect+analyze
- sync_project_       of whole city       / quarto per         from menu.yml +      serially per task
- files() ran in      output dir via      target (see Flag     args via             (uses TASK_REGISTRY,
- Scan init           gcs_module          targets block)       TASK_REGISTRY +      gates by auth)
-                                                              topo_sort()
-                                                      │                   │                   │
-                                                      │                   └─────────┬─────────┘
-                                                      │                             ▼
-                                                      │       ┌────────────────────────────────────────────┐
-                                                      │       │ core/config/tasks.py                       │
-                                                      │       │   TASK_REGISTRY     ALIASES                │
-                                                      │       │   GEE_TASKS         GCS_TASKS              │
-                                                      │       │   MENU_KEYS         TASK_DEPENDENCIES      │
-                                                      │       │   discover_tasks()                         │
-                                                      │       │   menu_enabled(menu, name)                 │
-                                                      │       │   topo_sort(names, deps)                   │
-                                                      │       │   ← source/tasks.yml                       │
-                                                      │       └────────────────────────────────────────────┘
-                                                      │                             │
-                                                      │                             ▼
-                                                      │       ┌────────────────────────────────────────────┐
-                                                      │       │ core/config/auth.py                        │
-                                                      │       │   init_gee()     init_gcs()                │
-                                                      │       └────────────────────────────────────────────┘
-                                                      │                             │
-                                                      │                 ┌───────────┴──────────┐
-                                                      ▼                 ▼                      ▼
-                        ┌────────────────────────────────────────┐   [serial]              [parallel]
-                        │ subprocess:                            │      │                      │
-                        │   Rscript   core/R/maps-static.R       │      ▼                      ▼
-                        │   quarto    render scan-calculations/  │   ┌──────────────┐   ┌──────────────────────────────────────────┐
-                        │   quarto    render tasks/&lt;t&gt;/charts/   │   │ run_task(    │   │ core/py/multitask.py                     │
-                        └────────────────────────────────────────┘   │   name,      │   │   run_parallel(task_names, scan, step,   │
-                                                      │              │   scan,      │   │                 run_task_fn, skip_tasks, │
-                                                      ▼              │   step)      │   │                 auto_exit)               │
-                        ┌────────────────────────────────────────┐   └──────────────┘   │     ├ TaskState                          │
-                        │ core/py/gcs_module.py                  │          │           │     ├ TaskLogHandler                     │
-                        │   get_all_files(dir)                   │          │           │     ├ worker()  per task thread          │
-                        │   upload_task_outputs(scan, task,      │          │           │     ├ Semaphores  (gee / gcs / osm)      │
-                        │                       step,            │          │           │     ├ TUI loop  (termios/tty/select)     │
-                        │                       files_before)    │          │           │     └ collect_results                    │
-                        └────────────────────────────────────────┘          │           └──────────────────────────────────────────┘
-                                                                            │                        │
-                                                                            ▼                        │
-                                               ┌────────────────────────────────────────────┐        │
-                                               │ core/py/run.py                             │◀───────┘
-                                               │   run_task(name, scan, step)               │
-                                               │     ├ importlib.import_module              │
-                                               │     ├ ErrorTracker() context mgr           │
-                                               │     └ dispatches to task module:           │
-                                               │         collect / analyze / multianalysis  │
-                                               └────────────────────────────────────────────┘
-                                                                  │
-                                                                  ▼
-                                               ┌────────────────────────────────────────────┐
-                                               │ tasks/{name}/                              │
-                                               │   __init__.py  →  collection.py            │
-                                               │                   analysis.py              │
-                                               │                   multianalysis.R          │
-                                               │                   charts/index.qmd         │
-                                               └────────────────────────────────────────────┘
-
-                                  BACK IN __main__.py (after runs)
-                                                  │
-                                                  ▼
-                        ┌────────────────────────────────────────────────────────┐
-                        │  summary table → logger                                │
-                        │  logs/task_report.txt                                  │
-                        │    (task | step | status | source | msg | timestamp)   │
-                        └────────────────────────────────────────────────────────┘</code></pre>
 </section>
-<section id="utilities-used-throughout" class="level2" data-number="17.4">
-<h2 data-number="17.4" class="anchored" data-anchor-id="utilities-used-throughout"><span class="header-section-number">17.4</span> Utilities (used throughout)</h2>
-<pre><code>core/py/log_module.py    setup_logger(name), set_log_dir(path),
-                         _file_handler (module-level)
-core/py/error_tracker.py ErrorTracker()  — context manager, captures
-                         status + messages per phase
-core/py/aoi_module.py    find_country(aoi) → (iso3, name, iso3_list)
-core/py/gcs_module.py    get_all_files(dir), upload_task_outputs(
-                          scan, task_name, step, files_before)
-core/config/gdal_auth.py GDAL cloud config for /vsicurl/ reads</code></pre>
-<p>Legend: boxes = files, indented lines = functions/attrs within that file. Arrows = import/call direction.</p>
+<section id="task-resolution-and-dependency-ordering" class="level2" data-number="17.3">
+<h2 data-number="17.3" class="anchored" data-anchor-id="task-resolution-and-dependency-ordering"><span class="header-section-number">17.3</span> 3. Task resolution and dependency ordering</h2>
+<p>With the <code>Scan</code> object ready, <code>main()</code> resolves the final list of tasks to execute:</p>
+<p><strong>Step 1 — Collect names</strong> from either positional CLI args or <code>--all</code> (which reads <code>scan.menu</code> and filters by <code>menu_enabled()</code>).</p>
+<p><strong>Step 2 — Expand aliases</strong> via <code>ALIASES</code> in <code>core/config/tasks.py</code> (sourced from <code>source/tasks.yml</code>):</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>CLI name</th>
+<th>Resolves to</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>population</code></td>
+<td><code>worldpop</code></td>
+<td>folder remapped</td>
+</tr>
+<tr class="even">
+<td><code>slr</code></td>
+<td><code>sea_level_rise</code></td>
+<td>folder remapped</td>
+</tr>
+<tr class="odd">
+<td><code>green</code></td>
+<td><code>ndxi</code></td>
+<td>uses <code>collect_ndvi</code> / <code>analyze_ndvi</code> functions</td>
+</tr>
+<tr class="even">
+<td><code>ndmi</code></td>
+<td><code>ndxi</code></td>
+<td>uses <code>collect_ndmi</code> function</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Step 3 — Auto-discover multianalysis</strong> — if <code>--multianalysis</code> is given with no task names, the pipeline scans task folders for <code>multianalysis.R</code> or <code>multianalysis.py</code> and adds those tasks automatically.</p>
+<p><strong>Step 4 — Topological sort</strong> via <code>topo_sort()</code> in <code>core/config/tasks.py</code>. Dependencies are declared in <code>source/tasks.yml</code>:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Task</th>
+<th>Depends on</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>fathom</code></td>
+<td><code>wsf</code>, <code>worldpop</code>, <code>accessibility</code></td>
+</tr>
+<tr class="even">
+<td><code>worldpop</code></td>
+<td><code>wsf</code>, <code>oxford</code></td>
+</tr>
+<tr class="odd">
+<td><code>slope</code></td>
+<td><code>elevation</code></td>
+</tr>
+<tr class="even">
+<td><code>landcover_burn</code></td>
+<td><code>landcover</code></td>
+</tr>
+</tbody>
+</table>
+<p>The sorted order guarantees that a dependency’s outputs exist before the dependent task runs.</p>
+<p><strong>The task registry</strong> is built at startup by <code>discover_tasks()</code> scanning <code>tasks/</code> for subdirectories with <code>__init__.py</code>, then merging aliases. Each entry maps:</p>
+<pre><code>task_name → (module_path, collect_fn, analyze_fn, visualize_fn, run_fn, charts_qmd_path)</code></pre>
+<p>Any function slot is <code>None</code> if the task doesn’t implement that phase.</p>
+<hr>
+</section>
+<section id="authentication" class="level2" data-number="17.4">
+<h2 data-number="17.4" class="anchored" data-anchor-id="authentication"><span class="header-section-number">17.4</span> 4. Authentication</h2>
+<p>Before executing tasks, <code>main()</code> checks whether any task in the run requires GEE or GCS access (using <code>GEE_TASKS</code> and <code>GCS_TASKS</code> sets read from <code>source/tasks.yml</code>) and initializes credentials accordingly.</p>
+<p><strong>GEE tasks</strong> (<code>elevation</code>, <code>forest</code>, <code>landcover</code>, <code>lst</code>, <code>green</code>, <code>ndmi</code>, <code>nightlight</code>, <code>water_risk</code>): Calls <code>init_gee()</code> in <code>core/config/auth.py</code>, which tries credentials in this order:</p>
+<pre><code>1. Cloud Run service account  (K_SERVICE env var present)
+2. GOOGLE_APPLICATION_CREDENTIALS  (env var pointing to a key file)
+3. local gcloud ADC  (gcloud auth application-default login)
+→ fail-fast with message: run `scan --check gee`</code></pre>
+<p><strong>GCS tasks</strong> (<code>wsf</code>, <code>fathom</code>, <code>landcover_burn</code>, <code>basic_info</code>, <code>oxford</code>, <code>coastal_erosion</code>, <code>sea_level_rise</code>, <code>elevation</code>): Calls <code>init_gcs()</code>, which verifies that ADC credentials exist and sets <code>GOOGLE_APPLICATION_CREDENTIALS</code> so GDAL can read from <code>/vsigs/</code> paths.</p>
+<hr>
+</section>
+<section id="task-execution" class="level2" data-number="17.5">
+<h2 data-number="17.5" class="anchored" data-anchor-id="task-execution"><span class="header-section-number">17.5</span> 5. Task execution</h2>
+<section id="serial-mode-default" class="level3" data-number="17.5.1">
+<h3 data-number="17.5.1" class="anchored" data-anchor-id="serial-mode-default"><span class="header-section-number">17.5.1</span> Serial mode (default)</h3>
+<pre><code>for task_name in topo_sorted_tasks:
+    result = run_task(task_name, scan, step)   # core/config/run.py
+    if --upload:
+        upload_task_outputs(scan, task_name, step, ...)</code></pre>
+<p>Each task is exception-isolated — a failure in one task is caught and logged, and execution continues with the next task.</p>
+</section>
+<section id="parallel-mode---parallel" class="level3" data-number="17.5.2">
+<h3 data-number="17.5.2" class="anchored" data-anchor-id="parallel-mode---parallel"><span class="header-section-number">17.5.2</span> Parallel mode (<code>--parallel</code>)</h3>
+<p>Calls <code>run_parallel()</code> in <code>core/config/multitask.py</code>:</p>
+<ul>
+<li>Each task runs in its own thread</li>
+<li>Concurrency is <strong>semaphore-gated per resource type</strong>: separate semaphores for GEE, GCS, and OSM prevent rate-limit collisions</li>
+<li>A live TUI shows per-task status and lets you stream a task’s log to the screen by pressing its key</li>
+<li><code>--auto-exit</code> skips the “press any key to exit” pause; this flag is auto-injected when <code>--multicity --parallel</code> is combined to prevent blocking between cities</li>
+</ul>
+</section>
+<section id="inside-run_task-coreconfigrun.py" class="level3" data-number="17.5.3">
+<h3 data-number="17.5.3" class="anchored" data-anchor-id="inside-run_task-coreconfigrun.py"><span class="header-section-number">17.5.3</span> Inside <code>run_task()</code> (<code>core/config/run.py</code>)</h3>
+<ol type="1">
+<li>Imports the task module: <code>importlib.import_module(module_path)</code></li>
+<li>Wraps each phase in <code>ErrorTracker()</code> — captures status (<code>OK</code> / <code>WARNING</code> / <code>ERROR</code> / <code>NO_DATA</code>) and any messages</li>
+<li>Dispatches based on <code>step</code>:</li>
+</ol>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th><code>step</code> value</th>
+<th>What runs</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>None</code> (default)</td>
+<td><code>collect</code> then <code>analyze</code> in sequence</td>
+</tr>
+<tr class="even">
+<td><code>"collect"</code></td>
+<td>collect phase only</td>
+</tr>
+<tr class="odd">
+<td><code>"analyze"</code></td>
+<td>analyze phase only</td>
+</tr>
+<tr class="even">
+<td><code>"multianalysis"</code></td>
+<td><code>multianalysis.R</code> or <code>.py</code> via subprocess; output streamed live; any “Error” string triggers WARN status</td>
+</tr>
+<tr class="odd">
+<td><code>"charts"</code></td>
+<td><code>quarto render tasks/&lt;task&gt;/charts/index.qmd</code></td>
+</tr>
+</tbody>
+</table>
+<ol start="4" type="1">
+<li>Returns <code>{phase: status, _messages: {...}, _source: "..."}</code> — the source label comes from <code>scan.sources[task_name]</code></li>
+</ol>
+</section>
+<section id="render-path---render" class="level3" data-number="17.5.4">
+<h3 data-number="17.5.4" class="anchored" data-anchor-id="render-path---render"><span class="header-section-number">17.5.4</span> Render path (<code>--render</code>)</h3>
+<p>Render targets run via subprocess after task execution (or standalone):</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Target</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>maps</code></td>
+<td><code>Rscript core/R/maps-static.R</code></td>
+</tr>
+<tr class="even">
+<td><code>scan-calculations</code></td>
+<td><code>quarto render scan-calculations/</code></td>
+</tr>
+<tr class="odd">
+<td><code>charts &lt;task&gt;</code></td>
+<td><code>quarto render tasks/&lt;task&gt;/charts/index.qmd</code></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+</section>
+<section id="outputs" class="level2" data-number="17.6">
+<h2 data-number="17.6" class="anchored" data-anchor-id="outputs"><span class="header-section-number">17.6</span> 6. Outputs</h2>
+<p>All outputs land under the city folder in <code>mnt/</code>:</p>
+<pre><code>mnt/&lt;scan_id&gt;/
+├── 02-process-output/
+│   ├── spatial/     ← rasters and vector files from collect / analyze
+│   └── tabular/     ← CSVs and statistics from analyze
+└── 03-render-output/
+    ├── maps/        ← static map PNGs from --render maps
+    └── plots/       ← chart PNGs from --render charts / scan-calculations</code></pre>
+<p>A run summary is also appended to <code>logs/task_report.txt</code>:</p>
+<pre><code>task | step | status | source | message | timestamp</code></pre>
+<hr>
+</section>
+<section id="multi-city-batch-mode" class="level2" data-number="17.7">
+<h2 data-number="17.7" class="anchored" data-anchor-id="multi-city-batch-mode"><span class="header-section-number">17.7</span> Multi-city batch mode</h2>
+<p><code>--multicity</code> is an early-exit path that runs the entire pipeline once per city by spawning subprocesses. <code>run_multicity()</code> in <code>core/config/run.py</code>:</p>
+<ol type="1">
+<li>Reads <code>inputs/multi_inputs.yml</code></li>
+<li>Resolves city list — two modes (combinable):
+<ul>
+<li><strong>multipolygon</strong>: reads a GeoDataFrame; auto-extracts each row as a city AOI shapefile to <code>inputs/AOI/{city_slug}/</code></li>
+<li><strong>cities list</strong>: uses pre-made AOI folders already present in <code>inputs/AOI/</code></li>
+</ul></li>
+<li>For each city:
+<ul>
+<li>Calls <code>scan_init()</code> to get or create the scan ID</li>
+<li>Calls <code>prepare_inputs()</code> to write <code>city_inputs.yml</code> into the city’s input folder</li>
+<li>Spawns: <code>python -m tasks --scan-id &lt;id&gt; &lt;passthrough_args&gt;</code></li>
+<li>Passthrough args = all original args except <code>--multicity</code></li>
+</ul></li>
+<li>If <code>--parallel</code> is in passthrough args and <code>--auto-exit</code> is absent, <code>--auto-exit</code> is injected automatically to prevent the TUI from blocking between cities</li>
+</ol>
 
 
 </section>

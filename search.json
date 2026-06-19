@@ -1026,7 +1026,7 @@
     "href": "repo-structure.html",
     "title": "16  Repository Structure",
     "section": "",
-    "text": "16.1 tasks/",
+    "text": "16.1 tasks/\nThis page is a navigational reference for the City Scan codebase. It maps every top-level directory and key file to its purpose, so you know where to look — and what to edit — when something needs fixing or adjusting. For how these pieces connect at runtime (task orchestration, inter-module calls, CLI flags), see task-dependency.qmd.\nTasks present in the repo (36 modules): accessibility air_quality basic_info buildings burned_area coastal_erosion cyclones demographics earthquake elevation fathom flood_events forest fwi gdp_gridded gdp_sectoral ghs_builtup ghs_population groundwater landcover landcover_burn landslide liquefaction lst ndxi nightlight oxford rwi sea_level_rise seismic_hazard slope solar water_risk worldpop wsf\nFor what each task produces, see the Tasks & Data Layers section:\nPopulation & Demographics · Economic Activity · Built Form · Climate Conditions · Risk Identification",
     "crumbs": [
       "Understanding the Repo",
       "<span class='chapter-number'>16</span>  <span class='chapter-title'>Repository Structure</span>"
@@ -1037,7 +1037,7 @@
     "href": "repo-structure.html#tasks",
     "title": "16  Repository Structure",
     "section": "",
-    "text": "tasks/\n├── elevation/\n│   ├── __init__.py\n│   ├── collection.py\n│   ├── analysis.py\n│   ├── maps.yml\n│   └── charts/\n│       ├── _quarto.yml\n│       └── index.qmd\n├── fathom/\n│   ├── __init__.py\n│   ├── collection.py\n│   ├── analysis.py\n│   ├── multianalysis.R\n│   ├── maps.yml\n│   └── charts/\n│       ├── _quarto.yml\n│       └── index.qmd\n├── worldpop/\n├── wsf/\n├── earthquake/        # R-based collection\n├── oxford/            # R-based collection\n└── ...\n\nEach scan topic is a self-contained module\n__init__.py registers entry points: collect(), analyze(), visualize()\ncollection.py (or .R) downloads and clips data to AOI\nanalysis.py (or .R) computes statistics and generates CSVs\nmaps.yml declares the layers this task contributes (matched against source/layers.yml) and any custom map scripts\ncharts/index.qmd renders Quarto charts for the scan-calculations report\nSome tasks have multianalysis.R for cross-task R-based post-processing (e.g. fathom flood exposure)\nTasks are auto-registered via source/tasks.yml\nCLI entry point: tasks/__main__.py (parses flags, dispatches to core/config/run.py)",
+    "text": "tasks/\n├── __main__.py          # CLI entry point: parses flags, dispatches to core/config/run.py\n├── __init__.py          # package init\n├── contributing.md      # task contribution guide\n├── &lt;task_name&gt;/\n│   ├── __init__.py      # registers collect(), analyze(), visualize() entry points\n│   ├── collection.py    # downloads and clips data to AOI  (.py or .R)\n│   ├── analysis.py      # computes statistics and generates CSVs  (.py or .R)\n│   ├── maps.yml         # [optional] map layers this task contributes + custom map scripts\n│   ├── multianalysis.R  # [optional] cross-task R post-processing (e.g. flood exposure)\n│   └── charts/          # [optional] Quarto charts rendered into the scan-calculations report\n│       ├── _quarto.yml\n│       └── index.qmd\n└── ...\n\n\n\n\nTasks are auto-registered via source/tasks.yml\nTask dependencies and the orchestration graph are documented in task-dependency.qmd",
     "crumbs": [
       "Understanding the Repo",
       "<span class='chapter-number'>16</span>  <span class='chapter-title'>Repository Structure</span>"
@@ -1048,7 +1048,7 @@
     "href": "repo-structure.html#core",
     "title": "16  Repository Structure",
     "section": "16.2 core/",
-    "text": "16.2 core/\n\n16.2.1 core/config/\ncore/config/\n├── scan.py\n├── auth.py\n├── paths.py\n├── tasks.py\n├── cli.py\n├── run.py\n├── multitask.py\n├── inputs.py\n├── sync.py\n├── check_env.py\n└── utils.py\n\nscan.py — Scan class: loads AOI, city config, creates city output folders in mnt/\nauth.py — initializes GEE and GCS authentication (tiered: existing creds → gcloud ADC → fail-fast)\npaths.py — auto-detects input/output directories based on project structure\ntasks.py — task registry (reads source/tasks.yml)\ncli.py — CLI flag parsing (single source of truth for all flags)\nrun.py — run_task(), run_multicity() execution logic\nmultitask.py — parallel task runner with TUI for --parallel flag\ninputs.py — prepare_inputs() for staging user inputs into city folders\nsync.py — sync_project_files() for --sync flag\ncheck_env.py — environment preflight for --check flag\nutils.py — shared slugify() and other helpers\n\n\n\n16.2.2 core/py/\ncore/py/\n├── log_module.py\n├── error_tracker.py\n├── gcs_module.py\n├── aoi_module.py\n├── osm_client.py\n├── osm_pbf.py\n├── aoi_buffer.py\n├── gee_fns.py\n├── raster_module.py\n└── gdal_auth.py\n\nlog_module.py — logging setup (console + rotating file output)\nerror_tracker.py — counts errors per task, surfaces OK / WARNING / ERROR / NO_DATA status\ngcs_module.py — GCS upload/download, file tracking for --upload flag\naoi_module.py — detects country name(s) and ISO3 codes from AOI intersection (multi-country aware)\nosm_client.py — unified OSM access (routes to Geofabrik PBF for large AOIs, Overpass otherwise)\nosm_pbf.py — Geofabrik PBF download + attribute filter helpers\naoi_buffer.py — AOI buffer utilities in meters for OSM queries\ngee_fns.py — GEE tiling helpers (make_tiles, tiled_collection)\nraster_module.py — raster mosaic, masking, GCS-safe operations\ngdal_auth.py — configures GDAL for /vsigs/ access to private GCS buckets\n\n\n\n16.2.3 core/R/\ncore/R/\n├── setup.R\n├── fns.R\n├── pre-mapping.R\n├── maps-static.R\n├── map-flooding.R\n├── map-elevation.R\n├── map-sectoral-gdp-flood.R\n├── map-schools-health-proximity.R\n├── benchmark-helper.R\n├── pop-backup.R\n├── global-data-paths.R\n└── ...\n\nsetup.R — R session setup: loads packages, reads AOI, sets directory paths\nfns.R — plot_static_layer(), prepare_parameters(), parse_agg_fun(), cell_aggregate(), hexbin_aggregate(), h3_aggregate(), and other shared helpers\npre-mapping.R — data preprocessing before mapping (combine flood zones, edit WSF tracker, adjust deforestation years)\nmaps-static.R — orchestrates static map generation: standard layers loop + custom map scripts\nmap-*.R — custom map scripts for layers that need special handling (flood overlays, sectoral GDP, schools/health proximity, etc.)\nbenchmark-helper.R — benchmark city selection and Oxford lookup (diacritic-insensitive)\npop-backup.R — population fallback functions (UN data, citypopulation.de, GHS-POP)\n\n\n\n16.2.4 core/ojs/\ncore/ojs/\n└── plots.js\n\nObservable JS interactive charts (D3-based) used in the web report",
+    "text": "16.2 core/\n\n16.2.1 core/config/\ncore/config/\n├── scan.py        # Scan class: loads AOI, reads city config, creates city output folders in mnt/\n├── auth.py        # GEE and GCS authentication (tiered: existing creds → gcloud ADC → fail-fast)\n├── paths.py       # auto-detects input/output directories based on project structure\n├── tasks.py       # task registry (reads source/tasks.yml)\n├── cli.py         # CLI flag parsing — single source of truth for all flags\n├── run.py         # run_task(), run_multicity() execution logic\n├── multitask.py   # parallel task runner with TUI for --parallel flag\n├── inputs.py      # prepare_inputs(): stages user inputs into the city folder\n├── sync.py        # sync_project_files() for --sync flag\n├── check_env.py   # environment preflight for --check flag\n├── gdal_auth.py   # configures GDAL for /vsigs/ access to private GCS buckets\n└── utils.py       # shared slugify() and other helpers\n\n\n16.2.2 core/py/\ncore/py/\n├── log_module.py          # logging setup (console + rotating file output)\n├── error_tracker.py       # counts errors per task; surfaces OK / WARNING / ERROR / NO_DATA status\n├── gcs_module.py          # GCS upload/download, file tracking for --upload flag\n├── aoi_module.py          # detects country name(s) and ISO3 codes from AOI intersection\n├── aoi_buffer.py          # AOI buffer utilities in meters for OSM queries\n├── aoi_helper.py          # AOI geometry helper functions\n├── osm_client.py          # unified OSM access (routes to Geofabrik PBF or Overpass by AOI size)\n├── osm_pbf.py             # Geofabrik PBF download + attribute filter helpers\n├── gee_fns.py             # GEE tiling helpers (make_tiles, tiled_collection)\n├── raster_module.py       # raster mosaic, masking, GCS-safe operations\n├── check_layers.py        # validates layer outputs against expected spec\n├── clean.py               # shared data-cleaning utilities\n└── convert_shp_to_fgb.py  # shapefile → FlatGeobuf conversion helper\n\n\n16.2.3 core/R/\ncore/R/\n├── setup.R              # R session init: loads packages, reads AOI, sets directory paths\n├── fns.R                # core shared functions (plot_static_layer, cell_aggregate, h3_aggregate, …)\n├── fns-*.R              # extended function libraries — 10 files covering:\n│                        #   aggregation, charts, geometry, maps-aes, maps-static,\n│                        #   maps-web, population, text, utilities, web\n├── pre-mapping.R        # data preprocessing before mapping (combine flood zones, WSF edits, …)\n├── pre-charting.R       # data preprocessing before chart rendering\n├── maps-static.R        # orchestrates static map generation: standard loop + custom scripts\n├── maps-web.R           # web map rendering\n├── map-*.R              # custom map scripts for layers needing special handling (13 files):\n│                        #   building-footprints, coastal-erosion, deforestation, economic-activity-*,\n│                        #   elevation, flooding, gdp-flood, ghs-expansion, historical-burnt-area,\n│                        #   intersections, isochrones, schools-health-proximity,\n│                        #   sectoral-gdp-flood, seismic-hazard\n├── chart-*.R            # chart generators per data type (13 files):\n│                        #   age-sex-distribution, earthquakes, elevation, flood-archive,\n│                        #   flooding, fwi, groundwater, landcover, slope, solar-pv, urban-extent\n├── data-*.R             # data processing helpers (6 files):\n│                        #   coastal-erosion, collection, flood-wsf-probability,\n│                        #   gridded-gdp, slr-clip, wsf-harmonized\n├── benchmark-assembly.R # benchmark city assembly\n├── benchmark-helper.R   # benchmark city selection and Oxford lookup (diacritic-insensitive)\n├── gcs-auth.R           # GCS authentication for R\n├── gcs-overrides.R      # per-city GCS path overrides\n├── pop-backup.R         # population fallback functions (UN data, citypopulation.de, GHS-POP)\n├── population-growth.R  # population growth rate calculations\n├── write-population.R   # writes population outputs\n├── global-data-paths.R  # data path configuration shared across R scripts\n├── clean-tabular.R      # tabular data cleaning\n├── pdf-prep.R           # PDF export preparation\n├── plots.R              # shared plotting utilities\n├── rename-generic.R     # layer/file renaming helpers\n├── in_design.R          # design system utilities\n└── transparencies.R     # color and transparency configuration\n\nEdit map-*.R to customise the rendering of specific layers\nEdit fns.R / fns-*.R for shared plotting and aggregation logic\nmaps-static.R is the orchestration entry point for all static maps\n\n\n\n16.2.4 core/ojs/\ncore/ojs/\n├── dataloader.js   # data-loading utilities for Observable JS charts\n└── plots.js        # D3-based interactive chart definitions used in the web report",
     "crumbs": [
       "Understanding the Repo",
       "<span class='chapter-number'>16</span>  <span class='chapter-title'>Repository Structure</span>"
@@ -1059,7 +1059,7 @@
     "href": "repo-structure.html#source",
     "title": "16  Repository Structure",
     "section": "16.3 source/",
-    "text": "16.3 source/\nsource/\n├── layers.yml\n├── tasks.yml\n├── generic-text.yml\n├── custom.scss\n└── pagedtable-fix.scss\n\nCanonical config files, copied to each city folder on first run\nlayers.yml — map layer styling (palettes, breaks, labels, fuzzy_string per layer)\ntasks.yml — task config (auth requirements, aliases, dependencies)\ngeneric-text.yml — report text templates per section\ncustom.scss — report CSS styling\npagedtable-fix.scss — Bootstrap table styling overrides",
+    "text": "16.3 source/\nsource/\n├── layers.yml                           # map layer styling: palettes, breaks, labels, fuzzy_string per layer\n├── tasks.yml                            # task registry: auth requirements, aliases, dependencies\n├── generic-text.yml                     # report text templates per section\n├── countries_economies_classification.csv  # country/economy classification lookup\n├── slide-list.csv                       # slide/report section configuration\n├── output-check.qmd                     # Quarto quality-assurance template\n├── pagedtable-fix.scss                  # Bootstrap table styling overrides\n└── pagedtable.css                       # paged table base styles\n\nThese files are copied into each city folder on first run\nEdit layers.yml to adjust map symbology; edit tasks.yml to change task auth or dependencies\ngeneric-text.yml holds the boilerplate narrative text that appears in scan reports",
     "crumbs": [
       "Understanding the Repo",
       "<span class='chapter-number'>16</span>  <span class='chapter-title'>Repository Structure</span>"
@@ -1070,7 +1070,7 @@
     "href": "repo-structure.html#inputs",
     "title": "16  Repository Structure",
     "section": "16.4 inputs/",
-    "text": "16.4 inputs/\ninputs/\n├── city_inputs.yml\n├── multi_inputs.yml\n├── menu.yml\n└── AOI/\n\nUser-facing configuration for new scans (not tracked in git — see templates/ for starting copies)\ncity_inputs.yml — single-city config: name, AOI, year ranges, flood/accessibility/benchmark params\nmulti_inputs.yml — multi-city batch config: city list (or multipolygon file) + shared settings\nmenu.yml — toggle which tasks to enable or disable\nAOI/ — boundary shapefile(s) for the city or cities",
+    "text": "16.4 inputs/\ninputs/\n├── city_inputs.yml   # single-city config: name, AOI, year ranges, flood/accessibility/benchmark params\n├── multi_inputs.yml  # multi-city batch config: city list (or multipolygon file) + shared settings\n├── menu.yml          # toggle which tasks to enable or disable\n└── AOI/              # boundary shapefile(s) for the city or cities\n\nUser-facing configuration for each new scan — not tracked in git\nCopy from templates/ and edit before running; see inputs-config.qmd for field reference",
     "crumbs": [
       "Understanding the Repo",
       "<span class='chapter-number'>16</span>  <span class='chapter-title'>Repository Structure</span>"
@@ -1081,7 +1081,7 @@
     "href": "repo-structure.html#mnt",
     "title": "16  Repository Structure",
     "section": "16.5 mnt/",
-    "text": "16.5 mnt/\nmnt/\n└── 2026-03-tunisia-tunis/\n    ├── 01-user-input/\n    ├── 02-process-output/\n    │   ├── spatial/\n    │   └── tabular/\n    ├── 03-render-output/\n    │   ├── maps/\n    │   └── plots/\n    ├── tasks/\n    ├── core/\n    ├── source/\n    └── scan-calculations/\n\nCity output folders, auto-created per scan by the Scan class\nEach city gets its own copy of tasks/, core/, source/, scan-calculations/\n01-user-input/ — copied from inputs/\n02-process-output/spatial/ — rasters and vector data (.tif, .gpkg, .fgb)\n02-process-output/tabular/ — CSVs and statistics\n03-render-output/maps/ — static map PNGs\n03-render-output/plots/ — chart PNGs",
+    "text": "16.5 mnt/\nmnt/\n└── &lt;scan-id&gt;/                   # e.g. 2026-03-morocco-rabat\n    ├── 01-user-input/           # copy of inputs/ staged for this scan\n    ├── 02-process-output/\n    │   ├── spatial/             # rasters and vector files (.tif, .gpkg, .fgb)\n    │   └── tabular/             # CSVs and statistics\n    ├── 03-render-output/\n    │   ├── maps/                # static map PNGs\n    │   └── plots/               # chart PNGs\n    ├── tasks/                   # synced copy of tasks/ for this scan\n    ├── core/                    # synced copy of core/\n    ├── source/                  # synced copy of source/\n    └── scan-calculations/       # synced copy of scan-calculations/\n\nCity output folders are auto-created per scan by the Scan class\nEach city gets an isolated copy of tasks/, core/, source/, scan-calculations/ so scans are reproducible without re-syncing",
     "crumbs": [
       "Understanding the Repo",
       "<span class='chapter-number'>16</span>  <span class='chapter-title'>Repository Structure</span>"
@@ -1092,7 +1092,7 @@
     "href": "repo-structure.html#scan-calculations",
     "title": "16  Repository Structure",
     "section": "16.6 scan-calculations/",
-    "text": "16.6 scan-calculations/\nscan-calculations/\n├── _quarto.yml\n├── sections.yml\n├── generate-index.R\n└── ...\n\nQuarto project that compiles per-task charts/index.qmd into a single combined HTML report\nsections.yml defines which tasks appear and in what order\ngenerate-index.R reads sections.yml and assembles the per-task qmds into index.qmd",
+    "text": "16.6 scan-calculations/\nscan-calculations/\n├── _quarto.yml       # Quarto project config\n├── sections.yml      # defines which tasks appear in the report and in what order\n├── generate-index.R  # reads sections.yml and assembles per-task qmds into index.qmd\n└── ...               # per-task chart qmds assembled at render time\n\nQuarto project that compiles per-task charts/index.qmd files into a single combined HTML report\nsections.yml is the place to reorder or exclude tasks from the final report",
     "crumbs": [
       "Understanding the Repo",
       "<span class='chapter-number'>16</span>  <span class='chapter-title'>Repository Structure</span>"
@@ -1103,7 +1103,7 @@
     "href": "repo-structure.html#templates",
     "title": "16  Repository Structure",
     "section": "16.7 templates/",
-    "text": "16.7 templates/\ntemplates/\n├── city_inputs.yml\n├── multi_inputs.yml\n├── menu.yml\n├── manual-text.md\n└── README.md\n\nBoilerplate input configs and starter files\nCopy city_inputs.yml, multi_inputs.yml, menu.yml to inputs/ and edit before running",
+    "text": "16.7 templates/\ntemplates/\n├── city_inputs.yml   # starter single-city config\n├── multi_inputs.yml  # starter multi-city config\n├── menu.yml          # starter task menu\n├── manual-text.md    # starter manual narrative text\n└── README.md         # template usage notes\n\nCopy these to inputs/ and edit before each scan; inputs/ itself is git-ignored",
     "crumbs": [
       "Understanding the Repo",
       "<span class='chapter-number'>16</span>  <span class='chapter-title'>Repository Structure</span>"
@@ -1114,7 +1114,7 @@
     "href": "repo-structure.html#docs",
     "title": "16  Repository Structure",
     "section": "16.8 docs/",
-    "text": "16.8 docs/\ndocs/\n├── README.md\n├── CHANGELOG.md\n├── getting-started/\n├── interface/\n├── reference/\n└── archived/\nSee docs/README.md for the full index.",
+    "text": "16.8 docs/\ndocs/\n├── index.qmd                  # documentation home\n├── _quarto.yml                # Quarto book config\n├── tasks-structure-overview.qmd\n├── repo-structure.qmd         # this file\n├── task-dependency.qmd        # orchestration and inter-module dependency graph\n├── inputs-config.qmd          # city_inputs.yml / multi_inputs.yml / menu.yml reference\n├── setting-up.qmd\n├── running-first-cityscan.qmd\n├── standard-cityscan.qmd\n├── custom-cityscan.qmd\n├── multiple-cityscan.qmd\n├── population-demographic.qmd # Tasks & Data Layers — domain pages\n├── economic-activity.qmd\n├── built-form.qmd\n├── climate-condition.qmd\n├── risk-identification.qmd\n├── at-a-glance.qmd\n├── data-wiki.qmd              # comprehensive data source reference\n├── datalayer-references.qmd\n├── contributing.qmd\n├── git-guide.qmd\n├── editing-this-reference.qmd\n├── sharing-the-guide.qmd\n├── reporting-issues.qmd\n├── examples-cityscan.qmd\n├── case-standard-rabat.qmd\n├── case-multiple-philippines.qmd\n├── references.bib\n├── references.qmd\n├── image/                     # documentation images\n└── reference/                 # supplementary references (maps-customization, workflow diagrams)\nPublish with quarto publish gh-pages from the repo root.",
     "crumbs": [
       "Understanding the Repo",
       "<span class='chapter-number'>16</span>  <span class='chapter-title'>Repository Structure</span>"
@@ -1125,7 +1125,18 @@
     "href": "repo-structure.html#logs",
     "title": "16  Repository Structure",
     "section": "16.9 logs/",
-    "text": "16.9 logs/\nlogs/\n├── app.log\n└── task_report.txt\n\nAuto-created on first task run\napp.log — full run log (overwrites per run)\ntask_report.txt — per-task status summary (status, source, messages, last update)",
+    "text": "16.9 logs/\nlogs/\n├── app.log           # full run log (overwrites each run)\n└── task_report.txt   # per-task status summary: status, source, messages, last update\nAuto-created on first task run.",
+    "crumbs": [
+      "Understanding the Repo",
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Repository Structure</span>"
+    ]
+  },
+  {
+    "objectID": "repo-structure.html#notebook-and-old_docs",
+    "href": "repo-structure.html#notebook-and-old_docs",
+    "title": "16  Repository Structure",
+    "section": "16.10 notebook/ and old_docs/",
+    "text": "16.10 notebook/ and old_docs/\n\nnotebook/ — exploratory Jupyter notebooks used during development; unmaintained and not part of the production pipeline\nold_docs/ — archived documentation and CHANGELOG; superseded by this docs site",
     "crumbs": [
       "Understanding the Repo",
       "<span class='chapter-number'>16</span>  <span class='chapter-title'>Repository Structure</span>"
@@ -1134,56 +1145,89 @@
   {
     "objectID": "task-dependency.html",
     "href": "task-dependency.html",
-    "title": "17  Orchestration Dependency Graph",
+    "title": "17  Orchestration & Dependency Flow",
     "section": "",
-    "text": "17.1 Dependencies used by the orchestration layer\nStandard-library orchestration modules: argparse-style parsing (custom in core/config/cli.py), importlib (task discovery), subprocess (R/Quarto), threading / concurrent.futures (parallel mode), termios / tty / select (TUI keybinds), logging, pathlib, shutil.",
+    "text": "17.1 1. Entry point and flag dispatch\nThis page explains what happens under the hood when you run a scan command — the sequence of phases, what each phase does, and how inputs, flags, tasks, core modules, and config files interact to produce outputs. For where each file lives, see repo-structure.qmd.\nEvery run starts the same way:\nmain() in tasks/__main__.py handles all dispatch. The first thing it does is parse flags via validate_args() + parse_args() in core/config/cli.py, which returns a flags dict. Several invocations resolve and exit before any scan state is created:\nAll other invocations proceed to scan initialization.\nMain-path flags (control behavior without short-circuiting):",
     "crumbs": [
       "Understanding the Repo",
-      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Orchestration Dependency Graph</span>"
+      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Orchestration & Dependency Flow</span>"
     ]
   },
   {
-    "objectID": "task-dependency.html#dependencies-used-by-the-orchestration-layer",
-    "href": "task-dependency.html#dependencies-used-by-the-orchestration-layer",
-    "title": "17  Orchestration Dependency Graph",
+    "objectID": "task-dependency.html#entry-point-and-flag-dispatch",
+    "href": "task-dependency.html#entry-point-and-flag-dispatch",
+    "title": "17  Orchestration & Dependency Flow",
     "section": "",
-    "text": "requirements.txt (orchestration-critical subset)\n├── PyYAML==6.0.1              ← reads city_inputs.yml, menu.yml,\n│                                tasks.yml, multi_inputs.yml, layers.yml\n├── geopandas==1.0.1           ← AOI loading + multipolygon handling\n│                                (Scan.aoi, run_multicity, find_country)\n├── earthengine-api&gt;=1.6.12    ← core/config/auth.py::init_gee()\n├── google-cloud-storage       ← core/config/auth.py::init_gcs(),\n│     ==2.16.0                   core/py/gcs_module.py (upload)\n├── rasterio==1.3.8            ← raster I/O for collection/analysis\n├── shapely==2.0.4             ← AOI geometry ops\n└── fiona==1.10.1              ← shp/gpkg read",
+    "text": "python -m tasks [flags] [task_names]\n# or equivalently:\nscan [flags] [task_names]          # via pyproject.toml entry point\n\n\n\n\nInvocation\nBehavior\n\n\n\n\n--help / no args\nprints usage, exits\n\n\n--check [r\\|python\\|gee\\|gcs\\|quarto\\|inputs]\nruns environment preflight (core/config/check_env.py), exits 0/1\n\n\n--list tasks\\|cities\\|flags\nprints task registry, mnt/ folders, or flag list, exits\n\n\n--multicity\nreads inputs/multi_inputs.yml, runs one subprocess per city, exits — see Multi-city mode\n\n\n\n\n\n\n\n\n\n\n\n\nFlag\nEffect\n\n\n\n\n--scan-id &lt;id&gt;\ntarget an existing city folder in mnt/; skips the new/existing prompt\n\n\n-e\nuse existing city folder (non-interactive equivalent of choosing [e])\n\n\n--sync [tasks\\|source\\|core\\|scan-calculations]\nexplicitly control what gets copied to the city folder\n\n\n-t\nshortcut for --sync tasks\n\n\n-k / --keep\nskip sync entirely; run with whatever code is already in the city folder\n\n\n--all\nrun every task currently enabled in menu.yml\n\n\n--collect / --analyze / --multianalysis\nrun one execution phase only\n\n\n--parallel\nuse the TUI parallel runner instead of serial execution\n\n\n--upload\nupload task outputs to GCS after each task completes\n\n\n--render maps\\|scan-calculations\\|charts &lt;task&gt;\nrender maps or the HTML report (can combine with tasks or run standalone)",
     "crumbs": [
       "Understanding the Repo",
-      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Orchestration Dependency Graph</span>"
+      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Orchestration & Dependency Flow</span>"
     ]
   },
   {
-    "objectID": "task-dependency.html#flag-targets-from-coreconfigcli.py",
-    "href": "task-dependency.html#flag-targets-from-coreconfigcli.py",
-    "title": "17  Orchestration Dependency Graph",
-    "section": "17.2 Flag targets (from core/config/cli.py)",
-    "text": "17.2 Flag targets (from core/config/cli.py)\n--sync     ∈ { tasks, source, core, scan-calculations }   (SYNC_TARGETS)\n             • no target  → all four\n             • -t         → shortcut for `--sync tasks`\n--render   ∈ { maps, scan-calculations, charts }          (render_targets)\n             • maps                → Rscript core/R/maps-static.R\n             • scan-calculations   → quarto render scan-calculations/\n             • charts &lt;task&gt;       → quarto render tasks/&lt;task&gt;/charts/index.qmd\n--scan-id  &lt;id&gt;      target existing city folder in mnt/\n--all                run every task enabled in menu.yml\n--multicity          batch from inputs/multi_inputs.yml\n--collect / --analyze / --multianalysis   single-phase run\n--parallel           multitask.py TUI runner\n--upload             gcs_module.upload_task_outputs()\n-e                   use existing city folder (skip folder prompt)\n-k / --keep          run with code already in city folder (skip sync)\n-t                   shortcut for `--sync tasks`\n--list     ∈ { tasks, cities, flags }",
+    "objectID": "task-dependency.html#scan-initialization",
+    "href": "task-dependency.html#scan-initialization",
+    "title": "17  Orchestration & Dependency Flow",
+    "section": "17.2 2. Scan initialization",
+    "text": "17.2 2. Scan initialization\nAfter flag parsing, main() instantiates Scan (defined in core/config/scan.py). The Scan object is the city context — it carries directory paths, city metadata, and loaded config — and is passed into every subsequent step.\nScan.__init__() runs in this order:\n\nResolve scan ID\n\nIf --scan-id was given → uses mnt/&lt;scan_id&gt;/01-user-input/ as the input source\nOtherwise → calls scan_init(), which searches mnt/ for folders matching the {country}-{city} suffix, then either prompts [e]xisting / [n]ew (interactive) or auto-creates (non-TTY or -e flag)\nScan ID format: YYYY-MM-{country}-{city} for single-country, YYYY-MM-{city} for multi-country AOIs\n\nLoad city config — reads city_inputs.yml → sets city_name, first_year, last_year, flood_threshold, flood_year, flood_ssp, flood_return_periods, fwi_first_year, fwi_last_year, and other city parameters\nLoad AOI — reads the boundary shapefile from 01-user-input/AOI/\nResolve country — calls find_country() (core/py/aoi_module.py) which intersects the AOI against a country boundaries dataset → sets country_iso3, country_name, country_iso3_list, multi_country\nCreate output directories\nmnt/&lt;scan_id&gt;/\n├── 02-process-output/spatial/\n├── 02-process-output/tabular/\n├── 03-render-output/maps/\n└── 03-render-output/plots/\nSync project files — calls sync_project_files() (core/config/sync.py), skipped if --keep or render-only mode\nLoad runtime config — reads menu.yml → scan.menu; reads source/layers.yml → scan.sources\n\n\n17.2.1 File sync decision logic\nOn each run (unless --keep), the pipeline decides what code to copy into the city folder:\n--sync targets given explicitly   →  copy only those targets\nno project files in city folder   →  copy all four (first run)\nnon-interactive / no TTY          →  tasks only\ninteractive prompt:\n  [t]  tasks only\n  [o]  override all  (01-user-input/ is never touched)\n  [k]  keep as-is\n  [a]  abort\nSync targets: tasks/, core/, source/, scan-calculations/. A .here marker file is also written so R’s here package resolves paths correctly.",
     "crumbs": [
       "Understanding the Repo",
-      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Orchestration Dependency Graph</span>"
+      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Orchestration & Dependency Flow</span>"
     ]
   },
   {
-    "objectID": "task-dependency.html#orchestration-graph",
-    "href": "task-dependency.html#orchestration-graph",
-    "title": "17  Orchestration Dependency Graph",
-    "section": "17.3 Orchestration graph",
-    "text": "17.3 Orchestration graph\n                                USER CLI\n                                python -m tasks ...\n                        (or `scan ...` via pyproject entry point)\n                                        │\n                                        ▼\n┌──────────────────────────────────────────────────────────────────────────────────────┐\n│  tasks/__main__.py                                                                   │\n│    main()  — dispatches based on flags                                               │\n└──────────────────────────────────────────────────────────────────────────────────────┘\n        │            │            │                    │                          │\n        ▼            ▼            ▼                    ▼                          ▼\n    [--help]    [--list X]  [validate+parse]        [normal]                   [MULTI]\n                                │                      │                          │\n                                ▼                      │                          ▼\n┌───────────────────────────────────────────┐          │    ┌──────────────────────────────────────────────┐\n│  core/config/cli.py                       │          │    │ core/py/run.py                               │\n│    KNOWN_FLAGS, SYNC_TARGETS (const)      │          │    │   run_multicity(path, args, flags)           │\n│    validate_args(args) → err|None         │          │    │     ├─ reads inputs/multi_inputs.yml         │\n│    parse_args(args)    → flags dict       │          │    │     ├─ gpd.read_file  (multipolygon mode)    │\n│      flags: sync_targets, keep_as_is,     │          │    │     ├─ find_country()                        │\n│        use_existing, upload_enabled,      │          │    │     ├─ scan_init()                           │\n│        parallel_mode, auto_exit, run_all, │          │    │     ├─ prepare_inputs()                      │\n│        multicity, step, scan_id,          │          │    │     └─ subprocess: `scan --scan-id &lt;id&gt; ...` │\n│        render_targets, task_names         │          │    │         (loops per city, falls back into     │\n└───────────────────────────────────────────┘          │    │          the [normal] path)                  │\n                                │                      │    └──────────────────────────────────────────────┘\n                                │                      │                          │\n                                └──────────────────────┼──────────────────────────┘\n                                                       ▼\n┌────────────────────────────────────────────────────────────────────┐\n│  core/config/scan.py                                               │\n│    scan_init(country, city, use_existing) → scan_id                │\n│      (prompts [e]xisting / [n]ew unless use_existing or non-tty)   │\n│                                                                    │\n│    class Scan:                                                     │\n│      __init__(scan_id, sync_tasks, skip_sync,                      │\n│               use_existing, sync_targets)                          │\n│        ├─→ prepare_inputs()      (core/config/inputs.py)           │\n│        ├─→ find_country()        (core/py/aoi_module.py)           │\n│        ├─→ scan_init()           (self)                            │\n│        ├─→ sync_project_files()  (core/config/sync.py)  [skippable]│\n│        └─ attrs: city_dir, input_dir, output_dir, render_dir,      │\n│           spatial_dir, tabular_dir, menu, sources, font_dict       │\n└────────────────────────────────────────────────────────────────────┘\n                                                      │\n                 ┌────────────────────────────────────┼────────────────────────────────────┐\n                 ▼                                    ▼                                    ▼\n┌─────────────────────────────────┐ ┌─────────────────────────────────┐ ┌───────────────────────────────────────┐\n│ core/config/paths.py            │ │ core/config/inputs.py           │ │ core/config/sync.py                   │\n│   PROJECT_ROOT                  │ │   prepare_inputs(               │ │   SKIP_PATTERNS                       │\n│   INPUTS  (auto-detect:         │ │     dest, city_inputs,          │ │   _ignore(dir, files)                 │\n│     inputs/  OR  01-user-input/)│ │     source_dir,                 │ │   sync_project_files(                 │\n│   OUTPUTS (mnt/  OR  city       │ │     aoi_dir, wards_dir,         │ │     city_root,                        │\n│            parent)              │ │     override)                   │ │     sync_targets,                     │\n│                                 │ │                                 │ │     sync_tasks)                       │\n│ core/config/utils.py            │ │   writes city_inputs.yml,       │ │                                       │\n│   slugify(name)                 │ │   copies AOI/menu/wards into    │ │   sync_targets ∈ {                    │\n│                                 │ │   01-user-input/                │ │     tasks, source, core,              │\n│                                 │ │                                 │ │     scan-calculations                 │\n│                                 │ │                                 │ │   }   (from cli.py SYNC_TARGETS)      │\n│                                 │ │                                 │ │                                       │\n│                                 │ │                                 │ │   sync_tasks = list of task folders   │\n│                                 │ │                                 │ │                 or None (all tasks)   │\n│                                 │ │                                 │ │                                       │\n│                                 │ │                                 │ │   modes:                              │\n│                                 │ │                                 │ │     sync_targets set  → explicit      │\n│                                 │ │                                 │ │     first run         → all 4 targets │\n│                                 │ │                                 │ │     non-tty           → tasks only    │\n│                                 │ │                                 │ │     else → prompt [t/o/k/a]:          │\n│                                 │ │                                 │ │       [t] tasks only                  │\n│                                 │ │                                 │ │       [o] override all                │\n│                                 │ │                                 │ │       [k] keep as-is                  │\n│                                 │ │                                 │ │       [a] abort                       │\n└─────────────────────────────────┘ └─────────────────────────────────┘ └───────────────────────────────────────┘\n\n                                                      │\n                                  (back in __main__.py after Scan init)\n                                                      ▼\n        ┌──────────────────┬───────────────────┬───────────────────┬───────────────────┐\n        ▼                  ▼                   ▼                   ▼                   ▼\n [--sync targets]   [--upload only]     [--render targets]   [--all / tasks]       [default]\n\n returns after       backfill upload     calls Rscript        resolves task list   run collect+analyze\n sync_project_       of whole city       / quarto per         from menu.yml +      serially per task\n files() ran in      output dir via      target (see Flag     args via             (uses TASK_REGISTRY,\n Scan init           gcs_module          targets block)       TASK_REGISTRY +      gates by auth)\n                                                              topo_sort()\n                                                      │                   │                   │\n                                                      │                   └─────────┬─────────┘\n                                                      │                             ▼\n                                                      │       ┌────────────────────────────────────────────┐\n                                                      │       │ core/config/tasks.py                       │\n                                                      │       │   TASK_REGISTRY     ALIASES                │\n                                                      │       │   GEE_TASKS         GCS_TASKS              │\n                                                      │       │   MENU_KEYS         TASK_DEPENDENCIES      │\n                                                      │       │   discover_tasks()                         │\n                                                      │       │   menu_enabled(menu, name)                 │\n                                                      │       │   topo_sort(names, deps)                   │\n                                                      │       │   ← source/tasks.yml                       │\n                                                      │       └────────────────────────────────────────────┘\n                                                      │                             │\n                                                      │                             ▼\n                                                      │       ┌────────────────────────────────────────────┐\n                                                      │       │ core/config/auth.py                        │\n                                                      │       │   init_gee()     init_gcs()                │\n                                                      │       └────────────────────────────────────────────┘\n                                                      │                             │\n                                                      │                 ┌───────────┴──────────┐\n                                                      ▼                 ▼                      ▼\n                        ┌────────────────────────────────────────┐   [serial]              [parallel]\n                        │ subprocess:                            │      │                      │\n                        │   Rscript   core/R/maps-static.R       │      ▼                      ▼\n                        │   quarto    render scan-calculations/  │   ┌──────────────┐   ┌──────────────────────────────────────────┐\n                        │   quarto    render tasks/&lt;t&gt;/charts/   │   │ run_task(    │   │ core/py/multitask.py                     │\n                        └────────────────────────────────────────┘   │   name,      │   │   run_parallel(task_names, scan, step,   │\n                                                      │              │   scan,      │   │                 run_task_fn, skip_tasks, │\n                                                      ▼              │   step)      │   │                 auto_exit)               │\n                        ┌────────────────────────────────────────┐   └──────────────┘   │     ├ TaskState                          │\n                        │ core/py/gcs_module.py                  │          │           │     ├ TaskLogHandler                     │\n                        │   get_all_files(dir)                   │          │           │     ├ worker()  per task thread          │\n                        │   upload_task_outputs(scan, task,      │          │           │     ├ Semaphores  (gee / gcs / osm)      │\n                        │                       step,            │          │           │     ├ TUI loop  (termios/tty/select)     │\n                        │                       files_before)    │          │           │     └ collect_results                    │\n                        └────────────────────────────────────────┘          │           └──────────────────────────────────────────┘\n                                                                            │                        │\n                                                                            ▼                        │\n                                               ┌────────────────────────────────────────────┐        │\n                                               │ core/py/run.py                             │◀───────┘\n                                               │   run_task(name, scan, step)               │\n                                               │     ├ importlib.import_module              │\n                                               │     ├ ErrorTracker() context mgr           │\n                                               │     └ dispatches to task module:           │\n                                               │         collect / analyze / multianalysis  │\n                                               └────────────────────────────────────────────┘\n                                                                  │\n                                                                  ▼\n                                               ┌────────────────────────────────────────────┐\n                                               │ tasks/{name}/                              │\n                                               │   __init__.py  →  collection.py            │\n                                               │                   analysis.py              │\n                                               │                   multianalysis.R          │\n                                               │                   charts/index.qmd         │\n                                               └────────────────────────────────────────────┘\n\n                                  BACK IN __main__.py (after runs)\n                                                  │\n                                                  ▼\n                        ┌────────────────────────────────────────────────────────┐\n                        │  summary table → logger                                │\n                        │  logs/task_report.txt                                  │\n                        │    (task | step | status | source | msg | timestamp)   │\n                        └────────────────────────────────────────────────────────┘",
+    "objectID": "task-dependency.html#task-resolution-and-dependency-ordering",
+    "href": "task-dependency.html#task-resolution-and-dependency-ordering",
+    "title": "17  Orchestration & Dependency Flow",
+    "section": "17.3 3. Task resolution and dependency ordering",
+    "text": "17.3 3. Task resolution and dependency ordering\nWith the Scan object ready, main() resolves the final list of tasks to execute:\nStep 1 — Collect names from either positional CLI args or --all (which reads scan.menu and filters by menu_enabled()).\nStep 2 — Expand aliases via ALIASES in core/config/tasks.py (sourced from source/tasks.yml):\n\n\n\nCLI name\nResolves to\nNotes\n\n\n\n\npopulation\nworldpop\nfolder remapped\n\n\nslr\nsea_level_rise\nfolder remapped\n\n\ngreen\nndxi\nuses collect_ndvi / analyze_ndvi functions\n\n\nndmi\nndxi\nuses collect_ndmi function\n\n\n\nStep 3 — Auto-discover multianalysis — if --multianalysis is given with no task names, the pipeline scans task folders for multianalysis.R or multianalysis.py and adds those tasks automatically.\nStep 4 — Topological sort via topo_sort() in core/config/tasks.py. Dependencies are declared in source/tasks.yml:\n\n\n\nTask\nDepends on\n\n\n\n\nfathom\nwsf, worldpop, accessibility\n\n\nworldpop\nwsf, oxford\n\n\nslope\nelevation\n\n\nlandcover_burn\nlandcover\n\n\n\nThe sorted order guarantees that a dependency’s outputs exist before the dependent task runs.\nThe task registry is built at startup by discover_tasks() scanning tasks/ for subdirectories with __init__.py, then merging aliases. Each entry maps:\ntask_name → (module_path, collect_fn, analyze_fn, visualize_fn, run_fn, charts_qmd_path)\nAny function slot is None if the task doesn’t implement that phase.",
     "crumbs": [
       "Understanding the Repo",
-      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Orchestration Dependency Graph</span>"
+      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Orchestration & Dependency Flow</span>"
     ]
   },
   {
-    "objectID": "task-dependency.html#utilities-used-throughout",
-    "href": "task-dependency.html#utilities-used-throughout",
-    "title": "17  Orchestration Dependency Graph",
-    "section": "17.4 Utilities (used throughout)",
-    "text": "17.4 Utilities (used throughout)\ncore/py/log_module.py    setup_logger(name), set_log_dir(path),\n                         _file_handler (module-level)\ncore/py/error_tracker.py ErrorTracker()  — context manager, captures\n                         status + messages per phase\ncore/py/aoi_module.py    find_country(aoi) → (iso3, name, iso3_list)\ncore/py/gcs_module.py    get_all_files(dir), upload_task_outputs(\n                          scan, task_name, step, files_before)\ncore/config/gdal_auth.py GDAL cloud config for /vsicurl/ reads\nLegend: boxes = files, indented lines = functions/attrs within that file. Arrows = import/call direction.",
+    "objectID": "task-dependency.html#authentication",
+    "href": "task-dependency.html#authentication",
+    "title": "17  Orchestration & Dependency Flow",
+    "section": "17.4 4. Authentication",
+    "text": "17.4 4. Authentication\nBefore executing tasks, main() checks whether any task in the run requires GEE or GCS access (using GEE_TASKS and GCS_TASKS sets read from source/tasks.yml) and initializes credentials accordingly.\nGEE tasks (elevation, forest, landcover, lst, green, ndmi, nightlight, water_risk): Calls init_gee() in core/config/auth.py, which tries credentials in this order:\n1. Cloud Run service account  (K_SERVICE env var present)\n2. GOOGLE_APPLICATION_CREDENTIALS  (env var pointing to a key file)\n3. local gcloud ADC  (gcloud auth application-default login)\n→ fail-fast with message: run `scan --check gee`\nGCS tasks (wsf, fathom, landcover_burn, basic_info, oxford, coastal_erosion, sea_level_rise, elevation): Calls init_gcs(), which verifies that ADC credentials exist and sets GOOGLE_APPLICATION_CREDENTIALS so GDAL can read from /vsigs/ paths.",
     "crumbs": [
       "Understanding the Repo",
-      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Orchestration Dependency Graph</span>"
+      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Orchestration & Dependency Flow</span>"
+    ]
+  },
+  {
+    "objectID": "task-dependency.html#task-execution",
+    "href": "task-dependency.html#task-execution",
+    "title": "17  Orchestration & Dependency Flow",
+    "section": "17.5 5. Task execution",
+    "text": "17.5 5. Task execution\n\n17.5.1 Serial mode (default)\nfor task_name in topo_sorted_tasks:\n    result = run_task(task_name, scan, step)   # core/config/run.py\n    if --upload:\n        upload_task_outputs(scan, task_name, step, ...)\nEach task is exception-isolated — a failure in one task is caught and logged, and execution continues with the next task.\n\n\n17.5.2 Parallel mode (--parallel)\nCalls run_parallel() in core/config/multitask.py:\n\nEach task runs in its own thread\nConcurrency is semaphore-gated per resource type: separate semaphores for GEE, GCS, and OSM prevent rate-limit collisions\nA live TUI shows per-task status and lets you stream a task’s log to the screen by pressing its key\n--auto-exit skips the “press any key to exit” pause; this flag is auto-injected when --multicity --parallel is combined to prevent blocking between cities\n\n\n\n17.5.3 Inside run_task() (core/config/run.py)\n\nImports the task module: importlib.import_module(module_path)\nWraps each phase in ErrorTracker() — captures status (OK / WARNING / ERROR / NO_DATA) and any messages\nDispatches based on step:\n\n\n\n\n\n\n\n\nstep value\nWhat runs\n\n\n\n\nNone (default)\ncollect then analyze in sequence\n\n\n\"collect\"\ncollect phase only\n\n\n\"analyze\"\nanalyze phase only\n\n\n\"multianalysis\"\nmultianalysis.R or .py via subprocess; output streamed live; any “Error” string triggers WARN status\n\n\n\"charts\"\nquarto render tasks/&lt;task&gt;/charts/index.qmd\n\n\n\n\nReturns {phase: status, _messages: {...}, _source: \"...\"} — the source label comes from scan.sources[task_name]\n\n\n\n17.5.4 Render path (--render)\nRender targets run via subprocess after task execution (or standalone):\n\n\n\nTarget\nCommand\n\n\n\n\nmaps\nRscript core/R/maps-static.R\n\n\nscan-calculations\nquarto render scan-calculations/\n\n\ncharts &lt;task&gt;\nquarto render tasks/&lt;task&gt;/charts/index.qmd",
+    "crumbs": [
+      "Understanding the Repo",
+      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Orchestration & Dependency Flow</span>"
+    ]
+  },
+  {
+    "objectID": "task-dependency.html#outputs",
+    "href": "task-dependency.html#outputs",
+    "title": "17  Orchestration & Dependency Flow",
+    "section": "17.6 6. Outputs",
+    "text": "17.6 6. Outputs\nAll outputs land under the city folder in mnt/:\nmnt/&lt;scan_id&gt;/\n├── 02-process-output/\n│   ├── spatial/     ← rasters and vector files from collect / analyze\n│   └── tabular/     ← CSVs and statistics from analyze\n└── 03-render-output/\n    ├── maps/        ← static map PNGs from --render maps\n    └── plots/       ← chart PNGs from --render charts / scan-calculations\nA run summary is also appended to logs/task_report.txt:\ntask | step | status | source | message | timestamp",
+    "crumbs": [
+      "Understanding the Repo",
+      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Orchestration & Dependency Flow</span>"
+    ]
+  },
+  {
+    "objectID": "task-dependency.html#multi-city-batch-mode",
+    "href": "task-dependency.html#multi-city-batch-mode",
+    "title": "17  Orchestration & Dependency Flow",
+    "section": "17.7 Multi-city batch mode",
+    "text": "17.7 Multi-city batch mode\n--multicity is an early-exit path that runs the entire pipeline once per city by spawning subprocesses. run_multicity() in core/config/run.py:\n\nReads inputs/multi_inputs.yml\nResolves city list — two modes (combinable):\n\nmultipolygon: reads a GeoDataFrame; auto-extracts each row as a city AOI shapefile to inputs/AOI/{city_slug}/\ncities list: uses pre-made AOI folders already present in inputs/AOI/\n\nFor each city:\n\nCalls scan_init() to get or create the scan ID\nCalls prepare_inputs() to write city_inputs.yml into the city’s input folder\nSpawns: python -m tasks --scan-id &lt;id&gt; &lt;passthrough_args&gt;\nPassthrough args = all original args except --multicity\n\nIf --parallel is in passthrough args and --auto-exit is absent, --auto-exit is injected automatically to prevent the TUI from blocking between cities",
+    "crumbs": [
+      "Understanding the Repo",
+      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Orchestration & Dependency Flow</span>"
     ]
   },
   {
@@ -1209,14 +1253,102 @@
     ]
   },
   {
-    "objectID": "git-guide.html",
-    "href": "git-guide.html",
-    "title": "20  Git Guide",
+    "objectID": "contributing.html",
+    "href": "contributing.html",
+    "title": "20  Contributing",
     "section": "",
-    "text": "A practical Git reference for City Scan contributors, covering branching strategy, commit conventions, and common workflows.\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sagittis posuere ligula sit amet lacinia. Duis dignissim pellentesque magna, rhoncus congue sapien finibus mollis. Ut eu sem laoreet, vehicula ipsum in, convallis erat. Vestibulum magna sem, blandit pulvinar augue sit amet, auctor malesuada sapien. Nullam faucibus leo eget eros hendrerit, non laoreet ipsum lacinia. Curabitur cursus diam elit, non tempus ante volutpat a. Quisque hendrerit blandit purus non fringilla. Integer sit amet elit viverra ante dapibus semper. Vestibulum viverra rutrum enim, at luctus enim posuere eu. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.\nNunc ac dignissim magna. Vestibulum vitae egestas elit. Proin feugiat leo quis ante condimentum, eu ornare mauris feugiat. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Mauris cursus laoreet ex, dignissim bibendum est posuere iaculis. Suspendisse et maximus elit. In fringilla gravida ornare. Aenean id lectus pulvinar, sagittis felis nec, rutrum risus. Nam vel neque eu arcu blandit fringilla et in quam. Aliquam luctus est sit amet vestibulum eleifend. Phasellus elementum sagittis molestie. Proin tempor lorem arcu, at condimentum purus volutpat eu. Fusce et pellentesque ligula. Pellentesque id tellus at erat luctus fringilla. Suspendisse potenti.\nEtiam maximus accumsan gravida. Maecenas at nunc dignissim, euismod enim ac, bibendum ipsum. Maecenas vehicula velit in nisl aliquet ultricies. Nam eget massa interdum, maximus arcu vel, pretium erat. Maecenas sit amet tempor purus, vitae aliquet nunc. Vivamus cursus urna velit, eleifend dictum magna laoreet ut. Duis eu erat mollis, blandit magna id, tincidunt ipsum. Integer massa nibh, commodo eu ex vel, venenatis efficitur ligula. Integer convallis lacus elit, maximus eleifend lacus ornare ac. Vestibulum scelerisque viverra urna id lacinia. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Aenean eget enim at diam bibendum tincidunt eu non purus. Nullam id magna ultrices, sodales metus viverra, tempus turpis.\nDuis ornare ex ac iaculis pretium. Maecenas sagittis odio id erat pharetra, sit amet consectetur quam sollicitudin. Vivamus pharetra quam purus, nec sagittis risus pretium at. Nullam feugiat, turpis ac accumsan interdum, sem tellus blandit neque, id vulputate diam quam semper nisl. Donec sit amet enim at neque porttitor aliquet. Phasellus facilisis nulla eget placerat eleifend. Vestibulum non egestas eros, eget lobortis ipsum. Nulla rutrum massa eget enim aliquam, id porttitor erat luctus. Nunc sagittis quis eros eu sagittis. Pellentesque dictum, erat at pellentesque sollicitudin, justo augue pulvinar metus, quis rutrum est mi nec felis. Vestibulum efficitur mi lorem, at elementum purus tincidunt a. Aliquam finibus enim magna, vitae pellentesque erat faucibus at. Nulla mauris tellus, imperdiet id lobortis et, dignissim condimentum ipsum. Morbi nulla orci, varius at aliquet sed, facilisis id tortor. Donec ut urna nisi.\nAenean placerat luctus tortor vitae molestie. Nulla at aliquet nulla. Sed efficitur tellus orci, sed fringilla lectus laoreet eget. Vivamus maximus quam sit amet arcu dignissim, sed accumsan massa ullamcorper. Sed iaculis tincidunt feugiat. Nulla in est at nunc ultricies dictum ut vitae nunc. Aenean convallis vel diam at malesuada. Suspendisse arcu libero, vehicula tempus ultrices a, placerat sit amet tortor. Sed dictum id nulla commodo mattis. Aliquam mollis, nunc eu tristique faucibus, purus lacus tincidunt nulla, ac pretium lorem nunc ut enim. Curabitur eget mattis nisl, vitae sodales augue. Nam felis massa, bibendum sit amet nulla vel, vulputate rutrum lacus. Aenean convallis odio pharetra nulla mattis consequat.",
+    "text": "20.1 Git Branching System\nWe welcome contributions to City Scan, from new data layers to documentation improvements.\nThis document explains how to add new analytical modules to the tasks framework and integrate them into the pipeline.\nThis project follows a modular, reproducible, and readable design philosophy. Each task module represents one analytical domain (e.g. air quality, population, hazard, etc.).\nBefore you start, let’s ensure we are on the same page on the branching system. This is to avoid pushing unstable updates to main.",
     "crumbs": [
       "Collaborating",
-      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Git Guide</span>"
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Contributing</span>"
+    ]
+  },
+  {
+    "objectID": "contributing.html#git-branching-system",
+    "href": "contributing.html#git-branching-system",
+    "title": "20  Contributing",
+    "section": "",
+    "text": "20.1.1 Our Branching Model\nmain          → stable / production-like\n  │\n  └── unified   → This is where our initiative lives\n         │\n         ├── unified_alice\n         ├── unified_bob\n         ├── unified_issue_19\n         └── unified_charlie\nNo one touches main directly.\nNo one pushes to unified without review.\n\n\n\n20.1.2 What Contributors Do\n\nStep 1 — Sync with remote\ngit fetch origin\ngit checkout unified\ngit pull\n\n\nStep 2 — Create their personal branch\ngit checkout -b unified_alice\nNaming convention:\nunified_&lt;name&gt;\n# or\nunified_&lt;issue&gt;\n\n\n\nStep 3 — Work normally\nWhen you make updates to your code, commit locally:\ngit add .\ngit commit -m \"Implement accessibility data parser\"\n\n\nStep 4 — Push their branch\ngit push -u origin unified_alice\n\n\nStep 5 — Open a Pull Request\nOn GitHub / GitLab:\nFROM: unified_alice\nTO:   unified\nSomeone will review your code.\n\n\n\n\n20.1.3 Safety Rules\n\n\n\nRule\nWhy\n\n\n\n\nNo direct commits to main\nPrevent breaking prod\n\n\nNo direct commits to unified\nForces review\n\n\nAlways branch from unified\nPrevents divergence\n\n\nSmall PRs\nEasier review\n\n\nOne feature per branch\nNo tangled work",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Contributing</span>"
+    ]
+  },
+  {
+    "objectID": "contributing.html#task-architecture",
+    "href": "contributing.html#task-architecture",
+    "title": "20  Contributing",
+    "section": "20.2 Task Architecture",
+    "text": "20.2 Task Architecture\nEach task module lives in its own folder under tasks/ and follows this standard structure:\ntasks/\n└── &lt;task_name&gt;/\n    ├── __init__.py          # registers collect(), analyze() entry points\n    ├── collection.py        # downloads and clips data to AOI  (.py or .R)\n    ├── analysis.py          # computes statistics and generates outputs  (.py or .R)\n    ├── maps.yml             # [optional] map layers this task contributes\n    ├── multianalysis.R      # [optional] cross-task R post-processing\n    └── charts/              # [optional] Quarto charts for the scan report\n        ├── _quarto.yml\n        └── index.qmd\nExample:\ntasks/air_quality/\nReference implementation: tasks/air_quality\n\n20.2.1 File Responsibilities\n\n\n\n\n\n\n\nFile\nResponsibility\n\n\n\n\ncollection.py\nDownload / load raw data (cloud storage, API, direct download, etc.) and clip to AOI\n\n\nanalysis.py\nPerform numerical / statistical / spatial analysis; write CSVs and spatial files\n\n\nmaps.yml\nDeclare which map layers this task contributes and any custom map-render scripts\n\n\ncharts/index.qmd\nQuarto charts rendered into the combined scan report\n\n\nmultianalysis.R\nCross-task post-processing that depends on outputs from other tasks\n\n\n__init__.py\nModule registration — exposes collect() and analyze() entry points\n\n\n\nBoth collection.py and analysis.py may be Python or R scripts; the pipeline dispatches accordingly.",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Contributing</span>"
+    ]
+  },
+  {
+    "objectID": "contributing.html#linking-a-new-module-to-__main__.py",
+    "href": "contributing.html#linking-a-new-module-to-__main__.py",
+    "title": "20  Contributing",
+    "section": "20.3 Linking a New Module to __main__.py",
+    "text": "20.3 Linking a New Module to __main__.py\nEach collect() and analyze() function is registered in tasks/{task_name}/__init__.py. All task modules are then discovered automatically at startup by tasks/__main__.py, which scans tasks/ for subdirectories containing an __init__.py.\nTo integrate a new module:\n\nImplement collection.py and analysis.py inside your task folder\nExpose collect() and analyze() in __init__.py\nRegister the task in source/tasks.yml (auth requirements, aliases, dependencies)\n\nThe two-phase pipeline must be preserved:\n\nCollection → Analysis\n\nVisualization (maps and charts) is handled separately via maps.yml / charts/ and rendered with --render maps or --render scan-calculations.",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Contributing</span>"
+    ]
+  },
+  {
+    "objectID": "contributing.html#function-design-rules",
+    "href": "contributing.html#function-design-rules",
+    "title": "20  Contributing",
+    "section": "20.4 Function Design Rules",
+    "text": "20.4 Function Design Rules\n\n20.4.1 Required Function Signatures\nAll Python modules must use these standard arguments:\n\n\n\n\n\n\n\nParameter\nPurpose\n\n\n\n\ncity_name: str\nCity identifier\n\n\noutput_dir: str\nRoot output directory (mnt/&lt;scan_id&gt;/)\n\n\naoi: GeoDataFrame\nArea of interest geometry\n\n\nreturn_* flags\nEnable standalone testing without full pipeline\n\n\n\nR scripts receive equivalent values via core/R/setup.R, which loads the AOI, sets directory paths, and initialises shared packages.\nThis ensures consistent orchestration across both Python and R tasks.",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Contributing</span>"
+    ]
+  },
+  {
+    "objectID": "contributing.html#documentation-style-guide",
+    "href": "contributing.html#documentation-style-guide",
+    "title": "20  Contributing",
+    "section": "20.5 Documentation & Style Guide",
+    "text": "20.5 Documentation & Style Guide\n\n20.5.1 Docstrings\nEvery public function must include a NumPy-style docstring:\ndef compute_stats(...):\n    \"\"\"\n   Summary of what this function is about.\n\n    Parameters\n    ----------\n    what are the inputs to this function\n    ...\n    Returns\n    -------\n    what are the outputs of this function\n    ...\n    \"\"\"\n\n\n20.5.2 Logging\nUse the shared logger:\nfrom utils.log_module import setup_logger\nlogger = setup_logger(__name__)\nNever use print() for operational logging.\n\n\n20.5.3 Error Handling\n\nValidate inputs at the start of each function\nLog failures with logger.error(...)\nReturn None on failure instead of crashing the pipeline\n\n\n\n20.5.4 Modularity & Readability\n\nOne responsibility per function\nNo hidden side effects\nAvoid hard-coded paths — always use output_dir\nFavor explicitness over cleverness",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Contributing</span>"
+    ]
+  },
+  {
+    "objectID": "contributing.html#standalone-testing",
+    "href": "contributing.html#standalone-testing",
+    "title": "20  Contributing",
+    "section": "20.6 Standalone Testing",
+    "text": "20.6 Standalone Testing\nEvery file should support standalone execution:\nif __name__ == \"__main__\":\n    # minimal test example\nThis allows rapid local testing without running the full pipeline.",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Contributing</span>"
+    ]
+  },
+  {
+    "objectID": "contributing.html#folder-naming-structure",
+    "href": "contributing.html#folder-naming-structure",
+    "title": "20  Contributing",
+    "section": "20.7 Folder Naming & Structure",
+    "text": "20.7 Folder Naming & Structure\nUse snake_case for module names:\nflood_event\nghs_builtup\nelevation\nAfter creating your folder, register the task in source/tasks.yml. This is where auth requirements (gee, gcs), CLI aliases, and inter-task dependencies are declared. The pipeline discovers tasks automatically by scanning tasks/ for subdirectories with an __init__.py, but source/tasks.yml controls how they behave at runtime.",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Contributing</span>"
+    ]
+  },
+  {
+    "objectID": "contributing.html#design-philosophy",
+    "href": "contributing.html#design-philosophy",
+    "title": "20  Contributing",
+    "section": "20.8 Design Philosophy",
+    "text": "20.8 Design Philosophy\nThis framework is designed for:\n\nreproducibility\nscientific transparency\neasy extension\nclear audit trails\n\nEvery contribution should preserve these goals.",
+    "crumbs": [
+      "Collaborating",
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Contributing</span>"
     ]
   },
   {
@@ -1224,197 +1356,87 @@
     "href": "reporting-issues.html",
     "title": "21  Reporting Issues",
     "section": "",
-    "text": "How to report bugs, request features, and ask questions about City Scan.\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sagittis posuere ligula sit amet lacinia. Duis dignissim pellentesque magna, rhoncus congue sapien finibus mollis. Ut eu sem laoreet, vehicula ipsum in, convallis erat. Vestibulum magna sem, blandit pulvinar augue sit amet, auctor malesuada sapien. Nullam faucibus leo eget eros hendrerit, non laoreet ipsum lacinia. Curabitur cursus diam elit, non tempus ante volutpat a. Quisque hendrerit blandit purus non fringilla. Integer sit amet elit viverra ante dapibus semper. Vestibulum viverra rutrum enim, at luctus enim posuere eu. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.\nNunc ac dignissim magna. Vestibulum vitae egestas elit. Proin feugiat leo quis ante condimentum, eu ornare mauris feugiat. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Mauris cursus laoreet ex, dignissim bibendum est posuere iaculis. Suspendisse et maximus elit. In fringilla gravida ornare. Aenean id lectus pulvinar, sagittis felis nec, rutrum risus. Nam vel neque eu arcu blandit fringilla et in quam. Aliquam luctus est sit amet vestibulum eleifend. Phasellus elementum sagittis molestie. Proin tempor lorem arcu, at condimentum purus volutpat eu. Fusce et pellentesque ligula. Pellentesque id tellus at erat luctus fringilla. Suspendisse potenti.\nEtiam maximus accumsan gravida. Maecenas at nunc dignissim, euismod enim ac, bibendum ipsum. Maecenas vehicula velit in nisl aliquet ultricies. Nam eget massa interdum, maximus arcu vel, pretium erat. Maecenas sit amet tempor purus, vitae aliquet nunc. Vivamus cursus urna velit, eleifend dictum magna laoreet ut. Duis eu erat mollis, blandit magna id, tincidunt ipsum. Integer massa nibh, commodo eu ex vel, venenatis efficitur ligula. Integer convallis lacus elit, maximus eleifend lacus ornare ac. Vestibulum scelerisque viverra urna id lacinia. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Aenean eget enim at diam bibendum tincidunt eu non purus. Nullam id magna ultrices, sodales metus viverra, tempus turpis.\nDuis ornare ex ac iaculis pretium. Maecenas sagittis odio id erat pharetra, sit amet consectetur quam sollicitudin. Vivamus pharetra quam purus, nec sagittis risus pretium at. Nullam feugiat, turpis ac accumsan interdum, sem tellus blandit neque, id vulputate diam quam semper nisl. Donec sit amet enim at neque porttitor aliquet. Phasellus facilisis nulla eget placerat eleifend. Vestibulum non egestas eros, eget lobortis ipsum. Nulla rutrum massa eget enim aliquam, id porttitor erat luctus. Nunc sagittis quis eros eu sagittis. Pellentesque dictum, erat at pellentesque sollicitudin, justo augue pulvinar metus, quis rutrum est mi nec felis. Vestibulum efficitur mi lorem, at elementum purus tincidunt a. Aliquam finibus enim magna, vitae pellentesque erat faucibus at. Nulla mauris tellus, imperdiet id lobortis et, dignissim condimentum ipsum. Morbi nulla orci, varius at aliquet sed, facilisis id tortor. Donec ut urna nisi.\nAenean placerat luctus tortor vitae molestie. Nulla at aliquet nulla. Sed efficitur tellus orci, sed fringilla lectus laoreet eget. Vivamus maximus quam sit amet arcu dignissim, sed accumsan massa ullamcorper. Sed iaculis tincidunt feugiat. Nulla in est at nunc ultricies dictum ut vitae nunc. Aenean convallis vel diam at malesuada. Suspendisse arcu libero, vehicula tempus ultrices a, placerat sit amet tortor. Sed dictum id nulla commodo mattis. Aliquam mollis, nunc eu tristique faucibus, purus lacus tincidunt nulla, ac pretium lorem nunc ut enim. Curabitur eget mattis nisl, vitae sodales augue. Nam felis massa, bibendum sit amet nulla vel, vulputate rutrum lacus. Aenean convallis odio pharetra nulla mattis consequat.",
+    "text": "Found a bug, have a feature request, or need help? Use the GitHub issue tracker.\n\nGo to github.com/cityresilience/city-scan/issues\nClick New issue\nDescribe the problem or request clearly — include steps to reproduce for bugs, and the city name / scan ID if relevant\nAssign the issue to yourself or a relevant team member",
     "crumbs": [
       "Collaborating",
       "<span class='chapter-number'>21</span>  <span class='chapter-title'>Reporting Issues</span>"
     ]
   },
   {
-    "objectID": "contributing.html",
-    "href": "contributing.html",
-    "title": "22  Contributing",
-    "section": "",
-    "text": "22.1 Git Branching System\nWe welcome contributions to City Scan — from new data layers to documentation improvements.\nThis document explains how to add new analytical modules to the tasks framework and integrate them into the pipeline.\nThis project follows a modular, reproducible, and readable design philosophy. Each task module represents one analytical domain (e.g. air quality, population, hazard, etc.).\nBefore you start, let’s ensure we are on the same page on the branching system. This is to avoid pushing unstable updates to main.",
-    "crumbs": [
-      "Collaborating",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Contributing</span>"
-    ]
-  },
-  {
-    "objectID": "contributing.html#git-branching-system",
-    "href": "contributing.html#git-branching-system",
-    "title": "22  Contributing",
-    "section": "",
-    "text": "22.1.1 Our Branching Model\nmain          → stable / production-like\n  │\n  └── new_structure   → This is where our initiative lives\n         │\n         ├── new_structure_alice\n         ├── new_structure_bob\n         └── new_structure_charlie\nNo one touches main directly.\nNo one pushes to new_structure without review.\n\n\n\n22.1.2 What Contributors Do\n\nStep 1 — Sync with remote\ngit fetch origin\ngit checkout new_structure\ngit pull\n\n\nStep 2 — Create their personal branch\ngit checkout -b new_structure_alice\nNaming convention:\nnew_structure_&lt;name&gt;\n\n\n\nStep 3 — Work normally\nWhen you make updates to your code, commit locally:\ngit add .\ngit commit -m \"Implement accessibility data parser\"\n\n\nStep 4 — Push their branch\ngit push -u origin new_structure_alice\n\n\nStep 5 — Open a Pull Request\nOn GitHub / GitLab:\nFROM: new_structure_alice\nTO:   new_structure\nDaniel will review your code.\n\n\n\n\n22.1.3 Safety Rules\n\n\n\nRule\nWhy\n\n\n\n\nNo direct commits to main\nPrevent breaking prod\n\n\nNo direct commits to new_structure\nForces review\n\n\nAlways branch from new_structure\nPrevents divergence\n\n\nSmall PRs\nEasier review\n\n\nOne feature per branch\nNo tangled work",
-    "crumbs": [
-      "Collaborating",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Contributing</span>"
-    ]
-  },
-  {
-    "objectID": "contributing.html#task-architecture",
-    "href": "contributing.html#task-architecture",
-    "title": "22  Contributing",
-    "section": "22.2 Task Architecture",
-    "text": "22.2 Task Architecture\nThe idea is to transfer what previously live in backend/ folder into their new house: tasks/ folder. Each task module must follow the standard structure:\ntasks/\n└── &lt;module_name&gt;/\n    ├── __init__.py\n    ├── datacollection.py\n    ├── dataanalysis.py\n    └── datavisualization.py\nExample:\ntasks/air_quality/\nReference implementation: tasks/air_quality\n\n22.2.1 File Responsibilities\n\n\n\n\n\n\n\nFile\nResponsibility\n\n\n\n\ndatacollection.py\nDownload / load raw data, either via cloud storage, API, direct download, etc. & clip to AOI\n\n\ndataanalysis.py\nPerform numerical/statistical/spatial analysis\n\n\ndatavisualization.py\nGenerate maps & plots, not as a final polished product, but as an exploratory data analysis effort. Later, we will polish more in frontend.\n\n\n__init__.py\nModule registration",
-    "crumbs": [
-      "Collaborating",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Contributing</span>"
-    ]
-  },
-  {
-    "objectID": "contributing.html#linking-a-new-module-to-__main__.py",
-    "href": "contributing.html#linking-a-new-module-to-__main__.py",
-    "title": "22  Contributing",
-    "section": "22.3 Linking a New Module to __main__.py",
-    "text": "22.3 Linking a New Module to __main__.py\nEach datacollection, dataanlysis, and datavisualization functions are orchestrated from each folder’s tasks/{task_name}/__init__.py. Then, all task modules are orchestrated from tasks/main.py.\nTo integrate a new module:\n\nImport the module’s pipeline functions in __init__.py\nCall them in the execution sequence\n\nThis three-stage pipeline must be preserved:\n\nCollection → Analysis → Visualization",
-    "crumbs": [
-      "Collaborating",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Contributing</span>"
-    ]
-  },
-  {
-    "objectID": "contributing.html#function-design-rules",
-    "href": "contributing.html#function-design-rules",
-    "title": "22  Contributing",
-    "section": "22.4 Function Design Rules",
-    "text": "22.4 Function Design Rules\n\n22.4.1 Required Function Signatures\nAll modules must use these standard arguments:\n\n\n\nParameter\nPurpose\n\n\n\n\ncity_name: str\nCity identifier\n\n\noutput_dir: str\nRoot output directory\n\n\naoi: GeoDataFrame\nArea of interest\n\n\nreturn_* flags\nEnable standalone testing\n\n\n\nThis ensures consistent orchestration.",
-    "crumbs": [
-      "Collaborating",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Contributing</span>"
-    ]
-  },
-  {
-    "objectID": "contributing.html#documentation-style-guide",
-    "href": "contributing.html#documentation-style-guide",
-    "title": "22  Contributing",
-    "section": "22.5 Documentation & Style Guide",
-    "text": "22.5 Documentation & Style Guide\n\n22.5.1 Docstrings\nEvery public function must include a NumPy-style docstring:\ndef compute_stats(...):\n    \"\"\"\n   Summary of what this function is about.\n\n    Parameters\n    ----------\n    what are the inputs to this function\n    ...\n    Returns\n    -------\n    what are the outputs of this function\n    ...\n    \"\"\"\n\n\n22.5.2 Logging\nUse the shared logger:\nfrom utils.log_module import setup_logger\nlogger = setup_logger(__name__)\nNever use print() for operational logging.\n\n\n22.5.3 Error Handling\n\nValidate inputs at the start of each function\nLog failures with logger.error(...)\nReturn None on failure instead of crashing the pipeline\n\n\n\n22.5.4 Modularity & Readability\n\nOne responsibility per function\nNo hidden side effects\nAvoid hard-coded paths — always use output_dir\nFavor explicitness over cleverness",
-    "crumbs": [
-      "Collaborating",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Contributing</span>"
-    ]
-  },
-  {
-    "objectID": "contributing.html#standalone-testing",
-    "href": "contributing.html#standalone-testing",
-    "title": "22  Contributing",
-    "section": "22.6 Standalone Testing",
-    "text": "22.6 Standalone Testing\nEvery file should support standalone execution:\nif __name__ == \"__main__\":\n    # minimal test example\nThis allows rapid local testing without running the full pipeline.",
-    "crumbs": [
-      "Collaborating",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Contributing</span>"
-    ]
-  },
-  {
-    "objectID": "contributing.html#folder-naming-structure",
-    "href": "contributing.html#folder-naming-structure",
-    "title": "22  Contributing",
-    "section": "22.7 Folder Naming & Structure",
-    "text": "22.7 Folder Naming & Structure\nUse snake_case for module names:\nflood_event\nghs_builtup\nelevation\nFollow the standard layout shown in structure.txt .",
-    "crumbs": [
-      "Collaborating",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Contributing</span>"
-    ]
-  },
-  {
-    "objectID": "contributing.html#design-philosophy",
-    "href": "contributing.html#design-philosophy",
-    "title": "22  Contributing",
-    "section": "22.8 Design Philosophy",
-    "text": "22.8 Design Philosophy\nThis framework is designed for:\n\nreproducibility\nscientific transparency\neasy extension\nclear audit trails\n\nEvery contribution should preserve these goals.",
-    "crumbs": [
-      "Collaborating",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Contributing</span>"
-    ]
-  },
-  {
-    "objectID": "sharing-the-guide.html",
-    "href": "sharing-the-guide.html",
-    "title": "23  Sharing the Guide",
-    "section": "",
-    "text": "How to share, publish, and distribute the City Scan Cookbook with your team and stakeholders.\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sagittis posuere ligula sit amet lacinia. Duis dignissim pellentesque magna, rhoncus congue sapien finibus mollis. Ut eu sem laoreet, vehicula ipsum in, convallis erat. Vestibulum magna sem, blandit pulvinar augue sit amet, auctor malesuada sapien. Nullam faucibus leo eget eros hendrerit, non laoreet ipsum lacinia. Curabitur cursus diam elit, non tempus ante volutpat a. Quisque hendrerit blandit purus non fringilla. Integer sit amet elit viverra ante dapibus semper. Vestibulum viverra rutrum enim, at luctus enim posuere eu. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.\nNunc ac dignissim magna. Vestibulum vitae egestas elit. Proin feugiat leo quis ante condimentum, eu ornare mauris feugiat. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Mauris cursus laoreet ex, dignissim bibendum est posuere iaculis. Suspendisse et maximus elit. In fringilla gravida ornare. Aenean id lectus pulvinar, sagittis felis nec, rutrum risus. Nam vel neque eu arcu blandit fringilla et in quam. Aliquam luctus est sit amet vestibulum eleifend. Phasellus elementum sagittis molestie. Proin tempor lorem arcu, at condimentum purus volutpat eu. Fusce et pellentesque ligula. Pellentesque id tellus at erat luctus fringilla. Suspendisse potenti.\nEtiam maximus accumsan gravida. Maecenas at nunc dignissim, euismod enim ac, bibendum ipsum. Maecenas vehicula velit in nisl aliquet ultricies. Nam eget massa interdum, maximus arcu vel, pretium erat. Maecenas sit amet tempor purus, vitae aliquet nunc. Vivamus cursus urna velit, eleifend dictum magna laoreet ut. Duis eu erat mollis, blandit magna id, tincidunt ipsum. Integer massa nibh, commodo eu ex vel, venenatis efficitur ligula. Integer convallis lacus elit, maximus eleifend lacus ornare ac. Vestibulum scelerisque viverra urna id lacinia. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Aenean eget enim at diam bibendum tincidunt eu non purus. Nullam id magna ultrices, sodales metus viverra, tempus turpis.\nDuis ornare ex ac iaculis pretium. Maecenas sagittis odio id erat pharetra, sit amet consectetur quam sollicitudin. Vivamus pharetra quam purus, nec sagittis risus pretium at. Nullam feugiat, turpis ac accumsan interdum, sem tellus blandit neque, id vulputate diam quam semper nisl. Donec sit amet enim at neque porttitor aliquet. Phasellus facilisis nulla eget placerat eleifend. Vestibulum non egestas eros, eget lobortis ipsum. Nulla rutrum massa eget enim aliquam, id porttitor erat luctus. Nunc sagittis quis eros eu sagittis. Pellentesque dictum, erat at pellentesque sollicitudin, justo augue pulvinar metus, quis rutrum est mi nec felis. Vestibulum efficitur mi lorem, at elementum purus tincidunt a. Aliquam finibus enim magna, vitae pellentesque erat faucibus at. Nulla mauris tellus, imperdiet id lobortis et, dignissim condimentum ipsum. Morbi nulla orci, varius at aliquet sed, facilisis id tortor. Donec ut urna nisi.\nAenean placerat luctus tortor vitae molestie. Nulla at aliquet nulla. Sed efficitur tellus orci, sed fringilla lectus laoreet eget. Vivamus maximus quam sit amet arcu dignissim, sed accumsan massa ullamcorper. Sed iaculis tincidunt feugiat. Nulla in est at nunc ultricies dictum ut vitae nunc. Aenean convallis vel diam at malesuada. Suspendisse arcu libero, vehicula tempus ultrices a, placerat sit amet tortor. Sed dictum id nulla commodo mattis. Aliquam mollis, nunc eu tristique faucibus, purus lacus tincidunt nulla, ac pretium lorem nunc ut enim. Curabitur eget mattis nisl, vitae sodales augue. Nam felis massa, bibendum sit amet nulla vel, vulputate rutrum lacus. Aenean convallis odio pharetra nulla mattis consequat.",
-    "crumbs": [
-      "Collaborating",
-      "<span class='chapter-number'>23</span>  <span class='chapter-title'>Sharing the Guide</span>"
-    ]
-  },
-  {
     "objectID": "editing-this-reference.html",
     "href": "editing-this-reference.html",
-    "title": "24  Editing This Reference",
+    "title": "22  Editing This Reference",
     "section": "",
-    "text": "24.1 Prerequisites\nA step-by-step guide for team members who want to update or extend this technical reference. Covers the editing workflow, branch conventions, and how to publish changes to GitHub Pages.",
+    "text": "22.1 Prerequisites\nA step-by-step guide for team members who want to update or extend this technical reference. Covers the editing workflow, branch conventions, and how to publish changes to GitHub Pages.",
     "crumbs": [
       "Collaborating",
-      "<span class='chapter-number'>24</span>  <span class='chapter-title'>Editing This Reference</span>"
+      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Editing This Reference</span>"
     ]
   },
   {
     "objectID": "editing-this-reference.html#prerequisites",
     "href": "editing-this-reference.html#prerequisites",
-    "title": "24  Editing This Reference",
+    "title": "22  Editing This Reference",
     "section": "",
     "text": "Quarto installed (quarto.org)\nGit installed and authenticated with GitHub\nWrite access to the cityresilience/city-scan repository",
     "crumbs": [
       "Collaborating",
-      "<span class='chapter-number'>24</span>  <span class='chapter-title'>Editing This Reference</span>"
+      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Editing This Reference</span>"
     ]
   },
   {
     "objectID": "editing-this-reference.html#repository-structure",
     "href": "editing-this-reference.html#repository-structure",
-    "title": "24  Editing This Reference",
-    "section": "24.2 Repository Structure",
-    "text": "24.2 Repository Structure\nDocumentation lives in the docs/ folder of the main city-scan repository. Each page is a Quarto Markdown file (.qmd):\ncity-scan/\n└── docs/\n    ├── _quarto.yml         # book structure and settings\n    ├── index.qmd           # landing page\n    ├── *.qmd               # one file per chapter\n    ├── references.bib      # bibliography\n    └── image/              # shared images\nThe compiled website is published to the gh-pages branch and served at https://cityresilience.github.io/city-scan/.",
+    "title": "22  Editing This Reference",
+    "section": "22.2 Repository Structure",
+    "text": "22.2 Repository Structure\nDocumentation lives in the docs/ folder of the main city-scan repository. Each page is a Quarto Markdown file (.qmd):\ncity-scan/\n└── docs/\n    ├── _quarto.yml         # book structure and settings\n    ├── index.qmd           # landing page\n    ├── *.qmd               # one file per chapter\n    ├── references.bib      # bibliography\n    └── image/              # shared images\nThe compiled website is published to the gh-pages branch and served at https://cityresilience.github.io/city-scan/.",
     "crumbs": [
       "Collaborating",
-      "<span class='chapter-number'>24</span>  <span class='chapter-title'>Editing This Reference</span>"
+      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Editing This Reference</span>"
     ]
   },
   {
     "objectID": "editing-this-reference.html#editing-workflow",
     "href": "editing-this-reference.html#editing-workflow",
-    "title": "24  Editing This Reference",
-    "section": "24.3 Editing Workflow",
-    "text": "24.3 Editing Workflow\n\n24.3.1 1. Switch to new_docs\nAll documentation edits happen on new_docs — never commit directly to main or gh-pages.\ngit checkout new_docs\ngit pull origin new_docs      # always pull latest before editing\n\n\n24.3.2 2. Edit .qmd files\nOpen the relevant .qmd file in docs/ and edit it. Quarto Markdown is standard Markdown with optional callouts, cross-references, code blocks, and diagrams.\nTo preview changes live in your browser:\ncd docs\nquarto preview\nThis starts a local server (usually at http://localhost:4848) that hot-reloads as you save.\n\n\n24.3.3 3. Add a new page (optional)\n\nCreate a new .qmd file in docs/, e.g. docs/my-new-page.qmd\nStart the file with an H1 heading: # My New Page\nRegister it in docs/_quarto.yml under the appropriate part: section:\n\n- part: \"Collaborating\"\n  chapters:\n    - editing-this-reference.qmd\n    - my-new-page.qmd\n\n\n24.3.4 4. Commit and push to new_docs\n# Stage only docs source files — never stage docs/_book/\ngit add docs/my-new-page.qmd docs/_quarto.yml\ngit commit -m \"docs: add page on &lt;topic&gt;\"\ngit push origin new_docs\n\n\n\n\n\n\nWarning\n\n\n\nDo not stage or commit anything inside docs/_book/. That folder contains compiled site output and is excluded by docs/.gitignore. Committing it to new_docs will bloat the repository with binary files.",
+    "title": "22  Editing This Reference",
+    "section": "22.3 Editing Workflow",
+    "text": "22.3 Editing Workflow\n\n22.3.1 1. Switch to new_docs\nAll documentation edits happen on new_docs — never commit directly to main or gh-pages.\ngit checkout new_docs\ngit pull origin new_docs      # always pull latest before editing\n\n\n22.3.2 2. Edit .qmd files\nOpen the relevant .qmd file in docs/ and edit it. Quarto Markdown is standard Markdown with optional callouts, cross-references, code blocks, and diagrams.\nTo preview changes live in your browser:\ncd docs\nquarto preview\nThis starts a local server (usually at http://localhost:4848) that hot-reloads as you save.\n\n\n22.3.3 3. Add a new page (optional)\n\nCreate a new .qmd file in docs/, e.g. docs/my-new-page.qmd\nStart the file with an H1 heading: # My New Page\nRegister it in docs/_quarto.yml under the appropriate part: section:\n\n- part: \"Collaborating\"\n  chapters:\n    - editing-this-reference.qmd\n    - my-new-page.qmd\n\n\n22.3.4 4. Commit and push to new_docs\n# Stage only docs source files — never stage docs/_book/\ngit add docs/my-new-page.qmd docs/_quarto.yml\ngit commit -m \"docs: add page on &lt;topic&gt;\"\ngit push origin new_docs\n\n\n\n\n\n\nWarning\n\n\n\nDo not stage or commit anything inside docs/_book/. That folder contains compiled site output and is excluded by docs/.gitignore. Committing it to new_docs will bloat the repository with binary files.",
     "crumbs": [
       "Collaborating",
-      "<span class='chapter-number'>24</span>  <span class='chapter-title'>Editing This Reference</span>"
+      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Editing This Reference</span>"
     ]
   },
   {
     "objectID": "editing-this-reference.html#publishing-workflow",
     "href": "editing-this-reference.html#publishing-workflow",
-    "title": "24  Editing This Reference",
-    "section": "24.4 Publishing Workflow",
-    "text": "24.4 Publishing Workflow\nOnce edits are committed to new_docs, publish to GitHub Pages from the docs/ directory:\ncd docs\nquarto publish gh-pages\nQuarto will:\n\nRe-render only changed pages (freeze: true skips unchanged code outputs)\nCommit the compiled site to the local gh-pages branch\nPush gh-pages to origin — GitHub Pages auto-deploys within ~1 minute\n\nWhen prompted:\nUpdate site at https://cityresilience.github.io/city-scan/? (Y/n)\nType Y and press Enter.\n\n\n\n\n\n\nNote\n\n\n\nFirst-time setup on a new machine: If you get an HTTP 400 error during the push step, run this once from the repo root, then re-publish:\ngit config http.postBuffer 524288000\nThis increases the git push buffer to 500 MB, which is needed for the initial upload of all site assets.",
+    "title": "22  Editing This Reference",
+    "section": "22.4 Publishing Workflow",
+    "text": "22.4 Publishing Workflow\nOnce edits are committed to new_docs, publish to GitHub Pages from the docs/ directory:\ncd docs\nquarto publish gh-pages\nQuarto will:\n\nRe-render only changed pages (freeze: true skips unchanged code outputs)\nCommit the compiled site to the local gh-pages branch\nPush gh-pages to origin — GitHub Pages auto-deploys within ~1 minute\n\nWhen prompted:\nUpdate site at https://cityresilience.github.io/city-scan/? (Y/n)\nType Y and press Enter.\n\n\n\n\n\n\nNote\n\n\n\nFirst-time setup on a new machine: If you get an HTTP 400 error during the push step, run this once from the repo root, then re-publish:\ngit config http.postBuffer 524288000\nThis increases the git push buffer to 500 MB, which is needed for the initial upload of all site assets.",
     "crumbs": [
       "Collaborating",
-      "<span class='chapter-number'>24</span>  <span class='chapter-title'>Editing This Reference</span>"
+      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Editing This Reference</span>"
     ]
   },
   {
     "objectID": "editing-this-reference.html#branch-overview",
     "href": "editing-this-reference.html#branch-overview",
-    "title": "24  Editing This Reference",
-    "section": "24.5 Branch Overview",
-    "text": "24.5 Branch Overview\n\n\n\n\n\n\n\n\nBranch\nPurpose\nWho touches it\n\n\n\n\nmain\nStable code and configuration\nMaintainers via PR\n\n\nnew_docs\nDocumentation source (.qmd files)\nEditors directly\n\n\ngh-pages\nCompiled website — managed by Quarto\nNever edit manually",
+    "title": "22  Editing This Reference",
+    "section": "22.5 Branch Overview",
+    "text": "22.5 Branch Overview\n\n\n\n\n\n\n\n\nBranch\nPurpose\nWho touches it\n\n\n\n\nmain\nStable code and configuration\nMaintainers via PR\n\n\nnew_docs\nDocumentation source (.qmd files)\nEditors directly\n\n\ngh-pages\nCompiled website — managed by Quarto\nNever edit manually",
     "crumbs": [
       "Collaborating",
-      "<span class='chapter-number'>24</span>  <span class='chapter-title'>Editing This Reference</span>"
+      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Editing This Reference</span>"
     ]
   },
   {
     "objectID": "editing-this-reference.html#quick-reference",
     "href": "editing-this-reference.html#quick-reference",
-    "title": "24  Editing This Reference",
-    "section": "24.6 Quick Reference",
-    "text": "24.6 Quick Reference\n# Pull latest docs before editing\ngit checkout new_docs && git pull origin new_docs\n\n# Start local preview\ncd docs && quarto preview\n\n# Commit documentation edits (from repo root)\ngit add docs/&lt;changed-files&gt;\ngit commit -m \"docs: &lt;short description&gt;\"\ngit push origin new_docs\n\n# Publish to GitHub Pages (from docs/)\ncd docs && quarto publish gh-pages\n\n\n\n\n\n\nNote\n\n\n\nFor reporting content issues or suggesting structural changes, see Reporting Issues. For contributing to the codebase itself, see Contributing.",
+    "title": "22  Editing This Reference",
+    "section": "22.6 Quick Reference",
+    "text": "22.6 Quick Reference\n# Pull latest docs before editing\ngit checkout new_docs && git pull origin new_docs\n\n# Start local preview\ncd docs && quarto preview\n\n# Commit documentation edits (from repo root)\ngit add docs/&lt;changed-files&gt;\ngit commit -m \"docs: &lt;short description&gt;\"\ngit push origin new_docs\n\n# Publish to GitHub Pages (from docs/)\ncd docs && quarto publish gh-pages\n\n\n\n\n\n\nNote\n\n\n\nFor reporting content issues or suggesting structural changes, see Reporting Issues. For contributing to the codebase itself, see Contributing.",
     "crumbs": [
       "Collaborating",
-      "<span class='chapter-number'>24</span>  <span class='chapter-title'>Editing This Reference</span>"
+      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Editing This Reference</span>"
     ]
   },
   {
