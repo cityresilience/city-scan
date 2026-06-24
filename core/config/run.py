@@ -203,6 +203,8 @@ def run_multicity(multicity_path, args, flags):
         mc.pop('cities', None)
     else:
         cities = mc.pop('cities')
+        for c in cities:
+            c['city_name'] = str(c['city_name']).strip()
 
     shared = dict(mc)
 
