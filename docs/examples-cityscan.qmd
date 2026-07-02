@@ -39,7 +39,7 @@ The final PDF output is compiled and designed via Adobe InDesign and not yet aut
 
 ## Example 3: Interactive HTML website - City, Country
 
-Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.
+*This section is in progress and will be updated.*
 
 
 ::: {.callout-tip}
