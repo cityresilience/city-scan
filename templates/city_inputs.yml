@@ -78,5 +78,5 @@ fwi_last_year: 2021
 
 # land surface temperature parameters
 # dataset available from 2013-03-18
-first_year: 2015
-last_year: 2026
+first_year: 2016
+last_year: 2025
