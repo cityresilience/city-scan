@@ -2,4 +2,4 @@
 
 This case study walks through a complete standard City Scan for Rabat, Morocco, demonstrating the end-to-end workflow and key findings.
 
-{{< lipsum >}}
+*This section is in progress and will be updated.*

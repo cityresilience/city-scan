@@ -2,4 +2,4 @@
 
 *How to add additional dataset collected from other sources*
 
-{{< lipsum 2 >}}
+*This section is in progress and will be updated.*
