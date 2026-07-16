@@ -4,7 +4,7 @@
 if (!exists("aoi")) source(here::here("core/R/setup.R"))
 aoi <- aoi %>% st_as_sf() %>% st_transform("EPSG:4326")
 
-cyclone_archive_file <- paste0("/vsigs/city-scan-global-data/IBTrACS-tropical-cyclones/IBTrACS.since1980.list.v04r00.lines.shp")
+cyclone_archive_file <- "/vsigs/city-scan-global-public/cyclones/IBTrACS_since1980_list_v04r00_lines.fgb"
 
 cyclones_near <- tryCatch({
   cyclones <- read_sf(cyclone_archive_file) %>%

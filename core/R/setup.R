@@ -58,8 +58,8 @@ if (!dir.exists(fgb_dir)) dir.create(fgb_dir, recursive = T)
 if (!dir.exists(styled_maps_dir)) dir.create(styled_maps_dir, recursive = T)
 if (!dir.exists(charts_dir)) dir.create(charts_dir, recursive = T)
 
-# If USE GCS, authenticate and use gcs-overrides
-message(paste('USE GCS:', USE_GCS))
+# If USE_GCS, authenticate and use gcs-overrides
+message(paste('USE_GCS:', USE_GCS))
 
 message("spatial_dir: ", spatial_dir)
 message("spatial files count: ", length(list.files(spatial_dir)))
@@ -134,13 +134,13 @@ if (packageVersion("ggplot2") < "4.0.0") {
 
 
 # 2B. Setting up GCS ----------------------------------------------------------
-if(USE_GCS) { 
+# if(USE_GCS) { 
   
   source(here("core/R/gcs-auth.R"))
 
-  } else  {
+  # } else  {
   # Paths already absolute via here() — no reassignment needed
-}
+# }
 
 # setup directories for global data path
 source(here("core/R/global-data-paths.R"))
