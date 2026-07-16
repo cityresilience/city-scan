@@ -35,23 +35,27 @@ message("adc_path: ", adc_path)
 message("adc_path exists: ", file.exists(adc_path))
 
 # If USE_GCS is true -> Authenticate & override file reading functions
-if (USE_GCS && file.exists(adc_path) ){
+if (file.exists(adc_path)) {
   message("\nAuthenticating to GCS...")
   Sys.setenv(GOOGLE_APPLICATION_CREDENTIALS = adc_path, GCS_AUTH_FILE = adc_path)
   tryCatch({
-      gcs_auth(token = gargle::credentials_app_default(scopes = "https://www.googleapis.com/auth/cloud-platform"))
-      message("About to source gcs-overrides.R...")
-      source(here("core/R/gcs-overrides.R"))
-
-      message("GCS authentication successful - override functions loaded")
-
-        }, error = function(e) {
-          USE_GCS <- FALSE
-          message("GCS authentication failed: ", e$message)
-          message("Falling back to using local files.")
-    })
+    gcs_auth(token = gargle::credentials_app_default(scopes = "https://www.googleapis.com/auth/cloud-platform"))
+    message("GCS authentication successful")
+  }, error = function(e) {
+    if (USE_GCS) {
+      USE_GCS <- FALSE
+      message("GCS authentication failed: ", e$message)
+      message("Falling back to using local files.")
+    } else {
+      message("GCS authentication failed; ", e$message)
+      message("Scan is already set to use local files (USE_GCS=FALSE)")
+    }})
+  if (USE_GCS) {
+    message("About to source gcs-overrides.R...")
+    source(here("core/R/gcs-overrides.R"))
+  }
 } else {
   message("\nUsing local files for data input.")
   if (!USE_GCS) message("Reason: USE_GCS is FALSE")
-  if (!file.exists(adc_path)) message("Reason: adc_path does not exist")
+  if (USE_GCS) message("Reason: adc_path does not exist")
 }
