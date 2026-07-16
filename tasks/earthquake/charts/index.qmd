@@ -92,7 +92,7 @@ if (is.null(eq) || nrow(eq) == 0) print_text(paste_bold('No earthquake data avai
       # NCEI rows: 4-line label with damage + fatalities. USGS rows: 2-line.
       fatalities = if_else(
         source == "NCEI" & !is.na(deaths),
-        paste(scales::label_comma()(deaths), "fatalities") %>%
+        paste(scales::label_comma()(as.numeric(deaths)), "fatalities") %>%
           str_replace_all(c("^1 fatalities$" = "1 fatality")),
         ""),
       damage = if_else(
