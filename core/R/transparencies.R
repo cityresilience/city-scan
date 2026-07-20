@@ -217,43 +217,72 @@ packets$sample_flood <-
 message("Assembling first legend column...")
 
 # Create plot with all legends
-(
+leg1 <-
   ggplot() +
-    packets$forest + guides(fill = guide_legend(order = 1, theme = theme(legend.title = element_blank(), legend.text = element_text(hjust = 0))), color = guide_legend(order = 1, theme = theme(legend.text = element_text(hjust = 0)))) +
-    packets$deforest + guides(fill = guide_colorsteps(order = 2)) + guides(color = guide_colorsteps(order = 2)) +
-    packets$vegetation + guides(fill = guide_legend(order = 3)) + guides(color = guide_legend(order = 3)) +
-    packets$sample_flood + guides(fill = guide_legend(order = 4)) + guides(color = guide_legend(order = 4)) +
-    packets$landslide + guides(fill = guide_legend(order = 5)) + guides(color = guide_legend(order = 5)) +
+    packets$forest +
+    packets$deforest +
+    packets$vegetation +
+    packets$sample_flood +
+    packets$landslide +
+    packets$summer_lst +
+    packets$school_points +
+    packets$health_points +
     theme(
       panel.background = element_rect(fill = "white"),
       legend.box.margin = margin(0, 0, 0, 0, unit = "pt"),
       legend.box.spacing = unit(0, "pt"),
       legend.justification = c("left", "top"))
-  ) %>%
+
+map(leg1$scales$scales, function(s) tibble(name = s$name, aes = s$aesthetics[[1]])) %>% bind_rows()
+
+# Specify guides for each legend and put in order (manual)
+leg1$scales$scales[[1]]$guide <- guide_legend(    order = 1, theme = theme(legend.text = element_text(hjust = 0), legend.title = element_blank()))
+leg1$scales$scales[[2]]$guide <- guide_colorsteps(order = 2, theme = theme(legend.text = element_text(hjust = 0)),                                 title = "Year of deforestation<br>", available_aes = c("fill_ggnewscale_3", "colour_ggnewscale_3"))
+leg1$scales$scales[[3]]$guide <- guide_legend(    order = 3, theme = theme(legend.text = element_text(hjust = 0)),                                 title = "Vegetation (NDVI)<br>")
+leg1$scales$scales[[4]]$guide <- guide_legend(    order = 4, theme = theme(legend.text = element_text(hjust = 0)))
+leg1$scales$scales[[5]]$guide <- guide_legend(    order = 5, theme = theme(legend.text = element_text(hjust = 0)))
+leg1$scales$scales[[6]]$guide <- guide_colourbar( order = 6, theme = theme(legend.text = element_text(hjust = 0)),                                                                      available_aes = c("fill_ggnewscale_7"))
+leg1$scales$scales[[7]]$guide <- guide_legend(    order = 7, theme = theme(legend.text = element_text(hjust = 0), legend.title = element_blank()))
+leg1$scales$scales[[8]]$guide <- guide_legend(    order = 8, theme = theme(legend.text = element_text(hjust = 0), legend.title = element_blank()))
+
+leg1 %>%
   get_plot_component("guide-box-right") %>%
   ggsave(
     filename = file.path(transparencies_dir, glue("legend-col1.png")),
-    height = map_height + 1, width = 2.3, dpi = 300)
+    height = map_height + 2, width = 2.3, dpi = 300, bg = "white")
 
 # Second column
 message("Assembling second legend column...")
  
 # Create plot with all legends
-( 
-  ggplot() + 
-    packets$population + guides(fill = guide_colorsteps(order = 3)) + guides(color = guide_colorsteps(order = 3)) +
-    packets$economic_activity + guides(fill = guide_colorsteps(order = 4)) + guides(color = guide_colorsteps(order = 2)) +
-    packets$school_points +
-      guides(color = guide_legend(order = 5, theme = theme(legend.text = element_text(hjust = 0)))) +
-    packets$health_points + guides(color = guide_legend(order = 6, theme = theme(legend.text = element_text(hjust = 0)))) +
-    packets$ghsl + guides(fill = guide_legend(order = 7, theme = theme(legend.text = element_text(hjust = 0))), color = guide_legend(order = 7, theme = theme(legend.text = element_text(hjust = 0)))) +
+leg2_order <- c(
+  "population",
+  "economic_activity",
+  "gdp_combined",
+  "wsf_harmonized",
+  "roads")
+
+leg2 <- ggplot() +
+  packets[leg2_order] +
     theme(
       panel.background = element_rect(fill = "white"),
       legend.box.margin = margin(0, 0, 0, 0, unit = "pt"),
       legend.box.spacing = unit(0, "pt"),
       legend.justification = c("left", "top"))
-  ) %>%
+
+map(leg2$scales$scales, function(s) tibble(name = s$name, aes = s$aesthetics[[1]])) %>% bind_rows()
+
+# Specify guides for each legend and put in order (manual)
+leg2$scales$scales[[1]]$guide <- guide_colorsteps(order = 1, theme = theme(legend.text = element_text(hjust = 1)), title = "People per 10,000 m<sup>2</sup>", available_aes = c("fill_ggnewscale_2", "colour_ggnewscale_2"), )
+leg2$scales$scales[[2]]$guide <- guide_colorsteps(order = 2, theme = theme(legend.text = element_text(hjust = 1)),                                            available_aes = c("fill_ggnewscale_3", "colour_ggnewscale_3"), )
+leg2$scales$scales[[3]]$guide <- guide_colorsteps(order = 3, theme = theme(legend.text = element_text(hjust = 1)),                                            available_aes = c("fill_ggnewscale_4", "colour_ggnewscale_4"), )
+leg2$scales$scales[[4]]$guide <- guide_legend(    order = 6, theme = theme(legend.text = element_text(hjust = 1)), title = "Era of urban expansion")
+leg2$scales$scales[[5]]$guide <- guide_colorsteps(order = 7, theme = theme(legend.text = element_text(hjust = 0)),                                            available_aes = c("colour"),                                   )
+leg2$scales$scales[[6]]$guide <- guide_legend(    order = 8, theme = theme(legend.text = element_text(hjust = 0)), title = "Road type")
+
+# Save legend
+leg2 %>%
   get_plot_component("guide-box-right") %>%
   ggsave(
     filename = file.path(transparencies_dir, glue("legend-col2.png")),
-    height = map_height + 1, width = 2.3, dpi = 300)
+    height = map_height + 2, width = 2.3, dpi = 300, bg = "white")
