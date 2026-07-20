@@ -114,7 +114,7 @@ plot_static_layer <- function(
   } else { baseplot + ggnewscale::new_scale_fill() }
   p <- baseplot +
     layer + 
-    annotation_north_arrow(style = north_arrow_minimal, location = "br", height = unit(1, "cm")) +
+    annotation_north_arrow(style = north_arrow_fancy_orienteering, which_north = "true", location = "br", height = unit(1, "cm")) +
     annotation_scale(style = "ticks", aes(unit_category = "metric", width_hint = 0.33), height = unit(0.25, "cm")) +        
     theme_custom()
   }
@@ -250,7 +250,29 @@ aspect_buffer <- function(x, aspect_ratio, buffer_percent = 0, to_crs = "epsg:38
   project(new_bounds, y = from_crs)
 }
 
+get_angle <- function(crds, positive = T) {
+  dx <- diff(crds[,1])
+  dy <- diff(crds[,2])
+  angle <- atan2(dy, dx) * 180 / pi
+  if (positive) angle <- ifelse(angle < 0, angle + 180, angle)
+  return(angle)
+}
 
+rotate_crs_to_short_axis <- function(x) {
+  rect_ll <- hull(project(x, "epsg:4326"), "rectangle")
+  ctr <- crds(centroids(rect_ll))
+  lon0 <- ctr[1,1]
+  lat0 <- ctr[1,2]
+
+  alpha <- 90 - get_angle(crds(width(rect_ll, as.lines = T)))
+
+  crs_rot <- paste0(
+    "+proj=omerc +lat_0=", lat0,
+    " +lonc=", lon0,
+    " +alpha=", alpha,
+    " +gamma=0 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs"
+  )
+}
 
 grow_extent <- \(x, amount) {
   # Given a SpatExtent object, grow (or shrink) it by a given multiplier

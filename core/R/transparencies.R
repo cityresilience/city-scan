@@ -28,14 +28,19 @@ source(here("core/R/pre-mapping.R"), local = T)
 # layer_params <- read_yaml(layer_params_file)
 
 # Define map extent and zoom level adjustment
-static_map_bounds <- aspect_buffer(aoi, aspect_ratio, buffer_percent = 0.05)
+
+# Rotate CRS to maximize AOI space in map frame
+crs_rot <- rotate_crs_to_short_axis(aoi)
+
+# static_map_bounds <- aspect_buffer(aoi, aspect_ratio, buffer_percent = 0.05)
+static_map_bounds <- aspect_buffer(aoi, aspect_ratio, buffer_percent = 0.05, to_crs = crs_rot, keep_crs = F)
 zoom_adjustment <- 1
 
 # Custom themes
 theme_title <- \(...) theme(plot.title = element_text(size = 20, margin = margin(6, 0, 3.5, 40)), ...)
 
 # Static maps
-
+message("Creating standard maps...")
 # Initiate plots list ----------------------------------------------------------
 plots <- list()
 packets <- list()
@@ -97,7 +102,7 @@ unlist(lapply(layer_params, \(x) x$fuzzy_string)) %>%
   }) %>% unlist() -> plot_log
 
 # Non-standard static plots ----------------------------------------------------
-
+message("Creating non-standard maps...")
 source(here("core/R/map-isochrones.R"), local = T) # Could be standard if layers.yml included baseplot # nolint: line_length_linter.
 source(here("core/R/map-elevation.R"), local = T) # Could be standard if we wrote city-specific breakpoints to layers.yml
 if ("zoom" %in% names(plots$elevation$layers[[2]]$mapping)) {
@@ -107,6 +112,7 @@ source(here("core/R/map-deforestation.R"), local = T) # Could be standard if lay
 source(here("core/R/map-historical-burnt-area.R"), local = T)
 # plots$infrastructure <- plots$infrastructure + theme(legend.text = element_markdown())
 
+message("Adjusting plots for use as transparencies...")
 if (!is.null(plots$school_proximity)) plots$school_proximity <- plots$school_proximity +
   labs(title = paste(c(
     layer_params[["school_zones"]]$title,
@@ -123,14 +129,35 @@ if (!is.null(plots$roads)) plots$roads <- plots$roads +
     layer_params[["roads"]]$stroke$title_fr),
     collapse = "   /   "))
 
-# Remove grey background, add titles, remove scale bar and north arrow
+# Rotate, remove grey background, add titles, remove scale bar and north arrow
 for (name in names(plots)) {
   if (name != "scale_bar") {
-  plots[[name]]$layers <- plots[[name]]$layers %>%
-    discard(\(x) inherits(x$geom, c("GeomNorthArrow", "GeomScaleBar")))
+    # Remove scale bar and north arrow
+    plots[[name]]$layers <- plots[[name]]$layers %>%
+      discard(\(x) inherits(x$geom, c("GeomNorthArrow", "GeomScaleBar")))
+    # Draw AOI on all maps
+    plots[[name]] <- plots[[name]] +
+      geom_spatvector(data = aoi, fill = NA, linewidth = 0.4)
   }
+  # Rotate maps to maximize AOI space in map frame (see crs_rot above)
+  plots[[name]] <- plots[[name]] +
+    coord_sf(
+      crs = sf::st_crs(crs_rot),
+      default_crs = sf::st_crs(crs_rot),
+      xlim = ext(static_map_bounds)[1:2] %>% { (. - mean(.)) * 1 + mean(.)},
+      ylim = ext(static_map_bounds)[3:4] %>% { (. - mean(.)) * 1 + mean(.)},
+      expand = F
+      )
   if (name == "vector") next
   if (name == "aerial") next
+  # Remove grey background
+  plots[[name]] <- plots[[name]] +
+    theme(
+      panel.background = element_rect(fill = "white"),
+      legend.box.margin = margin(0, 0, 60, 12, unit = "pt")
+      ) +
+    theme_title()
+  if (name == "aoi") next
   title <- paste(c(
       layer_params[[name]]$title,
       layer_params[[name]]$title_fr),
@@ -139,15 +166,10 @@ for (name in names(plots)) {
     plots[[name]] <- plots[[name]] +
       labs(title = title)
   }
-  plots[[name]] <- plots[[name]] +
-    theme(
-      panel.background = element_rect(fill = "white"),
-      legend.box.margin = margin(0, 0, 60, 12, unit = "pt")
-      ) +
-    theme_title()
 }
 
 # Save plots -------------------------------------------------------------------
+message("Saving maps...")
 transparencies_dir <- file.path(output_dir, "transparent-maps")
 if (!dir.exists(transparencies_dir)) dir.create(transparencies_dir)
 plots %>% 
@@ -158,7 +180,7 @@ plots %>%
 })
 
 # Save columns of legends by themselves ----------------------------------------
-
+message("Creating legends...")
 # First, create fake flood plot that combines fluvial, pluvial, and coastal flood legend titles
 # This would be quicker if we didn't use actual flood data, but works fine
 flood_types <- c("fluvial", "pluvial", "coastal")
@@ -174,7 +196,9 @@ Probabilité d'un événement d'inondation de 15 centimètres ou plus dans une z
 }
 
 # First column
-print("Starting first legend column")
+message("Assembling first legend column...")
+
+# Create plot with all legends
 (
   ggplot() +
     packets$forest + guides(fill = guide_legend(order = 1, theme = theme(legend.title = element_blank(), legend.text = element_text(hjust = 0))), color = guide_legend(order = 1, theme = theme(legend.text = element_text(hjust = 0)))) +
@@ -194,7 +218,9 @@ print("Starting first legend column")
     height = map_height + 1, width = 2.3, dpi = 300)
 
 # Second column
-print("Starting second legend column")
+message("Assembling second legend column...")
+ 
+# Create plot with all legends
 ( 
   ggplot() + 
     packets$population + guides(fill = guide_colorsteps(order = 3)) + guides(color = guide_colorsteps(order = 3)) +
