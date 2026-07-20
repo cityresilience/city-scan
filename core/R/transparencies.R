@@ -90,7 +90,28 @@ unlist(lapply(layer_params, \(x) x$fuzzy_string)) %>%
     tryCatch_named(yaml_key, {
       file_path <- fuzzy_read(spatial_dir, fuzzy_string, FUN = paste)
       if (is.na(file_path)) stop(glue("File {file_path} does not exist"))
+      variables_to_use <- c(
+        layer_params[[yaml_key]]$data_variable,
+        layer_params[[yaml_key]]$stroke$variable,
+        layer_params[[yaml_key]]$weight$variable)  %||% 1
       data <- fuzzy_read(spatial_dir, fuzzy_string)
+      data <- aggregate_if_too_fine(data, threshold = 5e5, fun = "modal")
+      data <- vectorize_if_coarse(select(data, any_of(variables_to_use)), 70000)
+      # Can disregard following, unless have other reasons to use. Instead, made forest use bins: 1
+      # # Check if data is a SpatRaster with all NA values; only causes problems for factor data as we drop the unused factors
+      # if (exists_and_true(layer_params[[yaml_key]]$factor) && inherits(data, "SpatRaster") && all(is.na(data[,,variables_to_use]))) {
+      #   file_path <- fuzzy_read(file.path(spatial_dir, "fake"), fuzzy_string, FUN = paste)
+      #   data <- fuzzy_read(file.path(spatial_dir, "fake"), fuzzy_string)
+      #   if (inherits(data, "SpatRaster") && all(is.na(data[,,variables_to_use]))) {
+      #     warning("No valid data found even in fake folder. Legend will not be created.")
+      #   }
+      # }
+      if (length(variables_to_use) == 1) data <- data %>%
+        select(all_of(variables_to_use))
+      if (nrow(data) == 0) {
+        message(paste("No data for:", yaml_key))
+        return(NULL)
+      }
       if (inherits(data, "SpatRaster")) data <- vectorize_if_coarse(data)
       titles <- unlist(layer_params[[yaml_key]][c("title", "title_fr")])
       subtitles <- unlist(layer_params[[yaml_key]][c("subtitle", "subtitle_fr")])
