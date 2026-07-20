@@ -1,6 +1,6 @@
 # Generating City Scan maps for transparencies
 
-if ("frontend" %in% list.files()) setwd("frontend")
+if (dir.exists("frontend")) setwd("frontend")
 
 # This file is currently set to use layers-with-french.yml instead of layers.yml.
 # Change in R/setup.R
@@ -24,8 +24,8 @@ map_portions <- c(map_width, 4.06) # First number is map width, second is legend
 languages <- "english"
 
 # Load libraries and pre-process rasters
-source(here("core/R/setup.R"), local = T)
-source(here("core/R/pre-mapping.R"), local = T)
+source(here::here("core/R/setup.R"), local = T)
+source(here::here("core/R/pre-mapping.R"), local = T)
 
 # If you want to change the layers.yml file, change it here
 # layer_params_file <- 'source/layers-uzbek.yml' # Also used by fns.R
@@ -119,7 +119,7 @@ unlist(lapply(layer_params, \(x) x$fuzzy_string)) %>%
         title = paste(titles, collapse = "<br>"),
         subtitle = paste(subtitles, collapse = "<br>"),
         data = data, yaml_key = yaml_key, zoom_adj = zoom_adjustment,
-        packet = T, plot_aoi = T, plot_wards = !is.null(wards)) +
+        packet = T, plot_aoi = F, plot_wards = !is.null(wards)) +
         labs(title = paste(titles, collapse = "   /   ")) +
         theme_title()
       packets[[yaml_key]] <<- packet
@@ -213,12 +213,14 @@ if (!is.null(plots$roads)) plots$roads <- plots$roads +
 message("Saving maps...")
 transparencies_dir <- file.path(output_dir, "transparent-maps")
 if (!dir.exists(transparencies_dir)) dir.create(transparencies_dir)
+plots %>%
   discard_at(fake_layers %||% "") %>%
   walk2(names(.), \(plot, name) {
-  # if (name != "aoi") return(NULL)
+  lap_start <- Sys.time()
+  message(glue::glue("Starting {name} at {lap_start}..."))
   save_plot(plot, filename = glue("{name}.png"), directory = transparencies_dir,
     map_height = map_height + .3, map_width = map_width, dpi = 200, rel_widths = map_portions)
-})
+  })
 
 # Save columns of legends by themselves ----------------------------------------
 message("Creating legends...")

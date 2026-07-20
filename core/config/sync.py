@@ -44,7 +44,7 @@ def sync_project_files(city_root, sync_targets=None, sync_tasks=None):
         print("  [o] Override everything (city inputs are not affected)")
         print("  [k] Keep as-is (skip syncing)")
         print("  [a] Abort")
-        choice = input("  Choose [t/o/a/k]: ").strip().lower()
+        choice = input("  Choose [t/o/k/a]: ").strip().lower()
 
         if choice == 'a':
             logger.info("Aborted by user.")
