@@ -19,6 +19,10 @@ map_height <- 9.7
 aspect_ratio <- map_width / map_height
 map_portions <- c(map_width, 4.06) # First number is map width, second is legend width
 
+# Specify, as vector, the languages to use for titles and subtitles.
+# Currently, options are "english" and "french"
+languages <- "english"
+
 # Load libraries and pre-process rasters
 source(here("core/R/setup.R"), local = T)
 source(here("core/R/pre-mapping.R"), local = T)
@@ -51,9 +55,9 @@ plots$aoi <- plot_static_layer(aoi_only = T, plot_aoi = T, plot_wards = !is.null
   zoom_adj = zoom_adjustment,
   aoi_stroke = list(color = "black", linewidth = 0.4)) +
   labs(title = paste(c(
-          "Area of interest",
-          "Zone d'intérêt"),
-          collapse = "   /   ")) +
+    english = "Area of interest",
+    french = "Zone d'intérêt")[languages],
+    collapse = "   /   ")) +
   theme_title()
 
 plots$vector <- plot_static_layer(aoi_only = T, plot_aoi = F, plot_wards = !is.null(wards),
@@ -113,22 +117,6 @@ source(here("core/R/map-historical-burnt-area.R"), local = T)
 # plots$infrastructure <- plots$infrastructure + theme(legend.text = element_markdown())
 
 message("Adjusting plots for use as transparencies...")
-if (!is.null(plots$school_proximity)) plots$school_proximity <- plots$school_proximity +
-  labs(title = paste(c(
-    layer_params[["school_zones"]]$title,
-    layer_params[["school_zones"]]$title_fr),
-    collapse = "   /   "))
-if (!is.null(plots$health_proximity)) plots$health_proximity <- plots$health_proximity +
-  labs(title = paste(c(
-    layer_params[["health_zones"]]$title,
-    layer_params[["health_zones"]]$title_fr),
-    collapse = "   /   "))
-if (!is.null(plots$roads)) plots$roads <- plots$roads +
-  labs(title = paste(c(
-    layer_params[["roads"]]$stroke$title,
-    layer_params[["roads"]]$stroke$title_fr),
-    collapse = "   /   "))
-
 # Rotate, remove grey background, add titles, remove scale bar and north arrow
 for (name in names(plots)) {
   if (name != "scale_bar") {
@@ -159,14 +147,30 @@ for (name in names(plots)) {
     theme_title()
   if (name == "aoi") next
   title <- paste(c(
-      layer_params[[name]]$title,
-      layer_params[[name]]$title_fr),
+      english = layer_params[[name]]$title,
+      french =layer_params[[name]]$title_fr)[languages],
       collapse = "   /   ")
   if (length(title) > 0) {
     plots[[name]] <- plots[[name]] +
       labs(title = title)
   }
 }
+
+if (!is.null(plots$school_proximity)) plots$school_proximity <- plots$school_proximity +
+  labs(title = paste(c(
+    english = layer_params[["school_zones"]]$title,
+    french = layer_params[["school_zones"]]$title_fr)[languages],
+    collapse = "   /   "))
+if (!is.null(plots$health_proximity)) plots$health_proximity <- plots$health_proximity +
+  labs(title = paste(c(
+    english = layer_params[["health_zones"]]$title,
+    french = layer_params[["health_zones"]]$title_fr)[languages],
+    collapse = "   /   "))
+if (!is.null(plots$roads)) plots$roads <- plots$roads +
+  labs(title = paste(c(
+    english = layer_params[["roads"]]$stroke$title,
+    french = layer_params[["roads"]]$stroke$title_fr)[languages],
+    collapse = "   /   "))
 
 # Save plots -------------------------------------------------------------------
 message("Saving maps...")
@@ -189,10 +193,12 @@ packets$sample_flood <- if (is.na(found_flood_type)) { NULL } else {
   plot_static_layer(
     fuzzy_read(spatial_dir, layer_params[[found_flood_type]]$fuzzy_string),
     found_flood_type, packet = T,
-    title = "Flood probability
-Probabilité d'inondation",
-    subtitle = "Probability of a flood event of 15 centimeters or more within a 3-arc-second area in a given year
-Probabilité d'un événement d'inondation de 15 centimètres ou plus dans une zone de 3 secondes d'arc au cours d’une année donnée")
+    title = paste(collapse = "\n", c(
+      english = "Flood Return Period",
+      french = "Période de retour des inondations")[languages]),
+    subtitle = paste(collapse = "\n", c(
+      english = "15-cm or deeper flood event (global model)",
+      french = "Probabilité d'un événement d'inondation de 15 centimètres ou plus dans une zone de 3 secondes d'arc au cours d’une année donnée")[languages]))
 }
 
 # First column
