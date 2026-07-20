@@ -34,20 +34,12 @@ lines <- c(
   "source(here::here(\"core/R/fns.R\"))",
   "dir.create(here(\"03-render-output\", \"plots\"), recursive = TRUE, showWarnings = FALSE)",
   "knitr::opts_chunk$set(error = TRUE)",
-  "source(here::here(\"core/R/benchmark-assembly.R\"))",
   "```",
   ""
 )
 
-# Read basic_info.yml for conditional sections
-basic_info_path <- list.files(file.path(city_root, "02-process-output", "tabular"), pattern = "basic_info\\.yml$", full.names = TRUE)
-basic_info <- if (length(basic_info_path) > 0) read_yaml(basic_info_path[1]) else list()
-
 n_tasks <- 0
 for (task in order$sections) {
-  # Skip oxford if city is not in Oxford Economics
-  if (task == "oxford" && !isTRUE(basic_info$in_oxford)) next
-
   # Check charts/index.qmd exists for this task
   task_qmd <- file.path(city_root, "tasks", task, "charts", "index.qmd")
   if (!file.exists(task_qmd)) next

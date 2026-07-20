@@ -16,14 +16,9 @@ execute:
 if (file.exists("_quarto.yml")) here::i_am("tasks/oxford/charts/index.qmd")
 if (!exists("aoi")) source(here::here("core/R/setup.R"))
 
-# Load benchmark-helper for in_oxford flag
-source(here::here("core/R/benchmark-helper.R"))
-
-# Fallback: check if Oxford CSVs exist (in case in_oxford flag is stale)
-if (!exists("in_oxford") || !in_oxford) {
-  oxford_csvs <- list.files(tabular_dir, pattern = "_oxford_", full.names = FALSE)
-  in_oxford <- length(oxford_csvs) > 0
-}
+# Self-contained: render Oxford charts only if the oxford task produced CSVs
+oxford_csvs <- list.files(tabular_dir, pattern = "_oxford_", full.names = FALSE)
+in_oxford <- length(oxford_csvs) > 0
 
 hues <- c("#000000", "dark grey") %>% setNames(c(city, "Benchmark - Oxford"))
 

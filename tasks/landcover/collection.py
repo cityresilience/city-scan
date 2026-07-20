@@ -34,6 +34,7 @@ def datacollection(
 
     from rasterio.enums import Resampling
     lc_rio = fns.tiled_collection(lc, aoi, scale=10, resampling=Resampling.nearest)
+    lc_rio = lc_rio.rio.clip(aoi.to_crs(lc_rio.rio.crs).geometry, drop=True)
 
     # Guard: snap any residual fractional values to nearest valid ESA WorldCover class.
     valid_codes = np.array([0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95, 100], dtype=np.uint8)

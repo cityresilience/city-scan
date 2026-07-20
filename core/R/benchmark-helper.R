@@ -1,151 +1,120 @@
-# Benchmark city selection + Oxford availability check
-# Sourced by: worldpop/analysis.R, oxford/collection.R
-# Requires: setup.R already sourced (city, country, bm_cities_manual, nearby_countries_string, tabular_dir)
+# Benchmark city selection + Oxford availability — FUNCTION LIBRARY.
+# Pure definitions: sourcing this file runs NOTHING. Callers call the functions
+# and assign the results themselves (in_oxford, bm_cities, ...).
+# Requires helpers from setup.R: fuzzy_read, which_not, glue, %||%
 
-message("\n=== Benchmark city selection ===")
-
-# Always authenticate for global reference data (Oxford CSVs live in GCS regardless of USE_GCS)
-if (!googleAuthR::gar_has_token()) {
-  adc_path <- Find(file.exists, c(
-    Sys.getenv("GOOGLE_APPLICATION_CREDENTIALS"),
-    file.path(Sys.getenv("HOME"), ".config", "gcloud", "application_default_credentials.json")))
-  if (!is.null(adc_path))
-    googleCloudStorageR::gcs_auth(token = gargle::credentials_app_default(
-      scopes = "https://www.googleapis.com/auth/cloud-platform"))
-}
-
-# Download Oxford locations from GCS
-if (!exists("oxford_location_file") || !file.exists(oxford_location_file)) {
+# check_in_oxford() — is the city in Oxford Economics?
+# Returns list(in_oxford, city, oxford_locations):
+#   - in_oxford: logical
+#   - city: the Oxford spelling if matched only via ASCII (else unchanged)
+#   - oxford_locations: the locations table (reused for nearby-city selection)
+check_in_oxford <- function(city, country) {
   oxford_location_file <- tempfile(fileext = ".csv")
-  googleCloudStorageR::gcs_get_object("oxford-economics/oxford-locations.csv", bucket = "city-scan-global-data", saveToDisk = oxford_location_file)
+  googleCloudStorageR::gcs_get_object("oxford-economics/oxford-locations.csv",
+    bucket = "city-scan-global-data", saveToDisk = oxford_location_file)
+  oxford_locations <- read_csv(oxford_location_file, col_types = "c")
+  oxford_locations_in_country <- dplyr::filter(oxford_locations, Country == country)
+
+  # Match with or without diacritics (e.g. "Chisinau" with/without diacritics)
+  strip_diacritics <- function(x) stringi::stri_trans_general(x, "Latin-ASCII")
+  city_ascii <- strip_diacritics(city)
+  oxford_ascii <- strip_diacritics(oxford_locations_in_country$Location)
+  in_oxford <- city_ascii %in% oxford_ascii
+
+  # If matched only via ASCII normalization, return the Oxford spelling
+  if (in_oxford && !(city %in% oxford_locations_in_country$Location)) {
+    city <- oxford_locations_in_country$Location[oxford_ascii == city_ascii][1]
+  }
+
+  list(in_oxford = in_oxford, city = city, oxford_locations = oxford_locations)
 }
 
-# Is city in Oxford Economics? --------------------------------------------------------------
-oxford_locations <- read_csv(oxford_location_file, col_types = "c")
-oxford_locations_in_country <- dplyr::filter(oxford_locations, Country == country)
-
-# Match with or without diacritics (e.g. "Chișinău" == "Chisinau")
-.strip_diacritics <- function(x) stringi::stri_trans_general(x, "Latin-ASCII")
-city_ascii <- .strip_diacritics(city)
-oxford_ascii <- .strip_diacritics(oxford_locations_in_country$Location)
-in_oxford <- city_ascii %in% oxford_ascii
-
-# If city matched only via ASCII normalization, use the Oxford spelling for lookups
-if (in_oxford && !(city %in% oxford_locations_in_country$Location)) {
-  oxford_city_name <- oxford_locations_in_country$Location[oxford_ascii == city_ascii][1]
-  message(glue("Matched '{city}' → Oxford name '{oxford_city_name}'"))
-  city <- oxford_city_name
-}
-
-message(glue("{city} in Oxford Economics: {in_oxford}"))
-
-# Read only population indicator from Oxford for size-matching ---------------------------------
-if (!exists("oxford_file") || !file.exists(oxford_file)) {
+# load_oxford_data() — read the big Oxford Global Cities CSV ONCE.
+# Returns oxford_full (all indicators). Callers derive oxford_pop, economics, etc.
+load_oxford_data <- function() {
   oxford_file <- tempfile(fileext = ".csv")
-  googleCloudStorageR::gcs_get_object("oxford-economics/Oxford Global Cities Data.csv", bucket = "city-scan-global-data", saveToDisk = oxford_file)
-}
-oxford_pop <- tryCatch({
+  googleCloudStorageR::gcs_get_object("oxford-economics/Oxford Global Cities Data.csv",
+    bucket = "city-scan-global-data", saveToDisk = oxford_file)
   read_csv(oxford_file,
     col_types = "cccccccccdddddddddddddddddddddddddddddddddddddddddcllldlcclcc") %>%
-  mutate(Location = case_when(Location == "Lom\u00e9" ~ "Lomé",
-                              Location == "Yaound\u00e9" ~ "Yaoundé",
-                              T ~ Location)) %>%
-  subset(Indicator == "Total population") %>%
-  select(Location, Country, `2021`)
-}, error = function(e) {
-  message(glue("Could not read Oxford data for size-matching: {e$message}"))
-  tibble()
-})
+    mutate(Location = case_when(Location == "Lom\u00e9" ~ "Lomé",
+                                Location == "Yaound\u00e9" ~ "Yaoundé",
+                                T ~ Location))
+}
 
-# Get population estimate for benchmark size-matching ----------------------------------------
-# Need a pop estimate to filter benchmark cities to similar size (±50%)
-pop <- tryCatch({
-  if (in_oxford) {
-    oxford_pop %>%
-      subset(Location == city) %>%
-      pull(`2021`)
-  } else {
-    # Try WorldPop
-    wpop_csv <- fuzzy_read(tabular_dir, "worldpop_2015_2030.csv", read_csv)
-    if (!is.null(wpop_csv) && nrow(wpop_csv) > 0) {
-      wpop_csv %>% slice_max(year, n = 1) %>% pull(population) / 1000  # Oxford is in thousands
-    } else NULL
-  }
-}, error = function(e) NULL)
-
-if (is.null(pop)) message("Warning: could not get population estimate for benchmark size-matching")
-
-# Benchmark countries auto-detect if not specified -------------------------------------------
-if (is.null(nearby_countries_string) || nearby_countries_string == "") {
+# get_nearby_countries() — auto-detect peers' countries from the economic
+# classification (same region + income group). Returns a pipe-string or NULL.
+get_nearby_countries <- function(country) {
   tryCatch({
-    # Load economic classification
     econ_class <- read_csv(here::here("source/countries_economies_classification.csv"))
-
-    # Find focus country's region and income group
     focus_row <- econ_class %>%
       filter(Economy == country | str_detect(Economy, fixed(country)))
+    if (nrow(focus_row) == 0) return(NULL)
 
-    if (nrow(focus_row) > 0) {
-      focus_region <- focus_row$Region[1]
-      focus_income <- focus_row$`Income group`[1]
+    focus_region <- focus_row$Region[1]
+    focus_income <- focus_row$`Income group`[1]
+    similar_countries <- econ_class %>%
+      filter(Region == focus_region, `Income group` == focus_income, Economy != country) %>%
+      pull(Economy)
+    if (length(similar_countries) == 0) return(NULL)
 
-      # Get countries with same region AND income group
-      similar_countries <- econ_class %>%
-        filter(Region == focus_region,
-                `Income group` == focus_income,
-                Economy != country) %>%
-        pull(Economy)
-
-      if (length(similar_countries) > 0) {
-        nearby_countries_string <- paste(tolower(similar_countries), collapse = "|")
-        message(glue("Auto-detected similar countries ({focus_region}, {focus_income}):
-{paste(similar_countries, collapse = ', ')}"))
-      }
-    }
+    paste(tolower(similar_countries), collapse = "|")
   }, error = function(e) {
     message(glue("Could not auto-detect similar countries: {e$message}"))
+    NULL
   })
 }
 
-# Benchmark city selection -------------------------------------------------------------------
-
-nearby_cities <- if (is.null(nearby_countries_string)) NULL else {
-    oxford_locations %>%
-        subset(str_detect(tolower(Country), nearby_countries_string)) %>%
-        subset(Location != Country & !str_detect(Location, "Total")) %>%
-        pull(Location)
+# get_pop_estimate() — main-city population for +/-50% peer size-matching.
+# Oxford 2021 if in_oxford, else latest WorldPop (Oxford is in thousands).
+get_pop_estimate <- function(city, in_oxford, oxford_pop, tabular_dir) {
+  tryCatch({
+    if (in_oxford) {
+      oxford_pop %>% subset(Location == city) %>% pull(`2021`)
+    } else {
+      wpop_csv <- fuzzy_read(tabular_dir, "worldpop_2015_2030.csv", read_csv)
+      if (!is.null(wpop_csv) && nrow(wpop_csv) > 0) {
+        wpop_csv %>% slice_max(year, n = 1) %>% pull(population) / 1000
+      } else NULL
+    }
+  }, error = function(e) NULL)
 }
 
-bm_cities_oxford <- if (is.null(nearby_countries_string) || is.null(pop) || nrow(oxford_pop) == 0) NULL else {
-    oxford_pop %>%
-    subset(str_detect(tolower(Country), nearby_countries_string)) %>%
+# get_oxford_benchmark_cities() — size-matched Oxford cities in nearby countries.
+get_oxford_benchmark_cities <- function(city, country, nearby_countries, pop, oxford_pop, oxford_locations) {
+  if (is.null(nearby_countries)) return(NULL)
+
+  nearby_cities <- oxford_locations %>%
+    subset(str_detect(tolower(Country), nearby_countries)) %>%
+    subset(Location != Country & !str_detect(Location, "Total")) %>%
+    pull(Location)
+
+  if (is.null(pop) || nrow(oxford_pop) == 0) return(NULL)
+  oxford_pop %>%
+    subset(str_detect(tolower(Country), nearby_countries)) %>%
     subset(Location %in% nearby_cities) %>%
-    subset((between(`2021`, pop*.5, pop*1.5) | Country == country) & Location != city) %>%
+    subset((between(`2021`, pop * .5, pop * 1.5) | Country == country) & Location != city) %>%
     pull(Location)
 }
 
-# Benchmark mode and backup (from city_inputs.yml)
-benchmark_mode <- city_params$benchmark_mode %||% "auto"  # sibling, oxford, auto
-benchmark_backup <- city_params$benchmark_backup  # null, citypopulation, worldpop_ucdb
+# select_benchmark_cities() — the composer. Merges manual + Oxford-auto by mode.
+#   sibling -> manual only;  oxford/auto -> manual + Oxford-auto.
+# oxford_pop / oxford_locations are passed in so Oxford is loaded once upstream.
+select_benchmark_cities <- function(city, country, bm_cities_manual, nearby_countries,
+                                    benchmark_mode, in_oxford, oxford_pop, oxford_locations,
+                                    tabular_dir) {
+  if (is.null(nearby_countries) || nearby_countries == "")
+    nearby_countries <- get_nearby_countries(country)
 
-# Benchmark cities: merge based on mode
-bm_cities <- if (benchmark_mode == "sibling") {
-  bm_cities_manual %>% unique() %>% which_not(city)
-} else if (benchmark_mode == "oxford") {
-  c(bm_cities_manual, bm_cities_oxford) %>% unique() %>% which_not(city)
-} else {
-  # auto — both
-  c(bm_cities_manual, bm_cities_oxford) %>% unique() %>% which_not(city)
+  pop <- get_pop_estimate(city, in_oxford, oxford_pop, tabular_dir)
+  bm_oxford <- get_oxford_benchmark_cities(city, country, nearby_countries, pop, oxford_pop, oxford_locations)
+
+  if (benchmark_mode == "sibling") {
+    bm_cities_manual %>% unique() %>% which_not(city)
+  } else {
+    c(bm_cities_manual, bm_oxford) %>% unique() %>% which_not(city)
+  }
 }
-
-has_manual_benchmarks <- length(bm_cities_manual) > 0
-
-message(glue("\nBenchmark mode: {benchmark_mode}"))
-message(glue("Benchmark backup: {if (is.null(benchmark_backup)) 'none' else benchmark_backup}"))
-message(glue("In Oxford: {in_oxford}"))
-message(glue("Manual cities: {if (length(bm_cities_manual) > 0) paste(bm_cities_manual, collapse = ', ') else 'none'}"))
-message(glue("Oxford auto-detect: {if (length(bm_cities_oxford) > 0) paste(bm_cities_oxford, collapse = ', ') else 'none'}"))
-message(glue("All benchmark cities ({length(bm_cities)}): {paste(bm_cities, collapse = ', ')}"))
 
 
 # Generic sibling scan -----------------------------------------------------------------------

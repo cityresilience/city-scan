@@ -96,6 +96,7 @@ def datacollection(
             ndxi_img = nir.subtract(other).divide(nir.add(other)).rename(index_type)
 
             ndxi_rio = fns.tiled_collection(ndxi_img, aoi, scale=10)
+            ndxi_rio = ndxi_rio.rio.clip(aoi.to_crs(ndxi_rio.rio.crs).geometry, drop=True)
             ndxi_rio.name = index_type.upper()
 
             fname = f"{city_name}_{index_type}_season.tif"
@@ -119,6 +120,7 @@ def datacollection(
 
             ndxi = compute_ndxi(ds, index_type)
             ndxi = _reproject_with_time(ndxi)
+            ndxi = ndxi.rio.clip(aoi.to_crs(ndxi.rio.crs).geometry, drop=True)
 
             zarr_path = os.path.join(spatial_dir, f"{city_name}_{index_type}_yearly.zarr")
             ndxi.to_dataset(name=index_type).to_zarr(zarr_path, mode='w')
@@ -140,6 +142,7 @@ def datacollection(
 
             ndxi = compute_ndxi(ds, index_type)
             ndxi = _reproject_with_time(ndxi)
+            ndxi = ndxi.rio.clip(aoi.to_crs(ndxi.rio.crs).geometry, drop=True)
 
             zarr_path = os.path.join(spatial_dir, f"{city_name}_{index_type}_monthly.zarr")
             ndxi.to_dataset(name=index_type).to_zarr(zarr_path, mode='w')

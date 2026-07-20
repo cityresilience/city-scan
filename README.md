@@ -80,3 +80,30 @@ The CLI runs from two locations:
 > The `scan` shell alias always resolves to the repo root, so it requires `--scan-id` for existing cities. To run without `--scan-id`, use `python -m tasks` directly from the city folder.
 
 R scripts use the `here` package (`.here` file) to resolve the project root. Python uses `core/config/paths.py` which auto-detects whether it's running from root or a city folder by looking for `01-user-input/`. Both approaches ensure the same code works from either location.
+
+---
+
+## Cache
+
+City Scan uses a shared cache directory for some large downloads so repeated downloads can be reused across scans.
+
+- Default location: `mnt/.cache/`
+- Current namespaces: `worldpop/`, `osm-pbf/`
+- Optional override: set `CITY_SCAN_CACHE_DIR` to use a different cache root
+
+### Cache commands
+
+```bash
+scan --cache-ls
+scan --cache-ls --cache-targets worldpop
+
+scan --cache-purge                    # dry-run preview
+scan --cache-purge --yes              # confirm purge
+scan --cache-purge --yes --cache-targets worldpop,osm-pbf
+```
+
+Notes:
+
+- `--cache-purge` is safe by default and only performs a dry run unless `--yes` is provided.
+- `--cache-targets` accepts comma-separated targets (for example `worldpop,osm-pbf`) or `all`.
+- For WorldPop direct downloads, cache writes are logged so users can see when a file is added to cache.

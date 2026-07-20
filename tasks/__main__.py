@@ -105,6 +105,10 @@ def main():
                 ("--list flags",         "Show this list"),
                 ("--check",              "Preflight environment (all)"),
                 ("--check {targets}",    "Preflight subset: r, python, gee, gcs, quarto, inputs"),
+                ("--cache-ls",           "Show cache location and per-dataset usage"),
+                ("--cache-purge",        "Purge cache (dry-run unless --yes is provided)"),
+                ("--cache-targets {t}",  "Cache scope, e.g. worldpop,osm-pbf or all"),
+                ("--yes",                "Confirm destructive cache purge"),
             ]
             for flag, desc in flag_list:
                 print(f"  {flag:<30} {desc}")
@@ -124,6 +128,13 @@ def main():
         return
 
     flags = parse_args(args)
+
+    # =========================================================
+    # CACHE COMMANDS (utility commands; no city context needed)
+    # =========================================================
+    if flags['cache_ls'] or flags['cache_purge']:
+        from core.py.cache import run_cache_command
+        sys.exit(run_cache_command(args))
 
     # =========================================================
     # MULTICITIES

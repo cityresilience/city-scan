@@ -333,5 +333,13 @@ builtup_extent_2025 <- tryCatch({
   NULL
 })
 
+# Temporary fix as LST isn't properly NA flagged in python output
+summer_lst_file <- fuzzy_read(spatial_dir, "summer.*", paste)
+if (!is.na(summer_lst_file)) {
+  summer_lst <- rast(summer_lst_file)
+  NAflag(summer_lst) <- 0
+  writeRaster(summer_lst, file.path(spatial_dir, "summer_lst-edit.tif"), overwrite = TRUE)
+}
+
 ## done
 message("Pre-mapping processing complete.")

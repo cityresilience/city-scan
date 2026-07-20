@@ -293,7 +293,7 @@ air_quality_trend:
   bins: 5
   group_id: Air quality (trend)
 summer_lst:
-  fuzzy_string: summer.*.tif$
+  fuzzy_string: summer.*edit.tif$
   # palette: 'Spectral'
   palette: ['#5290C2', '#F0EE80', '#D33837']
   # domain: 'minmax'

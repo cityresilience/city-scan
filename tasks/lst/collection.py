@@ -4,6 +4,7 @@ logger = setup_logger(__name__)
 import os
 
 import ee
+import numpy as np
 import xarray as xr
 import xee
 
@@ -62,6 +63,8 @@ def datacollection(
             img = img.subtract(273.15)
 
             lst_rio = fns.tiled_collection(img, aoi, scale=30)
+            lst_rio = lst_rio.rio.clip(aoi.to_crs(lst_rio.rio.crs).geometry, drop=True)
+            lst_rio.rio.write_nodata(np.nan, inplace=True)
 
             fname = f"{city_name}_lst_{comp_type}.tif"
             tif_path = os.path.join(spatial_dir, fname)
@@ -83,6 +86,7 @@ def datacollection(
 
             lst = ds['ST_B10'] - 273.15
             lst = _reproject_with_time(lst)
+            lst = lst.rio.clip(aoi.to_crs(lst.rio.crs).geometry, drop=True)
 
             zarr_path = os.path.join(spatial_dir, f"{city_name}_lst_yearly.zarr")
             lst.to_dataset(name='lst').to_zarr(zarr_path, mode='w')
@@ -103,6 +107,7 @@ def datacollection(
 
             lst = ds['ST_B10'] - 273.15
             lst = _reproject_with_time(lst)
+            lst = lst.rio.clip(aoi.to_crs(lst.rio.crs).geometry, drop=True)
 
             zarr_path = os.path.join(spatial_dir, f"{city_name}_lst_monthly.zarr")
             lst.to_dataset(name='lst').to_zarr(zarr_path, mode='w')

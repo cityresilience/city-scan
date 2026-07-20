@@ -4,6 +4,7 @@ KNOWN_FLAGS = {
     "--collect", "--analyze", "--multianalysis", "--render",
     "--all", "--scan-id", "--multicity", "--parallel", "--auto-exit",
     "--upload", "--gcs", "--download", "--sync", "--keep", "--list", "--help", "--check",
+    "--cache-ls", "--cache-purge", "--cache-targets", "--yes",
     "-e", "-t", "-k",
 }
 
@@ -83,6 +84,17 @@ def parse_args(args):
         if not f['check_targets']:
             f['check_targets'] = list(CHECK_TARGETS)
 
+    # Cache commands
+    f['cache_ls'] = "--cache-ls" in args
+    f['cache_purge'] = "--cache-purge" in args
+    f['cache_yes'] = "--yes" in args
+    f['cache_targets'] = []
+    for i, a in enumerate(args):
+        if a.startswith("--cache-targets="):
+            f['cache_targets'].extend([v.strip() for v in a.split("=", 1)[1].split(",") if v.strip()])
+        elif a == "--cache-targets" and i + 1 < len(args) and not args[i + 1].startswith("-"):
+            f['cache_targets'].extend([v.strip() for v in args[i + 1].split(",") if v.strip()])
+
     # --scan-id value
     f['scan_id'] = None
     if "--scan-id" in args:
@@ -110,6 +122,7 @@ def parse_args(args):
     skip_values.update(f['render_targets'])
     skip_values.update(f['sync_targets'])
     skip_values.update(f['check_targets'])
+    skip_values.update(f['cache_targets'])
     f['task_names'] = [a for a in args if not a.startswith("-") and a not in skip_values]
 
     return f
@@ -123,8 +136,21 @@ def validate_args(args):
                 if v.strip() not in DOWNLOAD_TARGETS:
                     return f"--download values must be 01, 02, or 03 (got '{v.strip()}')"
             continue
+        if a.startswith("--cache-targets="):
+            raw = a.split("=", 1)[1].strip()
+            if not raw:
+                return "--cache-targets requires at least one target (e.g. worldpop,osm-pbf)"
+            continue
         if a.startswith("-") and a not in KNOWN_FLAGS:
             return f"Unknown flag: '{a}'. Use --list flags to see available flags."
+    if "--cache-targets" in args:
+        idx = args.index("--cache-targets")
+        if idx + 1 >= len(args) or args[idx + 1].startswith("-"):
+            return "--cache-targets requires a value (e.g. --cache-targets worldpop,osm-pbf)"
+    if ("--cache-ls" in args or "--cache-purge" in args) and "--check" in args:
+        return "Cache commands cannot be combined with --check"
+    if "--cache-ls" in args and "--cache-purge" in args:
+        return "Use either --cache-ls or --cache-purge, not both"
     # --gcs / --download
     if "--gcs" in args:
         if "--scan-id" not in args:

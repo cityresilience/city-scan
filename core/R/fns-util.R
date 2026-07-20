@@ -154,19 +154,15 @@ fuzzy_read <- function(dir, fuzzy_string, FUN = NULL, path = T, convert_to_vect 
       } else {
         file_path <- file.path(dir, file)
 
-        # Try reading normally, if fails try with /vsigs/ for GCS
-        content <- tryCatch({
-          suppressMessages(FUN(file_path, ...))
-        }, error = function(e) {
-          if (exists("USE_GCS") && USE_GCS) {
-            # Try with /vsigs/ prefix
-            path_clean <- gsub("/+$", "", dir)
-            gcs_path <- paste0("/vsigs/", GCS_BUCKET, "/", scan_id, "/", path_clean, "/", file)
-            suppressMessages(FUN(gcs_path, ...))
-          } else {
-            stop(e)
-          }
-      })
+        # FUN is the GCS-overridden reader in GCS mode (resolves local-or-/vsigs/
+        # itself via gcs-overrides.R); the base reader on a local path otherwise.
+        # Return NA on read failure rather than throwing.
+        content <- tryCatch(
+          suppressMessages(FUN(file_path, ...)),
+          error = function(e) {
+            warning(paste("Could not read", file, "in", dir, ":", e$message))
+            return(NA)
+          })
       }
     if (convert_to_vect && class(content)[1] %in% c("SpatRaster", "RasterLayer")) {
         content <- rast_as_vect(content)

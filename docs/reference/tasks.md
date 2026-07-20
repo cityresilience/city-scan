@@ -43,6 +43,18 @@ Each function receives a `scan` object (`core.config.scan.Scan`) with:
 
 Downloads data from external sources (GCS, WorldPop, Overpass API, etc.) and clips to AOI. Saves output to `{output_dir}/spatial/` (rasters, vectors) or `{output_dir}/tabular/` (CSVs).
 
+Collection code can also use shared download cache paths under `mnt/.cache/` so repeated runs do not re-download the same source artifacts.
+
+Current cache namespaces:
+- `worldpop` — direct WorldPop source GeoTIFF downloads used by `tasks/worldpop/collection.py`
+- `osm-pbf` — Geofabrik `.osm.pbf` files used by `core/py/osm_pbf.py`
+
+WorldPop direct-download cache behavior:
+- cache hit: reuse local cached file
+- cache miss: download from WorldPop and write to cache
+- cache write: prints a user-visible log line with file path and size
+- invalid cache file: logs warning and re-downloads
+
 Naming convention for outputs:
 - `{city_name}_elevation.tif`
 - `{city_name}_population.tif`
@@ -144,7 +156,19 @@ python -m tasks --all                      # all enabled tasks
 python -m tasks --all --parallel           # parallel with TUI
 python -m tasks --list                     # show available tasks
 python -m tasks --all --scan-id 2026-03-tunisia-tunis  # existing city
+
+# Cache utilities
+python -m tasks --cache-ls
+python -m tasks --cache-ls --cache-targets worldpop
+python -m tasks --cache-purge                     # dry-run
+python -m tasks --cache-purge --yes               # execute purge
+python -m tasks --cache-purge --yes --cache-targets worldpop,osm-pbf
 ```
+
+Cache command notes:
+- `--cache-targets` accepts comma-separated namespaces or `all`.
+- `--cache-purge` requires `--yes` to perform deletion.
+- `--cache-ls` and `--cache-purge` are utility commands and do not require a city scan context.
 
 ## Adding a new task
 
