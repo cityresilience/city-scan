@@ -81,6 +81,8 @@ plots$scale_bar <- plot_static_layer(aoi_only = T, plot_aoi = F, plot_wards = F,
   theme_title() +
   annotation_scale(style = "ticks", aes(unit_category = "metric", width_hint = 0.33), height = unit(0.25, "cm"))
 
+fake_layers <- c()
+
 # Standard plots ---------------------------------------------------------------
 unlist(lapply(layer_params, \(x) x$fuzzy_string)) %>%
   discard_at(c("burnt_area", "elevation")) %>%
@@ -101,9 +103,23 @@ unlist(lapply(layer_params, \(x) x$fuzzy_string)) %>%
         theme_title()
       packets[[yaml_key]] <<- packet
       plots[[yaml_key]] <<- ggplot() + packet
-      message(paste("Success:", yaml_key))
+      if (str_detect(file_path, "/fake/")) {
+        fake_layers <<- unique(c(fake_layers, yaml_key))
+        message(paste("Fake!:  ", yaml_key))
+      } else {
+        message(paste("Success:", yaml_key))
+      }
     })
   }) %>% unlist() -> plot_log
+
+if (length(fake_layers) > 0) {
+  fake_log <- file.path(city_dir, "missing-layers.txt")
+  fake_message <- sprintf(
+    "%s is missing data for %d layers. Fake data has been used to ensure correct legend placement.\n - %s",
+    city, length(fake_layers), paste(fake_layers, collapse = "\n - "))
+  warning(fake_message)
+  writeLines(fake_message, fake_log)
+}
 
 # Non-standard static plots ----------------------------------------------------
 message("Creating non-standard maps...")
@@ -176,7 +192,7 @@ if (!is.null(plots$roads)) plots$roads <- plots$roads +
 message("Saving maps...")
 transparencies_dir <- file.path(output_dir, "transparent-maps")
 if (!dir.exists(transparencies_dir)) dir.create(transparencies_dir)
-plots %>% 
+  discard_at(fake_layers %||% "") %>%
   walk2(names(.), \(plot, name) {
   # if (name != "aoi") return(NULL)
   save_plot(plot, filename = glue("{name}.png"), directory = transparencies_dir,
@@ -186,20 +202,16 @@ plots %>%
 # Save columns of legends by themselves ----------------------------------------
 message("Creating legends...")
 # First, create fake flood plot that combines fluvial, pluvial, and coastal flood legend titles
-# This would be quicker if we didn't use actual flood data, but works fine
-flood_types <- c("fluvial", "pluvial", "coastal")
-found_flood_type <- flood_types[which(flood_types %in% names(plots))[1]]
-packets$sample_flood <- if (is.na(found_flood_type)) { NULL } else {
+packets$sample_flood <-
   plot_static_layer(
-    fuzzy_read(spatial_dir, layer_params[[found_flood_type]]$fuzzy_string),
-    found_flood_type, packet = T,
+    fuzzy_read(spatial_dir, layer_params$fluvial$fuzzy_string),
+    "fluvial", packet = T,
     title = paste(collapse = "\n", c(
       english = "Flood Return Period",
       french = "Période de retour des inondations")[languages]),
     subtitle = paste(collapse = "\n", c(
       english = "15-cm or deeper flood event (global model)",
       french = "Probabilité d'un événement d'inondation de 15 centimètres ou plus dans une zone de 3 secondes d'arc au cours d’une année donnée")[languages]))
-}
 
 # First column
 message("Assembling first legend column...")
