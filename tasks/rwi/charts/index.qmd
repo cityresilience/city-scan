@@ -45,6 +45,8 @@ rwi_labels <- layer_params$rwi_standardized$labels
 
 ### Standardized RWI Distribution
 
+Using fixed bin break points
+
 ```{r}
 #| label: rwi-histogram-standardized
 #| results: asis
@@ -73,8 +75,8 @@ if (!is.null(rwi_data) && "rwi" %in% names(rwi_data) && nrow(rwi_data) > 0) {
   print(rwi_std_plot)
   cat("\n\n")
 
-  print_text(glue("{paste_bold(round(min(rwi_data$rwi), 2))} to {paste_bold(round(max(rwi_data$rwi), 2))} (mean: {paste_bold(round(mean(rwi_data$rwi), 2))})"))
-  print_text(glue("{paste_bold(nrow(rwi_data))} grid cells in AOI"))
+  print_text(glue("Range: {paste_bold(round(min(rwi_data$rwi), 2))} to {paste_bold(round(max(rwi_data$rwi), 2))} (mean: {paste_bold(round(mean(rwi_data$rwi), 2))}; median: {paste_bold(round(median(rwi_data$rwi), 2))})"))
+  print_text(glue("{paste_bold(nrow(rwi_data))} RWI grid cells in AOI"))
 
   if (!is.null(rwi_area_std)) {
     print_paged_df(rwi_area_std)
@@ -86,6 +88,8 @@ if (!is.null(rwi_data) && "rwi" %in% names(rwi_data) && nrow(rwi_data) > 0) {
 ```
 
 ### City-Relative RWI Distribution
+
+Using non-fixed bins that adjust with the data
 
 ```{r}
 #| label: rwi-histogram-relative
