@@ -4,7 +4,7 @@
 # Everything else runs inline and saves CSVs to tabular/
 #
 # Requires: setup.R already sourced (city, country, tabular_dir)
-#           benchmark-helper.R already sourced (bm_cities, in_oxford)
+#           benchmark-helper.R sourced for functions (check_in_oxford, select_benchmark_cities, load_oxford_data)
 
 USE_GCS <<- TRUE
 if (!exists("aoi")) source(here::here("core/R/setup.R"))
@@ -12,17 +12,25 @@ source(here::here("core/R/benchmark-helper.R"))
 
 message("\n=== Oxford datacollection ===")
 
-# Load oxford_full — read_csv override reads from GCS global bucket
-oxford_full <- tryCatch({
-  read_csv("oxford-economics/Oxford Global Cities Data.csv",
-    col_types = "cccccccccdddddddddddddddddddddddddddddddddddddddddcllldlcclcc") %>%
-  mutate(Location = case_when(Location == "Lom\u00e9" ~ "Lomé",
-                              Location == "Yaound\u00e9" ~ "Yaoundé",
-                              T ~ Location))
-}, error = function(e) {
+# Benchmark selection — functions from benchmark-helper.R (no longer globals)
+io <- check_in_oxford(city, country)
+in_oxford <- io$in_oxford
+city <- io$city                       # Oxford spelling if matched only via ASCII
+oxford_locations <- io$oxford_locations
+
+# Load oxford_full ONCE; derive the size-matching pop table from it
+oxford_full <- tryCatch(load_oxford_data(), error = function(e) {
   message(glue("Could not read Oxford Economics data: {e$message}"))
   tibble()
 })
+oxford_pop <- if (nrow(oxford_full) > 0) {
+  oxford_full %>% subset(Indicator == "Total population") %>% select(Location, Country, `2021`)
+} else tibble()
+
+benchmark_mode <- city_params$benchmark_mode %||% "auto"
+benchmark_backup <- city_params$benchmark_backup
+bm_cities <- select_benchmark_cities(city, country, bm_cities_manual, nearby_countries_string,
+                                     benchmark_mode, in_oxford, oxford_pop, oxford_locations, tabular_dir)
 
 # Subset for city + non-sibling benchmarks with Group column
 # Oxford charts only use cities in Oxford, not sibling cities
@@ -95,6 +103,17 @@ get_oxford_pop <- function(cities) {
 
   oxford_subset
 }
+
+
+# =============================================================================
+# Benchmark-city POPULATION — written REGARDLESS of in_oxford so the benchmark
+# task can reuse it (peers exist even when the main city is not in Oxford).
+# get_oxford_pop() shape already has Population + Country + Area_km. Named
+# _benchmark-cities-pop (NOT _oxford_) so it does not trip oxford/charts'
+# "in_oxford = any _oxford_ CSV exists" check.
+# =============================================================================
+write_csv(get_oxford_pop(c(city, oxford_bm)),
+          file.path(tabular_dir, paste0(city_string, "_benchmark-cities-pop.csv")))
 
 
 # =============================================================================

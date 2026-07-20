@@ -55,34 +55,10 @@ def datacollection(aoi, city_name, country_name, output_dir):
 
     koeppen = get_koeppen_classification(aoi)
 
-    # Check if city is in Oxford Economics (download locations list from GCS)
-    in_oxford = False
-    try:
-        from google.cloud import storage
-        client = storage.Client()
-        bucket = client.bucket("city-scan-global-data")
-        blob = bucket.blob("oxford-economics/oxford-locations.csv")
-        import tempfile
-        with tempfile.NamedTemporaryFile(suffix=".csv", delete=False) as tmp:
-            blob.download_to_filename(tmp.name)
-            oxford_df = pd.read_csv(tmp.name)
-        # Match with diacritic stripping (e.g. "Chișinău" → "Chisinau")
-        import unicodedata
-        def _strip_ascii(s):
-            return unicodedata.normalize('NFKD', str(s)).encode('ascii', 'ignore').decode('ascii').lower()
-        city_ascii = _strip_ascii(city_name)
-        oxford_ascii = oxford_df['Location'].map(_strip_ascii)
-        in_oxford = city_ascii in oxford_ascii.values
-        logger.info(f"Oxford Economics: {city_name} {'found' if in_oxford else 'not found'}")
-        os.unlink(tmp.name)
-    except Exception as e:
-        logger.info(f"Could not check Oxford Economics: {e}")
-
     basic_info = {
         'country': country_name,
         'aoi_area': round(aoi_area, 2),
         'koeppen': koeppen,
-        'in_oxford': in_oxford,
     }
 
     tabular_dir = os.path.join(output_dir, "tabular")
@@ -93,20 +69,5 @@ def datacollection(aoi, city_name, country_name, output_dir):
         yaml.dump(basic_info, f)
 
     logger.info(f"basic_info.yml saved to: {output_path}")
-
-    # Benchmark city pop/density tables — produces _pop_benchmark.csv,
-    # _density_benchmark.csv, _pop_growth.csv. These feed the "Benchmark
-    # Cities" section of basic_info/charts/index.qmd. Runs via Rscript
-    # because benchmark-assembly.R reads worldpop + oxford CSVs via R.
-    # Requires worldpop's analyze outputs, so basic_info depends on worldpop.
-    import subprocess
-    try:
-        logger.info("Assembling benchmark-city tables...")
-        subprocess.run(
-            ["Rscript", "-e", "source(here::here('core/R/benchmark-assembly.R'))"],
-            check=True
-        )
-    except subprocess.CalledProcessError as e:
-        logger.warning(f"benchmark-assembly failed: {e}")
 
     return basic_info

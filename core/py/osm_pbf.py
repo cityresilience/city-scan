@@ -17,6 +17,7 @@ import pandas as pd
 import requests
 
 from core.py.aoi_module import find_country
+from core.py.cache import get_cache_namespace_dir
 from core.py.log_module import setup_logger
 
 logger = setup_logger(__name__)
@@ -104,8 +105,7 @@ ISO3_TO_GEOFABRIK = {
 
 
 def _default_cache_dir():
-    from core.config.paths import OUTPUTS
-    return Path(OUTPUTS) / ".cache" / "osm-pbf"
+    return get_cache_namespace_dir("osm-pbf")
 
 
 def fetch_features(aoi_4326, tags, cache_dir=None):

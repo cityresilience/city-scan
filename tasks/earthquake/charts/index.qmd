@@ -42,7 +42,7 @@ if (is.null(eq) || nrow(eq) == 0) print_text(paste_bold('No earthquake data avai
   # Ensure NCEI columns exist even when only USGS rows are present (avoids missing-column errors).
   for (col in c("damageAmountOrder", "damageMillionsDollars", "deaths", "deathsAmountOrder",
                 "intensity", "tsunamiEventId")) {
-    if (!col %in% names(eq)) eq[[col]] <- NA
+    if (!col %in% names(eq)) eq[[col]] <- NA_real_
   }
 
   USGS_MIN_MAG <- 4.5  # USGS-only rows surface at this floor; NCEI rows use the curated significance OR-chain
@@ -92,7 +92,7 @@ if (is.null(eq) || nrow(eq) == 0) print_text(paste_bold('No earthquake data avai
       # NCEI rows: 4-line label with damage + fatalities. USGS rows: 2-line.
       fatalities = if_else(
         source == "NCEI" & !is.na(deaths),
-        paste(scales::label_comma()(deaths), "fatalities") %>%
+        paste(scales::label_comma()(as.numeric(deaths)), "fatalities") %>%
           str_replace_all(c("^1 fatalities$" = "1 fatality")),
         ""),
       damage = if_else(

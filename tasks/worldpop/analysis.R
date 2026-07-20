@@ -1,5 +1,4 @@
 # WorldPop analysis: city's own population data only
-# Benchmark assembly moved to core/R/benchmark-assembly.R (runs at render time)
 
 if (!exists("aoi")) source(here::here("core/R/setup.R"))
 

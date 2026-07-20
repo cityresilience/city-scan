@@ -1,6 +1,7 @@
 accessibility: True
 air_quality: True
 basic_info: True
+benchmark: True
 buildings: True
 burned_area: True
 coastal_erosion: True

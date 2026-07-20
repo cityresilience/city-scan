@@ -22,7 +22,7 @@ message("Project root: ", here())
 # canonical with empty 01-/02-/03- folders.
 scan_id <- Sys.getenv("SCAN_ID", "")
 if (scan_id == "") scan_id <- basename(here())
-if (!grepl("^[0-9]{4}-[0-9]{2}-[a-z_-]+$", tolower(scan_id)) ||
+if (!grepl("^[0-9]{4}-[0-9]{2}-[a-z0-9_-]+$", tolower(scan_id)) ||
     scan_id == "" || is.na(scan_id)) {
   stop("\nCannot determine valid scan_id from here() = ", here(),
        "\nDid auto_root_here() find a .here marker?")

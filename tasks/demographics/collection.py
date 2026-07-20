@@ -5,10 +5,20 @@ import rasterio
 from rasterio.mask import mask
 import pandas as pd
 from core.py.log_module import setup_logger
+from core.py.cache import get_cache_namespace_dir, read_bytes_with_cache
 import numpy as np
 logger = setup_logger(__name__)
 
 data_source = None
+
+
+def _demographics_cache_path(iso3, sex, age, year):
+    """Return deterministic cache path for one demographics age-sex raster."""
+    cache_dir = get_cache_namespace_dir("demographics")
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    age_str = f"{age:02d}"
+    fname = f"{iso3.lower()}_{sex}_{age_str}_{year}_CN_100m_R2025A_v1.tif"
+    return cache_dir / fname
 
 
 def age_label(age):
@@ -115,9 +125,11 @@ def datacollection(
                 iso_upper = iso3.upper()
                 wp_base = f"https://data.worldpop.org/GIS/AgeSex_structures/Global_2015_2030/R2025A/{current_year}/{iso_upper}/v1/100m/constrained"
                 filename = f"{iso_lower}_{sex}_{age_str}_{current_year}_CN_100m_R2025A_v1.tif"
+                url = f"{wp_base}/{filename}"
+                cache_path = _demographics_cache_path(iso3, sex, age, current_year)
                 try:
-                    response = urllib.request.urlopen(f"{wp_base}/{filename}")
-                    with MemoryFile(response.read()) as full_mf:
+                    raw = read_bytes_with_cache(url=url, cache_path=cache_path, log_prefix="Demographics")
+                    with MemoryFile(raw) as full_mf:
                         with full_mf.open() as rsrc:
                             win = rasterio.windows.from_bounds(*aoi_bounds, rsrc.transform)
                             rdata = rsrc.read(window=win)
@@ -128,7 +140,7 @@ def datacollection(
                     with mf.open(**rmeta) as dst:
                         dst.write(rdata)
                     country_clips.append(mf)
-                    del rdata, response
+                    del rdata
                 except Exception as e:
                     logger.debug(f"  {iso3} {sex}_{age_str} not available: {e}")
                     continue
@@ -166,11 +178,12 @@ def datacollection(
 
             return sex, age, clipped[0], meta, f"{sex}_{age_label(age)}"
         else:
-            # Single country — original logic
+            # Single country — use cache
             filename = f"{country_iso3.lower()}_{sex}_{age_str}_{current_year}_CN_100m_R2025A_v1.tif"
             url = f"{WORLDPOP_BASE}/{filename}"
-            response = urllib.request.urlopen(url)
-            with MemoryFile(response.read()) as memfile:
+            cache_path = _demographics_cache_path(country_iso3, sex, age, current_year)
+            raw = read_bytes_with_cache(url=url, cache_path=cache_path, log_prefix="Demographics")
+            with MemoryFile(raw) as memfile:
                 with memfile.open() as src:
                     aoi_proj = aoi.to_crs(src.crs) if aoi.crs != src.crs else aoi
                     shapes = [g.__geo_interface__ for g in aoi_proj.geometry]

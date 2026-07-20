@@ -1,6 +1,6 @@
 plot_flooding <- function(flood_type) {
   tryCatch_named(flood_type, {
-    file <- fuzzy_read(spatial_dir, glue("{flood_type}_2020.tif$"), paste)
+    file <- fuzzy_read(spatial_dir, layer_params[[flood_type]]$fuzzy_string, paste)
     if (is.na(file)) return(NULL)
     flood_data <- terra::crop(rast(file)[[1]], static_map_bounds)
     # Temporary fix for if layer is all NAs

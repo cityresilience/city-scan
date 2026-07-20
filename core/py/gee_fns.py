@@ -161,6 +161,7 @@ def tiled_collection(image, aoi, scale, tile_size_deg=0.5, crs='EPSG:3857', resa
                 height=tile_data.shape[1], width=tile_data.shape[2], count=n_bands,
                 dtype=tile_data.dtype,
                 crs='EPSG:4326',
+                nodata=np.nan,
                 transform=tile_da.rio.transform() if n_bands == 1 else xee_to_rio(ds[band_names[0]], resampling=resampling).rio.transform(),
             ) as dst:
                 dst.write(tile_data)
@@ -174,7 +175,7 @@ def tiled_collection(image, aoi, scale, tile_size_deg=0.5, crs='EPSG:3857', resa
 
     # Merge tiles
     datasets = [f.open() for f in tile_files]
-    mosaic, mosaic_transform = merge(datasets)
+    mosaic, mosaic_transform = merge(datasets, nodata=np.nan)
     for d in datasets:
         d.close()
     for f in tile_files:

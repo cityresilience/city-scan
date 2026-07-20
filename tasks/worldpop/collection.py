@@ -1,12 +1,13 @@
 # import
 import os
-import urllib.request
+import hashlib
 import numpy as np
 import geopandas as gpd
 import rasterio
 from rasterio.mask import mask
 from rasterio.io import MemoryFile
 from core.py.log_module import setup_logger
+from core.py.cache import get_cache_namespace_dir, read_bytes_with_cache
 
 logger = setup_logger(__name__)
 
@@ -19,6 +20,14 @@ WP_URLS = {
     "g2": "https://data.worldpop.org/GIS/Population/Global_2015_2030/R2025A/{year}/{ISO}/v1/100m/constrained/{iso}_pop_{year}_CN_100m_R2025A_v1.tif",
 }
 
+
+def _worldpop_cache_path(dataset, iso3, year, url):
+    """Return deterministic cache path for one WorldPop artifact."""
+    cache_dir = get_cache_namespace_dir("worldpop")
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    url_sig = hashlib.sha1(url.encode("utf-8")).hexdigest()[:10]
+    fname = f"{dataset}_{iso3.lower()}_{year}_{url_sig}.tif"
+    return cache_dir / fname
 
 def _wp_direct_download(iso3, years, dataset, aoi_bounds):
     """Download WorldPop rasters, windowed read of AOI only, return list of (array, meta).
@@ -33,8 +42,9 @@ def _wp_direct_download(iso3, years, dataset, aoi_bounds):
 
     def _fetch(year):
         url = url_template.format(year=year, ISO=iso_upper, iso=iso_lower)
-        response = urllib.request.urlopen(url)
-        with MemoryFile(response.read()) as memfile:
+        cache_path = _worldpop_cache_path(dataset=dataset, iso3=iso3, year=year, url=url)
+        raw = read_bytes_with_cache(url=url, cache_path=cache_path, log_prefix="WorldPop")
+        with MemoryFile(raw) as memfile:
             with memfile.open() as src:
                 window = rasterio.windows.from_bounds(*aoi_bounds, src.transform)
                 data = src.read(window=window)
@@ -69,8 +79,9 @@ def _wp_multi_country_download(iso3_list, years, dataset, aoi_bounds):
                 iso_lower = iso3.lower()
                 iso_upper = iso3.upper()
                 url = WP_URLS[dataset].format(year=year, ISO=iso_upper, iso=iso_lower)
-                response = urllib.request.urlopen(url)
-                with MemoryFile(response.read()) as memfile:
+                cache_path = _worldpop_cache_path(dataset=dataset, iso3=iso3, year=year, url=url)
+                raw = read_bytes_with_cache(url=url, cache_path=cache_path, log_prefix="WorldPop")
+                with MemoryFile(raw) as memfile:
                     with memfile.open() as src:
                         window = rasterio.windows.from_bounds(*aoi_bounds, src.transform)
                         data = src.read(window=window)
@@ -83,7 +94,7 @@ def _wp_multi_country_download(iso3_list, years, dataset, aoi_bounds):
                     dst.write(data)
                 country_clips.append(clip_mf)
                 logger.info(f"  {dataset.upper()} {year} {iso3.upper()}: OK")
-                del data, response
+                del data
             except Exception as e:
                 logger.warning(f"  {dataset.upper()} {year} {iso3.upper()}: failed ({e})")
                 continue

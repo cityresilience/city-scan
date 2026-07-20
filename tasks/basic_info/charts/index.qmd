@@ -13,16 +13,6 @@ execute:
 #| include: false
 if (file.exists("_quarto.yml")) here::i_am("tasks/basic_info/charts/index.qmd")
 if (!exists("aoi")) source(here::here("core/R/setup.R"))
-source(here::here("core/R/benchmark-helper.R"))
-
-# Population data source — change this if using a different task for population
-pop_task <- "worldpop"
-pop_longitude <- tryCatch(
-  read_csv(file.path(tabular_dir, paste0(city_string, "_pop_benchmark.csv")), show_col_types = FALSE),
-  error = function(e) tibble(Year = integer(), Population = numeric(),
-                             Location = character(), Country = character(),
-                             Group = character(), Area_km = numeric(),
-                             Source = character(), Method = character()))
 ```
 
 ### User Input Variables
@@ -81,48 +71,3 @@ if (!is.null(pop_estimate) && nrow(pop_estimate) > 0) {
     paste0("(WorldPop Global 2, ", pop_year, ")")), 1)
 }
 ```
-
-### Benchmark Cities
-Benchmark cities are selected as cities that are in neighboring countries and having a population of 50% to 150% of the focus city's population, with addtional cities manually specified.
-
-```{r}
-#| label: benchmark-cities-selection
-#| results: asis
-
-print_text("Benchmark cities")
-
-pop_longitude %>%
-    subset(Location %in% bm_cities) %>%
-    group_by(Location) %>%
-    slice_min(abs(Year - 2021), n = 1, with_ties = FALSE) %>%
-    ungroup() %>%
-    arrange(Location) %>%
-    print_paged_df()
-
-if (exists("oxford_full") && nrow(oxford_full) > 0) {
-  print_text("Nearby non-benchmark cities")
-  oxford_full %>%
-    select(Location, Country, Indicator, `2021`) %>%
-    subset(Location %in% nearby_cities & Location %ni% bm_cities & Indicator == "Total population") %>%
-    mutate(`2021` = `2021` * 1000) %>%
-    arrange(`2021`) %>%
-    print_paged_df()
-
-  oxford <- subset(oxford_full, Location %in% c(city, bm_cities)) %>%
-    mutate(Group = case_when(Location == city ~ Location, T ~ "Benchmark") %>%
-             factor(levels = c(city, "Benchmark")))
-
-  print_text(paste_bold("Benchmark footnote text:"))
-
-  print_text("Following cities are included in Oxford Economics dataset:", 1)
-  oxford %>%
-    select(Location, Country) %>% distinct() %>%
-    arrange(Country) %>% group_by(Country) %>%
-    summarize(text = paste_and(Location), .groups = "drop") %>%
-    mutate(text = paste0(text, " (", Country,")")) %>%
-    .$text %>% paste_and() %>%
-    paste_bold() %>%
-    print_text()
-}
-```
-
