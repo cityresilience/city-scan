@@ -4,6 +4,7 @@ KNOWN_FLAGS = {
     "--collect", "--analyze", "--multianalysis", "--render",
     "--all", "--scan-id", "--multicity", "--parallel", "--auto-exit",
     "--upload", "--gcs", "--download", "--sync", "--keep", "--list", "--help", "--check",
+    "--sync-data",
     "-e", "-t", "-k",
 }
 
@@ -42,6 +43,12 @@ def parse_args(args):
         "-e" in args or bool(f['sync_targets']) or f['keep_as_is']
     )
     f['upload_enabled'] = "--upload" in args
+
+    # --sync-data: pull the ucra/fcs GLOBAL INPUT data from the bucket for this
+    # run, whatever `*_data_source` says in menu.yml. Distinct from --sync (which
+    # copies project code into a city folder) and from --download (which pulls a
+    # scan's own outputs). Exact-match parsing means it never collides with --sync.
+    f['sync_data'] = "--sync-data" in args
 
     # --gcs: connect to a scan stored in GCS. --download=01,02 is the explicit
     # pull (symmetric to --upload); bare --download pulls all folders.

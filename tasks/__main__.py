@@ -209,6 +209,16 @@ def main():
     from core.py.log_module import set_log_dir
     set_log_dir(os.path.join(city_dir, "logs"))
 
+    # --sync-data forces the ucra/fcs tasks to fetch their global INPUT data from
+    # GCS for this run, overriding `*_data_source` in menu.yml. Applied here as a
+    # menu override so the task adapters keep a single code path.
+    if flags.get('sync_data'):
+        if scan.menu is None:
+            scan.menu = {}
+        scan.menu['ucra_data_source'] = 'gcs'
+        scan.menu['fcs_data_source'] = 'gcs'
+        logger.info("--sync-data: ucra/fcs global data will be pulled from GCS")
+
     # =========================================================
     # SYNC ONLY
     # =========================================================
@@ -447,7 +457,9 @@ def main():
         # Read existing report rows (keyed by "task|step")
         existing = {}
         if os.path.exists(report_path):
-            with open(report_path) as f:
+            # Must match the utf-8 write below, or reading back a report that
+            # contains a non-cp1252 char (city names, box rules) fails too.
+            with open(report_path, encoding='utf-8') as f:
                 for line in f:
                     parts = line.rstrip().split('|')
                     if len(parts) >= 5 and parts[0].strip() and not parts[0].strip().startswith('=') and not parts[0].strip().startswith('─') and parts[0].strip() != 'task':
@@ -491,7 +503,11 @@ def main():
 
         lines.append(f"{'─'*110}")
 
-        with open(report_path, 'w') as f:
+        # encoding is explicit: the report's rule lines use box-drawing chars,
+        # which Windows' default cp1252 cannot encode. Without this the write
+        # raises UnicodeEncodeError *after* every task has already succeeded,
+        # losing the report and failing the city with return code 1.
+        with open(report_path, 'w', encoding='utf-8') as f:
             f.write('\n'.join(lines) + '\n')
         logger.info(f"Task report saved to: {report_path}")
 

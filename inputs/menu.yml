@@ -1,0 +1,159 @@
+accessibility: True
+air_quality: True
+basic_info: True
+benchmark: True
+buildings: True
+burned_area: True
+coastal_erosion: True
+cyclones: True
+demographics: True
+earthquake: True
+elevation: True
+flood_coastal: True
+flood_fluvial: True
+flood_pluvial: True
+flood_comb: True
+flood_events: True
+forest: True
+fwi: True
+ghs_builtup: True
+ghs_population: True
+green: True
+gdp_gridded: True
+gdp_sectoral: True
+groundwater: True
+landcover: True
+landcover_burn: True
+landslide: True
+liquefaction: True
+lst_summer: True
+lst_winter: True
+ndmi: True
+nightlight: True
+oxford: True
+population: True
+rwi: True
+sea_level_rise: True
+seismic_hazard: True
+slope: True
+solar: True
+water_risk: True
+wsf: True
+
+# Compilation
+scan_calculations: True
+
+# ── Future City Scan (FCS) ────────────────────────────────────────────
+# Master toggle (gates `scan --all`; `scan fcs` runs it explicitly regardless).
+fcs: False
+# Per-layer activation for the FCS task. All layers run by default; each is
+# logged as SUCCESS / SKIPPED / FAILED and failures never abort the run
+# (handled like every other City Scan task). Set any to False to skip it.
+fcs_layers:
+  population_rescaling: True
+  population: True
+  gdp_rescaling: True
+  gdp: True
+  urbanland: True
+  heatflux: True
+  urbanheatisland: True
+  cckp_precipitation: True
+  cckp_temperature: True
+  flood_population_exposure: True
+  flood_infrastructure_exposure: True
+  cleanup: True
+  demographics: True
+  cyclones: True
+  erosion: True
+  country_population_ratio: True
+  country_gdp_ratio: True
+# Root of the FCS DATA/output tree (contains data/, 01-inputs/, 02-process-output/).
+# The FCS *code* is vendored at tasks/fcs/ — this is only the bulk data, which is
+# far too large to commit. Leave blank to resolve in this order:
+#     1. this setting   2. $CITYSCAN_FCS_DIR   3. <repo parent>/FCS
+# Absolute paths, ~ and $VARS all work.
+fcs_base_dir: ''
+fcs_env: 'fcs-pipeline'
+
+# Echo the FCS pipeline's raw tracebacks to the console. Off by default: every
+# failed section prints a ~15-line pandas traceback whose top frame ("No objects
+# to concatenate") is the same for four different root causes and diagnoses none
+# of them. The run-summary table printed at the end explains each failure in
+# plain English, and the full tracebacks are always kept in
+# <fcs_base_dir>/02-process-output/logs/. Turn on when debugging the pipeline.
+fcs_verbose: False
+
+# Where FCS's global inputs come from.
+#   'local' — they are already under <fcs_base_dir>/data/ (default; no network)
+#   'gcs'   — download the folders the ENABLED fcs_layers need from the bucket
+#             into <fcs_base_dir>/data/ before running. Skip-if-present, so on a
+#             warm machine this is one listing. Use on a fresh machine.
+# The layer -> folder map lives in tasks/fcs/__init__.py (LAYER_DATA); the
+# Pakistan layer set pulls ~34 GB, all 17 layers would pull ~121 GB.
+fcs_data_source: 'local'
+fcs_data_bucket: 'city-scan-global-data'
+fcs_data_prefix: 'fcs-data'
+fcs_inputs_prefix: 'fcs-inputs'
+fcs_data_workers: 8
+
+# ── UCRA (Urban Climate Risk Assessment) ──────────────────────────────
+# NOTE: UCRA is a COUNTRY BATCH, not a per-city pipeline — one run processes every
+# shapefile in <ucra_project_dir>/shapefiles_received/ and writes cross-city stats
+# tables (one row per city) that its plots use as peer comparisons. The task therefore
+# runs the batch ONCE (only when this city's UCRA folder is missing) and then exports
+# this city's slice.
+#
+# The UCRA *code* is vendored at tasks/ucra/pipeline/ — there is no separate
+# checkout to point at, and the batch config is generated per run from the
+# settings below (so no machine-specific paths are ever committed).
+ucra: False
+
+# UCRA DATA/output tree: holds shapefiles_received/ (the AOIs), data/ (global
+# rasters), and one folder per city once the batch has run. Blank resolves as:
+#     1. this setting   2. $CITYSCAN_UCRA_DIR   3. <repo parent>/ucra-data
+ucra_project_dir: ''
+ucra_env: 'ucra'
+ucra_run_batch_if_missing: True
+
+# Which batch modules run. These are the toggles that used to live in the
+# pipeline's own configs/ucra_menu.yaml.
+ucra_modules:
+  run_urban_coastal: False
+  run_cckp: False
+  run_environment: False
+  run_wsf_drought: True
+  run_lst_and_stats: True
+
+# Blank uses $GEE_PROJECT. Rscript must be on PATH or given in full.
+ucra_ee_project: ''
+ucra_rscript: 'Rscript'
+ucra_run_plots: True
+
+# Where UCRA's global inputs come from — same contract as fcs_data_source.
+# 'gcs' mirrors gs://city-scan-global-data/ucra-data/ (5,555 files / 62 GB) into
+# <ucra_project_dir>/data/. No subset selection: the batch runs every module over
+# every city, so it wants the whole tree.
+ucra_data_source: 'local'
+ucra_data_bucket: 'city-scan-global-data'
+ucra_data_prefix: 'ucra-data'
+ucra_data_workers: 8
+
+# ── UCRA / CMIP6 (the one PER-CITY UCRA module) ───────────────────────
+# Downscaled NASA NEX-GDDP-CMIP6 projections reduced over THIS city's extent,
+# plus the matching ERA5 observed series. Ported from
+#   UCRA/scripts/UCRA_pipeline_cmip6_downscaling_debiasing_ai_plot.ipynb
+#
+# COST: one GEE round trip per variable x scenario x year. The defaults below
+# are ~1,450 calls per city (hours, not minutes). Results are cached per decade
+# so an interrupted run resumes, and years are fetched concurrently. Left OFF so
+# `scan ucra` stays fast until you opt in.
+ucra_cmip6: False
+ucra_cmip6_vars: ['tas', 'tasmax', 'tasmin', 'pr']
+# GEE only mirrors these three NEX-GDDP-CMIP6 scenarios — SSP1-2.6 and SSP3-7.0
+# are not obtainable here whatever you put in this list.
+ucra_cmip6_scenarios: ['historical', 'ssp245', 'ssp585']
+ucra_cmip6_first_year: 1980
+ucra_cmip6_last_year: 2100
+ucra_cmip6_scale: 27830        # native NEX-GDDP grid (~0.25 deg); lower it for tiny AOIs
+ucra_cmip6_workers: 6
+ucra_cmip6_debias: True        # linear scaling + Random Forest (+ XGBoost if installed)

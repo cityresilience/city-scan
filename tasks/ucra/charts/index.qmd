@@ -1,0 +1,150 @@
+---
+df-print: paged
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+## Urban Climate Risk Assessment (UCRA)
+
+Climate-risk indicators from the UCRA pipeline. UCRA runs as a **country batch**,
+so the charts below place this city against its peer cities in the same run
+(highlighted in red). Figures live under `03-render-output/ucra/`; the underlying
+tables carry the `_ucra` suffix (cross-city tables are prefixed `ucra_stats_`).
+
+Maps follow the cartography of the CRP *Urban Climate Risk Analysis — Burundi*
+report: washed-out basemap, raster clipped to the AOI, black dashed AOI outline,
+scale bar in kilometres.
+
+```{r}
+#| label: setup-ucra
+#| include: false
+if (file.exists("_quarto.yml")) here::i_am("tasks/ucra/charts/index.qmd")
+if (!exists("aoi")) {
+  source(here::here("core/R/setup.R"))
+}
+```
+
+```{r}
+#| label: data-loading-ucra
+#| include: false
+
+ucra_dir <- here::here("03-render-output", "ucra")
+ucra_ls  <- function(sub) {
+  d <- file.path(ucra_dir, sub)
+  if (dir.exists(d)) list.files(d, pattern = "\\.png$", full.names = TRUE) else character(0)
+}
+ucra_maps  <- ucra_ls("maps")
+ucra_plots <- ucra_ls("plots")
+ucra_cmip6 <- ucra_ls("cmip6")
+
+# Figures this task renders itself, plus the ones UCRA's own R scripts draw
+# (r_scripts/*.R -> <project_dir>/plots/, exported here with an `r_` prefix).
+# Anything not listed still appears, captioned by its file stem — so new output
+# shows up without editing this file.
+ucra_caption_map <- c(
+  "lst_summer_ucra"              = "Land surface temperature — summer",
+  "lst_winter_ucra"              = "Land surface temperature — winter",
+  "wsf_evolution_ucra"           = "Built-up area evolution (WSF)",
+  "air_quality_2019_ucra"        = "Air quality (PM2.5), 2019",
+  "builtup_ssp2_2050_ucra"       = "Built-up projection — SSP2, 2050",
+  "builtup_ssp3_2080_ucra"       = "Built-up projection — SSP3, 2080",
+  "gdp_ucra"                     = "Gridded GDP",
+  "urbanheat_ssp2_day_sum_ucra"  = "Urban heat island — SSP2, daytime",
+  "urbanheat_ssp2_nig_sum_ucra"  = "Urban heat island — SSP2, night-time",
+  "urbanheat_ssp5_day_sum_ucra"  = "Urban heat island — SSP5, daytime",
+  "drought_twsan_ucra"           = "Terrestrial water storage anomaly",
+  "avg_temp_peers_ucra"          = "Mean land surface temperature vs peer cities",
+  "air_quality_trend_ucra"       = "Air quality (PM2.5), 1998-2019, vs peer-city mean",
+  "cckp_anomaly_peers_ucra"      = "CCKP climate anomaly vs peer cities",
+  "r_aep_ucra"                   = "Annual exceedance probability",
+  "r_avg_temp_ucra"              = "Mean temperature, all cities",
+  "r_avg_air_1998_2019_ucra"     = "Mean PM2.5, 1998-2019, all cities",
+  "r_bad_air_1998_2019_ucra"     = "Days above the PM2.5 guideline, 1998-2019",
+  "r_cdd_clim_ucra"              = "Consecutive dry days — climatology",
+  "r_cdd_anom_ucra"              = "Consecutive dry days — anomaly",
+  "r_hd35_tr26_clim_ucra"        = "Hot days (>35°C) and tropical nights (>26°C) — climatology",
+  "r_hd35_tr26_anom_ucra"        = "Hot days and tropical nights — anomaly",
+  "r_landslide_ucra"             = "Landslide hazard",
+  "r_pr_clim_ucra"               = "Precipitation — climatology",
+  "r_pr_anom_ucra"               = "Precipitation — anomaly",
+  "r_r20mm_r50mm_clim_ucra"      = "Heavy rainfall days (>20mm, >50mm) — climatology",
+  "r_r20mm_r50mm_anom_ucra"      = "Heavy rainfall days — anomaly",
+  "r_r95ptot_clim_ucra"          = "Extreme rainfall contribution (R95pTOT) — climatology",
+  "r_r95ptot_anom_ucra"          = "Extreme rainfall contribution — anomaly",
+  "r_spei01_ucra"                = "SPEI-1 (short-term drought)",
+  "r_spei12_ucra"                = "SPEI-12 (long-term drought)",
+  "r_spei12_clim_ucra"           = "SPEI-12 — climatology",
+  "r_spei48_ucra"                = "SPEI-48 (multi-year drought)",
+  "r_tas_clim_ucra"              = "Air temperature — climatology",
+  "r_tas_anom_ucra"              = "Air temperature — anomaly",
+  "r_tas_txx_clim_ucra"          = "Air temperature and annual maximum (TXx) — climatology",
+  "r_tas_txx_anom_ucra"          = "Air temperature and TXx — anomaly",
+  "r_twsan_ucra"                 = "Terrestrial water storage anomaly",
+  "r_wsdi_clim_ucra"             = "Warm spell duration index — climatology",
+  "r_wsdi_anom_ucra"             = "Warm spell duration index — anomaly"
+)
+
+ucra_gallery <- function(files, heading) {
+  if (length(files) == 0) return(invisible(NULL))
+  cat("\n\n### ", heading, "\n\n", sep = "")
+  stems   <- tools::file_path_sans_ext(basename(files))
+  ordered <- c(intersect(names(ucra_caption_map), stems),
+               sort(setdiff(stems, names(ucra_caption_map))))
+  for (stem in ordered) {
+    f <- files[stems == stem][1]
+    if (is.na(f)) next
+    cap <- if (!is.null(ucra_caption_map[[stem]])) ucra_caption_map[[stem]] else stem
+    cat("\n\n#### ", cap, "\n\n", sep = "")
+    cat(sprintf("![%s](%s)\n\n", cap, normalizePath(f, winslash = "/", mustWork = FALSE)))
+  }
+}
+
+ucra_read <- function(pattern) {
+  f <- list.files(tabular_dir, pattern = pattern, full.names = TRUE)[1]
+  if (!is.na(f) && file.exists(f)) {
+    tryCatch(read_csv(f, col_types = cols()), error = function(e) NULL)
+  } else NULL
+}
+ucra_builtup  <- ucra_read("built_up_stats_ucra\\.csv$")
+ucra_avg_temp <- ucra_read("^ucra_stats_avg_temp_ucra\\.csv$")
+ucra_cmip6_tb <- ucra_read("cmip6_summary_ucra_cmip6\\.csv$")
+```
+
+```{r}
+#| label: ucra-figures
+#| results: asis
+
+if (length(c(ucra_maps, ucra_plots, ucra_cmip6)) == 0) {
+  print_text(paste_bold("No UCRA figures available — run `scan ucra` for this city."))
+} else {
+  ucra_gallery(ucra_maps,  "Maps")
+  ucra_gallery(ucra_plots, "Peer-city comparisons and climate indices")
+  ucra_gallery(ucra_cmip6, "CMIP6 downscaled projections (this city)")
+}
+```
+
+```{r}
+#| label: ucra-tables
+#| results: asis
+
+if (!is.null(ucra_builtup)) {
+  cat("\n\n### Built-up area statistics (this city)\n\n")
+  print(htmltools::tagList(ucra_builtup %>% print_paged_df()))
+  cat("\n\n")
+}
+if (!is.null(ucra_cmip6_tb)) {
+  cat("\n\n### CMIP6 projected change by scenario (2025 to 2100)\n\n")
+  print(htmltools::tagList(ucra_cmip6_tb %>% print_paged_df()))
+  cat("\n\n")
+}
+if (!is.null(ucra_avg_temp)) {
+  cat("\n\n### Mean land surface temperature, all cities in the batch\n\n")
+  print(htmltools::tagList(ucra_avg_temp %>% print_paged_df()))
+  cat("\n\n")
+}
+if (is.null(ucra_builtup) && is.null(ucra_avg_temp) && is.null(ucra_cmip6_tb)) {
+  print_text(paste_bold("No UCRA tables available."))
+}
+```

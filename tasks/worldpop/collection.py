@@ -20,6 +20,55 @@ WP_URLS = {
 }
 
 
+def _urlopen_retry(url, timeout=90, retries=2, backoff=5):
+    """urlopen with a socket timeout + retries so a hung/slow WorldPop server
+    fails after a bounded time instead of blocking the whole run forever."""
+    import time as _time
+    last_err = None
+    for attempt in range(1, retries + 1):
+        try:
+            return urllib.request.urlopen(url, timeout=timeout)
+        except Exception as e:
+            last_err = e
+            logger.warning(f"  download attempt {attempt}/{retries} failed ({e}): {url}")
+            if attempt < retries:
+                _time.sleep(backoff * attempt)
+    raise last_err
+
+
+def _gee_worldpop_g2(aoi, iso3, years):
+    """Fetch WorldPop Global-2 (R2025A constrained, 100m) per year from the GEE
+    community catalog, clipped to the AOI server-side (no whole-country download).
+    Returns a list of (array(1,H,W) float32, meta) per year — the same format the
+    direct-download path returns, so _stack_mask and everything downstream is
+    unchanged. Same dataset/release as the old direct download."""
+    import ee
+    import numpy as np
+    from core.py import gee_fns as fns
+
+    col = ee.ImageCollection('projects/sat-io/open-datasets/WORLDPOP/pop') \
+        .filter(ee.Filter.eq('country', iso3.upper()))
+    year_bands = []
+    for y in years:
+        # 'year' is stored as a string here; mosaic handles any tiled countries
+        yi = col.filter(ee.Filter.eq('year', str(y))).mosaic()
+        year_bands.append(yi.rename(f'pop_{y}'))
+    multi = ee.Image.cat(year_bands).toFloat()
+
+    da = fns.tiled_collection(multi, aoi, scale=100)
+    transform = da.rio.transform()
+    out = []
+    for y in years:
+        arr = np.asarray(da.sel(band=f'pop_{y}').values, dtype='float32')[np.newaxis, :, :]
+        meta = {
+            'driver': 'GTiff', 'height': arr.shape[1], 'width': arr.shape[2],
+            'count': 1, 'dtype': 'float32', 'crs': 'EPSG:4326',
+            'transform': transform, 'nodata': np.nan,
+        }
+        out.append((arr, meta))
+    return out
+
+
 def _wp_direct_download(iso3, years, dataset, aoi_bounds):
     """Download WorldPop rasters, windowed read of AOI only, return list of (array, meta).
     Works for both Global 1 and Global 2 — pass dataset='g1' or 'g2'.
@@ -33,7 +82,7 @@ def _wp_direct_download(iso3, years, dataset, aoi_bounds):
 
     def _fetch(year):
         url = url_template.format(year=year, ISO=iso_upper, iso=iso_lower)
-        response = urllib.request.urlopen(url)
+        response = _urlopen_retry(url)
         with MemoryFile(response.read()) as memfile:
             with memfile.open() as src:
                 window = rasterio.windows.from_bounds(*aoi_bounds, src.transform)
@@ -69,7 +118,7 @@ def _wp_multi_country_download(iso3_list, years, dataset, aoi_bounds):
                 iso_lower = iso3.lower()
                 iso_upper = iso3.upper()
                 url = WP_URLS[dataset].format(year=year, ISO=iso_upper, iso=iso_lower)
-                response = urllib.request.urlopen(url)
+                response = _urlopen_retry(url)
                 with MemoryFile(response.read()) as memfile:
                     with memfile.open() as src:
                         window = rasterio.windows.from_bounds(*aoi_bounds, src.transform)
@@ -242,21 +291,14 @@ def datacollection(
         # Multi-country: download from WorldPop directly for all countries, mosaic per year
         g2_bands = _wp_multi_country_download(country_iso3_list, g2_years, "g2", aoi_bounds)
     else:
-        # Try GCS first (windowed reads, no full download needed)
+        # Fetch from Google Earth Engine (community WorldPop R2025A constrained,
+        # 100m), clipped to the AOI server-side — same dataset/release as the old
+        # whole-country direct download, but ~instant. Falls back to the direct
+        # download only if GEE is unavailable for this ISO/year.
         try:
-            g2_bands = []
-            for year in g2_years:
-                fname = f"{iso_lower}_pop_{year}_CN_100m_R2025A_v1.tif"
-                with rasterio.open(f"{GCS_G2_BASE}/{fname}") as src:
-                    window = rasterio.windows.from_bounds(*aoi_bounds, src.transform)
-                    data = src.read(window=window)
-                    transform = src.window_transform(window)
-                    meta = src.meta.copy()
-                    meta.update({"height": data.shape[1], "width": data.shape[2], "transform": transform})
-                g2_bands.append((data, meta))
+            g2_bands = _gee_worldpop_g2(aoi, country_iso3, g2_years)
         except Exception as e:
-            # GCS not available for this ISO, download all years from WorldPop
-            logger.info(f"  GCS failed ({e}), downloading from WorldPop directly")
+            logger.warning(f"  GEE WorldPop g2 fetch failed ({e}); falling back to direct download")
             g2_bands = _wp_direct_download(country_iso3, g2_years, "g2", aoi_bounds)
 
     # Stack all years and mask to AOI polygon

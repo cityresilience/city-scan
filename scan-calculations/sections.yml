@@ -21,3 +21,5 @@ sections:
   # - lst               # Land Surface Temperature
   - solar             # Photovoltaic Potential
   - fwi               # Fire Weather Index
+  - fcs               # Future City Scan (SSP projections) — plots from 03-render-output/fcs/
+  - ucra              # Urban Climate Risk Assessment — peer-context plots from 03-render-output/ucra/

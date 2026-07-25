@@ -1,0 +1,71 @@
+# EXAMPLE ONLY — the `fcs` City Scan task does NOT read this file.
+#
+# When you run `scan fcs`, tasks/fcs/__init__.py generates a config per city into
+# tasks/fcs/configs_generated/ and passes that. Editing this file has no effect
+# on a `scan` run; configure `fcs_*` in inputs/menu.yml instead.
+#
+# Keep this only for driving the vendored pipeline standalone:
+#     conda run -n fcs-pipeline python tasks/fcs/run_fcs_pipeline.py \
+#         --config tasks/fcs/fcs_menue.yaml
+#
+# Toggle any pipeline step under `pipeline_steps` to skip it during a standard run.
+
+city_name: 'Chittagong'
+# Absolute path to the FCS data/output tree (holds data/, 01-inputs/, 02-process-output/).
+base_dir: '/path/to/FCS/'
+AOI_path: '/path/to/FCS/01-inputs/shapefiles/AOI_Chittagong_Final.shp'
+AOI_path_countries: '/path/to/FCS/01-inputs/shapefiles/WB_countries_Admin0_10m.shp'
+country_name: 'Bangladesh'
+country_iso3: 'BGD'
+
+# Root folder for Fathom flood inputs. The code will append the country name internally.
+flood_source: '/path/to/FCS/data/fathom'
+
+# Flood analysis settings used by the flood exposure steps.
+flood:
+  coastal: true
+  fluvial: true
+  pluvial: true
+  threshold: 15
+  year:
+    - 2020
+    - 2030
+    - 2050
+    - 2080
+  ssp:
+    - 1
+    - 2
+    - 3
+    - 5
+  prob_cutoff:
+    - 1
+    - 10
+  rps:
+    - 10
+    - 100
+    - 1000
+    - 20
+    - 200
+    - 50
+    - 500
+
+# Per-step on/off switches for the Future City Scan pipeline.
+# These are used only when you do not pass --steps on the command line.
+pipeline_steps:
+  population_rescaling: true
+  population: true
+  gdp_rescaling: true
+  gdp: true
+  urbanland: true
+  heatflux: true
+  urbanheatisland: true
+  cckp_precipitation: true
+  cckp_temperature: true
+  flood_population_exposure: true
+  flood_infrastructure_exposure: true
+  cleanup: true
+  demographics: true
+  cyclones: true
+  erosion: true
+  country_population_ratio: true
+  country_gdp_ratio: true

@@ -235,3 +235,33 @@ gcs-user-input/
 # docs/
 .here
 .egg-info
+
+# ── FCS / UCRA integration ────────────────────────────────────────────
+# Per-run configs written by the fcs/ucra task adapters from inputs/menu.yml.
+# Machine-specific by construction — never commit them.
+tasks/fcs/configs_generated/
+tasks/ucra/configs_generated/
+
+# The vendored pipelines write their outputs into the external data trees, but
+# a stray local run can drop these inside the repo.
+tasks/fcs/02-process-output/
+tasks/ucra/pipeline/02-process-output/
+
+# Local run archives and scratch output
+archived_from_previous_run/
+logs/
+scratch/
+
+# One-off debugging probes and country-specific drivers. Kept on disk because
+# they document how particular datasets were checked, but they carry hardcoded
+# paths and are noise in a shared branch. scripts/gcs/ IS tracked — those are
+# the maintained, portable upload utilities.
+scripts/dev/
+
+# menu.yml carries machine-specific data paths once a user fills them in, but
+# the committed copy is the portable template — keep tracking it, and see
+# `git update-index --skip-worktree inputs/menu.yml` if local edits get noisy.
+
+# Allow the R scripts the UCRA pipeline needs (the blanket *.R rule below would
+# otherwise be fine, but data-file rules above can catch their companions).
+!tasks/ucra/pipeline/r_scripts/*.R

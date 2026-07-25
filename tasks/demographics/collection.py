@@ -2,7 +2,6 @@
 import os
 import geopandas as gpd
 import rasterio
-from rasterio.mask import mask
 import pandas as pd
 from core.py.log_module import setup_logger
 import numpy as np
@@ -22,6 +21,20 @@ def age_label(age):
         return f"{age}-{age+4}"
 
 
+def _agesex_image_for_country(iso3, year):
+    """Mosaic the GEE community WorldPop age-sex tiles for a country/year into one
+    image. In this catalog 'year' is an int, 'iso' is upper-case, and each
+    country-year is split into several tiles — so we mosaic them."""
+    import ee
+    col = ee.ImageCollection('projects/sat-io/open-datasets/WORLDPOP/agesex') \
+        .filter(ee.Filter.eq('year', int(year)))
+    for code in (iso3.upper(), iso3.lower()):
+        sub = col.filter(ee.Filter.eq('iso', code))
+        if sub.size().getInfo() > 0:
+            return sub.mosaic()
+    raise RuntimeError(f"No GEE age-sex image for {iso3} {year}")
+
+
 def datacollection(
     aoi: gpd.GeoDataFrame,
     city_name: str,
@@ -32,182 +45,97 @@ def datacollection(
     country_iso3_list: list = None,
 ):
     """
-    Download, clip, and stack WorldPop age–sex rasters into a single multi-band GeoTIFF.
+    Build a multi-band age-sex GeoTIFF from WorldPop R2025A (constrained, 100m),
+    sourced from the Google Earth Engine community catalog and clipped to the AOI
+    server-side. This replaces the slow whole-country direct downloads.
 
-    Parameters
-    ----------
-    aoi : GeoDataFrame
-        AOI polygon(s).
-    city_name : str
-        City name for naming output files.
-    country_iso3 : str
-        ISO3 country code (e.g. "IDN", "KHM").
-    output_dir : str
-        Directory where clipped raster will be saved.
-    return_raster : bool, default False
-        If True, return (array, metadata) for the stacked raster.
+    Output schema is unchanged: 36 bands ordered f/m x [0-1, 1-4, 5-9, ..., 80+],
+    band-described as "{sex}_{age_label}" (e.g. "f_0-1", "m_80+"). The catalog's
+    finer 80/85/90 age classes are folded into "80+" to match the existing pyramid.
 
-    Returns
-    -------
-    (np.ndarray, dict) or None
-        Multi-band raster array and metadata if return_raster=True.
+    Returns (np.ndarray, dict) if return_raster else None.
     """
+    import ee
+    from core.py import gee_fns as fns
 
-    logger.info("Starting WorldPop demographic data collection")
+    logger.info("Starting WorldPop demographic data collection (GEE)")
 
-    # AGE_GROUPS = [0, 1] + list(range(5, 85, 5))  # 18 groups (old: Global_2000_2020_Constrained)
-    AGE_GROUPS = [0, 1] + list(range(5, 85, 5))  # 18 groups (R2025A has 85, 90 too but keeping consistent)
+    AGE_GROUPS = [0, 1] + list(range(5, 85, 5))  # 18 groups: 0,1,5,...,80
     SEXES = ["f", "m"]
 
     if aoi is None or aoi.empty or aoi.crs is None:
         logger.error("Invalid AOI")
         return None
 
-    # Old data source (2020 only, Global_2000_2020_Constrained)
-    # bucket_base = "https://storage.googleapis.com/city-scan-global-public/"
-    # WORLDPOP_BASE = "https://data.worldpop.org/GIS/AgeSex_structures/Global_2000_2020_Constrained/2020"
-    # filename pattern: {iso3}_{sex}_{age}_2020_constrained.tif
-
-    # New data source: WorldPop Global 2015-2030 R2025A (configurable year, default current)
     from datetime import datetime
-    current_year = min(year or datetime.now().year, 2030)  # clamp to dataset max (2015-2030)
-    logger.info(f"Using WorldPop R2025A year: {current_year}")
-    WORLDPOP_BASE = f"https://data.worldpop.org/GIS/AgeSex_structures/Global_2015_2030/R2025A/{current_year}/{country_iso3.upper()}/v1/100m/constrained"
+    current_year = min(year or datetime.now().year, 2030)  # dataset covers 2015-2030
+    current_year = max(current_year, 2015)
+    logger.info(f"Using WorldPop R2025A age-sex year: {current_year}")
 
     spatial_dir = os.path.join(output_dir, "spatial")
     os.makedirs(spatial_dir, exist_ok=True)
-
-    output_raster = os.path.join(
-        spatial_dir,
-        f"{city_name}_worldpop_demographics.tif"
-    )
+    output_raster = os.path.join(spatial_dir, f"{city_name}_worldpop_demographics.tif")
 
     global data_source
     data_source = f"WorldPop R2025A ({current_year})"
-    import urllib.request
-    from rasterio.io import MemoryFile
-    from concurrent.futures import ThreadPoolExecutor
 
-    # Multi-country support
+    # Multi-country support: mosaic per-country age-sex images
     if country_iso3_list is None:
         country_iso3_list = [country_iso3]
-    multi_country = len(country_iso3_list) > 1
 
-    # Build list of (sex, age) tuples
-    file_list = []
-    for sex in SEXES:
-        for age in AGE_GROUPS:
-            file_list.append((sex, age))
+    try:
+        imgs = [_agesex_image_for_country(c, current_year) for c in country_iso3_list]
+        base = imgs[0] if len(imgs) == 1 else ee.ImageCollection(imgs).mosaic()
 
-    total = len(file_list)
+        # Build the 36 folded bands in the exact pipeline order. GEE band names
+        # can't contain '+'/'-', so use safe names (b00..b35) for the GEE image
+        # and keep the real labels (f_0-1 .. m_80+) for the raster descriptions.
+        band_labels = []   # real labels written as band descriptions
+        gee_names = []      # safe names used inside GEE / for da.sel
+        folded = []
+        for sex in SEXES:
+            for age in AGE_GROUPS:
+                gname = f"b{len(folded):02d}"
+                band_labels.append(f"{sex}_{age_label(age)}")
+                gee_names.append(gname)
+                if age == 80:
+                    # Fold 80, 85, 90 -> "80+"
+                    src = base.select([f"{sex}_80", f"{sex}_85", f"{sex}_90"]).reduce(ee.Reducer.sum())
+                else:
+                    src = base.select(f"{sex}_{age:02d}")
+                folded.append(src.rename(gname))
+        multi = ee.Image.cat(folded).toFloat()
 
-    def _download_and_clip(item):
-        sex, age = item
-        age_str = f"{age:02d}"
+        logger.info(f"Fetching {len(band_labels)} age-sex bands from GEE (R2025A {current_year}, AOI-clipped)...")
+        da = fns.tiled_collection(multi, aoi, scale=100)
 
-        if multi_country:
-            # Download from each country, window to AOI extent, mosaic, then clip
-            from rasterio.merge import merge
-            aoi_bounds = aoi.total_bounds
-            country_clips = []
-            for iso3 in country_iso3_list:
-                iso_lower = iso3.lower()
-                iso_upper = iso3.upper()
-                wp_base = f"https://data.worldpop.org/GIS/AgeSex_structures/Global_2015_2030/R2025A/{current_year}/{iso_upper}/v1/100m/constrained"
-                filename = f"{iso_lower}_{sex}_{age_str}_{current_year}_CN_100m_R2025A_v1.tif"
-                try:
-                    response = urllib.request.urlopen(f"{wp_base}/{filename}")
-                    with MemoryFile(response.read()) as full_mf:
-                        with full_mf.open() as rsrc:
-                            win = rasterio.windows.from_bounds(*aoi_bounds, rsrc.transform)
-                            rdata = rsrc.read(window=win)
-                            rtransform = rsrc.window_transform(win)
-                            rmeta = rsrc.meta.copy()
-                            rmeta.update({"height": rdata.shape[1], "width": rdata.shape[2], "transform": rtransform})
-                    mf = MemoryFile()
-                    with mf.open(**rmeta) as dst:
-                        dst.write(rdata)
-                    country_clips.append(mf)
-                    del rdata, response
-                except Exception as e:
-                    logger.debug(f"  {iso3} {sex}_{age_str} not available: {e}")
-                    continue
+        band_arrays = [
+            np.nan_to_num(np.asarray(da.sel(band=g).values, dtype="float32"), nan=0.0)
+            for g in gee_names
+        ]
+        stacked = np.stack(band_arrays, axis=0)
+        transform = da.rio.transform()
+    except Exception as e:
+        logger.error(f"Demographics: GEE age-sex fetch failed ({e}); skipping this layer.")
+        return None
 
-            if not country_clips:
-                return None
+    meta = {
+        "driver": "GTiff",
+        "height": stacked.shape[1],
+        "width": stacked.shape[2],
+        "count": len(band_labels),
+        "dtype": "float32",
+        "crs": "EPSG:4326",
+        "transform": transform,
+        "nodata": 0,
+    }
 
-            datasets = [mf.open() for mf in country_clips]
-            if len(datasets) == 1:
-                src = datasets[0]
-            else:
-                mosaic_data, mosaic_transform = merge(datasets)
-                mosaic_meta = datasets[0].meta.copy()
-                mosaic_meta.update({
-                    "height": mosaic_data.shape[1],
-                    "width": mosaic_data.shape[2],
-                    "transform": mosaic_transform,
-                })
-                mosaic_mf = MemoryFile()
-                with mosaic_mf.open(**mosaic_meta) as dst:
-                    dst.write(mosaic_data)
-                src = mosaic_mf.open()
-
-            aoi_proj = aoi.to_crs(src.crs) if aoi.crs != src.crs else aoi
-            shapes = [g.__geo_interface__ for g in aoi_proj.geometry]
-            clipped, transform = mask(src, shapes=shapes, crop=True, nodata=0)
-            clipped[clipped == src.nodata] = 0
-            meta = src.meta.copy()
-            meta.update({"height": clipped.shape[1], "width": clipped.shape[2], "transform": transform})
-
-            for ds in datasets:
-                ds.close()
-            for mf in country_clips:
-                mf.close()
-
-            return sex, age, clipped[0], meta, f"{sex}_{age_label(age)}"
-        else:
-            # Single country — original logic
-            filename = f"{country_iso3.lower()}_{sex}_{age_str}_{current_year}_CN_100m_R2025A_v1.tif"
-            url = f"{WORLDPOP_BASE}/{filename}"
-            response = urllib.request.urlopen(url)
-            with MemoryFile(response.read()) as memfile:
-                with memfile.open() as src:
-                    aoi_proj = aoi.to_crs(src.crs) if aoi.crs != src.crs else aoi
-                    shapes = [g.__geo_interface__ for g in aoi_proj.geometry]
-                    clipped, transform = mask(src, shapes=shapes, crop=True, nodata=0)
-                    clipped[clipped == src.nodata] = 0
-                    meta = src.meta.copy()
-                    meta.update({"height": clipped.shape[1], "width": clipped.shape[2], "transform": transform})
-            return sex, age, clipped[0], meta, f"{sex}_{age_label(age)}"
-
-    logger.info(f"Downloading {total} age-sex rasters (3 parallel){' from ' + str(len(country_iso3_list)) + ' countries' if multi_country else ''}...")
-    results = []
-    with ThreadPoolExecutor(max_workers=3) as pool:
-        for i, result in enumerate(pool.map(_download_and_clip, file_list), 1):
-            if result is not None:
-                results.append(result)
-            print(f"  Downloaded {i}/{total}", end="\r")
-    print()
-
-    # Reassemble in order
-    band_arrays = [r[2] for r in results]
-    band_descriptions = [r[4] for r in results]
-    first_meta = results[0][3]
-    meta = first_meta.copy()
-    meta.update({"count": total, "nodata": 0})
-
-    # Write multi-band raster to disk
     with rasterio.open(output_raster, "w", **meta) as dst:
-        for i, band in enumerate(band_arrays, start=1):
-            dst.write(band, i)
-            dst.set_band_description(i, band_descriptions[i - 1])
-
+        dst.write(stacked)
+        for i, lbl in enumerate(band_labels, start=1):
+            dst.set_band_description(i, lbl)
     logger.info(f"Saved multi-band raster: {output_raster}")
 
-    # Optional in-memory return
     if return_raster:
-        stacked_array = np.stack(band_arrays, axis=0)
-        return stacked_array, meta
-
+        return stacked, meta
     return None
-

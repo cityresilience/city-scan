@@ -40,6 +40,7 @@ Top-level folders:
 - **`mnt/`** — Auto-created per-city output folders (`YYYY-MM-country-city/`)
 - **`templates/`** — Boilerplate files for new tasks and starter input configs
 - **`docs/`** — Setup guides and reference (see [docs/README.md](docs/README.md))
+- **`scripts/`** — Standalone helpers: `gcs/` (bucket upload utilities), `dev/` (one-off probes kept for reference)
 - **`logs/`** — Auto-created log files
 
 Each scan in `mnt/{scan_id}/` contains:
@@ -67,6 +68,36 @@ The general workflow is:
 `scan --all` runs steps 2–3 for every task enabled in `menu.yml`. Step 4 runs only for tasks with a `multianalysis.R`/`.py` file. Steps 5–7 use the `--render` flag and can be run from the repo root (with `--scan-id`) or directly inside a city folder.
 
 For a visual diagram of how data flows, see [docs/reference/workflow-graph.md](docs/reference/workflow-graph.md). For a hands-on walkthrough, see [docs/getting-started/walkthrough.md](docs/getting-started/walkthrough.md).
+
+---
+
+## FCS and UCRA
+
+Two sibling pipelines ship inside this repo as ordinary tasks:
+
+- **`fcs`** — Future City Scan (SSP projections), vendored at `tasks/fcs/`
+- **`ucra`** — Urban Climate Risk Assessment, vendored at `tasks/ucra/pipeline/`
+
+```bash
+scan fcs --multicity -e
+```
+
+```bash
+scan ucra --multicity -e
+```
+
+Both are off by default in `menu.yml`, so `scan --all` ignores them until
+enabled. Their *code* is in the repo; their *input data* (60–160 GB) is not, and
+is located per machine via `$CITYSCAN_FCS_DIR` / `$CITYSCAN_UCRA_DIR` or pulled
+from GCS with `--sync-data`.
+
+Note that **UCRA is a country batch, not a per-city pipeline** — it processes
+every AOI at once and writes cross-city comparison tables. Read
+[docs/fcs-ucra-integration.md](docs/fcs-ucra-integration.md) before changing it;
+running it per-city silently destroys those comparisons.
+
+Full operational sequence for a multi-city run, with the snags and expected
+failures called out, is in [RUNBOOK.md](RUNBOOK.md).
 
 ---
 

@@ -1,0 +1,39 @@
+# EXAMPLE ONLY — the `ucra` City Scan task does NOT read this file.
+#
+# When you run `scan ucra`, tasks/ucra/__init__.py generates a config from
+# inputs/menu.yml into tasks/ucra/configs_generated/ and passes that. Editing
+# this file has no effect on a `scan` run; configure `ucra_*` in inputs/menu.yml
+# instead.
+#
+# Keep this only for driving the vendored pipeline standalone:
+#     conda run -n ucra python tasks/ucra/pipeline/run_pipeline.py \
+#         --config tasks/ucra/pipeline/configs/ucra_menu.yaml
+
+# Absolute path to the UCRA data/output tree: must contain
+# shapefiles_received/ (the AOIs) and data/ (the global rasters).
+project_dir: /path/to/ucra-data
+country: Pakistan
+
+# Blank uses the GEE_PROJECT environment variable.
+ee_project: ''
+ee_auth_mode: notebook
+ee_force_auth: false
+
+# Batch modules.
+run_urban_coastal: false
+run_cckp: false
+run_environment: false
+run_wsf_drought: true
+run_lst_and_stats: true
+
+# R plotting. `rscript_path` must be on PATH or given in full.
+run_plots: false
+rscript_path: Rscript
+plot_scripts:
+  - cckp.R
+  - landslide.R
+  - heat.R
+  - drought.R
+  - air.R
+  - spei.R
+  - slr.R

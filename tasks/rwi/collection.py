@@ -57,6 +57,27 @@ def datacollection(
 
     bucket_base = "https://storage.googleapis.com/city-scan-global-public/"
 
+    def _find_combined_rwi_blob(iso_upper):
+        """Some countries are bundled into combined RWI files (e.g. PAK lives in
+        IND_PAK_relative_wealth_index.csv). List the bucket and return the blob
+        whose name contains this ISO3, if any."""
+        import urllib.request, json
+        api = ("https://storage.googleapis.com/storage/v1/b/"
+               "city-scan-global-public/o?prefix=relative_wealth_index/&maxResults=500")
+        try:
+            data = json.load(urllib.request.urlopen(api, timeout=30))
+        except Exception as e:
+            logger.warning(f"  could not list RWI bucket: {e}")
+            return None
+        for it in data.get("items", []):
+            name = it["name"]
+            if not name.endswith("_relative_wealth_index.csv"):
+                continue
+            stem = name.split("/")[-1].replace("_relative_wealth_index.csv", "")
+            if iso_upper in stem.split("_"):
+                return name
+        return None
+
     try:
         # Download RWI CSV(s) — one per country, concat for multi-country AOIs
         rwi_frames = []
@@ -68,7 +89,17 @@ def datacollection(
             try:
                 rwi_frames.append(pd.read_csv(rwi_url))
             except Exception as e:
-                logger.warning(f"RWI not available for {iso_upper}: {e}")
+                # Fall back to a combined multi-country file (e.g. PAK -> IND_PAK)
+                alt = _find_combined_rwi_blob(iso_upper)
+                if alt:
+                    logger.info(f"  {iso_upper} is bundled in combined RWI file: {alt}")
+                    try:
+                        rwi_frames.append(pd.read_csv(bucket_base + alt))
+                        continue
+                    except Exception as e2:
+                        logger.warning(f"RWI combined file failed for {iso_upper}: {e2}")
+                else:
+                    logger.warning(f"RWI not available for {iso_upper}: {e}")
                 continue
 
         if not rwi_frames:
@@ -84,7 +115,27 @@ def datacollection(
             geometry=gpd.points_from_xy(rwi_df.longitude, rwi_df.latitude),
             crs="EPSG:4326"
         )
-        
+
+        # Restrict to a buffered AOI bbox BEFORE the O(n^2) spacing computation.
+        # National RWI files (and combined ones like IND_PAK, ~600k points) are
+        # far too large to process whole; the AOI is tiny. ~0.15 deg (~15 km)
+        # padding keeps enough neighbours for spacing + edge polygons.
+        try:
+            minx, miny, maxx, maxy = aoi.to_crs(4326).total_bounds
+            pad = 0.15
+            m = (
+                (rwi_gdf.longitude >= minx - pad) & (rwi_gdf.longitude <= maxx + pad) &
+                (rwi_gdf.latitude >= miny - pad) & (rwi_gdf.latitude <= maxy + pad)
+            )
+            rwi_gdf = rwi_gdf[m].reset_index(drop=True)
+            logger.info(f"RWI points within buffered AOI bbox: {len(rwi_gdf)}")
+        except Exception as e:
+            logger.warning(f"RWI AOI pre-clip skipped: {e}")
+
+        if rwi_gdf.empty:
+            logger.error("No RWI points fall within the AOI area")
+            return None
+
         # Project both datasets to a metric CRS (Web Mercator)
         rwi_proj = rwi_gdf.to_crs(3857)
         aoi_proj = aoi.to_crs(3857)

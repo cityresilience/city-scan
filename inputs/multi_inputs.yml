@@ -1,0 +1,73 @@
+# Multi-city input — Pakistan UCRA + City Scan (13 Punjab Municipal Committees)
+# Run: scan --all --multicity   (with GEE_PROJECT=ee-azizlums and Rscript on PATH)
+#
+# Option A: each city has its own AOI shapefile in inputs/AOI/{city_name}/
+# (spaces in city_name map to underscores in the folder name).
+
+cities:
+  - city_name: Ahmadpur East
+  - city_name: Rajanpur
+
+
+# optional: reuse a previous run's directory (yyyy-mm). Default null.
+prev_run_date:
+
+# benchmark parameters (see docs/benchmarks.md)
+benchmark_mode: auto
+benchmark_backup:
+nearby_countries:
+
+# accessibility analysis parameters
+osm_query:
+  schools:
+    amenity:
+      - school
+      - kindergarten
+      - university
+      - college
+  health:
+    amenity:
+      - clinic
+      - hospital
+      - health
+  police:
+    amenity:
+      - police
+  fire:
+    amenity:
+      - fire_station
+isochrone:  # unit: m
+  schools:
+    - 800
+    - 1600
+    - 2400
+  health:
+    - 1000
+    - 2000
+    - 3000
+accessibility_buffer: 5  # percentage of AOI bounds to buffer to capture amenities/roads just outside the AOI
+
+# flood analysis parameters
+flood:
+  threshold: 15  # unit: cm
+  year:
+    - 2020
+  ssp:  # available SSPs: 1, 2, 3, 5
+    - 1
+    - 2
+    - 3
+  return_period:  # available return periods: 10, 100, 1000, 20, 200, 5, 50, 500
+    - 10
+    - 100
+    - 1000
+
+# FWI date range
+fwi_first_year: 2016
+fwi_last_year: 2021
+
+# demographics year (WorldPop R2025A, available 2015-2030); default current year
+demographics_year: 2026
+
+# land surface temperature parameters (dataset available from 2013-03-18)
+first_year: 2015
+last_year: 2026

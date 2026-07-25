@@ -7,18 +7,25 @@ import logging
 import io
 import sys
 import os
-import tty
-import termios
-import select
+try:
+    import tty
+    import termios
+    import select
+    _HAS_TTY_MODULES = True
+except ImportError:  # Windows has no termios/tty — interactive TUI unavailable, run headless
+    tty = termios = select = None
+    _HAS_TTY_MODULES = False
 from concurrent.futures import ThreadPoolExecutor
 
 
 # Resource concurrency limits
+# Tuned down for a 16 GB machine (~11 GB usable): max concurrent = 5 (was 7).
+# Heavy raster/GEE/R tasks running together were OOM-killing the process.
 RESOURCE_LIMITS = {
     "gee": 1,
-    "gcs": 2,
+    "gcs": 1,
     "osm": 1,
-    "default": 3,
+    "default": 2,
 }
 
 # Task dependencies — sourced from source/tasks.yml (single source of truth)
@@ -346,6 +353,56 @@ def run_parallel(task_names, scan, step=None, run_task_fn=None, skip_tasks=None,
 
     result_thread = threading.Thread(target=collect_results, daemon=True)
     result_thread.start()
+
+    # Headless mode: no termios (Windows) or no interactive TTY (background run).
+    # Run the same parallel engine (deps + resource semaphores honored inside
+    # worker) but stream periodic plain-text progress instead of the TUI.
+    if not _HAS_TTY_MODULES or not sys.stdin.isatty():
+        _real_out = sys.__stdout__
+        _last = 0.0
+        while result_thread.is_alive():
+            now = time.time()
+            if now - _last >= 15:
+                _last = now
+                running = [n for n, s in task_states.items() if s.status == TaskState.RUNNING]
+                waiting = [n for n, s in task_states.items() if s.status == TaskState.WAITING]
+                done = sum(1 for s in task_states.values()
+                           if s.status in (TaskState.OK, TaskState.ERROR, TaskState.SKIPPED))
+                stamp = time.strftime("%H:%M:%S")
+                print(f"  [{stamp}] {done}/{len(task_states)} done | "
+                      f"running({len(running)}): {', '.join(running) if running else '-'} | "
+                      f"waiting: {len(waiting)}", file=_real_out, flush=True)
+                for n in running:
+                    st = task_states[n]
+                    if st.last_log:
+                        print(f"      {n} [{st.phase}]: {st.last_log}",
+                              file=_real_out, flush=True)
+            time.sleep(2)
+
+        pool.shutdown(wait=True)
+        result_thread.join(timeout=10)
+
+        # Restore subprocess.run, setup_logger, and log handlers
+        _subprocess.run = _original_subprocess_run
+        _log_mod.setup_logger = _original_setup_logger
+        logging.getLogger = old_getLogger
+        root_logger.removeHandler(capture)
+        for h in saved_handlers:
+            root_logger.addHandler(h)
+
+        ok = sum(1 for s in task_states.values() if s.status == TaskState.OK)
+        err = sum(1 for s in task_states.values() if s.status == TaskState.ERROR)
+        skip = sum(1 for s in task_states.values() if s.status == TaskState.SKIPPED)
+        wall = max((s.elapsed for s in task_states.values() if s.elapsed), default=0)
+        print(f"\n  {ok} passed  {err} failed  {skip} skipped  ({wall:.0f}s wall time)\n",
+              file=_real_out, flush=True)
+        for name, state in task_states.items():
+            if state.status == TaskState.ERROR:
+                print(f"  FAILED: {name}", file=_real_out, flush=True)
+                for line in state.logs[-10:]:
+                    print(f"    {line}", file=_real_out, flush=True)
+                print(file=_real_out)
+        return all_results
 
     # TUI state
     selected = 0

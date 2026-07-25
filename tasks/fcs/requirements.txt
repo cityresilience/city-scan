@@ -1,0 +1,22 @@
+# Direct Python package requirements for the Future City Scan Pipeline
+# Note: the geospatial stack is much more reliable via Conda.
+# This file is provided mainly for reference and for advanced users who prefer pip.
+
+numpy
+pandas
+PyYAML
+geopandas
+shapely
+rasterio
+rasterstats
+matplotlib
+seaborn
+xarray
+netCDF4
+h5netcdf
+h5py
+scipy
+pyshp
+contextily
+osmnx
+GDAL

@@ -1,0 +1,16 @@
+earthengine-api
+geemap
+pyyaml
+pandas
+numpy
+xarray
+rioxarray
+geopandas
+fiona
+shapely
+rasterio
+matplotlib
+plotly
+requests
+contextily
+osmnx

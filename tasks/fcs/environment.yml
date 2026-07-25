@@ -1,0 +1,25 @@
+name: fcs-pipeline
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - pip
+  - numpy
+  - pandas
+  - pyyaml
+  - geopandas
+  - shapely
+  - rasterio
+  - rasterstats
+  - gdal
+  - matplotlib
+  - seaborn
+  - xarray
+  - netcdf4
+  - h5netcdf
+  - h5py
+  - scipy
+  - pyshp
+  - contextily
+  - osmnx

@@ -1,0 +1,89 @@
+---
+df-print: paged
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+## Future City Scan (FCS)
+
+Forward-looking indicators from the Future City Scan pipeline (SSP scenarios).
+Figures are produced by the `fcs` task and stored separately under
+`03-render-output/fcs/`; underlying tables carry the `_fsca` suffix.
+
+```{r}
+#| label: setup-fcs
+#| include: false
+if (file.exists("_quarto.yml")) here::i_am("tasks/fcs/charts/index.qmd")
+if (!exists("aoi")) {
+  source(here::here("core/R/setup.R"))
+}
+```
+
+```{r}
+#| label: data-loading-fcs
+#| include: false
+
+fcs_plot_dir <- here::here("03-render-output", "fcs", "plots")
+fcs_plots <- if (dir.exists(fcs_plot_dir)) {
+  list.files(fcs_plot_dir, pattern = "\\.png$", full.names = TRUE)
+} else character(0)
+
+# Friendly captions, in the order we want them presented.
+fcs_caption_map <- c(
+  "urbanland_trend_fsca"     = "Urban land fraction by SSP, 2010-2100",
+  "population_by_ssp_fsca"   = "Population by SSP (2020)",
+  "cckp_precipitation_fsca"  = "CCKP precipitation anomaly by SSP",
+  "cckp_temperature_fsca"    = "CCKP temperature anomaly by SSP"
+)
+
+fcs_read <- function(pattern) {
+  f <- list.files(tabular_dir, pattern = pattern, full.names = TRUE)[1]
+  if (!is.na(f) && file.exists(f)) {
+    tryCatch(read_csv(f, col_types = cols()), error = function(e) NULL)
+  } else NULL
+}
+fcs_urbanland <- fcs_read("urbanland_fsca\\.csv$")
+fcs_pop       <- fcs_read("popdynamics_fsca\\.csv$")
+```
+
+```{r}
+#| label: fcs-figures
+#| results: asis
+
+if (length(fcs_plots) == 0) {
+  print_text(paste_bold("No FCS plots available — run `scan fcs` for this city."))
+} else {
+  # Present known plots in curated order, then anything else that exists.
+  stems  <- tools::file_path_sans_ext(basename(fcs_plots))
+  ordered <- c(intersect(names(fcs_caption_map), stems),
+               setdiff(stems, names(fcs_caption_map)))
+  for (stem in ordered) {
+    f <- fcs_plots[stems == stem][1]
+    if (is.na(f)) next
+    cap <- if (!is.null(fcs_caption_map[[stem]])) fcs_caption_map[[stem]] else stem
+    cat("\n\n### ", cap, "\n\n", sep = "")
+    cat(sprintf("![%s](%s)\n\n", cap, normalizePath(f, winslash = "/", mustWork = FALSE)))
+  }
+}
+```
+
+```{r}
+#| label: fcs-tables
+#| results: asis
+
+if (!is.null(fcs_urbanland)) {
+  cat("\n\n### Urban land fraction by SSP (table)\n\n")
+  print(htmltools::tagList(fcs_urbanland %>% print_paged_df()))
+  cat("\n\n")
+}
+if (!is.null(fcs_pop)) {
+  cat("\n\n### Population by SSP (table)\n\n")
+  print(htmltools::tagList(fcs_pop %>% print_paged_df()))
+  cat("\n\n")
+}
+if (is.null(fcs_urbanland) && is.null(fcs_pop)) {
+  print_text(paste_bold("No FCS tables available."))
+}
+```

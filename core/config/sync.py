@@ -35,24 +35,18 @@ def sync_project_files(city_root, sync_targets=None, sync_tasks=None):
     elif not has_existing:
         # First run — copy everything
         targets = {"tasks", "source", "core", "scan-calculations"}
-    elif not sys.stdin.isatty():
-        # Non-interactive — tasks only
-        targets = {"tasks"}
     else:
-        print("\n  City folder already has project files.")
-        print("  [t] Copy tasks only")
-        print("  [o] Override everything (city inputs are not affected)")
-        print("  [k] Keep as-is (skip syncing)")
-        print("  [a] Abort")
-        choice = input("  Choose [t/o/a/k]: ").strip().lower()
-
-        if choice == 'a':
-            logger.info("Aborted by user.")
-            raise SystemExit("Aborted.")
-        if choice == 'k':
-            logger.info("Keeping existing project files.")
+        # Existing folder — AUTO-OVERRIDE (re-sync everything) instead of showing
+        # an interactive [t/o/a/k] prompt that blocks unattended/overnight runs.
+        # Override is what's wanted in practice (always uses the latest repo code).
+        # Escape hatch: env CITYSCAN_SYNC=keep (skip sync) or =tasks (tasks only).
+        import os as _os
+        _mode = _os.environ.get("CITYSCAN_SYNC", "override").lower()
+        if _mode == "keep":
+            logger.info("Existing project files kept (CITYSCAN_SYNC=keep).")
             return
-        targets = {"tasks", "source", "core", "scan-calculations"} if choice == 'o' else {"tasks"}
+        targets = {"tasks"} if _mode == "tasks" else {"tasks", "source", "core", "scan-calculations"}
+        logger.info(f"Existing city folder: auto-sync '{_mode}' (no prompt).")
 
     # Sync non-task folders
     synced = []

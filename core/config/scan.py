@@ -47,7 +47,13 @@ def scan_init(country_name, city_name, use_existing=False):
             print(f"  Today's date would create: {today_id}")
             print(f"  [e] Use existing ({latest})")
             print(f"  [n] Create new ({today_id})")
-            choice = input("  Choice (e/n): ").strip().lower()
+            try:
+                choice = input("  Choice (e/n): ").strip().lower()
+            except EOFError:
+                # Non-interactive/unattended run (e.g. background multicity):
+                # default to the existing folder instead of hanging on input().
+                logger.info(f"Non-interactive: using existing folder: {latest}")
+                return latest
             if choice == 'n':
                 return today_id
             else:

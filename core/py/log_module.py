@@ -1,9 +1,31 @@
 # log_module.py
 import logging
 import os
+import sys
 
 # Module-level state for the file handler
 _file_handler = None
+
+
+def _force_utf8_console():
+    """Make stdout/stderr UTF-8 so log messages can't crash the process.
+
+    Windows consoles default to cp1252. Several log lines here contain box-
+    drawing characters ('─' in the task/phase headers), and city names can carry
+    accents, so a plain StreamHandler raises UnicodeEncodeError mid-run. Python
+    prints '--- Logging error ---' and continues, but it buries real output and
+    signals a fault that isn't one. errors='replace' means an unmappable glyph
+    degrades to '?' instead of throwing.
+    """
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            if stream is not None and hasattr(stream, "reconfigure"):
+                stream.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:  # noqa — never let logging setup break a run
+            pass
+
+
+_force_utf8_console()
 
 
 def setup_logger(name: str = None):
@@ -46,7 +68,7 @@ def set_log_dir(log_dir):
 
     file_format = "%(asctime)s | %(levelname)s | %(name)s | %(filename)s:%(lineno)d | %(message)s"
     log_path = os.path.join(log_dir, "app.log")
-    _file_handler = logging.FileHandler(log_path, mode='w')
+    _file_handler = logging.FileHandler(log_path, mode='w', encoding='utf-8')
     _file_handler.setFormatter(logging.Formatter(file_format))
 
     # Attach to all existing loggers that have a console handler (i.e. ours)
