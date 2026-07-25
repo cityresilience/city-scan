@@ -200,7 +200,12 @@ def _export(scan, city_dir: Path, project_dir: Path) -> tuple[int, int]:
     """Copy this city's UCRA outputs (+ cross-city stats) into the city's mnt,
     tagged so they sit unambiguously beside City Scan and FCS outputs."""
     tabular = Path(scan.tabular_dir)
-    spatial = Path(scan.spatial_dir)
+    # Rasters go in their OWN subfolder, not flat beside City Scan's. See the
+    # same note in tasks/fcs/__init__.py: core/R/fns-util.R::fuzzy_read matches
+    # a map layer with str_subset over a non-recursive listing of spatial/, so
+    # `<city>_lst_summer_ucra.tif` sitting next to `<city>_lst_summer.tif` gave
+    # two hits and silently blanked City Scan's summer/winter LST maps.
+    spatial = Path(scan.spatial_dir) / "ucra"
     images = Path(scan.output_dir) / "images"
     for d in (tabular, spatial, images):
         d.mkdir(parents=True, exist_ok=True)

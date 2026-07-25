@@ -244,7 +244,16 @@ def _export_to_mnt(scan, base_dir: Path, since: float) -> int:
     at/after `since` (this city's run) are taken, so multicity stays per-city."""
     src_root = base_dir / "02-process-output"
     tabular = Path(scan.tabular_dir)
-    spatial = Path(scan.spatial_dir)
+    # Rasters go in their OWN subfolder, not flat beside City Scan's.
+    # core/R/fns-util.R::fuzzy_read resolves a map layer by str_subset over a
+    # NON-recursive listing of spatial/ — so a file whose name merely extends a
+    # City Scan layer name gives two matches, and fuzzy_read then warns "Too
+    # many" and returns NA, silently killing that map. (UCRA's
+    # `<city>_lst_summer_ucra.tif` did exactly this to City Scan's
+    # `<city>_lst_summer.tif`.) A subfolder keeps the flat namespace clean;
+    # the recursive fallback inside fuzzy_read only runs when the top-level
+    # match count is zero, so this stays invisible to City Scan.
+    spatial = Path(scan.spatial_dir) / "fcs"
     images = Path(scan.output_dir) / "images"
     for d in (tabular, spatial, images):
         d.mkdir(parents=True, exist_ok=True)

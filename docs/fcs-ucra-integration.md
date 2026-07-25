@@ -94,6 +94,33 @@ Expected layout:
                                 stats/  plots/     (created by the batch)
 ```
 
+### Output layout — and why rasters go in a subfolder
+
+```
+mnt/<scan_id>/02-process-output/
+  spatial/           City Scan's own rasters — FLAT, untouched
+    ucra/            UCRA rasters   (*_ucra.tif)
+    fcs/             FCS rasters    (*_fsca.tif)
+  tabular/           all three share this, flat (no collisions)
+  images/
+```
+
+Rasters are deliberately **not** written flat beside City Scan's.
+`core/R/fns-util.R::fuzzy_read` resolves a map layer with `str_subset` over a
+**non-recursive** listing of `spatial/`, so a file whose name merely extends a
+City Scan layer name produces two matches — at which point `fuzzy_read` warns
+`Too many ... files` and returns `NA`, silently blanking that map.
+
+This was a real regression: UCRA's `<city>_lst_summer_ucra.tif` landing next to
+City Scan's `<city>_lst_summer.tif` killed the summer and winter LST maps, which
+reported `No data for: summer_lst` while everything else looked fine. The
+subfolder keeps the flat namespace clean. `fuzzy_read`'s recursive fallback only
+runs when the top-level match count is zero, so City Scan never sees these.
+
+Tabular output stays flat — those files are read by explicit filename patterns,
+and there are no collisions. Both renderers fall back to the old flat layout if
+the subfolder is absent, so city folders exported before this change still work.
+
 ### Pulling data from GCS
 
 Neither pipeline can stream from `/vsigs/` the way City Scan's R code does —

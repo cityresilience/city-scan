@@ -177,7 +177,12 @@ def _render_plots(scan, tabular: Path, out_plots: Path, city_tag: str) -> int:
 
 def render(scan):
     """Entry point: build FCS maps + plots for this city under 03-render-output/fcs/."""
-    spatial = Path(scan.spatial_dir)
+    # Rasters live in spatial/fcs/ — see the note in tasks/fcs/__init__.py on why
+    # they are not flat beside City Scan's. Fall back to the flat layout so city
+    # folders exported before that change still render.
+    spatial = Path(scan.spatial_dir) / "fcs"
+    if not spatial.is_dir():
+        spatial = Path(scan.spatial_dir)
     tabular = Path(scan.tabular_dir)
     out_root = Path(scan.render_dir) / "fcs"
     out_maps = out_root / "maps"
