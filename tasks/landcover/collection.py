@@ -33,7 +33,7 @@ def datacollection(
     tif_path = os.path.join(spatial_dir, f"{city_name}_lc.tif")
 
     from rasterio.enums import Resampling
-    lc_rio = fns.tiled_collection(lc, aoi, scale=10, resampling=Resampling.nearest)
+    lc_rio = fns.tiled_collection(lc, aoi, scale=10, resampling=Resampling.nearest, output_dir=output_dir)
     lc_rio = lc_rio.rio.clip(aoi.to_crs(lc_rio.rio.crs).geometry, drop=True)
 
     # Guard: snap any residual fractional values to nearest valid ESA WorldCover class.

@@ -37,6 +37,51 @@ def get_cache_namespace_dir(namespace: str) -> Path:
     return get_cache_root() / namespace
 
 
+def get_scan_root(output_dir) -> Path:
+    """Resolve scan root from an output directory.
+
+    Expected layout is usually mnt/<scan-id>/02-process-output, but this
+    function also tolerates being passed mnt/<scan-id> directly.
+    """
+    out = Path(output_dir).expanduser().resolve()
+
+    if out.name in {"01-user-input", "02-process-output", "03-render-output"}:
+        return out.parent
+
+    if (out / "02-process-output").exists() or (out / "01-user-input").exists():
+        return out
+
+    parts = out.parts
+    if "mnt" in parts:
+        idx = parts.index("mnt")
+        if idx + 1 < len(parts):
+            return Path(*parts[:idx + 2])
+
+    # Fallback: treat parent as scan root when structure is unknown.
+    return out.parent
+
+
+def get_scan_cache_dir(output_dir, namespace: str = None) -> Path:
+    """Return AOI-specific cache directory under mnt/<scan-id>/cache."""
+    root = get_scan_root(output_dir) / "cache"
+    if namespace:
+        namespace = namespace.strip().lower()
+        if not _TARGET_RE.match(namespace):
+            raise ValueError(f"Invalid scan cache namespace: '{namespace}'")
+        root = root / namespace
+    root.mkdir(parents=True, exist_ok=True)
+    return root
+
+
+def get_scan_temp_dir(output_dir, run_id: str = None) -> Path:
+    """Return run-scoped temporary directory under mnt/<scan-id>/temp."""
+    temp_dir = get_scan_root(output_dir) / "temp"
+    if run_id:
+        temp_dir = temp_dir / run_id
+    temp_dir.mkdir(parents=True, exist_ok=True)
+    return temp_dir
+
+
 def is_valid_cached_raster(path):
     """Quick validity check so truncated files are never reused."""
     if not path.exists() or path.stat().st_size <= 0:

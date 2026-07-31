@@ -62,7 +62,7 @@ def datacollection(
             # Convert Kelvin to Celsius server-side
             img = img.subtract(273.15)
 
-            lst_rio = fns.tiled_collection(img, aoi, scale=30)
+            lst_rio = fns.tiled_collection(img, aoi, scale=30, output_dir=output_dir)
             lst_rio = lst_rio.rio.clip(aoi.to_crs(lst_rio.rio.crs).geometry, drop=True)
             lst_rio.rio.write_nodata(np.nan, inplace=True)
 

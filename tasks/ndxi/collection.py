@@ -95,7 +95,7 @@ def datacollection(
             other = img.select(other_band)
             ndxi_img = nir.subtract(other).divide(nir.add(other)).rename(index_type)
 
-            ndxi_rio = fns.tiled_collection(ndxi_img, aoi, scale=10)
+            ndxi_rio = fns.tiled_collection(ndxi_img, aoi, scale=10, output_dir=output_dir)
             ndxi_rio = ndxi_rio.rio.clip(aoi.to_crs(ndxi_rio.rio.crs).geometry, drop=True)
             ndxi_rio.name = index_type.upper()
 

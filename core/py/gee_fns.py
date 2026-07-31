@@ -98,7 +98,7 @@ def make_tiles(aoi, tile_size_deg=0.5):
     return tiles
 
 
-def tiled_collection(image, aoi, scale, tile_size_deg=0.5, crs='EPSG:3857', resampling=None):
+def tiled_collection(image, aoi, scale, tile_size_deg=0.5, crs='EPSG:3857', resampling=None, output_dir=None):
     """
     Collect a GEE image over a large AOI using tiles.
     Returns a single rioxarray DataArray (mosaic of all tiles).
@@ -110,13 +110,21 @@ def tiled_collection(image, aoi, scale, tile_size_deg=0.5, crs='EPSG:3857', resa
     crs: projection for xee (default EPSG:3857)
     resampling: rasterio.enums.Resampling for categorical data
     """
-    import xarray as xr
-    import rioxarray
-    import numpy as np
-    from rasterio.merge import merge
-    from rasterio.io import MemoryFile
-    import rasterio
+    import hashlib
     import logging
+    import os
+    from pathlib import Path
+    import shutil
+    import tempfile
+    import uuid
+
+    import numpy as np
+    import rasterio
+    import rioxarray
+    import xarray as xr
+    from rasterio.merge import merge
+
+    from core.py import cache as cache_utils
 
     logger = logging.getLogger(__name__)
     tiles = make_tiles(aoi, tile_size_deg)
@@ -140,46 +148,112 @@ def tiled_collection(image, aoi, scale, tile_size_deg=0.5, crs='EPSG:3857', resa
             return stacked
 
     # Multi-tile collection
-    tile_files = []
-    for i, (bounds, tile_ee) in enumerate(tiles):
-        logger.info(f"  Tile {i+1}/{len(tiles)}: {bounds[0]:.2f},{bounds[1]:.2f} → {bounds[2]:.2f},{bounds[3]:.2f}")
+    tmp_context = None
+    temp_root = None
+    if output_dir:
+        cache_root = cache_utils.get_scan_cache_dir(output_dir, namespace='gee-tiles')
+        temp_root = cache_utils.get_scan_temp_dir(output_dir, run_id=f"gee-tiles-{uuid.uuid4().hex[:8]}")
+    else:
+        tmp_context = tempfile.TemporaryDirectory(prefix='gee_tiles_')
+        cache_root = Path(tmp_context.name)
+        temp_root = cache_root
+
+    tile_paths = []
+    try:
+        for i, (bounds, tile_ee) in enumerate(tiles):
+            logger.info(f"  Tile {i+1}/{len(tiles)}: {bounds[0]:.2f},{bounds[1]:.2f} → {bounds[2]:.2f},{bounds[3]:.2f}")
+
+            tile_key = (
+                f"{scale}|{tile_size_deg}|{crs}|{resampling}|{n_bands}|{'-'.join(band_names)}|"
+                f"{bounds[0]:.6f},{bounds[1]:.6f},{bounds[2]:.6f},{bounds[3]:.6f}"
+            )
+            tile_hash = hashlib.sha1(tile_key.encode('utf-8')).hexdigest()[:20]
+            tile_path = cache_root / f"tile_{tile_hash}.tif"
+
+            if output_dir and cache_utils.is_valid_cached_raster(tile_path):
+                logger.info(f"  Tile {i+1} cache hit: {tile_path.name}")
+                tile_paths.append(tile_path)
+                continue
+
+            lock_fd = None
+            lock_path = tile_path.with_suffix(tile_path.suffix + '.lock')
+            tmp_path = None
+            ds = None
+            try:
+                if output_dir:
+                    lock_fd = cache_utils.acquire_lock(lock_path)
+                    if lock_fd is None:
+                        raise TimeoutError(f"Timeout waiting for tile cache lock: {lock_path}")
+                    if cache_utils.is_valid_cached_raster(tile_path):
+                        logger.info(f"  Tile {i+1} cache hit after wait: {tile_path.name}")
+                        tile_paths.append(tile_path)
+                        continue
+
+                ds = xr.open_dataset(image, engine='ee', geometry=tile_ee, scale=scale, crs=crs)
+
+                if n_bands == 1:
+                    tile_da = xee_to_rio(ds[band_names[0]], resampling=resampling)
+                    tile_transform = tile_da.rio.transform()
+                    tile_data = tile_da.values
+                    if tile_data.ndim == 2:
+                        tile_data = tile_data[np.newaxis, :, :]
+                    del tile_da
+                else:
+                    first_band = xee_to_rio(ds[band_names[0]], resampling=resampling)
+                    tile_transform = first_band.rio.transform()
+                    band_arrays = [first_band.values]
+                    del first_band
+                    for band_name in band_names[1:]:
+                        band_arrays.append(xee_to_rio(ds[band_name], resampling=resampling).values)
+                    tile_data = np.stack(band_arrays)
+                    del band_arrays
+
+                tmp_path = temp_root / f"{tile_path.name}.part.{os.getpid()}"
+                with rasterio.open(
+                    tmp_path,
+                    mode='w',
+                    driver='GTiff',
+                    height=tile_data.shape[1],
+                    width=tile_data.shape[2],
+                    count=n_bands,
+                    dtype=tile_data.dtype,
+                    crs='EPSG:4326',
+                    nodata=np.nan,
+                    transform=tile_transform,
+                ) as dst:
+                    dst.write(tile_data)
+
+                os.replace(tmp_path, tile_path)
+
+                del tile_data
+                tile_paths.append(tile_path)
+            except Exception as e:
+                logger.warning(f"  Tile {i+1} failed: {e}")
+                continue
+            finally:
+                if ds is not None:
+                    ds.close()
+                if tmp_path is not None and tmp_path.exists():
+                    tmp_path.unlink(missing_ok=True)
+                if lock_fd is not None:
+                    os.close(lock_fd)
+                    lock_path.unlink(missing_ok=True)
+
+        if not tile_paths:
+            raise RuntimeError("All tiles failed")
+
+        # Merge tiles
+        datasets = [rasterio.open(tile_path) for tile_path in tile_paths]
         try:
-            ds = xr.open_dataset(image, engine='ee', geometry=tile_ee, scale=scale, crs=crs)
-
-            if n_bands == 1:
-                tile_da = xee_to_rio(ds[band_names[0]], resampling=resampling)
-                tile_data = tile_da.values
-                if tile_data.ndim == 2:
-                    tile_data = tile_data[np.newaxis, :, :]
-            else:
-                bands = [xee_to_rio(ds[b], resampling=resampling).values for b in band_names]
-                tile_data = np.stack(bands)
-
-            memfile = MemoryFile()
-            with memfile.open(
-                driver='GTiff',
-                height=tile_data.shape[1], width=tile_data.shape[2], count=n_bands,
-                dtype=tile_data.dtype,
-                crs='EPSG:4326',
-                nodata=np.nan,
-                transform=tile_da.rio.transform() if n_bands == 1 else xee_to_rio(ds[band_names[0]], resampling=resampling).rio.transform(),
-            ) as dst:
-                dst.write(tile_data)
-            tile_files.append(memfile)
-        except Exception as e:
-            logger.warning(f"  Tile {i+1} failed: {e}")
-            continue
-
-    if not tile_files:
-        raise RuntimeError("All tiles failed")
-
-    # Merge tiles
-    datasets = [f.open() for f in tile_files]
-    mosaic, mosaic_transform = merge(datasets, nodata=np.nan)
-    for d in datasets:
-        d.close()
-    for f in tile_files:
-        f.close()
+            mosaic, mosaic_transform = merge(datasets, nodata=np.nan)
+        finally:
+            for ds in datasets:
+                ds.close()
+    finally:
+        if output_dir:
+            shutil.rmtree(temp_root, ignore_errors=True)
+        if tmp_context is not None:
+            tmp_context.cleanup()
 
     # Wrap into xarray
     import xarray as xr_

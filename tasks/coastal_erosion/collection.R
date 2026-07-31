@@ -12,6 +12,7 @@ USE_GCS <<- TRUE
 if (!exists("aoi")) source(here::here("core/R/setup.R"))
 
 # Download from GCS private bucket
+
 shoreline_csv <- tempfile(fileext = ".csv")
 tryCatch(
   googleCloudStorageR::gcs_get_object("Long-term Shoreline Changes/ShorelineMonitor_1984_2016_v1.1_set3_filtered.csv",
@@ -19,13 +20,28 @@ tryCatch(
   error = function(e) { message("Could not download shoreline data: ", e$message); shoreline_csv <<- NULL }
 )
 
-if (is.null(shoreline_csv) || length(shoreline_csv) == 0 || !file.exists(shoreline_csv)) {
-  message("ShorelineMonitor CSV not found — skipping coastal erosion")
-} else {
+# Requires different build of arrow
+# librarian::shelf(arrow)
+# write_parquet(shoreline, "gs://city-scan-global-data/Long-term%20Shoreline%20Changes/ShorelineMonitor_1984_2016_v1.1_set3_filtered.parquet")
+
+# # Then query only what you need
+# ds <- open_dataset("gs://city-scan-global-data/Long-term Shoreline Changes/ShorelineMonitor_1984_2016_v1.1_set3_filtered.parquet")
+# result <- ds |>
+#   filter(x > 10, region == "south") |>
+#   collect()  # only pulls matching rows into memory
+
+tryCatch({
+  shoreline <-readr::read_csv(shoreline_csv, show_col_types = FALSE)
+}, error = function(e) {
+    message("ShorelineMonitor CSV not found — skipping coastal erosion")
+})
+
+if (inherits(shoreline, "data.frame")) {
+# Removed previous conditional because unix can't identify if file exists even when it does
 
   message("\n=== Processing coastal erosion data ===")
 
-  shoreline <- readr::read_csv(shoreline_csv, show_col_types = FALSE) %>%
+  shoreline <- shoreline %>%
     filter(tolower(country_name) == tolower(country)) %>%
     arrange(transect_id)
 
@@ -34,7 +50,10 @@ if (is.null(shoreline_csv) || length(shoreline_csv) == 0 || !file.exists(shoreli
   } else {
 
     # Raw transect coordinates
-    coords_raw <- cbind(shoreline$Intersect_lon, shoreline$Intersect_lat)
+    coords_raw <- cbind(shoreline$Intersect_lon, shoreline$Intersect_lat) %>%
+      as.data.frame() %>%
+      setNames(c("x", "y")) %>%
+      filter_out(if_any(c("x", "y"), is.na))
 
     # Snapped coordinates (snap to nearest AOI boundary point)
     message("Snapping transect points to AOI boundary")
@@ -191,6 +210,7 @@ if (is.null(shoreline_csv) || length(shoreline_csv) == 0 || !file.exists(shoreli
       bar_scale <- 0.0005  # ~300m per m/yr
       end_pts <- coords + seaward * bar_rate * bar_scale
 
+      # browser()
       # Build rectangular POLYGON bars
       bar_width <- 0.0009  # half-width ~33m
       polys <- lapply(1:n, function(i) {
