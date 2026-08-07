@@ -119,11 +119,11 @@ if (has_age_data) {
   reproductive_age <-  pop_dist_group_wp %>%
     filter(Sex == "Female", Age_Bracket %in% c("15-19", "20-24", "25-29", "30-34", "35-39", "40-44", "45-49")) %>% summarize(across(c(Count, Sexed_Percent), sum))
 
-  print_text(paste("under5:", under5$Percentage %>% {scales::label_percent()(.)}))
-  print_text(paste("youth (15-24):", youth$Percentage %>% {scales::label_percent()(.)}))
-  print_text(paste("working_age (15-64):", working_age$Percentage %>% {scales::label_percent()(.)}))
-  print_text(paste("elderly (60+):", elderly$Percentage %>% {scales::label_percent()(.)}))
-  print_text(paste("reproductive_age, percent of women (15-50):", reproductive_age$Sexed_Percent %>% {scales::label_percent()(.)}))
-  print_text(paste("sex_ratio:", round(sex_ratio, 2), "males to 100 females"))
+  print_text(paste("Under 5 years old:", under5$Percentage %>% {scales::label_percent()(.)}))
+  print_text(paste("Youth (15-24):", youth$Percentage %>% {scales::label_percent()(.)}))
+  print_text(paste("Working_age (15-64):", working_age$Percentage %>% {scales::label_percent()(.)}))
+  print_text(paste("Elderly (60+):", elderly$Percentage %>% {scales::label_percent()(.)}))
+  print_text(paste("Reproductive_age (percent of women 15-50):", reproductive_age$Sexed_Percent %>% {scales::label_percent()(.)}))
+  print_text(paste("Sex ratio:", round(sex_ratio, 2), "males to 100 females"))
 }
 ```
