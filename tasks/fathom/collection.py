@@ -121,9 +121,14 @@ def _process_year(
                 for lon in lon_tiles:
                     tile = f"{lat.lower()}{lon.lower()}.tif"
                     if naming == "flat":
-                        p = (f"{GCS_FATHOM_BASE}/"
-                             f"1in{rp}-{flood_type_folder_dict[flood_type]}-{year}"
-                             f"_{lat.lower()}{lon.lower()}.tif")
+                        if year <= 2020:
+                            p = (f"{GCS_FATHOM_BASE}/"
+                                f"1in{rp}-{flood_type_folder_dict[flood_type]}-{year}"
+                                f"_{lat.lower()}{lon.lower()}.tif")
+                        else:
+                            p = (f"{GCS_FATHOM_BASE}/"
+                                f"1in{rp}-{flood_type_folder_dict[flood_type]}-{year}-"
+                                f"SSP{flood_ssp_labels[ssp]}_{lat.lower()}{lon.lower()}.tif")
                     else:
                         if year <= 2020:
                             p = (f"{GCS_FATHOM_BASE}/"
@@ -138,12 +143,7 @@ def _process_year(
                     paths.append(p)
             return paths
 
-        # For 2020: try flat naming first, fall back to folder
-        # For future years: folder naming only
-        if year <= 2020:
-            naming_attempts = ["flat", "folder"]
-        else:
-            naming_attempts = ["folder"]
+        naming_attempts = ["flat", "folder"]
 
         # ---------------------------------------------------
         # 2. Mosaic tiles (CRITICAL alignment step)
