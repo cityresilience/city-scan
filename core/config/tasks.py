@@ -31,9 +31,11 @@ for alias, target in _raw_aliases.items():
         ALIASES[alias] = (folder, fns)
 
 
-def discover_tasks():
-    """Auto-discover tasks from tasks/ folders that have __init__.py."""
-    tasks_dir = Path(__file__).parent.parent.parent / "tasks"
+def discover_tasks(tasks_dir=None):
+    """Auto-discover tasks from tasks/ folders that have __init__.py.
+    tasks_dir defaults to canonical; pass a city folder's tasks/ (after sys.path has
+    been rewired to it) to discover that scan's OWN synced tasks instead of canonical's."""
+    tasks_dir = Path(tasks_dir) if tasks_dir else Path(__file__).parent.parent.parent / "tasks"
     registry = {}
 
     for task_dir in sorted(tasks_dir.iterdir()):

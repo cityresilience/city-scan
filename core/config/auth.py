@@ -35,20 +35,39 @@ def init_gee():
 
     Does NOT interactively authenticate — that would hang a task run.
     If resolution fails, raises with a clear instruction to run `scan --check gee`.
+
+    Retries with exponential backoff + jitter: when parallel fan-out containers
+    all call ee.Initialize() at the same instant, some get a transient failure
+    (rate-limit / token race) and the task would otherwise be silently SKIPped.
+    The jitter staggers the concurrent containers so retries succeed.
     """
-    try:
-        creds, project = _gee_credentials()
-        ee.Initialize(credentials=creds, project=project)
-        logger.info(f"GEE initialized (project={project})")
-        return
-    except Exception as e:
-        raise RuntimeError(
-            f"GEE authentication failed ({e}). Run `scan --check gee` for a guided fix, or:\n"
-            "  gcloud auth application-default login \\\n"
-            "    --scopes=openid,https://www.googleapis.com/auth/userinfo.email,"
-            "https://www.googleapis.com/auth/cloud-platform,"
-            "https://www.googleapis.com/auth/earthengine"
-        ) from e
+    import time
+    import random
+
+    last_err = None
+    for attempt in range(6):
+        try:
+            creds, project = _gee_credentials()
+            ee.Initialize(credentials=creds, project=project)
+            logger.info(f"GEE initialized (project={project})"
+                        + (f" (attempt {attempt + 1})" if attempt else ""))
+            return
+        except Exception as e:
+            last_err = e
+            if attempt < 5:
+                wait = min(2 ** attempt, 30) + random.uniform(0, 3)
+                logger.warning(f"GEE init attempt {attempt + 1}/6 failed ({e}); "
+                               f"retrying in {wait:.1f}s")
+                time.sleep(wait)
+
+    raise RuntimeError(
+        f"GEE authentication failed after 6 attempts ({last_err}). "
+        "Run `scan --check gee` for a guided fix, or:\n"
+        "  gcloud auth application-default login \\\n"
+        "    --scopes=openid,https://www.googleapis.com/auth/userinfo.email,"
+        "https://www.googleapis.com/auth/cloud-platform,"
+        "https://www.googleapis.com/auth/earthengine"
+    ) from last_err
 
 
 def init_gcs():

@@ -4,7 +4,7 @@
 # Trigger:     push to unified branch (set substitution _SHA_TAG: $SHORT_SHA)
 
 substitutions:
-  _IMAGE: us-central1-docker.pkg.dev/$PROJECT_ID/cityscan/cityscan
+  _IMAGE: us-central1-docker.pkg.dev/city-scan-gee-test/cityscan/cityscan
   _SHA_TAG: manual  # trigger overrides with $SHORT_SHA
 
 steps:

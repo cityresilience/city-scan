@@ -360,6 +360,7 @@ function plot_pga(pg, {
   
   // line
   const line = d3.line()
+    .defined(d => d.population > 0)   // skip missing years (0) — leave a gap, don't connect
     .x(d => xScale(d.yearName))
     .y(d => yScale(d.population));
     
@@ -1844,13 +1845,24 @@ function plot_rwi_area(rwi_area, {
       parseRwiCategory(a.bin) - parseRwiCategory(b.bin)
     );
 
-    // color mapping for rwi wealth categories
+    // color mapping for rwi wealth categories (label bins, e.g. Nouakchott)
     const rwiColorMap = {
       "Least wealthy": "#44b59c",
       "Less wealthy": "#94d1c0",
       "Average wealth": "#faf9c8",
       "More wealthy": "#faab90",
       "Most wealthy": "#eb765a"
+    };
+    // value-range bins (e.g. Chust): colour by VALUE against the map's rwi_standardized
+    // palette + SD breaks so the chart matches the map.
+    const rwiMapPalette = ["#009E7A", "#70C5AD", "#FFFFBA", "#FF9169", "#ED431B"];
+    const rwiMapBreaks = [-1, -0.5, 0.5, 1];
+    const rwiFill = d => {
+      if (rwiColorMap[d.bin]) return rwiColorMap[d.bin];
+      const nums = String(d.bin).split(/\s*–\s*/).map(parseFloat).filter(n => !isNaN(n));
+      const mid = nums.length ? (nums[0] + nums[nums.length - 1]) / 2 : 0;
+      let k = 0; while (k < rwiMapBreaks.length && mid > rwiMapBreaks[k]) k++;
+      return rwiMapPalette[k];
     };
 
     // calculate total area to show complete distribution
@@ -1937,9 +1949,9 @@ function plot_rwi_area(rwi_area, {
       .attr("width", xScale.bandwidth())
       .attr("y", d => yScale(d.percentage))
       .attr("height", d => innerHeight - yScale(d.percentage))
-      .attr("fill", d => rwiColorMap[d.bin] || color)
+      .attr("fill", d => rwiFill(d) || color)
       .attr("fill-opacity", 1)
-      .attr("stroke", d => d3.color(rwiColorMap[d.bin] || color).darker(0.3))
+      .attr("stroke", d => d3.color(rwiFill(d) || color).darker(0.3))
       .attr("stroke-width", 1)
       .style("cursor", "default")
       .on("mouseover", function(event, d) {
@@ -2410,11 +2422,18 @@ function plot_ubaa(uba, {
   };
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
-  
+
+  // normalize: keep the harmonized series (source col exists in wsf_harmonized.csv),
+  // and map real column names (year/cumulative_sq_km) to what the chart reads.
+  uba = uba.filter(d => !d.source || d.source === "WSF Harmonized")
+           .map((d, i) => ({ year: i + 1,                          // index -> x position
+                             yearName: +(d.yearName ?? d.year),    // calendar year -> labels
+                             uba: +(d.uba ?? d.cumulative_sq_km) }));
+
   // get year range for title
   const minYear = d3.min(uba, d => d.yearName);
   const maxYear = d3.max(uba, d => d.yearName);
-  
+
   // scales
   const xScale = d3.scaleLinear()
     .domain([1, uba.length])
@@ -4660,6 +4679,12 @@ function plot_pv_alt(pv, {
   ];
   
   // determine which condition levels are relevant based on data range
+  // normalize columns: solar_monthly_stats has month/max/min/mean; this chart reads
+  // monthName/maxPv. Map them here (fix the function, not the data).
+  const _months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  pv = pv.map(d => ({ month: +d.month,
+                      monthName: d.monthName ?? _months[(+d.month || 0) - 1],
+                      maxPv: +(d.maxPv ?? d.max ?? d.mean ?? 0) }));
   const maxPv = Math.max(...pv.map(d => d.maxPv));
   const yDomain = [0, maxPv * 1.1];
   
@@ -5667,6 +5692,13 @@ function plot_summer_area(summer_area, {
     color = "#ff6b35"
   } = {}) {
 
+    // drop nodata: crop fills off-AOI corners with 0, binned as "0-5" (a huge
+    // spike) — real surface temps are never ~0C. Also drop empty bins.
+    summer_area = (summer_area || []).filter(d => +d.count > 0 && parseInt(d.bin) !== 0);
+    // recompute percentages on the valid cells only (the CSV's % included nodata)
+    const _validTotal = summer_area.reduce((s, d) => s + (+d.count), 0) || 1;
+    summer_area = summer_area.map(d => ({ ...d, percentage: (+d.count) / _validTotal * 100 }));
+
     const sortedData = summer_area.slice().sort((a, b) => {
       const aTemp = parseInt(a.bin.split('-')[0]);
       const bTemp = parseInt(b.bin.split('-')[0]);
@@ -6599,7 +6631,7 @@ function plot_flood_prob(data, {
   const yTicks = Math.max(4, Math.min(10, Math.floor(width * 0.6) / 60));
   const yAxisGroup = g.append("g").attr("class", "y-axis");
   // Use decimal format for small values, SI notation for large
-  const yFormat = maxVal < 1 ? d3.format(".2f") : d3.format("~s");
+  const yFormat = maxVal < 1 ? d3.format(".2f") : d3.format("~f");  // ~f -> "0.6" not "600m"
   const yAxisCall = d3.axisLeft(yScale)
     .ticks(yTicks)
     .tickSizeOuter(0)
@@ -6779,7 +6811,12 @@ function plot_fu(fu, {
   };
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
-  
+
+  // normalize columns: index -> x, calendar year -> labels, exposed_km2 -> value
+  fu = fu.map((d, i) => ({ year: i + 1,
+                           yearName: +(d.yearName ?? d.year),
+                           fu: +(d.fu ?? d.exposed_km2) }));
+
   // get year range
   const minYear = d3.min(fu, d => d.yearName);
   const maxYear = d3.max(fu, d => d.yearName);
@@ -7420,6 +7457,14 @@ function plot_comb(comb, pu, fu, cu, {
 
   if (!comb || !comb.length) return null;  // no data -> render nothing (don't throw)
 
+  // reshape raw multianalysis CSVs (year, cumulative_sq_km, exposed_km2) into what the
+  // lines read: index -> x, calendar year -> label, exposed_km2 -> per-type value.
+  const _mkComb = (arr, key) => (arr || []).map((d, i) => ({
+    year: i + 1, yearName: +(d.yearName ?? d.year),
+    [key]: +(d[key] ?? d.exposed_km2 ?? 0) }));
+  comb = _mkComb(comb, 'comb'); fu = _mkComb(fu, 'fu');
+  pu = _mkComb(pu, 'pu'); cu = _mkComb(cu, 'cu');
+
   height = height ?? (width * heightRatio);
   const margin = {
     top: 90,
@@ -7735,7 +7780,13 @@ function plot_e(e, {
     color = "black"
   } = {}) {
 
-    const sortedData = e.slice().sort((a, b) =>
+    // normalize columns (Bin/bin, Pixel_Count/count) and compute the percentage
+    // the bars need — the analyze CSV only carries raw counts.
+    const _norm = e.map(d => ({ bin: d.bin ?? d.Bin,
+                                count: +(d.count ?? d.Pixel_Count ?? 0) }));
+    const _total = _norm.reduce((s, d) => s + d.count, 0) || 1;
+    _norm.forEach(d => d.percentage = d.count / _total * 100);
+    const sortedData = _norm.sort((a, b) =>
       parseElevationRange(a.bin) - parseElevationRange(b.bin)
     );
 
@@ -8033,7 +8084,12 @@ function plot_s(s, {
     color = "black"
   } = {}) {
 
-    const sortedData = s.slice().sort((a, b) =>
+    // normalize columns and compute the percentage the bars need
+    const _norm = s.map(d => ({ bin: d.bin ?? d.Bin,
+                                count: +(d.count ?? d.Pixel_Count ?? 0) }));
+    const _total = _norm.reduce((s2, d) => s2 + d.count, 0) || 1;
+    _norm.forEach(d => d.percentage = d.count / _total * 100);
+    const sortedData = _norm.sort((a, b) =>
       parseSlopeRange(a.bin) - parseSlopeRange(b.bin)
     );
 

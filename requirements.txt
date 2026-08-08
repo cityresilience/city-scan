@@ -25,6 +25,7 @@ scikit-learn==1.3.2
 xarray==2023.8.0
 xee==0.0.24  # need to migrate to v0.1.0+ which removed the geometry param
 rioxarray==0.15.0
+dask[array]==2023.8.1  # chunked/lazy reads in gee_fns.tiled_collection (native-res national mosaics)
 fiona==1.10.1
 geopy==2.4.1
 google-cloud-firestore==2.20.0

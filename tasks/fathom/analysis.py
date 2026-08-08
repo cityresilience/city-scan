@@ -51,7 +51,8 @@ def calculate_flood_wsf_stats(output_dir, city_name, flood_raster):
     """
     import numpy as np
     import rasterio
-    from core.py import raster_module as raster_pro
+    from rasterio.vrt import WarpedVRT
+    from rasterio.warp import Resampling
 
     spatial_dir = os.path.join(output_dir, "spatial")
 
@@ -61,42 +62,36 @@ def calculate_flood_wsf_stats(output_dir, city_name, flood_raster):
 
     wsf_path = os.path.join(spatial_dir, f"{city_name}_wsf_evolution_utm.tif")
     flood_path = os.path.join(spatial_dir, flood_raster)
-    flood_wsf_path = os.path.join(
-        spatial_dir, f"{flood_raster[:-4]}_wsf.tif"
-    )
 
     # Ensure required inputs exist
     if not exists(wsf_path) or not exists(flood_path):
         return None
 
-    # Reproject flood raster to WSF grid if needed
-    if not exists(flood_wsf_path):
-        raster_pro.reproject_raster(
-            flood_path,
-            flood_wsf_path,
-            target_raster_path=wsf_path,
-        )
+    # Accumulate exposed built-up pixel counts per WSF construction year, windowed.
+    # The flood raster is warped onto the WSF grid on the fly (WarpedVRT, nearest —
+    # window-decomposable, so identical to the old reprojected _wsf.tif) instead of
+    # materialising a national intermediate raster (was ~38 GiB → OOM and a
+    # read-before-flush race on the GCS-mounted filesystem).
+    year_counts = {year: 0 for year in range(1985, 2016)}
+
+    with rasterio.open(wsf_path) as wsf, rasterio.open(flood_path) as flood_src:
+        pixel_x, pixel_y = wsf.res
+        with WarpedVRT(flood_src, crs=wsf.crs, transform=wsf.transform,
+                       width=wsf.width, height=wsf.height,
+                       resampling=Resampling.nearest) as fld:
+            for _, window in wsf.block_windows(1):
+                wsf_block = wsf.read(1, window=window)
+                flood_block = fld.read(1, window=window)
+                for year in range(1985, 2016):
+                    year_counts[year] += np.count_nonzero(
+                        flood_block[wsf_block == year]
+                    )
 
     flood_stats = {}
-
-    with rasterio.open(wsf_path) as wsf:
-        wsf_array = wsf.read(1)
-        pixel_x, pixel_y = wsf.res
-
-        with rasterio.open(flood_wsf_path) as fld:
-            flood_array = fld.read(1)
-
-            for year in range(1985, 2016):
-                exposed_sqkm = (
-                    np.count_nonzero(flood_array[wsf_array == year])
-                    * pixel_x
-                    * pixel_y
-                    / 1e6
-                )
-
-                flood_stats[year] = (
-                    exposed_sqkm + flood_stats.get(year - 1, 0)
-                )
+    cumulative = 0
+    for year in range(1985, 2016):
+        cumulative += year_counts[year] * pixel_x * pixel_y / 1e6
+        flood_stats[year] = cumulative
 
     return flood_stats
 
@@ -172,8 +167,9 @@ def exposure_flood_wsf(
             try:
                 raster_pro.reproject_raster(
                     wsf_source_path,
-                    wsf_path, 
-                    dst_crs=utm_crs
+                    wsf_path,
+                    dst_crs=utm_crs,
+                    compress='deflate'
                 )
                 logger.info(f"Successfully reprojected to: {wsf_path}")
             except Exception as e:
@@ -349,74 +345,65 @@ def calculate_flood_pop_stats(output_dir, city_name, flood_raster):
     """
     import numpy as np
     import rasterio
-    from core.py import raster_module as raster_pro
-    
+    from rasterio.vrt import WarpedVRT
+    from rasterio.warp import Resampling
+
     spatial_dir = os.path.join(output_dir, "spatial")
 
     # Ensure flood_raster uses _utm suffix
     if not flood_raster.endswith("_utm.tif"):
         logger.warning(f"Flood raster should use _utm suffix: {flood_raster}")
-    
+
     pop_path = os.path.join(spatial_dir, f"{city_name}_population.tif")
     dense_pop_path = os.path.join(spatial_dir, f"{city_name}_dense_population.tif")
     flood_path = os.path.join(spatial_dir, flood_raster)
-    dense_pop_flood_path = os.path.join(
-        spatial_dir, f"{flood_raster[:-4]}_pop.tif"
-    )
-    
+
     # Check required inputs
     if not exists(pop_path) or not exists(flood_path):
         return None
-    
-    # Create dense population raster if needed
+
+    # Create dense population raster if needed (population grid, ~100m — small)
     if not exists(dense_pop_path):
         try:
             with rasterio.open(pop_path) as pop:
                 pop_array = pop.read(1)
                 out_meta = pop.meta.copy()
                 out_meta.update({'nodata': np.nan})
-                
+
                 # Replace nodata value
                 pop_nodata = -99999
                 pop_array = np.where(pop_array == pop_nodata, np.nan, pop_array)
-                
+
                 # Create binary mask for values >= 60th percentile
                 pop60 = np.nanpercentile(pop_array, 60)
                 pop_array_60 = np.where(pop_array >= pop60, 1, 0)
-                
+
                 with rasterio.open(dense_pop_path, 'w', **out_meta) as dst:
                     dst.write(pop_array_60, 1)
         except Exception as e:
             logger.debug(f"Failed to create dense population raster: {e}")
             return None
-    
-    # Reproject population raster to flood raster grid if needed
-    if not exists(dense_pop_flood_path):
-        try:
-            raster_pro.reproject_raster(
-                dense_pop_path,
-                dense_pop_flood_path,
-                target_raster_path=flood_path,
-            )
-        except Exception as e:
-            logger.debug(f"Failed to reproject population raster: {e}")
-            return None
-    
-    # Compute dense population exposure
+
+    # Compute dense population exposure windowed: warp the dense-pop mask onto the
+    # flood grid on the fly (WarpedVRT, nearest) and accumulate two scalars per
+    # block, instead of materialising a national _pop.tif intermediate (was
+    # ~38 GiB → OOM and a read-before-flush race).
     try:
-        with rasterio.open(dense_pop_flood_path) as pop:
-            pop_array = pop.read(1)
-            
-            with rasterio.open(flood_path) as fld:
-                flood_array = fld.read(1)
-            
-            exposed_pct = (
-                np.count_nonzero(flood_array[pop_array == 1]) 
-                / np.nansum(pop_array) 
-                * 100
-            )
-            
-            return exposed_pct
+        numerator = 0
+        denom = 0.0
+        with rasterio.open(flood_path) as fld, rasterio.open(dense_pop_path) as dense_src:
+            with WarpedVRT(dense_src, crs=fld.crs, transform=fld.transform,
+                           width=fld.width, height=fld.height,
+                           resampling=Resampling.nearest) as pop:
+                for _, window in fld.block_windows(1):
+                    flood_block = fld.read(1, window=window)
+                    pop_block = pop.read(1, window=window)
+                    numerator += np.count_nonzero(flood_block[pop_block == 1])
+                    denom += np.nansum(pop_block)
+
+        if denom == 0:
+            return None
+        return numerator / denom * 100
     except Exception as e:
         logger.debug(f"Failed to compute population exposure: {e}")
         return None
@@ -466,73 +453,66 @@ def calculate_flood_osm_stats(output_dir, city_name, poi, flood_raster):
         return None
     
     try:
-        # Load flood raster and get CRS (should be UTM)
+        # Open the flood raster and sample it only at POI locations (no full
+        # national read — src.sample reads just the needed pixels).
         with rasterio.open(flood_path) as src:
-            flood_data = src.read(1)
-            flood_transform = src.transform
             flood_crs = src.crs
-        
-        logger.debug(f"Flood raster CRS: {flood_crs}")
-        
-        # Load OSM GeoDataFrame - try without layer name first, then with poi as layer
-        try:
-            osm_gdf = gpd.read_file(osm_path)
-            logger.debug(f"Loaded OSM GeoPackage without layer specification")
-        except Exception as e:
-            logger.debug(f"Failed to load without layer: {e}. Trying with layer='{poi}'")
+            flood_nodata = src.nodata
+            logger.debug(f"Flood raster CRS: {flood_crs}")
+
+            # Load OSM GeoDataFrame - try without layer name first, then with poi as layer
             try:
-                osm_gdf = gpd.read_file(osm_path, layer=poi)
-                logger.debug(f"Loaded OSM GeoPackage with layer='{poi}'")
-            except Exception as e2:
-                logger.error(f"Could not load OSM GeoPackage {osm_path}: {e2}")
-                return None
-        
-        if osm_gdf.empty:
-            logger.debug(f"OSM GeoPackage empty for POI type: {poi}")
-            return None
-        
-        logger.debug(f"OSM GeoDataFrame CRS: {osm_gdf.crs}")
-        logger.debug(f"OSM geometry types: {osm_gdf.geometry.type.unique()}")
-        logger.debug(f"OSM feature count: {len(osm_gdf)}")
-        
-        # Validate and align CRS to UTM
-        if osm_gdf.crs != flood_crs:
-            logger.info(
-                f"CRS mismatch for {poi}: OSM={osm_gdf.crs}, Flood={flood_crs}. "
-                f"Reprojecting OSM to match flood raster (UTM)..."
-            )
-            osm_gdf = osm_gdf.to_crs(flood_crs)
-            logger.debug(f"OSM reprojected to: {osm_gdf.crs}")
-        
-        # Convert all geometries to centroids (handles both points and polygons)
-        logger.debug("Converting geometries to centroids...")
-        osm_gdf['geometry'] = osm_gdf.geometry.centroid
-        logger.debug(f"All geometries converted to centroids. CRS: {osm_gdf.crs}")
-        
-        # Function to check if point is in flood zone
-        def is_in_flood_zone(point):
-            try:
-                row, col = rowcol(flood_transform, point.x, point.y)
-                if 0 <= row < flood_data.shape[0] and 0 <= col < flood_data.shape[1]:
-                    return flood_data[row, col] > 0
-                return False
+                osm_gdf = gpd.read_file(osm_path)
+                logger.debug(f"Loaded OSM GeoPackage without layer specification")
             except Exception as e:
-                logger.debug(f"Error checking point {point}: {e}")
-                return False
-        
-        # Check each POI centroid
-        osm_gdf['in_flood_zone'] = osm_gdf['geometry'].apply(is_in_flood_zone)
-        
+                logger.debug(f"Failed to load without layer: {e}. Trying with layer='{poi}'")
+                try:
+                    osm_gdf = gpd.read_file(osm_path, layer=poi)
+                    logger.debug(f"Loaded OSM GeoPackage with layer='{poi}'")
+                except Exception as e2:
+                    logger.error(f"Could not load OSM GeoPackage {osm_path}: {e2}")
+                    return None
+
+            if osm_gdf.empty:
+                logger.debug(f"OSM GeoPackage empty for POI type: {poi}")
+                return None
+
+            logger.debug(f"OSM GeoDataFrame CRS: {osm_gdf.crs}")
+            logger.debug(f"OSM geometry types: {osm_gdf.geometry.type.unique()}")
+            logger.debug(f"OSM feature count: {len(osm_gdf)}")
+
+            # Validate and align CRS to UTM
+            if osm_gdf.crs != flood_crs:
+                logger.info(
+                    f"CRS mismatch for {poi}: OSM={osm_gdf.crs}, Flood={flood_crs}. "
+                    f"Reprojecting OSM to match flood raster (UTM)..."
+                )
+                osm_gdf = osm_gdf.to_crs(flood_crs)
+                logger.debug(f"OSM reprojected to: {osm_gdf.crs}")
+
+            # Convert all geometries to centroids (handles both points and polygons)
+            logger.debug("Converting geometries to centroids...")
+            osm_gdf['geometry'] = osm_gdf.geometry.centroid
+            logger.debug(f"All geometries converted to centroids. CRS: {osm_gdf.crs}")
+
+            # Sample the flood raster at each centroid; nodata / out-of-bounds
+            # sample back as not-flooded.
+            coords = [(geom.x, geom.y) for geom in osm_gdf.geometry]
+            osm_gdf['in_flood_zone'] = [
+                bool(val[0] > 0 and val[0] != flood_nodata)
+                for val in src.sample(coords, indexes=1)
+            ]
+
         # Calculate metrics
         total_pois = len(osm_gdf)
-        pois_in_flood_zone = osm_gdf['in_flood_zone'].sum()
+        pois_in_flood_zone = int(osm_gdf['in_flood_zone'].sum())
         percentage = (pois_in_flood_zone / total_pois) * 100 if total_pois > 0 else 0
-        
+
         logger.info(
             f"OSM exposure ({poi}): {total_pois} total, {pois_in_flood_zone} in flood "
             f"({percentage:.2f}%)"
         )
-        
+
         return (total_pois, pois_in_flood_zone, percentage)
     
     except Exception as e:
@@ -583,55 +563,57 @@ def calculate_flood_road_stats(output_dir, city_name, utm_crs, flood_raster):
         return None
     
     try:
-        # Load flood raster and get CRS (should be UTM)
-        with rasterio.open(flood_path) as src:
-            flood_data = src.read(1)
-            flood_transform = src.transform
-            flood_crs = src.crs
-        
-        logger.debug(f"Flood raster CRS: {flood_crs}")
-        
+        from rasterio.features import rasterize
+
         # Load road GeoDataFrame
         road_gdf = gpd.read_file(road_path)
-        
+
         if road_gdf.empty:
             logger.debug(f"Road GeoPackage empty")
             return None
-        
-        logger.debug(f"Road GeoDataFrame CRS: {road_gdf.crs}")
+
         logger.debug(f"Road feature count: {len(road_gdf)}")
-        
-        # Validate and align CRS to UTM
-        if road_gdf.crs != flood_crs:
-            logger.info(
-                f"CRS mismatch for roads: Roads={road_gdf.crs}, Flood={flood_crs}. "
-                f"Reprojecting roads to match flood raster (UTM)..."
-            )
-            road_gdf = road_gdf.to_crs(flood_crs)
-            logger.debug(f"Roads reprojected to: {road_gdf.crs}")
-        
-        # Create flood zone mask from raster
-        flood_zone_mask = flood_data > 0
-        
-        # Rasterize roads to same grid as flood raster for intersection
-        from rasterio.features import rasterize
-        
-        road_raster = rasterize(
-            [(geom, 1) for geom in road_gdf.geometry],
-            out_shape=flood_data.shape,
-            transform=flood_transform,
-            default_value=0
-        )
-        
-        # Calculate total road length
-        pixel_size_m = abs(flood_transform[0])  # Assume square pixels
-        total_road_pixels = np.count_nonzero(road_raster > 0)
+
+        # Open the flood raster once and rasterize roads + count overlap PER BLOCK,
+        # so neither the national flood array nor a second national road-raster is
+        # ever held in memory (was ~2x the national grid -> OOM at native res).
+        total_road_pixels = 0
+        flooded_road_pixels = 0
+        with rasterio.open(flood_path) as src:
+            flood_crs = src.crs
+            flood_transform = src.transform
+            pixel_size_m = abs(flood_transform[0])  # Assume square pixels
+            logger.debug(f"Flood raster CRS: {flood_crs}")
+            logger.debug(f"Road GeoDataFrame CRS: {road_gdf.crs}")
+
+            # Validate and align CRS to UTM
+            if road_gdf.crs != flood_crs:
+                logger.info(
+                    f"CRS mismatch for roads: Roads={road_gdf.crs}, Flood={flood_crs}. "
+                    f"Reprojecting roads to match flood raster (UTM)..."
+                )
+                road_gdf = road_gdf.to_crs(flood_crs)
+                logger.debug(f"Roads reprojected to: {road_gdf.crs}")
+
+            road_shapes = [(geom, 1) for geom in road_gdf.geometry]
+
+            for _, window in src.block_windows(1):
+                flood_block = src.read(1, window=window)
+                road_block = rasterize(
+                    road_shapes,
+                    out_shape=flood_block.shape,
+                    transform=src.window_transform(window),
+                    default_value=0
+                )
+                road_mask = road_block > 0
+                total_road_pixels += int(np.count_nonzero(road_mask))
+                flooded_road_pixels += int(
+                    np.count_nonzero(road_mask & (flood_block > 0))
+                )
+
         total_length_m = total_road_pixels * pixel_size_m
-        
-        # Calculate flooded road length
-        flooded_road_pixels = np.count_nonzero((road_raster > 0) & (flood_zone_mask > 0))
         flooded_length_m = flooded_road_pixels * pixel_size_m
-        
+
         # Calculate percentage
         if total_road_pixels > 0:
             percentage = (flooded_length_m / total_length_m) * 100

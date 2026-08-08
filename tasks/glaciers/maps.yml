@@ -1,0 +1,4 @@
+layers:
+  - glacier_extent
+  - glacier_ndsi
+  - glacier_ratio

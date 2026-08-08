@@ -33,21 +33,21 @@ def datacollection(
     tif_path = os.path.join(spatial_dir, f"{city_name}_lc.tif")
 
     from rasterio.enums import Resampling
-    lc_rio = fns.tiled_collection(lc, aoi, scale=10, resampling=Resampling.nearest)
-    lc_rio = lc_rio.rio.clip(aoi.to_crs(lc_rio.rio.crs).geometry, drop=True)
 
-    # Guard: snap any residual fractional values to nearest valid ESA WorldCover class.
+    # Snap any residual fractional/nodata values to the nearest valid ESA
+    # WorldCover class, applied per strip INSIDE the windowed writer (the
+    # [..., None] broadcast expands each strip 12x — never the national grid).
     valid_codes = np.array([0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95, 100], dtype=np.uint8)
-    arr = np.asarray(lc_rio.values)
-    arr = np.where(np.isnan(arr), 0, arr)
-    snapped = valid_codes[np.argmin(np.abs(arr[..., None] - valid_codes), axis=-1)]
-    lc_rio = lc_rio.copy(data=snapped.astype(np.uint8))
 
-    lc_rio.rio.to_raster(tif_path, dtype='uint8')
+    def _snap(arr):  # arr: (bands, h, w) float; NaN already -> 0 by fillna=0
+        return valid_codes[np.argmin(np.abs(arr[..., None] - valid_codes), axis=-1)]
+
+    fns.tiled_collection(lc, aoi, tif_path, scale=10, dtype='uint8', nodata=0,
+                          fillna=0, resampling=Resampling.nearest, transform_fn=_snap, output_dir=output_dir)
 
     logger.info(f"Land cover raster saved to: {tif_path}")
 
     if return_raster:
-        return lc_rio
+        return tif_path
 
     return None

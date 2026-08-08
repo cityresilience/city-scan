@@ -9,6 +9,7 @@ Flow:
 
 Requires only: pyrosm (pip install pyrosm). No system binaries.
 """
+import json
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -25,6 +26,17 @@ logger = setup_logger(__name__)
 GEOFABRIK_BASE = "https://download.geofabrik.de"
 MAX_AGE_DAYS = 30
 USER_AGENT = "city-scan-automation/1.0"
+
+# Same WB Admin0 layer as aoi_module.find_country; used here for ISO3 -> ISO2
+# (Geofabrik's index keys countries by alpha-2)
+WB_COUNTRIES_URL = "https://storage.googleapis.com/city-scan-global-public/wb_countries/WB_countries_Admin0_10m.shp"
+
+# Continent-level ids in Geofabrik's index — used to prefer whole-country
+# extracts over subregions when several regions share an alpha-2 code
+GEOFABRIK_CONTINENTS = {
+    "africa", "asia", "europe", "north-america", "south-america",
+    "central-america", "australia-oceania", "antarctica", "russia",
+}
 
 # ISO3 → Geofabrik path (continent/country-slug). Extend as scans expand.
 ISO3_TO_GEOFABRIK = {
@@ -97,6 +109,7 @@ ISO3_TO_GEOFABRIK = {
     "npl": "asia/nepal",
     "khm": "asia/cambodia",
     "lao": "asia/laos",
+    "uzb": "asia/uzbekistan",
     # Europe — add as needed
     "mlt": "europe/malta",
     "mda": "europe/moldova",
@@ -154,14 +167,47 @@ def fetch_features(aoi_4326, tags, cache_dir=None):
     return combined
 
 
-def _download_country_pbf(iso3, cache_dir):
-    """Download country PBF from Geofabrik, cached. Returns Path or None."""
-    geofabrik_path = ISO3_TO_GEOFABRIK.get(iso3.lower())
-    if not geofabrik_path:
-        logger.warning(f"No Geofabrik mapping for ISO3 '{iso3}'. "
-                       f"Add it to ISO3_TO_GEOFABRIK in osm_pbf.py.")
+def _geofabrik_url_from_index(iso3, cache_dir):
+    """Resolve a country's PBF URL from Geofabrik's machine-readable index.
+
+    Fallback for countries missing from ISO3_TO_GEOFABRIK: ISO3 -> ISO2 via
+    the WB Admin0 layer, then match the index's iso3166-1:alpha2 codes.
+    Returns URL string or None.
+    """
+    try:
+        index_path = cache_dir / "geofabrik-index-v1.json"
+        if not index_path.exists() or _stale(index_path):
+            r = requests.get(f"{GEOFABRIK_BASE}/index-v1-nogeom.json",
+                             headers={"User-Agent": USER_AGENT}, timeout=60)
+            r.raise_for_status()
+            index_path.write_bytes(r.content)
+        features = json.loads(index_path.read_text())["features"]
+
+        countries = gpd.read_file(WB_COUNTRIES_URL, ignore_geometry=True)
+        match = countries[countries["ISO_A3"].str.lower() == iso3.lower()]
+        if match.empty:
+            return None
+        alpha2 = str(match.iloc[0]["ISO_A2"]).upper()
+
+        candidates = [
+            f["properties"] for f in features
+            if alpha2 in f["properties"].get("iso3166-1:alpha2", [])
+            and f["properties"].get("urls", {}).get("pbf")
+        ]
+        if not candidates:
+            return None
+        # Prefer whole-country extracts (parent = continent) over subregions
+        top = [p for p in candidates if p.get("parent") in GEOFABRIK_CONTINENTS]
+        props = (top or candidates)[0]
+        logger.info(f"  Resolved '{iso3}' via Geofabrik index: {props['id']}")
+        return props["urls"]["pbf"]
+    except Exception as e:
+        logger.warning(f"  Geofabrik index lookup failed for '{iso3}': {e}")
         return None
 
+
+def _download_country_pbf(iso3, cache_dir):
+    """Download country PBF from Geofabrik, cached. Returns Path or None."""
     filename = f"{iso3.lower()}.osm.pbf"
     local_path = cache_dir / filename
 
@@ -169,7 +215,15 @@ def _download_country_pbf(iso3, cache_dir):
         logger.info(f"  Using cached PBF: {local_path.name}")
         return local_path
 
-    url = f"{GEOFABRIK_BASE}/{geofabrik_path}-latest.osm.pbf"
+    geofabrik_path = ISO3_TO_GEOFABRIK.get(iso3.lower())
+    if geofabrik_path:
+        url = f"{GEOFABRIK_BASE}/{geofabrik_path}-latest.osm.pbf"
+    else:
+        url = _geofabrik_url_from_index(iso3, cache_dir)
+        if url is None:
+            logger.warning(f"No Geofabrik region for ISO3 '{iso3}' "
+                           f"(not in ISO3_TO_GEOFABRIK, not resolvable via index).")
+            return None
     logger.info(f"  Downloading {url}")
     try:
         with requests.get(url, stream=True, timeout=(30, 600),

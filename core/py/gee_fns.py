@@ -98,105 +98,301 @@ def make_tiles(aoi, tile_size_deg=0.5):
     return tiles
 
 
-def tiled_collection(image, aoi, scale, tile_size_deg=0.5, crs='EPSG:3857', resampling=None):
-    """
-    Collect a GEE image over a large AOI using tiles.
-    Returns a single rioxarray DataArray (mosaic of all tiles).
+def _export_image_to_cloud(image, aoi, out_path, scale, dtype, nodata=0,
+                           fillna=None, round_vals=False, resampling=None,
+                           transform_fn=None, bucket='crp-city-scan',
+                           crs='EPSG:4326', poll_s=30, timeout_s=12 * 3600):
+    """Cloud Run path for tiled_collection: export the image SERVER-SIDE via
+    ee.batch.Export.image.toCloudStorage, landing the COG straight at out_path's
+    GCS object. No pixels are pulled locally — no xee, no interactive EECU. The
+    export bills to the container's ambient EE project (crp on Cloud Run).
 
-    image: ee.Image
-    aoi: GeoDataFrame
-    scale: pixel size in meters
-    tile_size_deg: tile size in degrees (default 0.5°)
-    crs: projection for xee (default EPSG:3857)
-    resampling: rasterio.enums.Resampling for categorical data
+    Post-processing mirrors the local strip-write path but is expressed on the
+    ee.Image: fillna -> unmask, round_vals -> round, dtype -> toX cast, clip to
+    AOI. transform_fn (numpy, e.g. landcover snap) is NOT expressible server-side
+    and is skipped — native-res nearest export preserves categorical codes.
     """
+    import time, os, glob, subprocess, logging
+    from core.py.log_module import setup_logger
+    logger = setup_logger(__name__)
+
+    if transform_fn is not None:
+        logger.warning("transform_fn not expressible server-side; skipped in cloud export")
+
+    AOI, _ = aoi_to_ee_geometry(aoi)
+
+    img = image
+    if fillna is not None:
+        img = img.unmask(fillna)
+    if round_vals:
+        img = img.round()
+    _cast = {'int8': 'toInt8', 'uint8': 'toUint8', 'int16': 'toInt16',
+             'uint16': 'toUint16', 'int32': 'toInt32', 'uint32': 'toUint32',
+             'float32': 'toFloat', 'float64': 'toDouble'}.get(str(dtype))
+    if _cast:
+        img = getattr(img, _cast)()
+    img = img.clip(AOI)
+
+    # out_path is on the FUSE-mounted bucket (gs://crp-city-scan at /app/mnt), so
+    # the GCS object key = everything after the mount root. EE appends '.tif'.
+    marker = os.sep + "mnt" + os.sep
+    object_key = out_path.split(marker, 1)[1] if marker in out_path else os.path.basename(out_path)
+    prefix = object_key[:-4] if object_key.endswith(".tif") else object_key
+
+    task = ee.batch.Export.image.toCloudStorage(
+        image=img,
+        description=os.path.basename(prefix)[:100],
+        bucket=bucket,
+        fileNamePrefix=prefix,
+        region=AOI,
+        scale=scale,
+        crs=crs,
+        maxPixels=int(1e13),
+        fileFormat="GeoTIFF",
+        formatOptions={"cloudOptimized": True},
+    )
+    task.start()
+    logger.info(f"Cloud export started: gs://{bucket}/{prefix}.tif  (task {task.id}, scale {scale}m)")
+
+    waited = 0
+    timed_out = False
+    while True:
+        status = task.status()
+        state = status.get("state")
+        if state == "COMPLETED":
+            break
+        if state in ("FAILED", "CANCELLED", "CANCEL_REQUESTED"):
+            raise RuntimeError(f"Cloud export {state}: {status.get('error_message')}")
+        if waited >= timeout_s:
+            # Poll gave up, but EE may already have written the output — batch-queue
+            # congestion can outlast the poll. Fall through to shard detection and
+            # salvage whatever was produced; only fail if nothing was written.
+            logger.warning(f"Cloud export poll gave up after {waited}s (task {task.id}, "
+                           f"state {state}); checking for output written so far")
+            timed_out = True
+            break
+        time.sleep(poll_s)
+        waited += poll_s
+
+    # EE either wrote a single COG at out_path, or (for large AOIs) sharded into
+    # {stem}NNNNNNNNNN-NNNNNNNNNN.tif tiles. Detect shards by their NUMERIC suffix
+    # — a bare {stem}*.tif glob would also match a stale/pre-existing out_path or a
+    # sibling like {stem}_buf.tif. Shard existence (not out_path existence) decides
+    # whether we mosaic, so a stale leftover out_path can't short-circuit it.
+    stem = out_path[:-4]
+    shards = []
+    for _ in range(6):  # let GCS-FUSE see the just-written objects
+        shards = sorted(glob.glob(stem + "[0-9]*.tif"))
+        if shards:
+            break
+        time.sleep(10)
+    if shards:
+        logger.warning(f"Cloud export sharded into {len(shards)} files; mosaicking → {out_path}")
+        vrt = stem + ".mosaic.vrt"
+        subprocess.run(['gdalbuildvrt', '-q', vrt] + shards, check=True)
+        subprocess.run(['gdal_translate', '-q', '-of', 'COG',
+                        '-co', 'COMPRESS=DEFLATE', '-co', 'BIGTIFF=IF_SAFER', vrt, out_path], check=True)
+        os.remove(vrt)
+        for s in shards:
+            os.remove(s)
+        logger.info(f"Cloud export COMPLETED (mosaicked {len(shards)} shards): {out_path}")
+    elif timed_out:
+        # Poll gave up AND nothing was written (no shards, and any out_path is a
+        # stale leftover we can't trust) — this is a real timeout.
+        raise TimeoutError(f"Cloud export timed out after {waited}s (task {task.id}) "
+                           f"with no output written")
+    else:
+        # No shards → single-file export; EE wrote (overwriting any stale) out_path.
+        if not os.path.exists(out_path):
+            raise RuntimeError(f"Cloud export COMPLETED but no output at {out_path} and no shards found")
+        logger.info(f"Cloud export COMPLETED: {out_path}")
+
+
+def tiled_collection(image, aoi, out_path, scale, dtype, nodata=0, fillna=None,
+                     round_vals=False, resampling=None, transform_fn=None,
+                     tile_size_deg=0.5, crs='EPSG:3857', strip_rows=2048,
+                     output_dir=None):
+    """Collect a GEE image over a large AOI at native `scale` and write it
+    STRAIGHT to out_path, streaming strip-by-strip. The national array is never
+    held in RAM (that in-memory merge/materialise was the OOM).
+
+    Each tile -> compressed GeoTIFF -> gdalbuildvrt -> the VRT is copied to
+    out_path one row-strip at a time, applying per strip: AOI geometry_mask
+    (clip), fillna, round, optional transform_fn, and the target dtype. Mirrors
+    tasks/wsf/collection.py mosaic_tiles (strip windows + geometry_mask +
+    from_origin). Peak memory = one strip.
+
+    When `output_dir` is given the per-tile GeoTIFFs are cached under
+    mnt/<scan-id>/cache/gee-tiles/ (persistent, GCS-FUSE), keyed by a hash of
+    (scale, tile, crs, resampling, bands). A cache hit skips the xee pull
+    entirely — so a re-run or a retry after an OOM costs 0 EECU for tiles
+    already collected. Cross-container writes are serialised with a file lock.
+    Without output_dir everything falls back to one private tempdir (no cache),
+    cleaned at the end.
+
+    dtype/nodata : output dtype + nodata (e.g. 'int8'/0, 'float32'/np.nan).
+    fillna       : value to replace NaN with before casting (None = keep NaN).
+    round_vals   : round before casting (for categorical → int).
+    transform_fn : optional callable(strip_ndarray)->ndarray (e.g. landcover snap).
+    """
+    from core.config.auth import _on_cloud_run
+    if _on_cloud_run():
+        # Cloud Run (national/large AOI): skip xee entirely — GEE exports the COG
+        # server-side straight to the scan's GCS spatial dir. No local tiles, no
+        # interactive EECU, no national array in RAM.
+        return _export_image_to_cloud(
+            image, aoi, out_path, scale, dtype, nodata=nodata, fillna=fillna,
+            round_vals=round_vals, resampling=resampling, transform_fn=transform_fn)
+
     import xarray as xr
-    import rioxarray
     import numpy as np
-    from rasterio.merge import merge
-    from rasterio.io import MemoryFile
     import rasterio
-    import logging
+    from rasterio.windows import Window
+    from rasterio.windows import transform as window_transform
+    from rasterio.features import geometry_mask
+    from rasterio.transform import from_origin
+    import logging, math, tempfile, subprocess, os, shutil, hashlib, uuid
+    from pathlib import Path
+    from core.py import cache as cache_utils
+    from core.py.log_module import setup_logger
 
-    logger = logging.getLogger(__name__)
+    logger = setup_logger(__name__)
+
     tiles = make_tiles(aoi, tile_size_deg)
-    logger.info(f"Collecting {len(tiles)} tile(s) at scale={scale}m")
-
     band_names = list(image.bandNames().getInfo())
     n_bands = len(band_names)
-    logger.info(f"  Bands: {band_names}")
+    logger.info(f"Collecting {len(tiles)} tile(s) at scale={scale}m → {out_path}")
 
-    if len(tiles) == 1:
-        # Single tile — use standard collection
-        _, tile_ee = tiles[0]
-        ds = xr.open_dataset(image, engine='ee', geometry=tile_ee, scale=scale, crs=crs)
-        if n_bands == 1:
-            return xee_to_rio(ds[band_names[0]], resampling=resampling)
-        else:
-            # Multi-band: process each band, stack
-            bands = [xee_to_rio(ds[b], resampling=resampling) for b in band_names]
-            stacked = xr.concat(bands, dim='band')
-            stacked['band'] = band_names
-            return stacked
+    # Server-side image identity — so composites that share a band name but hold
+    # different data (e.g. summer vs winter LST, both band 'ST_B10') don't collide
+    # in the tile cache. Same image object (fabdem for elevation + elevation_buf)
+    # still shares its interior tiles.
+    try:
+        image_id = hashlib.sha1(image.serialize().encode('utf-8')).hexdigest()[:16]
+    except Exception:
+        image_id = 'noimgid'
 
-    # Multi-tile collection
-    tile_files = []
-    for i, (bounds, tile_ee) in enumerate(tiles):
-        logger.info(f"  Tile {i+1}/{len(tiles)}: {bounds[0]:.2f},{bounds[1]:.2f} → {bounds[2]:.2f},{bounds[3]:.2f}")
-        try:
-            ds = xr.open_dataset(image, engine='ee', geometry=tile_ee, scale=scale, crs=crs)
-
-            if n_bands == 1:
-                tile_da = xee_to_rio(ds[band_names[0]], resampling=resampling)
-                tile_data = tile_da.values
-                if tile_data.ndim == 2:
-                    tile_data = tile_data[np.newaxis, :, :]
-            else:
-                bands = [xee_to_rio(ds[b], resampling=resampling).values for b in band_names]
-                tile_data = np.stack(bands)
-
-            memfile = MemoryFile()
-            with memfile.open(
-                driver='GTiff',
-                height=tile_data.shape[1], width=tile_data.shape[2], count=n_bands,
-                dtype=tile_data.dtype,
-                crs='EPSG:4326',
-                nodata=np.nan,
-                transform=tile_da.rio.transform() if n_bands == 1 else xee_to_rio(ds[band_names[0]], resampling=resampling).rio.transform(),
-            ) as dst:
-                dst.write(tile_data)
-            tile_files.append(memfile)
-        except Exception as e:
-            logger.warning(f"  Tile {i+1} failed: {e}")
-            continue
-
-    if not tile_files:
-        raise RuntimeError("All tiles failed")
-
-    # Merge tiles
-    datasets = [f.open() for f in tile_files]
-    mosaic, mosaic_transform = merge(datasets, nodata=np.nan)
-    for d in datasets:
-        d.close()
-    for f in tile_files:
-        f.close()
-
-    # Wrap into xarray
-    import xarray as xr_
-    if n_bands == 1:
-        da_out = xr_.DataArray(mosaic[0], dims=['y', 'x'])
-        da_out = da_out.rio.set_spatial_dims(x_dim='x', y_dim='y')
-        da_out = da_out.rio.write_crs('EPSG:4326')
-        da_out = da_out.rio.write_transform(mosaic_transform)
+    # Persistent hash-keyed tile cache (survives across runs) so a retry skips
+    # already-pulled tiles = 0 EECU. VRT + per-tile .part scratch go under
+    # mnt/<scan-id>/temp/ and are deleted. No output_dir -> one private tempdir.
+    tmp_context = None
+    if output_dir:
+        cache_root = cache_utils.get_scan_cache_dir(output_dir, namespace='gee-tiles')
+        scratch_dir = cache_utils.get_scan_temp_dir(output_dir, run_id=f"gee-tiles-{uuid.uuid4().hex[:8]}")
     else:
-        da_out = xr_.DataArray(mosaic, dims=['band', 'y', 'x'])
-        da_out['band'] = band_names
-        da_out = da_out.rio.set_spatial_dims(x_dim='x', y_dim='y')
-        da_out = da_out.rio.write_crs('EPSG:4326')
-        da_out = da_out.rio.write_transform(mosaic_transform)
+        tmp_context = tempfile.TemporaryDirectory(prefix="collect_", dir=os.path.dirname(out_path) or ".")
+        cache_root = scratch_dir = Path(tmp_context.name)
 
-    logger.info(f"  Mosaic: {mosaic.shape[-1]}x{mosaic.shape[-2]} pixels, {n_bands} band(s)")
-    return da_out
+    try:
+        tile_paths = []
+        for i, (bounds, tile_ee) in enumerate(tiles):
+            logger.info(f"  Tile {i+1}/{len(tiles)}: {bounds[0]:.2f},{bounds[1]:.2f} → {bounds[2]:.2f},{bounds[3]:.2f}")
+
+            tile_key = (
+                f"{image_id}|{scale}|{tile_size_deg}|{crs}|{resampling}|{n_bands}|{'-'.join(band_names)}|"
+                f"{bounds[0]:.6f},{bounds[1]:.6f},{bounds[2]:.6f},{bounds[3]:.6f}"
+            )
+            tile_hash = hashlib.sha1(tile_key.encode('utf-8')).hexdigest()[:20]
+            tile_path = cache_root / f"tile_{tile_hash}.tif"
+
+            if output_dir and cache_utils.is_valid_cached_raster(tile_path):
+                logger.info(f"  Tile {i+1} cache hit: {tile_path.name}")
+                tile_paths.append(str(tile_path))
+                continue
+
+            lock_fd = None
+            lock_path = tile_path.with_suffix(tile_path.suffix + '.lock')
+            tmp_path = None
+            ds = None
+            try:
+                if output_dir:
+                    lock_fd = cache_utils.acquire_lock(lock_path)
+                    if lock_fd is None:
+                        raise TimeoutError(f"Timeout waiting for tile cache lock: {lock_path}")
+                    if cache_utils.is_valid_cached_raster(tile_path):
+                        logger.info(f"  Tile {i+1} cache hit after wait: {tile_path.name}")
+                        tile_paths.append(str(tile_path))
+                        continue
+
+                ds = xr.open_dataset(image, engine='ee', geometry=tile_ee, scale=scale, crs=crs)
+                if n_bands == 1:
+                    tile_da = xee_to_rio(ds[band_names[0]], resampling=resampling)
+                else:
+                    bands = [xee_to_rio(ds[b], resampling=resampling) for b in band_names]
+                    tile_da = xr.concat(bands, dim='band')
+                    tile_da['band'] = band_names
+                tile_da.rio.write_nodata(np.nan, inplace=True)
+
+                tmp_path = scratch_dir / f"{tile_path.name}.part.{os.getpid()}"
+                tile_da.rio.to_raster(str(tmp_path), compress='deflate', tiled=True)
+                os.replace(str(tmp_path), str(tile_path))
+                tile_paths.append(str(tile_path))
+                del tile_da
+            except Exception as e:
+                logger.warning(f"  Tile {i+1} failed: {e}")
+                continue
+            finally:
+                if ds is not None:
+                    ds.close()
+                if tmp_path is not None and tmp_path.exists():
+                    tmp_path.unlink(missing_ok=True)
+                if lock_fd is not None:
+                    os.close(lock_fd)
+                    lock_path.unlink(missing_ok=True)
+
+        if not tile_paths:
+            raise RuntimeError("All tiles failed")
+
+        vrt = os.path.join(str(scratch_dir), "mosaic.vrt")
+        subprocess.run(
+            ['gdalbuildvrt', '-q', '-resolution', 'highest',
+             '-srcnodata', 'nan', '-vrtnodata', 'nan', vrt] + tile_paths,
+            check=True)
+
+        # Strip-windowed clip + type write. Output grid = AOI bounds snapped to the
+        # VRT pixel grid (like mosaic_tiles). Peak memory = one strip.
+        aoi_4326 = aoi.to_crs(4326)
+        aoi_shapes = [g.__geo_interface__ for g in aoi_4326.geometry]
+        with rasterio.open(vrt) as src:
+            resx, resy = abs(src.transform.a), abs(src.transform.e)
+            vox, voy = src.transform.c, src.transform.f
+            minx, miny, maxx, maxy = aoi_4326.total_bounds
+            col0 = max(0, math.floor((minx - vox) / resx))
+            row0 = max(0, math.floor((voy - maxy) / resy))
+            col1 = min(src.width, math.ceil((maxx - vox) / resx))
+            row1 = min(src.height, math.ceil((voy - miny) / resy))
+            width, height = col1 - col0, row1 - row0
+            out_transform = from_origin(vox + col0 * resx, voy - row0 * resy, resx, resy)
+
+            profile = {
+                "driver": "GTiff", "width": width, "height": height, "count": n_bands,
+                "dtype": dtype, "crs": "EPSG:4326", "transform": out_transform,
+                "nodata": nodata, "tiled": True, "compress": "deflate", "BIGTIFF": "IF_SAFER",
+            }
+            with rasterio.open(out_path, "w", **profile) as dst:
+                for r in range(0, height, strip_rows):
+                    h = min(strip_rows, height - r)
+                    data = src.read(window=Window(col0, row0 + r, width, h)).astype(np.float32)
+                    strip_tf = window_transform(Window(0, r, width, h), out_transform)
+                    inside = geometry_mask(aoi_shapes, out_shape=(h, width),
+                                           transform=strip_tf, invert=True)
+                    data[:, ~inside] = np.nan
+                    if fillna is not None:
+                        data = np.where(np.isnan(data), fillna, data)
+                    if round_vals:
+                        data = np.round(data)
+                    if transform_fn is not None:
+                        data = transform_fn(data)
+                    dst.write(data.astype(dtype), window=Window(0, r, width, h))
+
+        logger.info(f"  Wrote {width}x{height}, {n_bands} band(s) → {out_path}")
+    finally:
+        # scratch (VRT + .part) is disposable; the tile cache under cache_root
+        # is deliberately kept so re-runs skip the xee pull.
+        if output_dir:
+            shutil.rmtree(scratch_dir, ignore_errors=True)
+        if tmp_context is not None:
+            tmp_context.cleanup()
 
 
 class Composite:

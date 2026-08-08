@@ -69,8 +69,10 @@ build_cog_sections <- function(layers, keys = NULL, out_path = NULL) {
 # Used for palette-only layers that have no breaks/domain in layers.yml. `url` is
 # the plain https URL; needs GDAL_HTTP_HEADERS set with a bearer token in R.
 cog_domain <- function(url, probs = c(0.02, 0.98), sample_n = 2e4) {
-  vsi <- if (startsWith(url, "/vsicurl/")) url else paste0("/vsicurl/", url)
-  r <- tryCatch(terra::rast(vsi), error = function(e) NULL)
+  # Sample from an overview, not full res — a decimated read over /vsicurl. The
+  # 30 m national COGs are billions of px, so full-res na.rm sampling drags the
+  # whole raster across the network (minutes). 2-98% quantiles survive decimation.
+  r <- tryCatch(read_cog_overview(url), error = function(e) NULL)
   if (is.null(r)) return(NULL)
   s <- tryCatch(terra::spatSample(r, sample_n, method = "regular", na.rm = TRUE, warn = FALSE),
                 error = function(e) NULL)

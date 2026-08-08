@@ -26,6 +26,9 @@ def scan_init(country_name, city_name, use_existing=False):
     Returns:
         scan_id string like '2026-03-namibia-windhoek' or '2026-03-lobito_corridor'
     """
+    # Country-scale scan (city IS the country): single-name suffix, no doubling
+    if country_name == city_name:
+        country_name = None
     suffix = f"-{country_name}-{city_name}" if country_name else f"-{city_name}"
     today_id = f"{dt.now().strftime('%Y-%m')}{suffix}"
     existing = sorted([

@@ -5,8 +5,6 @@ import numpy as np
 import geopandas as gpd
 import rasterio
 from rasterio.merge import merge
-from rasterio.mask import mask
-from rasterio.io import MemoryFile
 from core.py.log_module import setup_logger
 
 logger = setup_logger(__name__)
@@ -31,43 +29,66 @@ def _tile_grid(aoi_bounds):
     return [(x, y) for x in x_seq for y in y_seq]
 
 
-def _merge_tiles(tile_datasets):
-    """Merge multiple rasterio datasets into a single array + meta.
-    Returns (merged_array, merged_meta)."""
-    if len(tile_datasets) == 1:
-        src = tile_datasets[0]
-        data = src.read()
-        meta = src.meta.copy()
-        return data, meta
+def _windowed_mosaic(tile_datasets, aoi, out_path, indexes=None, out_dtype=None,
+                     transform_fn=None, band_desc=None, strip_rows=2048):
+    """
+    Mosaic tiles into out_path clipped to the AOI, processed in row strips so
+    the full mosaic is NEVER held in memory (national AOIs OOM otherwise:
+    a whole-country 10m grid is tens of GB uncompressed).
 
-    merged, merged_transform = merge(tile_datasets)
-    meta = tile_datasets[0].meta.copy()
-    meta.update({
-        "height": merged.shape[1],
-        "width": merged.shape[2],
-        "transform": merged_transform,
-    })
-    return merged, meta
+    Per strip: merge(bounds=strip) -> mask outside-AOI to nodata ->
+    optional transform_fn(array) -> write. Peak memory = one strip.
 
+    Parameters
+    ----------
+    indexes : list[int] or None — source bands to read (None = all)
+    out_dtype : str or None — output dtype (None = source dtype)
+    transform_fn : callable or None — applied to each strip array before write
+    band_desc : str or None — band description for single-band outputs
+    """
+    from rasterio.features import geometry_mask
+    from rasterio.windows import Window
+    from rasterio.transform import from_origin
 
-def _crop_to_aoi(data, meta, aoi_shapes):
-    """Mask a raster array to AOI polygon shapes.
-    Returns (clipped_array, clipped_meta)."""
-    with MemoryFile() as memfile:
-        with memfile.open(**meta) as mem_dst:
-            mem_dst.write(data)
+    ref = tile_datasets[0]
+    resx, resy = ref.res
+    n_bands = len(indexes) if indexes else ref.count
+    aoi_shapes = [geom.__geo_interface__ for geom in aoi.geometry]
 
-        with memfile.open() as mem_src:
-            clipped, clipped_transform = mask(mem_src, shapes=aoi_shapes, crop=True, nodata=0)
-            clipped_meta = mem_src.meta.copy()
-            clipped_meta.update({
-                "height": clipped.shape[1],
-                "width": clipped.shape[2],
-                "transform": clipped_transform,
-                "nodata": 0,
-            })
+    # Output grid: AOI bounds snapped outward to the tiles' pixel grid
+    minx, miny, maxx, maxy = aoi.total_bounds
+    ox, oy = ref.transform.c, ref.transform.f  # tile grid origin
+    col0 = math.floor((minx - ox) / resx)
+    row0 = math.floor((oy - maxy) / resy)
+    col1 = math.ceil((maxx - ox) / resx)
+    row1 = math.ceil((oy - miny) / resy)
+    width, height = col1 - col0, row1 - row0
+    out_transform = from_origin(ox + col0 * resx, oy - row0 * resy, resx, resy)
 
-    return clipped, clipped_meta
+    profile = {
+        "driver": "GTiff", "width": width, "height": height, "count": n_bands,
+        "dtype": out_dtype or ref.dtypes[0], "crs": ref.crs,
+        "transform": out_transform, "nodata": 0,
+        "tiled": True, "compress": "deflate", "BIGTIFF": "IF_SAFER",
+    }
+
+    with rasterio.open(out_path, "w", **profile) as dst:
+        if band_desc and n_bands == 1:
+            dst.set_band_description(1, band_desc)
+        for r in range(0, height, strip_rows):
+            h = min(strip_rows, height - r)
+            strip_bounds = rasterio.windows.bounds(Window(0, r, width, h), out_transform)
+            strip, _ = merge(tile_datasets, bounds=strip_bounds, indexes=indexes, nodata=0)
+            strip = strip[:, :h, :width]  # guard against merge edge rounding
+            strip_transform = rasterio.windows.transform(Window(0, r, width, h), out_transform)
+            inside = geometry_mask(aoi_shapes, out_shape=(h, width),
+                                   transform=strip_transform, invert=True)
+            strip[:, ~inside] = 0
+            if transform_fn is not None:
+                strip = transform_fn(strip)
+            dst.write(strip.astype(profile["dtype"]), window=Window(0, r, width, h))
+
+    return profile
 
 
 def datacollection(
@@ -135,37 +156,27 @@ def datacollection(
     if len(tracker_datasets) == 0:
         logger.error("No WSF Tracker tiles found for this area")
     else:
-        # Merge tiles and crop to AOI
-        merged_data, merged_meta = _merge_tiles(tracker_datasets)
+        # Convert mode values to fractional years (2016.5, 2017.0, ...) per strip.
+        # Band 1 = mode (settlement class), values 1..N map to years starting at
+        # 2016.5 with 0.5 step; 0 stays 0 (nodata).
+        def _mode_to_era(strip):
+            era = 2016.0 + strip.astype(np.float32) * 0.5
+            era[strip <= 0] = 0
+            return era
 
-        # Close rasterio handles
+        tracker_path = os.path.join(spatial_dir, f"{city_name}_wsf_tracker.tif")
+        tracker_out_meta = _windowed_mosaic(
+            tracker_datasets, aoi, tracker_path,
+            indexes=[1], out_dtype="float32",
+            transform_fn=_mode_to_era, band_desc="era")
+
         for src in tracker_datasets:
             src.close()
-
-        tracker_clipped, tracker_meta = _crop_to_aoi(merged_data, merged_meta, aoi_shapes)
-
-        # Convert mode values to fractional years (2016.5, 2017.0, ...)
-        # Band 1 = mode (settlement class), values 1..N map to years starting at 2016.5 with 0.5 step
-        mode_band = tracker_clipped[0].astype(float)
-        max_mode = int(np.nanmax(mode_band[mode_band > 0])) if np.any(mode_band > 0) else 1
-        era_lut = np.zeros(max_mode + 1, dtype=np.float32)
-        for i in range(1, max_mode + 1):
-            era_lut[i] = 2016.0 + i * 0.5
-        # Apply lookup — 0 stays 0 (nodata)
-        era_band = era_lut[mode_band.astype(int).clip(0, max_mode)]
-        era_band[mode_band <= 0] = 0
-
-        # Save with era values (float years)
-        tracker_out_meta = tracker_meta.copy()
-        tracker_out_meta.update({"dtype": "float32", "count": 1})
-        tracker_path = os.path.join(spatial_dir, f"{city_name}_wsf_tracker.tif")
-        with rasterio.open(tracker_path, "w", **tracker_out_meta) as dst:
-            dst.write(era_band[np.newaxis, :, :])
-            dst.set_band_description(1, "era")
         logger.info(f"WSF Tracker saved to: {tracker_path}")
 
         if return_raster:
-            arrays['tracker'] = era_band[np.newaxis, :, :]
+            with rasterio.open(tracker_path) as src:
+                arrays['tracker'] = src.read()
             metas['tracker'] = tracker_out_meta
 
     # ==================================================================
@@ -189,22 +200,16 @@ def datacollection(
     if len(evo_datasets) == 0:
         logger.error("No WSF Evolution tiles found for this area")
     else:
-        # Merge tiles and crop to AOI
-        merged_data, merged_meta = _merge_tiles(evo_datasets)
+        evo_path = os.path.join(spatial_dir, f"{city_name}_wsf_evolution.tif")
+        evo_meta = _windowed_mosaic(evo_datasets, aoi, evo_path)
 
         for src in evo_datasets:
             src.close()
-
-        evo_clipped, evo_meta = _crop_to_aoi(merged_data, merged_meta, aoi_shapes)
-
-        # Save evolution raster
-        evo_path = os.path.join(spatial_dir, f"{city_name}_wsf_evolution.tif")
-        with rasterio.open(evo_path, "w", **evo_meta) as dst:
-            dst.write(evo_clipped)
         logger.info(f"WSF Evolution saved to: {evo_path}")
 
         if return_raster:
-            arrays['evolution'] = evo_clipped
+            with rasterio.open(evo_path) as src:
+                arrays['evolution'] = src.read()
             metas['evolution'] = evo_meta
 
     logger.info("WSF data collection complete.")

@@ -1,8 +1,9 @@
 """CLI flag parsing — single source of truth for all flag logic."""
+import sys
 
 KNOWN_FLAGS = {
     "--collect", "--analyze", "--multianalysis", "--render",
-    "--all", "--scan-id", "--multicity", "--parallel", "--auto-exit",
+    "--all", "--scan-id", "--multicity", "--parallel", "--auto-exit", "--cloudrun", "--cogify", "--crop", "--publish",
     "--upload", "--gcs", "--download", "--sync", "--keep", "--list", "--help", "--check",
     "--cache-ls", "--cache-purge", "--cache-targets", "--yes",
     "-e", "-t", "-k",
@@ -10,7 +11,7 @@ KNOWN_FLAGS = {
 
 DOWNLOAD_TARGETS = {"01", "02", "03"}
 
-SYNC_TARGETS = {"tasks", "source", "core", "scan-calculations"}
+SYNC_TARGETS = {"tasks", "source", "core", "scan-calculations", "web-version"}
 CHECK_TARGETS = {"r", "python", "gee", "gcs", "quarto", "inputs"}
 
 
@@ -47,6 +48,24 @@ def parse_args(args):
     # --gcs: connect to a scan stored in GCS. --download=01,02 is the explicit
     # pull (symmetric to --upload); bare --download pulls all folders.
     f['gcs'] = "--gcs" in args
+    f['cloudrun'] = "--cloudrun" in args
+    f['cogify'] = "--cogify" in args
+    f['crop'] = "--crop" in args
+    # --publish [folder]: copy the scan's rendered _site into the delivery repo.
+    # Optional folder arg right after --publish (e.g. --publish uzbekistan-atlas):
+    #   folder given -> <folder>/<city_name>/ ; folder omitted -> <country-city>/ (scan-id sans date)
+    f['publish'] = "--publish" in args
+    f['publish_folder'] = None
+    if f['publish']:
+        _pi = args.index("--publish")
+        if _pi + 1 < len(args) and not args[_pi + 1].startswith("-"):
+            f['publish_folder'] = args[_pi + 1]
+    # --chains=a+b|c|d+e — fan-out spec: each Cloud Run task-container runs one
+    # dependency chain ('+'-joined tasks), containers indexed by chain position
+    f['chains'] = None
+    for a in args:
+        if a.startswith("--chains="):
+            f['chains'] = a.split("=", 1)[1]
     f['download'] = []
     for a in args:
         if a == "--download":
@@ -59,15 +78,12 @@ def parse_args(args):
     f['run_all'] = "--all" in args
     f['multicity'] = "--multicity" in args
 
-    # Step
-    if "--collect" in args:
-        f['step'] = "collect"
-    elif "--analyze" in args:
-        f['step'] = "analyze"
-    elif "--multianalysis" in args:
-        f['step'] = "multianalysis"
-    else:
-        f['step'] = None
+    # Step(s). Multiple may be given (e.g. --analyze --multianalysis) and run in
+    # the fixed order collect -> analyze -> multianalysis. f['step'] keeps the
+    # first for the checks that only care whether a step was requested.
+    f['steps'] = [s for s in ("collect", "analyze", "multianalysis")
+                  if f"--{s}" in args]
+    f['step'] = f['steps'][0] if f['steps'] else None
 
     # --check targets (r, python, gee, gcs, quarto, inputs). No targets = all.
     f['check'] = "--check" in args
@@ -106,7 +122,7 @@ def parse_args(args):
     f['render_targets'] = []
     if "--render" in args:
         idx = args.index("--render")
-        valid_targets = {"maps", "scan-calculations", "charts"}
+        valid_targets = {"maps", "scan-calculations", "charts", "web-version"}
         for a in args[idx + 1:]:
             if a.startswith("--"):
                 break
@@ -136,6 +152,10 @@ def validate_args(args):
                 if v.strip() not in DOWNLOAD_TARGETS:
                     return f"--download values must be 01, 02, or 03 (got '{v.strip()}')"
             continue
+        if a.startswith("--chains="):
+            if not a.split("=", 1)[1].strip():
+                return "--chains requires a spec (e.g. --chains=elevation+slope|air_quality)"
+            continue
         if a.startswith("--cache-targets="):
             raw = a.split("=", 1)[1].strip()
             if not raw:
@@ -155,20 +175,25 @@ def validate_args(args):
     if "--gcs" in args:
         if "--scan-id" not in args:
             return "--gcs requires --scan-id"
-        if "--parallel" in args:
+        # Interactive terminals only: --gcs prompts clash with the parallel TUI.
+        # Non-interactive (containers, batch) auto-resolve prompts, so allow.
+        if "--parallel" in args and sys.stdin.isatty():
             return "--gcs cannot be combined with --parallel"
+    if "--cloudrun" in args:
+        if "--multicity" in args:
+            return "--cloudrun cannot be combined with --multicity (execute per city instead)"
     if any(a == "--download" or a.startswith("--download=") for a in args) and "--gcs" not in args:
         return "--download requires --gcs"
     if "--render" in args:
         idx = args.index("--render")
-        valid_targets = {"maps", "scan-calculations", "charts"}
+        valid_targets = {"maps", "scan-calculations", "charts", "web-version"}
         has_target = any(
             a in valid_targets
             for a in args[idx + 1:]
             if not a.startswith("--")
         )
         if not has_target:
-            return "--render requires a target: maps, scan-calculations, or charts"
+            return "--render requires a target: maps, scan-calculations, charts, or web-version"
     if "--scan-id" in args:
         idx = args.index("--scan-id")
         if idx + 1 >= len(args):

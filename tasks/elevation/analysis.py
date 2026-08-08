@@ -45,10 +45,18 @@ def generate_contours(
     import numpy as np
     import rasterio
     from rasterio.features import shapes
+    from rasterio.enums import Resampling
     from shapely.geometry import shape
     import geopandas as gpd
     from shapely.ops import unary_union
     import os
+
+    # Contour resolution: national-scale DEMs are decimated to ~100 m for the
+    # contour trace (a full 30 m national grid is ~1e9 px — infeasible to
+    # vectorize and pointless at that map scale). The elevation raster product
+    # is untouched; only the contour INPUT is coarsened.
+    CONTOUR_TARGET_M = 100
+    LARGE_PIXEL_COUNT = 5e7  # ~7000x7000 px; national AOIs vastly exceed this
 
     city_name = city_name.lower()
     spatial_dir = os.path.join(output_dir, "spatial")
@@ -61,12 +69,27 @@ def generate_contours(
     # ------------------------------------------------------------------
     if elev_array is None or elev_meta is None:
         with rasterio.open(dem_path) as src:
-            logger.info('reading from output_dir')
-            elev_array = src.read(1)
-            elev_meta = src.meta.copy()
             nodata = src.nodata
-            transform = src.transform
             crs = src.crs
+            elev_meta = src.meta.copy()
+            n_pixels = src.width * src.height
+            native_res_deg = abs(src.transform.a)
+            if n_pixels > LARGE_PIXEL_COUNT:
+                # Decimated read straight to ~100 m — never materializes the
+                # full-res national array (peak memory = the coarse grid).
+                target_res_deg = CONTOUR_TARGET_M / 111320.0  # ~m per degree
+                factor = max(1, round(target_res_deg / native_res_deg))
+                out_h, out_w = src.height // factor, src.width // factor
+                logger.info(f'national scale: contour DEM decimated {factor}x '
+                            f'({src.width}x{src.height} -> {out_w}x{out_h}, ~{CONTOUR_TARGET_M}m)')
+                elev_array = src.read(1, out_shape=(out_h, out_w),
+                                      resampling=Resampling.bilinear)
+                transform = src.transform * src.transform.scale(
+                    src.width / out_w, src.height / out_h)
+            else:
+                logger.info('reading from output_dir')
+                elev_array = src.read(1)
+                transform = src.transform
     else:
         logger.info('reading from given array and meta')
         nodata = elev_meta.get("nodata")
@@ -220,32 +243,45 @@ def elevation_stats(
     out_csv = f"{tabular_dir}/{city_name}_elevation.csv"
 
     # ------------------------------------------------------------------
-    # Step 1: Read elevation raster
+    # Step 1: Global min/max. Reading from disk is done WINDOWED (block by
+    # block) so a national-scale DEM is never fully held in RAM. FABDEM
+    # flattens water surfaces to exactly 0.0 (treated as NA, as is nodata).
     # ------------------------------------------------------------------
+    def _mask_block(block):
+        block = block.astype("float32")
+        if nodata is not None:
+            block[block == nodata] = np.nan
+        block[block == 0] = np.nan
+        return block
+
     if elev_array is not None and elev_meta is not None:
-        elev = elev_array.astype("float32")
         nodata = elev_meta.get("nodata")
+        elev = _mask_block(elev_array)
+        dem_min = np.nanmin(elev)
+        dem_max = np.nanmax(elev)
     else:
         try:
             with rasterio.open(dem_path) as src:
-                elev = src.read(1).astype("float32")
                 nodata = src.nodata
+                dem_min = np.inf
+                dem_max = -np.inf
+                for _, window in src.block_windows(1):
+                    valid = _mask_block(src.read(1, window=window))
+                    valid = valid[~np.isnan(valid)]
+                    if valid.size == 0:
+                        continue
+                    dem_min = min(dem_min, float(valid.min()))
+                    dem_max = max(dem_max, float(valid.max()))
         except Exception as e:
             logger.error(f"No elevation raster found or provided: {e}")
-            
-
-    if nodata is not None:
-        elev[elev == nodata] = np.nan
-
-    # FABDEM flattens water surfaces (rivers, lakes, sea) to exactly 0.0,
-    # which leaks into the lowest bin and skews the legend. Treat as NA.
-    elev[elev == 0] = np.nan
+            return
+        if not np.isfinite(dem_min):
+            logger.error("No valid elevation values.")
+            return
 
     # ------------------------------------------------------------------
     # Step 2: Generate contour levels (fine resolution)
     # ------------------------------------------------------------------
-    dem_min = np.nanmin(elev)
-    dem_max = np.nanmax(elev)
     dem_range = dem_max - dem_min
 
     # Decide contour interval based on terrain range
@@ -285,9 +321,20 @@ def elevation_stats(
 
 
     # ------------------------------------------------------------------
-    # Step 4: Compute elevation histogram (pixel counts)
+    # Step 4: Compute elevation histogram (pixel counts) — WINDOWED from disk
+    # (fixed bin_edges, so per-block histograms sum) or from the in-memory array.
     # ------------------------------------------------------------------
-    hist, _ = np.histogram(elev[~np.isnan(elev)], bins=bin_edges)
+    if elev_array is not None and elev_meta is not None:
+        hist, _ = np.histogram(elev[~np.isnan(elev)], bins=bin_edges)
+    else:
+        hist = np.zeros(len(bin_edges) - 1, dtype=np.int64)
+        with rasterio.open(dem_path) as src:
+            for _, window in src.block_windows(1):
+                valid = _mask_block(src.read(1, window=window))
+                valid = valid[~np.isnan(valid)]
+                if valid.size == 0:
+                    continue
+                hist += np.histogram(valid, bins=bin_edges)[0].astype(np.int64)
 
     # ------------------------------------------------------------------
     # Step 5: Write CSV output

@@ -6,9 +6,11 @@ def collect(scan):
     from .collection import datacollection
 
     logger.info("Collecting WSF data...")
+    # return_raster=False: the returned arrays are unused here, and reading the
+    # national raster back into RAM OOMs (66 GiB). The files on disk are enough.
     datacollection(
         aoi=scan.aoi, city_name=scan.city_name,
-        output_dir=scan.output_dir, return_raster=True
+        output_dir=scan.output_dir, return_raster=False
     )
 
 

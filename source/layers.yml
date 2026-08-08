@@ -53,7 +53,7 @@ rwi_standardized:
   labels: ['< -1.0', '-1.0 – -0.5', '-0.5 – 0.5', '0.5 – 1.0', '> 1.0']
   group_id: Relative wealth index
   caption: 'Map data from Meta Data for Good (2021).'
-rwi_relative:
+rwi:
   fuzzy_string: rwi(?=.shp$|.gpkg$|$)
   data_variable: rwi
   title: 'Relative wealth'

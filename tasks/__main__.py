@@ -13,7 +13,7 @@ from core.config.tasks import (
     menu_enabled, topo_sort
 )
 from core.config.cli import parse_args, validate_args, KNOWN_FLAGS
-from core.config.run import run_task, run_multicity
+from core.config.run import run_task, run_multicity, run_cloudrun
 
 logger = setup_logger("tasks")
 
@@ -137,6 +137,13 @@ def main():
         sys.exit(run_cache_command(args))
 
     # =========================================================
+    # CLOUD RUN (--cloudrun): execute on GCP instead of locally
+    # =========================================================
+    if flags['cloudrun']:
+        run_cloudrun(args, flags)
+        return
+
+    # =========================================================
     # MULTICITIES
     # =========================================================
     if "--multicity" in args:
@@ -215,6 +222,12 @@ def main():
                 use_existing=flags['use_existing'],
                 sync_targets=_sync_targets)
 
+    # Export the FULL (possibly nested, e.g. "2026-06-pakistan/2026-06-...")
+    # scan id so R subprocesses (maps render, multianalysis) use it directly
+    # instead of basename(here()), which would drop the delivery-folder prefix
+    # and point the GCS streaming lookup at the wrong bucket prefix.
+    os.environ["SCAN_ID"] = scan.cityscan_id
+
     # Set up file logging in city folder
     city_dir = os.path.dirname(str(scan.input_dir))
     from core.py.log_module import set_log_dir
@@ -234,7 +247,9 @@ def main():
     # =========================================================
     if flags['upload_enabled'] and not flags['render_targets'] and not flags['run_all']:
         positional = [a for a in args if not a.startswith("-") and a != scan_id]
-        if not positional:
+        # --chains carries the task list as a flag (fan-out containers), so it is
+        # NOT positional — don't mistake it for a bare backfill-only invocation.
+        if not positional and not flags['chains']:
             from core.py.gcs_module import upload_inputs, upload_task_outputs
             logger.info(f"Backfill upload: pushing all existing files for {scan.cityscan_id}")
             upload_inputs(scan)
@@ -306,9 +321,53 @@ def main():
         return
 
     # =========================================================
+    # COGIFY (--cogify): deliver COGs + vector/tabular copies + manifest
+    # to the target in cogify.yml. Terminal step; runs from canonical code.
+    # =========================================================
+    # Standalone --cogify (no task steps): deliver and return. When combined
+    # with task steps (e.g. `fathom --collect --analyze --cogify`), cogify runs
+    # AFTER the tasks instead — see the end of RUN TASKS below.
+    if flags['cogify'] and not flags['steps']:
+        from core.py.cogify import run_cogify
+        # Positional task names scope cogify to those tasks' outputs
+        # (e.g. `fathom --cogify` re-delivers only the flood layers).
+        run_cogify(scan, only_tasks=flags['task_names'] or None)
+        return
+
+    # PUBLISH (--publish [folder]): copy this scan's rendered _site into the
+    # delivery repo (GitHub Pages) and push. Terminal step.
+    if flags['publish']:
+        from core.py.publish import run_publish
+        run_publish(scan, folder=flags['publish_folder'])
+        return
+
+    # =========================================================
+    # CROP (--crop): build this scan's spatial/ by cropping the `bucketdata`
+    # scan's rasters/vectors to this AOI, instead of collecting. Runs before any
+    # --analyze so the CSVs recompute from the cropped data; falls through to the
+    # step dispatch when combined (e.g. `--crop --analyze`).
+    # =========================================================
+    # A scan with `bucketdata` set is crop-fed: crop IS its collection step, so
+    # never GEE-collect. --crop forces it explicitly. `--all`/bare runs become
+    # crop -> analyze; bare `--crop` (nothing else asked) crops and stops.
+    if flags['crop'] or (scan.city_inputs.get('bucketdata') and
+                         (flags['run_all'] or 'collect' in flags['steps'])):
+        from core.py.crop import run_crop
+        run_crop(scan)
+        steps = [s for s in flags['steps'] if s != 'collect']
+        if not steps and not flags['run_all']:
+            return
+        flags['steps'] = steps or ['analyze']
+
+    # =========================================================
     # RUN TASKS
     # =========================================================
-    if os.path.isdir(city_dir):
+    # Only run the city folder's OWN synced tasks/ code if it's actually there
+    # (the sync copied it). In mount mode (-k skips the sync; mnt/ IS the bucket)
+    # the city folder has no code, so stay on canonical /app instead of rewiring
+    # to an empty folder (which would fail with "No module named 'tasks'").
+    city_has_code = os.path.isdir(os.path.join(city_dir, 'tasks'))
+    if os.path.isdir(city_dir) and city_has_code:
         os.chdir(city_dir)
         # When -k or --scan-id is set, run the city's own tasks/ code (not
         # canonical). TASK_REGISTRY was built from canonical at startup, so
@@ -324,13 +383,33 @@ def main():
                     del sys.modules[k]
             import importlib
             importlib.invalidate_caches()
+            # TASK_REGISTRY was built from canonical at startup; rebuild it from THIS
+            # city's tasks/ (sys.path now points there) so validation + --all see the
+            # scan's own tasks (e.g. a per-city `bua`), not canonical's list. Mutate the
+            # shared dict in place so run.py's `from ... import TASK_REGISTRY` sees it too.
+            from core.config.tasks import discover_tasks
+            _city_reg = discover_tasks(os.path.join(city_dir, 'tasks'))
+            TASK_REGISTRY.clear()
+            TASK_REGISTRY.update(_city_reg)
 
     # Determine tasks
-    task_names = [a for a in args if not a.startswith("-") and a != scan_id]
+    task_names = [a for a in args if not a.startswith("-") and a != scan_id and a not in flags['sync_targets']]
     if flags['run_all']:
         simple_aliases = {k for k, v in ALIASES.items() if isinstance(v, str)}
         task_names = [name for name in TASK_REGISTRY
                       if menu_enabled(scan.menu, name) and name not in simple_aliases]
+
+    # Fan-out (--chains): this container runs ONE dependency chain, picked by
+    # Cloud Run's task index (containers of one execution share identical args)
+    if flags['chains']:
+        _chains = flags['chains'].split('|')
+        _idx = int(os.environ.get('CLOUD_RUN_TASK_INDEX', 0))
+        if _idx < len(_chains):
+            task_names = _chains[_idx].split('+')
+            print(f"  Fan-out container {_idx + 1}/{len(_chains)}: {' '.join(task_names)}")
+        else:
+            print(f"  Fan-out container {_idx}: no chain assigned, exiting.")
+            return
     # Auto-discover tasks with multianalysis files when --multianalysis and no tasks specified
     if step == "multianalysis" and not task_names:
         from pathlib import Path
@@ -390,38 +469,56 @@ def main():
         from core.py.gcs_module import upload_inputs
         upload_inputs(scan)
 
-    # --- Run tasks ---
-    if flags['parallel_mode'] and len(task_names) > 1:
-        from core.config.multitask import run_parallel
-        all_results = run_parallel(
-            task_names, scan, step=step,
-            run_task_fn=run_task, skip_tasks=skip_tasks,
-            auto_exit=flags['auto_exit']
-        )
-    else:
-        from core.py.gcs_module import get_all_files, upload_task_outputs
-        all_results = {}
+    # --- Run tasks. Loop over requested steps in order (e.g. --analyze then
+    #     --multianalysis run both, analyze first). Results merge per task. ---
+    all_results = {}
+    for step in (flags['steps'] or [None]):
+        if flags['parallel_mode'] and len(task_names) > 1:
+            from core.config.multitask import run_parallel
+            step_results = run_parallel(
+                task_names, scan, step=step,
+                run_task_fn=run_task, skip_tasks=skip_tasks,
+                auto_exit=flags['auto_exit']
+            )
+            for name, res in (step_results or {}).items():
+                if isinstance(all_results.get(name), dict) and isinstance(res, dict):
+                    all_results[name] = {**all_results[name], **res}
+                else:
+                    all_results[name] = res
+        else:
+            from core.py.gcs_module import get_all_files, upload_task_outputs
 
-        for name in task_names:
-            if name in skip_tasks:
-                logger.warning(f"Skipping '{name}' (auth not available)")
-                all_results[name] = "skipped"
-                continue
+            for name in task_names:
+                if name in skip_tasks:
+                    logger.warning(f"Skipping '{name}' (auth not available)")
+                    all_results[name] = "skipped"
+                    continue
 
-            files_before = get_all_files(scan.output_dir) | get_all_files(scan.render_dir) if flags['upload_enabled'] else None
+                files_before = get_all_files(scan.output_dir) | get_all_files(scan.render_dir) if flags['upload_enabled'] else None
 
-            # Per-task exception isolation — matches multitask.py:319-333 behavior.
-            # Without this, a single subprocess.CalledProcessError (e.g. missing R
-            # package) propagates up and kills every remaining task in serial mode.
-            try:
-                results = run_task(name, scan, step=step)
-            except Exception as e:
-                logger.error(f"Task '{name}' failed with error: {type(e).__name__}: {e}")
-                results = {"error": str(e)}
-            all_results[name] = results
+                # Per-task exception isolation — matches multitask.py:319-333 behavior.
+                # Without this, a single subprocess.CalledProcessError (e.g. missing R
+                # package) propagates up and kills every remaining task in serial mode.
+                try:
+                    results = run_task(name, scan, step=step)
+                except Exception as e:
+                    logger.error(f"Task '{name}' failed with error: {type(e).__name__}: {e}")
+                    results = {"error": str(e)}
+                if isinstance(all_results.get(name), dict) and isinstance(results, dict):
+                    all_results[name] = {**all_results[name], **results}
+                else:
+                    all_results[name] = results
 
-            if flags['upload_enabled']:
-                upload_task_outputs(scan, name, step=step, files_before=files_before)
+                if flags['upload_enabled']:
+                    upload_task_outputs(scan, name, step=step, files_before=files_before)
+
+    # Cogify as a final delivery step when combined with task steps, so one
+    # command does it all (e.g. `fathom --collect --analyze --cogify`). Skipped
+    # in fan-out containers (--chains) so it doesn't run once per chain — run
+    # `--cogify` separately after a fan-out instead.
+    if flags['cogify'] and not flags['chains']:
+        from core.py.cogify import run_cogify
+        run_cogify(scan, only_tasks=flags['task_names'] or None)
 
     # =========================================================
     # SUMMARY & REPORT
@@ -452,7 +549,11 @@ def main():
     if all_results:
         from datetime import datetime
         now_str = datetime.now().strftime('%Y-%m-%d %H:%M')
-        report_path = os.path.join(os.path.dirname(str(scan.input_dir)), "logs", "task_report.txt")
+        # Parallel Cloud Run fan-out: each container writes its own report file
+        # so they don't clobber each other on the shared GCS-FUSE mount.
+        task_index = os.environ.get("CLOUD_RUN_TASK_INDEX")
+        report_name = f"task_report.{task_index}.txt" if task_index is not None else "task_report.txt"
+        report_path = os.path.join(os.path.dirname(str(scan.input_dir)), "logs", report_name)
         os.makedirs(os.path.dirname(report_path), exist_ok=True)
 
         # Read existing report rows (keyed by "task|step")

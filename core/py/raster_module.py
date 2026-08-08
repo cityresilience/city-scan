@@ -194,7 +194,7 @@ def mosaic_raster(mosaic_list, local_output_dir, mosaic_file, method = 'first'):
         else:
             os.rename(src_path, dst_path)
 
-def reproject_raster(src_raster_path, dst_raster_path, dst_crs=None, target_raster_path=None):
+def reproject_raster(src_raster_path, dst_raster_path, dst_crs=None, target_raster_path=None, compress=None):
     """
     Reproject a raster to a new CRS, with an option to match the grid to a target raster.
     
@@ -243,6 +243,13 @@ def reproject_raster(src_raster_path, dst_raster_path, dst_crs=None, target_rast
             'width': width,
             'height': height
         })
+        # Opt-in compression (default off = unchanged for existing callers).
+        # Fathom passes this so its national UTM output stays small on Cloud
+        # Run's memory-backed filesystem.
+        if compress:
+            dst_meta.update({'compress': compress, 'tiled': True,
+                             'blockxsize': 512, 'blockysize': 512,
+                             'interleave': 'band'})
 
         # Open the destination raster for writing
         with rasterio.open(dst_raster_path, 'w', **dst_meta) as dst_raster:

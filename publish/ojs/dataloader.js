@@ -11,7 +11,7 @@ export async function loadData(city, tdir = `./02-process-output/tabular/`) {
   // Most files are city-prefixed ({city}_name.csv). Fathom prob files are not
   // (multianalysis.R writes fu_prob.csv / pu_prob.csv / cu_prob.csv) — pass prefixed=false.
   async function load(name, prefixed = true) {
-    const file = prefixed ? `${tdir}${city}_${name}.csv` : `${tdir}${name}.csv`;
+    const file = prefixed ? `${tdir}${city.toLowerCase()}_${name}.csv` : `${tdir}${name}.csv`;
     try {
       const r = await fetch(file);
       return r.ok ? d3.csvParse(await r.text(), d3.autoType) : null;
@@ -24,7 +24,7 @@ export async function loadData(city, tdir = `./02-process-output/tabular/`) {
     load("pg"),
     load("pas"),
     load("rwi_area"),
-    load("wsf_evolution"),   // uba (plot_ubaa)
+    load("wsf_harmonized"),  // uba (plot_ubaa) — harmonized, not evolution
     load("uba_area"),
     load("lc"),
     load("pug"),

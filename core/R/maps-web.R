@@ -52,6 +52,7 @@ possible_layers %>%
 tryCatch_named("deforest", {
   deforest <- fuzzy_read(spatial_dir, layer_params$deforest$fuzzy_string)
   if (inherits(deforest, "SpatRaster")) {
+    deforest <- subst(deforest, 0, NA)   # 0 = no deforestation / crop nodata -> drop (don't colour whole box)
     values(deforest) <- values(deforest) + 2000
     deforest <- deforest %>%
       aggregate_if_too_fine(threshold = 2e4, fun = \(x) if (all(is.na(x))) NA else max(x, na.rm = T)) # %>%

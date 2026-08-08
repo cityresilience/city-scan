@@ -53,7 +53,13 @@ def composite_flood_raster(rp_files, output_raster, flood_rps=None):
         height, width = ref.height, ref.width
 
     band_count = 1 + len(rp_files)  # max_prob + one binary band per RP
-    out_meta.update({'count': band_count, 'dtype': 'float32'})
+    # Compress + tile (memory-backed FS on Cloud Run; mostly-zero bands).
+    # interleave='band' so per-strip band-by-band writes never revisit an
+    # already-flushed compressed block (which GDAL can't rewrite).
+    out_meta.update({'count': band_count, 'dtype': 'float32',
+                     'compress': 'deflate', 'tiled': True,
+                     'blockxsize': 512, 'blockysize': 512,
+                     'interleave': 'band'})
 
     # Process in horizontal strips to limit memory
     strip_height = min(512, height)
@@ -84,6 +90,120 @@ def composite_flood_raster(rp_files, output_raster, flood_rps=None):
                 dst.set_band_description(i, f'r{rp}')
 
 
+def _windowed_rp_raster(tile_paths, buffer_aoi, flood_threshold, prob, out_path):
+    """Mosaic the given Fathom tiles over the AOI, mask to the AOI, apply the
+    flood threshold, and write a single-band float32 raster — all in horizontal
+    strips so a national-scale raster never materializes in memory. Returns True
+    if the output was written, False if no tile covered the AOI.
+
+    Replaces the old mosaic (rasterio.merge, full array in RAM) + mask(crop=True,
+    full array in RAM) path. Tiles form a virtual mosaic via gdalbuildvrt (an XML
+    index — no pixels read); the heavy reads are windowed rasterio reads from the
+    VRT (in-process GDAL auth, same as everywhere else), bounded to one strip.
+    Mirrors composite_flood_raster's windowed-strip pattern.
+    """
+    import re
+    import subprocess
+    import tempfile
+    import numpy as np
+    import rasterio
+    from rasterio.windows import Window, from_bounds, transform as window_transform
+    from rasterio.transform import from_origin
+    from rasterio.features import geometry_mask
+
+    # Keep only tiles that actually exist (cloud paths may 404), deduped by
+    # geographic tile so a location never appears twice in the VRT. tile_paths is
+    # folder-first, and we keep the first occurrence, so folder (authoritative
+    # v3.0) wins over legacy flat on any overlap — matching the old
+    # merge(method='first') behaviour (gdalbuildvrt otherwise lets the LAST
+    # source win, which would be the wrong scheme).
+    existing = []
+    seen = set()
+    for p in tile_paths:
+        m = re.search(r'([ns]\d+[ew]\d+)\.tif$', os.path.basename(p))
+        key = m.group(1) if m else p
+        if key in seen:
+            continue
+        try:
+            with rasterio.open(p):
+                existing.append(p)
+                seen.add(key)
+        except rasterio.errors.RasterioIOError:
+            continue
+    if not existing:
+        return False
+
+    # Grid parameters from a reference tile (all tiles share the global grid)
+    with rasterio.open(existing[0]) as ref:
+        res = abs(ref.transform.a)
+        src_nodata = ref.nodata if ref.nodata is not None else 0
+        out_meta = ref.meta.copy()
+
+    # Fixed output grid = AOI bounds snapped outward to the tile grid. Computed
+    # from the AOI (not per-tile coverage) so every RP writes an identical grid
+    # and composite_flood_raster can read them with a shared window.
+    import math
+    minx, miny, maxx, maxy = buffer_aoi.total_bounds
+    minx = math.floor(minx / res) * res
+    miny = math.floor(miny / res) * res
+    maxx = math.ceil(maxx / res) * res
+    maxy = math.ceil(maxy / res) * res
+    width = int(round((maxx - minx) / res))
+    height = int(round((maxy - miny) / res))
+    if width <= 0 or height <= 0:
+        return False
+    out_transform = from_origin(minx, maxy, res, res)
+
+    # Compress + tile: on Cloud Run the filesystem is memory-backed, and the
+    # per-RP national temps accumulate (all RPs alive before compositing), so an
+    # uncompressed national raster (~11 GB) would blow RAM. These are binary/
+    # mostly-zero, so deflate shrinks them ~50-100x.
+    out_meta.update({'driver': 'GTiff', 'count': 1, 'dtype': 'float32',
+                     'nodata': 0, 'height': height, 'width': width,
+                     'transform': out_transform,
+                     'compress': 'deflate', 'tiled': True,
+                     'blockxsize': 512, 'blockysize': 512})
+
+    with tempfile.NamedTemporaryFile(suffix='.vrt', delete=False) as tf:
+        vrt = tf.name
+    try:
+        subprocess.run(['gdalbuildvrt', '-q', vrt] + existing, check=True)
+
+        with rasterio.open(vrt) as src:
+            # Target window in VRT pixel space (grids share phase, so integer)
+            base = from_bounds(minx, miny, maxx, maxy, src.transform)
+            col0, row0 = int(round(base.col_off)), int(round(base.row_off))
+
+            strip_height = min(512, height)
+            with rasterio.open(out_path, 'w', **out_meta) as dst:
+                for row_off in range(0, height, strip_height):
+                    h = min(strip_height, height - row_off)
+                    # Read this strip from the mosaic (boundless: fill any tile
+                    # gap for this RP with nodata rather than failing).
+                    src_win = Window(col0, row0 + row_off, width, h)
+                    data = src.read(1, window=src_win, boundless=True,
+                                    fill_value=src_nodata).astype(np.float32)
+
+                    # Mask outside the AOI geometry, then threshold + weight
+                    # (matches apply_flood_threshold: nodata/outside -> 0,
+                    #  >=threshold -> 1, then * probability).
+                    strip_tf = window_transform(Window(0, row_off, width, h),
+                                                out_transform)
+                    outside = geometry_mask(buffer_aoi.geometry,
+                                            out_shape=(h, width),
+                                            transform=strip_tf)
+                    data[data == src_nodata] = 0
+                    data[outside] = 0
+                    data = np.where(data < flood_threshold, 0.0, 1.0).astype(
+                        np.float32) * prob
+
+                    dst.write(data, 1, window=Window(0, row_off, width, h))
+        return True
+    finally:
+        if os.path.exists(vrt):
+            os.unlink(vrt)
+
+
 def _process_year(
     flood_type,
     year,
@@ -105,6 +225,27 @@ def _process_year(
     Methodology preserved from old code:
     tiles → mosaic → mask → threshold → stack (max reduce) → write → reproject
     """
+
+    # Idempotent resume: skip this scenario only if BOTH outputs already exist
+    # AND are valid, complete rasters — so a rerun after a crash doesn't redo
+    # finished scenarios, but a stub/corrupt/truncated file (e.g. an _utm killed
+    # mid-write by an OOM) is NOT skipped and gets regenerated. A flood output is
+    # always multi-band (max_prob + one band per RP), so a bad file fails here.
+    # To force a regeneration, delete the .tif (or _utm.tif).
+    _sfx = "" if ssp is None else f"_ssp{ssp}"
+    _out = os.path.join(spatial_dir, f"{city_name}_{flood_type}_{year}{_sfx}.tif")
+    _utm = _out.replace(".tif", "_utm.tif")
+
+    def _valid(path):
+        try:
+            with rasterio.open(path) as s:
+                return s.count >= 2 and s.width > 0 and s.height > 0
+        except Exception:
+            return False
+
+    if _valid(_out) and _valid(_utm):
+        logger.info(f"Skip (valid output exists): {os.path.basename(_out)}")
+        return {"wgs84": _out, "utm": _utm}
 
     rp_temp_files = []
     successful_rps = []
@@ -138,98 +279,42 @@ def _process_year(
                     paths.append(p)
             return paths
 
-        # For 2020: try flat naming first, fall back to folder
-        # For future years: folder naming only
-        if year <= 2020:
-            naming_attempts = ["flat", "folder"]
-        else:
-            naming_attempts = ["folder"]
+        # Tiles live under two naming conventions (legacy "flat" and the
+        # complete "folder"/GLOBAL v3.0 set) and neither is guaranteed complete
+        # on its own, so mosaic the UNION of both — mosaic_raster probes each
+        # path and keeps only the tiles that actually exist, so listing both
+        # schemes is safe and works regardless of which one a tile lives under.
+        # folder is listed first so it wins on any overlap (method='first').
+        # The flat path format doesn't encode SSP, so it's only added for
+        # <=2020; folder naming covers every year/SSP.
+        naming_used = ["folder", "flat"] if year <= 2020 else ["folder"]
 
         # ---------------------------------------------------
-        # 2. Mosaic tiles (CRITICAL alignment step)
+        # 2-4. Virtual mosaic -> mask to AOI -> threshold, all windowed so a
+        #      national-scale raster never materializes in memory. Writes the
+        #      thresholded single-band result straight to the per-RP temp file.
         # ---------------------------------------------------
-        tmp_mosaic_name = (
-            f"tmp_{city_name}_{flood_type}_{year}"
-            f"{'' if ssp is None else f'_ssp{ssp}'}_rp{rp}.tif"
-        )
+        tile_paths = [p for naming in naming_used
+                      for p in _build_tile_paths(naming)]
 
-        tmp_mosaic_path = os.path.join(spatial_dir, tmp_mosaic_name)
-
-        mosaic_ok = False
-        for naming in naming_attempts:
-            tile_paths = _build_tile_paths(naming)
-            try:
-                raster_pro.mosaic_raster(
-                    tile_paths,
-                    spatial_dir,
-                    tmp_mosaic_name
-                )
-                # mosaic_raster filters to existing tiles and silently no-ops
-                # when none exist — verify output actually got written before
-                # declaring success, otherwise fall through to next naming.
-                if not os.path.exists(tmp_mosaic_path):
-                    continue
-                mosaic_ok = True
-                break
-            except Exception as e:
-                logger.debug(f"Mosaic failed ({naming} naming) for RP {rp}: {str(e)}")
-                continue
-
-        if not mosaic_ok:
-            continue
-
-        # ---------------------------------------------------
-        # 3. Mask mosaic to AOI (ensures identical grid)
-        # ---------------------------------------------------
-        try:
-            with rasterio.open(tmp_mosaic_path) as src:
-                out_image, out_transform = mask(
-                    src,
-                    buffer_aoi.geometry,
-                    crop=True
-                )
-
-                out_meta = src.meta.copy()
-                out_meta.update({
-                    "height": out_image.shape[1],
-                    "width": out_image.shape[2],
-                    "transform": out_transform
-                })
-
-        except Exception as e:
-            logger.debug(f"Mask failed for RP {rp}: {str(e)}")
-            continue
-
-        # ---------------------------------------------------
-        # 4. Apply threshold + probability weighting
-        # ---------------------------------------------------
-        out_image, out_meta = apply_flood_threshold(
-            out_image,
-            out_meta,
-            flood_threshold,
-            100 / rp
-        )
-
-        # Write thresholded result to temp file (instead of holding in RAM)
         rp_temp_name = (
             f"tmp_{city_name}_{flood_type}_{year}"
             f"{'' if ssp is None else f'_ssp{ssp}'}_rp{rp}_thresh.tif"
         )
         rp_temp_path = os.path.join(spatial_dir, rp_temp_name)
-        rp_meta = out_meta.copy()
-        rp_meta.update({'count': 1, 'dtype': 'float32'})
-        with rasterio.open(rp_temp_path, 'w', **rp_meta) as dst:
-            dst.write(np.squeeze(out_image).astype(np.float32), 1)
+
+        try:
+            wrote = _windowed_rp_raster(
+                tile_paths, buffer_aoi, flood_threshold, 100 / rp, rp_temp_path
+            )
+        except Exception as e:
+            logger.debug(f"Windowed mosaic/mask failed for RP {rp}: {str(e)}")
+            wrote = False
+        if not wrote:
+            continue
 
         rp_temp_files.append(rp_temp_path)
         successful_rps.append(rp)
-
-        # Free memory and remove mosaic temp
-        del out_image
-        try:
-            os.remove(tmp_mosaic_path)
-        except Exception:
-            pass
 
     # -------------------------------------------------------
     # 5. Composite across return periods (from temp files)
@@ -270,7 +355,8 @@ def _process_year(
     raster_pro.reproject_raster(
         output_raster,
         utm_output,
-        dst_crs=utm_crs
+        dst_crs=utm_crs,
+        compress='deflate'
     )
 
     logger.info(f"Generated: {out_name}")
@@ -456,39 +542,46 @@ def datacollection(
         )
         nodata = base_profile.get("nodata")
 
-        # Per band: pull each contributing band into a single-band dataset, then
-        # merge(method='max') over the shared union grid
-        out_bands = []
-        out_transform = None
-        for desc in band_order:
-            mems, datasets = [], []
-            try:
-                for p, idx in band_sources[desc]:
-                    with rasterio.open(p) as src:
-                        data = src.read(idx)
-                        prof = src.profile.copy()
-                    prof.update(count=1)
-                    mem = MemoryFile()
-                    ds = mem.open(**prof)
-                    ds.write(data, 1)
-                    mems.append(mem)
-                    datasets.append(ds)
-                arr, out_transform = merge(datasets, bounds=union_bounds, res=res,
-                                           nodata=nodata, method='max')
-                out_bands.append(arr[0])
-            finally:
-                for ds in datasets:
-                    ds.close()
-                for mem in mems:
-                    mem.close()
+        # Per band, per row-strip: windowed max across the contributing flood-type
+        # rasters. Never holds a full national band in memory (national comb OOMs
+        # otherwise). Same result as merge(method='max') over the union grid.
+        from rasterio.windows import from_bounds, bounds as win_bounds, Window
+        from rasterio.transform import from_origin
+        from rasterio.enums import Resampling
+
+        xres, yres = res
+        left, bottom, right, top = union_bounds
+        width = int(round((right - left) / xres))
+        height = int(round((top - bottom) / yres))
+        out_transform = from_origin(left, top, xres, yres)
+        fill = nodata if nodata is not None else 0
+        STRIP = 2048
 
         out_profile = base_profile.copy()
-        out_profile.update(count=len(out_bands), height=out_bands[0].shape[0],
-                           width=out_bands[0].shape[1], transform=out_transform)
+        out_profile.update(count=len(band_order), height=height, width=width,
+                           transform=out_transform, tiled=True,
+                           compress='deflate', BIGTIFF='IF_SAFER')
         with rasterio.open(output_path, 'w', **out_profile) as dst:
-            for i, (arr, desc) in enumerate(zip(out_bands, band_order), 1):
-                dst.write(arr, i)
-                dst.set_band_description(i, desc)
+            for out_i, desc in enumerate(band_order, 1):
+                dst.set_band_description(out_i, desc)
+                srcs = [(rasterio.open(p), idx) for p, idx in band_sources[desc]]
+                try:
+                    for r in range(0, height, STRIP):
+                        h = min(STRIP, height - r)
+                        sb = win_bounds(Window(0, r, width, h), out_transform)
+                        acc = None
+                        for src, idx in srcs:
+                            data = src.read(
+                                idx, window=from_bounds(*sb, src.transform),
+                                out_shape=(h, width), boundless=True,
+                                fill_value=fill, resampling=Resampling.nearest,
+                            ).astype(np.float32)
+                            acc = data if acc is None else np.maximum(acc, data)
+                        dst.write(acc.astype(out_profile['dtype']), out_i,
+                                  window=Window(0, r, width, h))
+                finally:
+                    for src, _ in srcs:
+                        src.close()
 
     if menu.get('flood_comb', False):
         for year in flood_years:
@@ -512,7 +605,8 @@ def datacollection(
                     raster_pro.reproject_raster(
                         comb_path,
                         f'{spatial_dir}/{city_name}_comb_{year}_utm.tif',
-                        dst_crs=utm_crs
+                        dst_crs=utm_crs,
+                        compress='deflate'
                     )
 
             else:
@@ -535,6 +629,7 @@ def datacollection(
                         raster_pro.reproject_raster(
                             f'{spatial_dir}/{city_name}_comb_{year}_ssp{ssp}.tif',
                             f'{spatial_dir}/{city_name}_comb_{year}_ssp{ssp}_utm.tif',
-                            dst_crs=utm_crs
+                            dst_crs=utm_crs,
+                            compress='deflate'
                         )
 
