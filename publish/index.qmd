@@ -7,7 +7,8 @@ execute:
 engine: knitr
 ---
 
-::: setup
+:::: setup
+
 
 ```{r}
 #| include: false
@@ -124,12 +125,12 @@ plotsReady = {
 d = plotsReady ? await loadData(city, "../02-process-output/tabular/") : null
 ```
 
-:::
+::::
 
-::: topbar
+:::::::::: topbar
 # {{< meta title >}}
 
-::: navigation
+::::: navigation
 ```{r}
 #| label: navigation
 #| output: asis
@@ -146,22 +147,22 @@ cat(sep = "\n",
   "1. <span id='dynamic-header'>City Scan</span>  &or;",
   paste0("    ", seq_along(sections), ". [", sections, "]", "(", anchors, ")"))
 ```
-:::
+:::::
 
 <div>
 by the [City Resilience Program](https://www.gfdrr.org/en/crp)
 </div>
 
-:::
+::::::::::
 
-::: {#cover-page}
+::::::::::: {#cover-page}
 # {{< meta title >}} <!-- Put "City Scan" on second line-->
 
 City Scan
 
 `r month.name[lubridate::month(Sys.Date())]` `r lubridate::year(Sys.Date())`
 
-::: donors
+:::::: donors
 
 ![Austrian Federal Ministry of Finance](donors/Austria%20BMF%20Logo.png)
 
@@ -175,9 +176,9 @@ City Scan
 
 ![World Bank](donors/WB%20Logo.png)
 
-:::
+::::::
 
-:::
+:::::::::::
 
 <!-- Hiding cover map until we have a way of producing it on Google Cloud -->
 <!-- While hiding, also raising the map* -->
@@ -185,7 +186,7 @@ City Scan
 ![](`r cover_image`)
 </div> -->
 
-::: text-column
+:::::::::::: text-column
 
 ## Executive Summary
 ```{r}
@@ -416,9 +417,9 @@ print_slide_text(slide_texts$infrastructure_and_service_delivery)
 print_md(slide_texts$concluding_questions)
 ```
 
-:::
+::::::::::::
 
-::: maps
+::::::: maps
 ```{r}
 #| output: true
 #| label: leaflet_maps
@@ -438,9 +439,9 @@ plots_html %>%
 # or maybe just an observable cell
 ```
 
-:::
+:::::::
 
-::: foot
+:::::::: foot
 
 ## Sources
 
@@ -473,12 +474,12 @@ if (!is.null(slide_texts$city_specific_sources$takeaways)) {
 cat('\n</details>\n\n')
 
 ## "Disclaimers"
-cat('<hr>\n\n')
+cat('\n\n---\n\n')
 cat(paste0('<p>Last edited ', Sys.Date(), '.</p>\n\n'))
 cat('<p>This City Scan is a product of the City Resilience Program.</p>\n\n')
 cat('<p>The findings, interpretations, and conclusions expressed in this City Scan do not necessarily reflect the views of the World Bank, the Executive Directors of the World Bank, or the governments they represent. Given that the data included in this work are derived from global sources, the World Bank does not guarantee its accuracy.</p>\n')
 ```
 
-:::
+::::::::
 
 {{< include scrollytelling.qmd >}}
