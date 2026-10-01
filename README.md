@@ -16,6 +16,13 @@ This repository provides automation tools for city scanning and analysis. The ta
    ```
    This installs the `scan` command. For details on the CLI and how the orchestration works, see [docs/getting-started/orchestration.md](docs/getting-started/orchestration.md).
 
+4. **Set up environment variables**
+
+   API keys and other secrets can be stored in `.env`. To preserve security, this file is not tracked by git, so you'll need to create it. Currently, the only required API key is for Carto. To get your API key, visit https://carto.com/basemaps/apikey/. 
+
+   1. Create a new file at the top of the repo: `./.env`
+   2. Add `CARTO_API_KEY=<your-key-here>` on its own line.
+
 3. **Verify your environment** — run:
    ```bash
    scan --check

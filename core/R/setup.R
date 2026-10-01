@@ -98,6 +98,16 @@ init_env <- function() {
     source(here("core/R/gcs-auth.R"))
   }
 
+  # 6. Read environment variables from .env file (if present).
+  #    Used for reading API keys.
+  #    (Is this the right location?)
+  read_env <- function(x = ".env") {
+    env_paths <- paste0(strrep("../", 0:4), x)
+    found <- env_paths[file.exists(env_paths)]
+    if (length(found)) readRenviron(found[1])
+  }
+  read_env()
+
   # setup directories for global data path
   source(here("core/R/global-data-paths.R"))
 

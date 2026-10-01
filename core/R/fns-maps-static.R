@@ -104,9 +104,12 @@ plot_static_layer <- function(
   } else {
   # Plot geom and scales on baseplot
   baseplot <- if (is.null(baseplot) || identical(baseplot, "vector")) {
+if (nchar(Sys.getenv("CARTO_API_KEY")) < 1) {warning("No CARTO_API_KEY found in environment. Check .env file at city or project root. You may need to request a new API key from Carto.")}
     ggplot() +
       geom_spatvector(data = static_map_bounds, fill = NA, color = NA) +
-      annotation_map_tile(type = "cartolight", zoom = get_zoom_level(static_map_bounds) + zoom_adj, progress = "none")
+      annotation_map_tile(
+type = "cartolight", api_key = Sys.getenv("CARTO_API_KEY"),
+zoom = get_zoom_level(static_map_bounds), zoomin = zoom_adj, progress = "none")
   } else if (is.character(baseplot)) {
     ggplot() +
       geom_spatvector(data = static_map_bounds, fill = NA, color = NA) +
@@ -338,6 +341,44 @@ get_built_extent <- function(urban_mask) {
 # ADDITIONAL LAYER COMPONENT HELPERS
 # =========================================================
 
+# Attach MapLibre GL + Leaflet plugin and add OpenFreeMap vector style.
+# Falls back to an XYZ layer if the plugin is unavailable at runtime.
+add_openfreemap_vector <- function(map, style_url = "https://tiles.openfreemap.org/styles/positron") {
+  map <- htmlwidgets::prependContent(
+    map,
+    htmltools::tagList(
+      htmltools::tags$link(
+        rel = "stylesheet",
+        href = "https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.css"
+      ),
+      htmltools::tags$script(
+        src = "https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.js"
+      ),
+      htmltools::tags$script(
+        src = "https://unpkg.com/@maplibre/maplibre-gl-leaflet/leaflet-maplibre-gl.js"
+      )
+    )
+  )
+
+  htmlwidgets::onRender(
+    map,
+    "function(el, x, data) {
+      if (this._openFreeMapLayer) return;
+      if (typeof L !== 'undefined' && typeof L.maplibreGL === 'function') {
+        this._openFreeMapLayer = L.maplibreGL({ style: data.style }).addTo(this);
+      } else {
+        console.warn('MapLibre plugin missing; using raster fallback.');
+        L.tileLayer(data.fallbackTemplate, { attribution: data.fallbackAttribution }).addTo(this);
+      }
+    }",
+    data = list(
+      style = style_url,
+      fallbackTemplate = "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+      fallbackAttribution = "&copy; OpenStreetMap contributors"
+    )
+  )
+}
+
 # Functions for making the maps
 plot_basemap <- function(basemap_style = "vector") {
   aoi_bounds <- st_bbox(aoi)
@@ -358,10 +399,8 @@ plot_basemap <- function(basemap_style = "vector") {
                       options = providerTileOptions(opacity = basemap_opacity))
   } else if (basemap_style == "vector") {
     # addProviderTiles(., providers$Wikimedia,
-    basemap <- basemap %>%
-      addProviderTiles(providers$CartoDB.Positron)
-      # addProviderTiles(., providers$Stadia.AlidadeSmooth,
-      #  options = providerTileOptions(opacity = basemap_opacity))
+    # basemap <- addProviderTiles(basemap, providers$CartoDB.Positron)
+    basemap <- add_openfreemap_vector(basemap)
   }
   return(basemap)
 }
