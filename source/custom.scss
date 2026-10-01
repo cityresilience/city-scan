@@ -375,19 +375,20 @@ $page-margin-right: 0.5in;
     background-image: radial-gradient(black 1px, transparent 0);
     background-size: 10px 10px;
     padding: 15vh $side-padding 0.5rem $side-padding;
-    @media print{ padding: 2in $column-gap 4.5in $column-gap }
+    @media print{ padding: 2in $column-gap 4.5in $column-gap; }
     margin-left: -$side-padding;
     margin-right: -$side-padding;
-    @media print {margin-left: 0; margin-right: 0}
+    @media print {margin-left: 0; margin-right: 0;}
   }
 
   h3 { // Previously also applied to h3::before 
     font-size: 1.1rem;
     border-bottom: 1px solid black;
-    @media print {font-size: 14pt; margin: 0}
+    @media print {font-size: 14pt; margin: 0; }
   }
   h4, .pseudo-h4 {
-    font-size: 1.1rem; @media print {font-size: 12pt; margin: 0}
+    font-size: 1.1rem;
+    @media print {font-size: 12pt; margin: 0;}
     font-weight: 500;
     opacity: 0.9;
     margin: 1.5rem 0 0.5rem 0;
@@ -398,9 +399,9 @@ $page-margin-right: 0.5in;
   p { font-size: 1rem; }
   .takeaways { 
     font-size: 1.1rem; 
-    @media print {font-size: 13pt}
+    @media print {font-size: 13pt;}
   }
-  @media print { .method p {font-size: 8pt} }
+  @media print { .method p {font-size: 8pt;} }
   div.footnote p {
     font-size: 0.8rem;
     @media print {font-size: 7pt;}

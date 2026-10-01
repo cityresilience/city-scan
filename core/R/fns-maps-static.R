@@ -104,12 +104,12 @@ plot_static_layer <- function(
   } else {
   # Plot geom and scales on baseplot
   baseplot <- if (is.null(baseplot) || identical(baseplot, "vector")) {
-if (nchar(Sys.getenv("CARTO_API_KEY")) < 1) {warning("No CARTO_API_KEY found in environment. Check .env file at city or project root. You may need to request a new API key from Carto.")}
+    if (nchar(Sys.getenv("CARTO_API_KEY")) < 1) {warning("No CARTO_API_KEY found in environment. Check .env file at city or project root. You may need to request a new API key from Carto.")}
     ggplot() +
       geom_spatvector(data = static_map_bounds, fill = NA, color = NA) +
       annotation_map_tile(
-type = "cartolight", api_key = Sys.getenv("CARTO_API_KEY"),
-zoom = get_zoom_level(static_map_bounds), zoomin = zoom_adj, progress = "none")
+        type = "cartolight", api_key = Sys.getenv("CARTO_API_KEY"),
+        zoom = get_zoom_level(static_map_bounds), zoomin = zoom_adj, progress = "none")
   } else if (is.character(baseplot)) {
     ggplot() +
       geom_spatvector(data = static_map_bounds, fill = NA, color = NA) +

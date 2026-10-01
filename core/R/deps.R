@@ -9,7 +9,7 @@
 # Install packages from CRAN using librarian
 
 if (!"librarian" %in% installed.packages()) install.packages("librarian")
-librarian::shelf(quiet = T,
+librarian::shelf( # remove quiet = T because it seems failures are silenced
   # Read-in
   readxl,
   readr,
@@ -25,6 +25,7 @@ librarian::shelf(quiet = T,
   dplyr,
   zoo,
   lubridate,
+  here,
 
   # Plots
   ggplot2, # 4.0+
@@ -40,16 +41,15 @@ librarian::shelf(quiet = T,
 
   # Spatial
   sf,
-  rspatial/terra, # Only the github version of leaflet supports terra, in place of raster, which is now required as sp (on which raster depends) is being deprecated
+  terra,
   tidyterra,
   leaflet,
   leafem,
-  ggspatial,
+  paleolimbot/ggspatial,
   jsonlite,
   geojsonsf,
   exactextractr,
   h3o,
-
 
   # Web
   curl,
@@ -57,12 +57,15 @@ librarian::shelf(quiet = T,
 
   # GCS access
   googleCloudStorageR,
-  gargle
-  )
+  gargle,
+  
+  cran_repo = "https://cran.r-project.org"
+)
 
 librarian::stock(quiet = T,
   ggnewscale, # 4.10 or higher
-  prettymapr
+  prettymapr,
+  cran_repo = "https://cran.r-project.org"
 )
 
 if (packageVersion("ggplot2") < "4.0.0") {

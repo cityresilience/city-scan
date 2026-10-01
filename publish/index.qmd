@@ -15,6 +15,12 @@ engine: knitr
 #| label: prerender
 
 # USE_GCS <<- FALSE
+if (!requireNamespace("here", quietly = TRUE)) {
+install.packages("here", repos = "https://cloud.r-project.org")
+}
+if (!requireNamespace("here", quietly = TRUE)) {
+stop("Package 'here' is required. Install it before rendering.")
+}
 here::i_am("publish/index.qmd")
 source(here::here("core/R/setup.R"))
 
@@ -135,7 +141,7 @@ d = plotsReady ? await loadData(city, "../02-process-output/tabular/") : null
 #| label: navigation
 #| output: asis
 # Dynamically add sections to table of contents ... there's probably a better way?
-sections <- readLines("index.qmd") %>%
+sections <- readLines(here::here("publish", "index.qmd")) %>%
   str_subset("^## ") %>%
   str_replace("## ", "")
 # Slugify section names to make anchor paths

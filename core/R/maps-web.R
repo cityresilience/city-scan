@@ -1,9 +1,8 @@
 # Generating City Scan Maps
 
-if ("frontend" %in% list.files()) setwd("frontend")
-source(here("core/R/setup.R"))
+source(here::here("core/R/setup.R"))
 aspect_ratio <- 1.161589 # Need a better solution, but this is required for pre-mapping.
-source(here("core/R/pre-mapping.R"))
+source(here::here("core/R/pre-mapping.R"))
 
 # Set map visualization parameters
 # Switch to using yaml file, but requires renaming all variables
