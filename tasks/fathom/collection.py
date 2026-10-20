@@ -1,5 +1,6 @@
 # import
 import os
+import shutil
 import geopandas as gpd
 import rasterio
 from rasterio.mask import mask
@@ -308,7 +309,11 @@ def _process_year(
                 tile_paths, buffer_aoi, flood_threshold, 100 / rp, rp_temp_path
             )
         except Exception as e:
-            logger.debug(f"Windowed mosaic/mask failed for RP {rp}: {str(e)}")
+            logger.error(
+                f"Windowed mosaic/mask failed for {flood_type} {year}"
+                + (f" SSP{ssp}" if ssp is not None else "")
+                + f" RP {rp}: {type(e).__name__}: {e}"
+            )
             wrote = False
         if not wrote:
             continue
@@ -397,6 +402,14 @@ def datacollection(
 
     logger.info(f"AOI CRS: {aoi.crs}")
 
+    if shutil.which("gdalbuildvrt") is None:
+        logger.error(
+            "Fathom collection requires gdalbuildvrt, but it was not found on PATH. "
+            "Install GDAL command-line tools and activate the environment. "
+            "For conda: see `gdalbuildvrt` in getting-started/setup.md"
+        )
+        return
+
     # -----------------------------
     # Parameters
     # -----------------------------
@@ -443,7 +456,7 @@ def datacollection(
 
     lat_tiles = raster_pro.tile_finder(buffer_aoi, 'lat')
     lon_tiles = raster_pro.tile_finder(buffer_aoi, 'lon')
-    logger.info(f"found: {lat_tiles, lon_tiles}")
+    logger.info(f"Identified tiles: {lat_tiles, lon_tiles}")
 
     utm_crs = aoi.estimate_utm_crs()
 

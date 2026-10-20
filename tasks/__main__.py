@@ -559,7 +559,7 @@ def main():
         # Read existing report rows (keyed by "task|step")
         existing = {}
         if os.path.exists(report_path):
-            with open(report_path) as f:
+            with open(report_path, encoding="utf-8") as f:
                 for line in f:
                     parts = line.rstrip().split('|')
                     if len(parts) >= 5 and parts[0].strip() and not parts[0].strip().startswith('=') and not parts[0].strip().startswith('─') and parts[0].strip() != 'task':
@@ -603,7 +603,7 @@ def main():
 
         lines.append(f"{'─'*110}")
 
-        with open(report_path, 'w') as f:
+        with open(report_path, "w", encoding="utf-8") as f:
             f.write('\n'.join(lines) + '\n')
         logger.info(f"Task report saved to: {report_path}")
 

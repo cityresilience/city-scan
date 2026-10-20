@@ -25,6 +25,9 @@ def setup_logger(name: str = None):
     # Console: short format
     console_format = "%(levelname)s | %(name)s | %(message)s"
     console_handler = logging.StreamHandler()
+    # Temporary fix: escape unsupported console characters without changing encoding.
+    if hasattr(console_handler.stream, "reconfigure"):
+        console_handler.stream.reconfigure(errors="backslashreplace")
     console_handler.setFormatter(logging.Formatter(console_format))
     logger.addHandler(console_handler)
 
@@ -50,7 +53,7 @@ def set_log_dir(log_dir):
     task_index = os.environ.get("CLOUD_RUN_TASK_INDEX")
     log_name = f"app.{task_index}.log" if task_index is not None else "app.log"
     log_path = os.path.join(log_dir, log_name)
-    _file_handler = logging.FileHandler(log_path, mode='w')
+    _file_handler = logging.FileHandler(log_path, mode='w', encoding='utf-8')
     _file_handler.setFormatter(logging.Formatter(file_format))
 
     # Attach to all existing loggers that have a console handler (i.e. ours)

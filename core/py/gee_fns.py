@@ -324,7 +324,7 @@ def tiled_collection(image, aoi, out_path, scale, dtype, nodata=0, fillna=None,
                 tile_da.rio.write_nodata(np.nan, inplace=True)
 
                 tmp_path = scratch_dir / f"{tile_path.name}.part.{os.getpid()}"
-                tile_da.rio.to_raster(str(tmp_path), compress='deflate', tiled=True)
+                tile_da.rio.to_raster(str(tmp_path), driver='GTiff', compress='deflate', tiled=True)
                 os.replace(str(tmp_path), str(tile_path))
                 tile_paths.append(str(tile_path))
                 del tile_da
