@@ -463,6 +463,7 @@ burnable:
   breaks: [-1, 0, .17, .33, .5, .67, .83, 1]
   labels: [0, 0.17, 0.33, 0.5, 0.67, 0.83, 1]
   group_id: Burnable area
+  oob: squish
 burnt_area:
   fuzzy_string: burnt-area-density.tif
   title: History of fire
@@ -629,8 +630,9 @@ water_risk_overall:
   title: 'Overall Water Risk'
   subtitle: 'WRI Aqueduct v4'
   palette: ['#fef0d9', '#fdcc8a', '#fc8d59', '#e34a33']
-  bins: 3
-  quantiles: [0, 0.25, 0.5, 1]
+  breaks: [0, 1, 2, 3, 4, 5]
+  # bins: 3
+  # quantiles: [0, 0.25, 0.5, 1]
   group_id: Overall Water Risk
 
 water_risk_quantity:
@@ -639,8 +641,7 @@ water_risk_quantity:
   title: 'Physical Quantity Risk'
   subtitle: 'WRI Aqueduct v4'
   palette: ['#fef0d9', '#fdcc8a', '#fc8d59', '#e34a33']
-  bins: 3
-  quantiles: [0, 0.25, 0.5, 1]
+  breaks: [0, 1, 2, 3, 4, 5]
   group_id: Physical Quantity Risk
 
 water_risk_groundwater:
