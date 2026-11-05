@@ -150,11 +150,15 @@ def datacollection(
             src = rasterio.open(gcs_path)
             tracker_datasets.append(src)
             logger.info(f"  Opened tile: {fname}")
-        except Exception:
-            logger.info(f"  Tile not found (ocean/missing): {fname}")
+        except Exception as exc:
+            logger.warning(
+                "  Could not open WSF Tracker tile %s (%s): %s: %s",
+                fname, gcs_path, type(exc).__name__, exc)
 
     if len(tracker_datasets) == 0:
-        logger.error("No WSF Tracker tiles found for this area")
+        logger.error(
+            "No WSF Tracker tiles could be opened for this area; "
+            "see tile warnings above for the underlying errors")
     else:
         # Convert mode values to fractional years (2016.5, 2017.0, ...) per strip.
         # Band 1 = mode (settlement class), values 1..N map to years starting at
@@ -194,11 +198,15 @@ def datacollection(
             src = rasterio.open(url)
             evo_datasets.append(src)
             logger.info(f"  Opened tile: {tile_name}")
-        except Exception:
-            logger.info(f"  Tile not found (ocean/missing): {tile_name}")
+        except Exception as exc:
+            logger.warning(
+                "  Could not open WSF Evolution tile %s (%s): %s: %s",
+                tile_name, url, type(exc).__name__, exc)
 
     if len(evo_datasets) == 0:
-        logger.error("No WSF Evolution tiles found for this area")
+        logger.error(
+            "No WSF Evolution tiles could be opened for this area; "
+            "see tile warnings above for the underlying errors")
     else:
         evo_path = os.path.join(spatial_dir, f"{city_name}_wsf_evolution.tif")
         evo_meta = _windowed_mosaic(evo_datasets, aoi, evo_path)

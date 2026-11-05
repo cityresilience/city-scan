@@ -262,10 +262,19 @@ def _process_year(
             for lat in lat_tiles:
                 for lon in lon_tiles:
                     tile = f"{lat.lower()}{lon.lower()}.tif"
+                    # if naming == "flat":
+                    #     p = (f"{GCS_FATHOM_BASE}/"
+                    #          f"1in{rp}-{flood_type_folder_dict[flood_type]}-{year}"
+                    #          f"_{lat.lower()}{lon.lower()}.tif")
                     if naming == "flat":
-                        p = (f"{GCS_FATHOM_BASE}/"
-                             f"1in{rp}-{flood_type_folder_dict[flood_type]}-{year}"
-                             f"_{lat.lower()}{lon.lower()}.tif")
+                        scenario_suffix = (
+                            "" if year <= 2020 else f"-SSP{flood_ssp_labels[ssp]}"
+                        )
+                        p = (
+                            f"{GCS_FATHOM_BASE}/"
+                            f"1in{rp}-{flood_type_folder_dict[flood_type]}-{year}"
+                            f"{scenario_suffix}_{lat.lower()}{lon.lower()}.tif"
+                        )
                     else:
                         if year <= 2020:
                             p = (f"{GCS_FATHOM_BASE}/"
@@ -288,7 +297,8 @@ def _process_year(
         # folder is listed first so it wins on any overlap (method='first').
         # The flat path format doesn't encode SSP, so it's only added for
         # <=2020; folder naming covers every year/SSP.
-        naming_used = ["folder", "flat"] if year <= 2020 else ["folder"]
+        # naming_used = ["folder", "flat"] if year <= 2020 else ["folder"]
+        naming_used = ["folder", "flat"]
 
         # ---------------------------------------------------
         # 2-4. Virtual mosaic -> mask to AOI -> threshold, all windowed so a
