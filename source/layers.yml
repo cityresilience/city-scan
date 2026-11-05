@@ -521,106 +521,429 @@ seismic_hazard:
   group_id: Seismic hazard
   caption: 'Map data from Global Earthquake Model (2023).'
 
-
 # # 2030 projections
 # coastal_2030_ssp1:
 #   fuzzy_string: coastal_2030_ssp1.tif$
+#   data_variable: max_probability
 #   palette: ['#A7BCEE', '#1B35C4']
 #   breaks: [0, .11, 1.1, 10.1]
-#   labels: ['0.1–1%', '1–10%', '>10%']
-#   title: 'Coastal flood probability in 2030 under SSP1'
-#   subtitle: 'Probability of a flood event within a 3-arc-second area in 2030 under SSP1'
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Coastal flood return period in 2030 under SSP1'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2030 under SSP1'
 #   group_id: Coastal flooding 2030 SSP1
+# fluvial_2030_ssp1:
+#   fuzzy_string: fluvial_2030_ssp1.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Fluvial flood return period in 2030 under SSP1'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2030 under SSP1'
+#   group_id: Riverine flooding 2030 SSP1
+# pluvial_2030_ssp1:
+#   fuzzy_string: pluvial_2030_ssp1.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Pluvial flood return period in 2030 under SSP1'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2030 under SSP1'
+#   group_id: Surface water flooding 2030 SSP1
+# combined_flooding_2030_ssp1:
+#   fuzzy_string: comb_2030_ssp1.tif$
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Combined flood return period in 2030 under SSP1'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2030 under SSP1'
+#   group_id: Combined flooding 2030 SSP1
 # coastal_2030_ssp2:
 #   fuzzy_string: coastal_2030_ssp2.tif$
+#   data_variable: max_probability
 #   palette: ['#A7BCEE', '#1B35C4']
 #   breaks: [0, .11, 1.1, 10.1]
-#   labels: ['0.1–1%', '1–10%', '>10%']
-#   title: 'Coastal flood probability in 2030 under SSP2'
-#   subtitle: 'Probability of a flood event within a 3-arc-second area in 2030 under SSP2'
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Coastal flood return period in 2030 under SSP2'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2030 under SSP2'
 #   group_id: Coastal flooding 2030 SSP2
+# fluvial_2030_ssp2:
+#   fuzzy_string: fluvial_2030_ssp2.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Fluvial flood return period in 2030 under SSP2'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2030 under SSP2'
+#   group_id: Riverine flooding 2030 SSP2
+# pluvial_2030_ssp2:
+#   fuzzy_string: pluvial_2030_ssp2.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Pluvial flood return period in 2030 under SSP2'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2030 under SSP2'
+#   group_id: Surface water flooding 2030 SSP2
+# combined_flooding_2030_ssp2:
+#   fuzzy_string: comb_2030_ssp2.tif$
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Combined flood return period in 2030 under SSP2'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2030 under SSP2'
+#   group_id: Combined flooding 2030 SSP2
 # coastal_2030_ssp3:
 #   fuzzy_string: coastal_2030_ssp3.tif$
+#   data_variable: max_probability
 #   palette: ['#A7BCEE', '#1B35C4']
 #   breaks: [0, .11, 1.1, 10.1]
-#   labels: ['0.1–1%', '1–10%', '>10%']
-#   title: 'Coastal flood probability in 2030 under SSP3'
-#   subtitle: 'Probability of a flood event within a 3-arc-second area in 2030 under SSP3'
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Coastal flood return period in 2030 under SSP3'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2030 under SSP3'
 #   group_id: Coastal flooding 2030 SSP3
+# fluvial_2030_ssp3:
+#   fuzzy_string: fluvial_2030_ssp3.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Fluvial flood return period in 2030 under SSP3'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2030 under SSP3'
+#   group_id: Riverine flooding 2030 SSP3
+# pluvial_2030_ssp3:
+#   fuzzy_string: pluvial_2030_ssp3.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Pluvial flood return period in 2030 under SSP3'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2030 under SSP3'
+#   group_id: Surface water flooding 2030 SSP3
+# combined_flooding_2030_ssp3:
+#   fuzzy_string: comb_2030_ssp3.tif$
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Combined flood return period in 2030 under SSP3'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2030 under SSP3'
+#   group_id: Combined flooding 2030 SSP3
 # coastal_2030_ssp5:
 #   fuzzy_string: coastal_2030_ssp5.tif$
+#   data_variable: max_probability
 #   palette: ['#A7BCEE', '#1B35C4']
 #   breaks: [0, .11, 1.1, 10.1]
-#   labels: ['0.1–1%', '1–10%', '>10%']
-#   title: 'Coastal flood probability in 2030 under SSP5'
-#   subtitle: 'Probability of a flood event within a 3-arc-second area in 2030 under SSP5'
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Coastal flood return period in 2030 under SSP5'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2030 under SSP5'
 #   group_id: Coastal flooding 2030 SSP5
+# fluvial_2030_ssp5:
+#   fuzzy_string: fluvial_2030_ssp5.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Fluvial flood return period in 2030 under SSP5'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2030 under SSP5'
+#   group_id: Riverine flooding 2030 SSP5
+# pluvial_2030_ssp5:
+#   fuzzy_string: pluvial_2030_ssp5.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Pluvial flood return period in 2030 under SSP5'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2030 under SSP5'
+#   group_id: Surface water flooding 2030 SSP5
+# combined_flooding_2030_ssp5:
+#   fuzzy_string: comb_2030_ssp5.tif$
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Combined flood return period in 2030 under SSP5'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2030 under SSP5'
+#   group_id: Combined flooding 2030 SSP5
 # # # 2050 projections
 # coastal_2050_ssp1:
 #   fuzzy_string: coastal_2050_ssp1.tif$
+#   data_variable: max_probability
 #   palette: ['#A7BCEE', '#1B35C4']
 #   breaks: [0, .11, 1.1, 10.1]
-#   labels: ['0.1–1%', '1–10%', '>10%']
-#   title: 'Coastal flood probability in 2050 under SSP1'
-#   subtitle: 'Probability of a flood event within a 3-arc-second area in 2050 under SSP1'
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Coastal flood return period in 2050 under SSP1'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2050 under SSP1'
 #   group_id: Coastal flooding 2050 SSP1
+# fluvial_2050_ssp1:
+#   fuzzy_string: fluvial_2050_ssp1.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Fluvial flood return period in 2050 under SSP1'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2050 under SSP1'
+#   group_id: Riverine flooding 2050 SSP1
+# pluvial_2050_ssp1:
+#   fuzzy_string: pluvial_2050_ssp1.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Pluvial flood return period in 2050 under SSP1'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2050 under SSP1'
+#   group_id: Surface water flooding 2050 SSP1
+# combined_flooding_2050_ssp1:
+#   fuzzy_string: comb_2050_ssp1.tif$
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Combined flood return period in 2050 under SSP1'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2050 under SSP1'
+#   group_id: Combined flooding 2050 SSP1
 # coastal_2050_ssp2:
 #   fuzzy_string: coastal_2050_ssp2.tif$
+#   data_variable: max_probability
 #   palette: ['#A7BCEE', '#1B35C4']
 #   breaks: [0, .11, 1.1, 10.1]
-#   labels: ['0.1–1%', '1–10%', '>10%']
-#   title: 'Coastal flood probability in 2050 under SSP2'
-#   subtitle: 'Probability of a flood event within a 3-arc-second area in 2050 under SSP2'
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Coastal flood return period in 2050 under SSP2'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2050 under SSP2'
 #   group_id: Coastal flooding 2050 SSP2
+# fluvial_2050_ssp2:
+#   fuzzy_string: fluvial_2050_ssp2.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Fluvial flood return period in 2050 under SSP2'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2050 under SSP2'
+#   group_id: Riverine flooding 2050 SSP2
+# pluvial_2050_ssp2:
+#   fuzzy_string: pluvial_2050_ssp2.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Pluvial flood return period in 2050 under SSP2'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2050 under SSP2'
+#   group_id: Surface water flooding 2050 SSP2
+# combined_flooding_2050_ssp2:
+#   fuzzy_string: comb_2050_ssp2.tif$
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Combined flood return period in 2050 under SSP2'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2050 under SSP2'
+#   group_id: Combined flooding 2050 SSP2
 # coastal_2050_ssp3:
 #   fuzzy_string: coastal_2050_ssp3.tif$
+#   data_variable: max_probability
 #   palette: ['#A7BCEE', '#1B35C4']
 #   breaks: [0, .11, 1.1, 10.1]
-#   labels: ['0.1–1%', '1–10%', '>10%']
-#   title: 'Coastal flood probability in 2050 under SSP3'
-#   subtitle: 'Probability of a flood event within a 3-arc-second area in 2050 under SSP3'
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Coastal flood return period in 2050 under SSP3'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2050 under SSP3'
 #   group_id: Coastal flooding 2050 SSP3
+# fluvial_2050_ssp3:
+#   fuzzy_string: fluvial_2050_ssp3.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Fluvial flood return period in 2050 under SSP3'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2050 under SSP3'
+#   group_id: Riverine flooding 2050 SSP3
+# pluvial_2050_ssp3:
+#   fuzzy_string: pluvial_2050_ssp3.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Pluvial flood return period in 2050 under SSP3'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2050 under SSP3'
+#   group_id: Surface water flooding 2050 SSP3
+# combined_flooding_2050_ssp3:
+#   fuzzy_string: comb_2050_ssp3.tif$
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Combined flood return period in 2050 under SSP3'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2050 under SSP3'
+#   group_id: Combined flooding 2050 SSP3
 # coastal_2050_ssp5:
 #   fuzzy_string: coastal_2050_ssp5.tif$
+#   data_variable: max_probability
 #   palette: ['#A7BCEE', '#1B35C4']
 #   breaks: [0, .11, 1.1, 10.1]
-#   labels: ['0.1–1%', '1–10%', '>10%']
-#   title: 'Coastal flood probability in 2050 under SSP5'
-#   subtitle: 'Probability of a flood event within a 3-arc-second area in 2050 under SSP5'
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Coastal flood return period in 2050 under SSP5'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2050 under SSP5'
 #   group_id: Coastal flooding 2050 SSP5
+# fluvial_2050_ssp5:
+#   fuzzy_string: fluvial_2050_ssp5.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Fluvial flood return period in 2050 under SSP5'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2050 under SSP5'
+#   group_id: Riverine flooding 2050 SSP5
+# pluvial_2050_ssp5:
+#   fuzzy_string: pluvial_2050_ssp5.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Pluvial flood return period in 2050 under SSP5'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2050 under SSP5'
+#   group_id: Surface water flooding 2050 SSP5
+# combined_flooding_2050_ssp5:
+#   fuzzy_string: comb_2050_ssp5.tif$
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Combined flood return period in 2050 under SSP5'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2050 under SSP5'
+#   group_id: Combined flooding 2050 SSP5
 # # # 2080 projections
 # coastal_2080_ssp1:
 #   fuzzy_string: coastal_2080_ssp1.tif$
+#   data_variable: max_probability
 #   palette: ['#A7BCEE', '#1B35C4']
 #   breaks: [0, .11, 1.1, 10.1]
-#   labels: ['0.1–1%', '1–10%', '>10%']
-#   title: 'Coastal flood probability in 2080 under SSP1'
-#   subtitle: 'Probability of a flood event within a 3-arc-second area in 2080 under SSP1'
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Coastal flood return period in 2080 under SSP1'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2080 under SSP1'
 #   group_id: Coastal flooding 2080 SSP1
+# fluvial_2080_ssp1:
+#   fuzzy_string: fluvial_2080_ssp1.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Fluvial flood return period in 2080 under SSP1'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2080 under SSP1'
+#   group_id: Riverine flooding 2080 SSP1
+# pluvial_2080_ssp1:
+#   fuzzy_string: pluvial_2080_ssp1.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Pluvial flood return period in 2080 under SSP1'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2080 under SSP1'
+#   group_id: Surface water flooding 2080 SSP1
+# combined_flooding_2080_ssp1:
+#   fuzzy_string: comb_2080_ssp1.tif$
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Combined flood return period in 2080 under SSP1'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2080 under SSP1'
+#   group_id: Combined flooding 2080 SSP1
 # coastal_2080_ssp2:
 #   fuzzy_string: coastal_2080_ssp2.tif$
+#   data_variable: max_probability
 #   palette: ['#A7BCEE', '#1B35C4']
 #   breaks: [0, .11, 1.1, 10.1]
-#   labels: ['0.1–1%', '1–10%', '>10%']
-#   title: 'Coastal flood probability in 2080 under SSP2'
-#   subtitle: 'Probability of a flood event within a 3-arc-second area in 2080 under SSP2'
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Coastal flood return period in 2080 under SSP2'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2080 under SSP2'
 #   group_id: Coastal flooding 2080 SSP2
+# fluvial_2080_ssp2:
+#   fuzzy_string: fluvial_2080_ssp2.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Fluvial flood return period in 2080 under SSP2'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2080 under SSP2'
+#   group_id: Riverine flooding 2080 SSP2
+# pluvial_2080_ssp2:
+#   fuzzy_string: pluvial_2080_ssp2.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Pluvial flood return period in 2080 under SSP2'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2080 under SSP2'
+#   group_id: Surface water flooding 2080 SSP2
+# combined_flooding_2080_ssp2:
+#   fuzzy_string: comb_2080_ssp2.tif$
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Combined flood return period in 2080 under SSP2'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2080 under SSP2'
+#   group_id: Combined flooding 2080 SSP2
 # coastal_2080_ssp3:
 #   fuzzy_string: coastal_2080_ssp3.tif$
+#   data_variable: max_probability
 #   palette: ['#A7BCEE', '#1B35C4']
 #   breaks: [0, .11, 1.1, 10.1]
-#   labels: ['0.1–1%', '1–10%', '>10%']
-#   title: 'Coastal flood probability in 2080 under SSP3'
-#   subtitle: 'Probability of a flood event within a 3-arc-second area in 2080 under SSP3'
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Coastal flood return period in 2080 under SSP3'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2080 under SSP3'
 #   group_id: Coastal flooding 2080 SSP3
+# fluvial_2080_ssp3:
+#   fuzzy_string: fluvial_2080_ssp3.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Fluvial flood return period in 2080 under SSP3'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2080 under SSP3'
+#   group_id: Riverine flooding 2080 SSP3
+# pluvial_2080_ssp3:
+#   fuzzy_string: pluvial_2080_ssp3.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Pluvial flood return period in 2080 under SSP3'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2080 under SSP3'
+#   group_id: Surface water flooding 2080 SSP3
+# combined_flooding_2080_ssp3:
+#   fuzzy_string: comb_2080_ssp3.tif$
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Combined flood return period in 2080 under SSP3'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2080 under SSP3'
+#   group_id: Combined flooding 2080 SSP3
 # coastal_2080_ssp5:
 #   fuzzy_string: coastal_2080_ssp5.tif$
+#   data_variable: max_probability
 #   palette: ['#A7BCEE', '#1B35C4']
 #   breaks: [0, .11, 1.1, 10.1]
-#   labels: ['0.1–1%', '1–10%', '>10%']
-#   title: 'Coastal flood probability in 2080 under SSP5'
-#   subtitle: 'Probability of a flood event within a 3-arc-second area in 2080 under SSP5'
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Coastal flood return period in 2080 under SSP5'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2080 under SSP5'
 #   group_id: Coastal flooding 2080 SSP5
+# fluvial_2080_ssp5:
+#   fuzzy_string: fluvial_2080_ssp5.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Fluvial flood return period in 2080 under SSP5'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2080 under SSP5'
+#   group_id: Riverine flooding 2080 SSP5
+# pluvial_2080_ssp5:
+#   fuzzy_string: pluvial_2080_ssp5.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Pluvial flood return period in 2080 under SSP5'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2080 under SSP5'
+#   group_id: Surface water flooding 2080 SSP5
+# combined_flooding_2080_ssp5:
+#   fuzzy_string: comb_2080_ssp5.tif$
+#   palette: ['#A7BCEE', '#1B35C4']
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Combined flood return period in 2080 under SSP5'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2080 under SSP5'
+#   group_id: Combined flooding 2080 SSP5
 
 
 ## Water Risk - WRI Aqueduct v4
