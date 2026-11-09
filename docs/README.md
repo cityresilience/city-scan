@@ -15,6 +15,7 @@
 ## Reference
 - [structure](reference/structure.md) — repo folder layout
 - [tasks](reference/tasks.md) — task list and authoring guide
+- [cloudrun](reference/cloudrun.md) — Cloud Run workflows: rebuild, `--cloudrun`, crop-fed `--collect`, `--cogify`, `--publish`
 - [googlecloud](reference/googlecloud.md) — GCS + GEE authentication
 - [gcs-data](reference/gcs-data.md) — global datasets hosted in GCS
 - [orchestration-graph](reference/orchestration-graph.md) — visual diagram of the orchestration flow

@@ -80,49 +80,61 @@ def stats_wsf(
         logger.error(f"WSF raster not found at: {raster_path}")
         return None
 
+    # Accumulate built-up area per time-bin in ROW STRIPS — a full 10m national
+    # tracker is ~18e9 px (66 GiB) if read whole. Windowing gives the EXACT same
+    # per-bin area sums (it's a weighted histogram), bounded to one strip.
+    from rasterio.windows import Window
     with rasterio.open(raster_path) as src:
-        # Tracker TIF: band 2 ('era') has fractional years; Evolution TIF: band 1 has integer years
-        if dataset == "tracker" and src.count >= 2:
-            vals = src.read(2).astype(float)
-        else:
-            vals = src.read(1).astype(float)
-        meta = src.meta.copy()
+        band = 2 if (dataset == "tracker" and src.count >= 2) else 1
+        H, W = src.height, src.width
+        base_meta = src.meta.copy()
+        STRIP = 4096
+        area_by_code = {}  # tracker: year*100+month -> km2 ; evolution: year -> km2
+        for r in range(0, H, STRIP):
+            h = min(STRIP, H - r)
+            win = Window(0, r, W, h)
+            vals = src.read(band, window=win).astype(float)
+            sm = base_meta.copy()
+            sm.update(height=h, width=W, transform=src.window_transform(win))
+            areas = _cell_areas_km2(sm)
+            valid = (vals > 0) & (~np.isnan(vals))
+            if not valid.any():
+                continue
+            av = areas[valid]
+            vv = vals[valid]
+            if dataset == "tracker":
+                yi = np.floor(vv).astype(int)
+                mi = np.clip(np.round((vv - yi) * 12).astype(int), 1, 12)
+                codes = yi * 100 + mi
+            else:
+                codes = np.floor(vv).astype(int)
+            uc, inv = np.unique(codes, return_inverse=True)
+            sums = np.bincount(inv, weights=av)
+            for c, s in zip(uc.tolist(), sums.tolist()):
+                area_by_code[c] = area_by_code.get(c, 0.0) + s
 
-    # Cell areas in km2
-    areas = _cell_areas_km2(meta)
-
-    # Valid pixels: non-zero, non-nan
-    valid_mask = (vals > 0) & (~np.isnan(vals))
-    area_valid = areas[valid_mask]
-    vals_valid = vals[valid_mask]
-
-    if vals_valid.size == 0:
+    if not area_by_code:
         logger.error("No valid WSF pixels found.")
         return None
 
     if dataset == "tracker":
-        # Tracker: fractional years (e.g. 2016.5 = Jul 2016). Group by year+month.
-        years_int = np.floor(vals_valid).astype(int)
-        months_frac = vals_valid - years_int
-        months_int = np.clip(np.round(months_frac * 12).astype(int), 1, 12)
-        # Build unique (year, month) pairs sorted
-        ym_pairs = sorted(set(zip(years_int, months_int)))
+        # Cumulative area over sorted (year, month): each pixel's value is the
+        # time it became built, so cumulative-to-(yr,mo) = sum of all bins <= it.
+        codes_sorted = sorted(area_by_code)
+        running = 0.0
         cumulative = []
-        for yr, mo in ym_pairs:
-            mask = (years_int < yr) | ((years_int == yr) & (months_int <= mo))
-            area = float(area_valid[mask].sum())
-            cumulative.append({"year": yr, "month": mo, "cumulative_sq_km": area})
+        for c in codes_sorted:
+            running += area_by_code[c]
+            cumulative.append({"year": c // 100, "month": c % 100,
+                               "cumulative_sq_km": running})
         df = pd.DataFrame(cumulative)
     else:
-        # Evolution: integer year values in pixels
-        vals_floored = np.floor(vals_valid).astype(int)
-        min_year = int(vals_floored.min())
-        max_year = int(vals_floored.max())
-        years = list(range(min_year, max_year + 1))
+        min_year, max_year = min(area_by_code), max(area_by_code)
+        running = 0.0
         cumulative = []
-        for yr in years:
-            area = float(area_valid[vals_floored <= yr].sum())
-            cumulative.append({"year": yr, "cumulative_sq_km": area})
+        for yr in range(min_year, max_year + 1):
+            running += area_by_code.get(yr, 0.0)
+            cumulative.append({"year": yr, "cumulative_sq_km": running})
         df = pd.DataFrame(cumulative)
 
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
@@ -207,22 +219,52 @@ def harmonize_wsf(
         logger.error(f"WSF Evolution not found: {evo_path}")
         return None
 
-    # Load data
-    evolution = xr.open_dataset(evo_path)
-    tracker = xr.open_dataset(tracker_path)
+    # Load evolution + tracker onto ONE shared grid, capping resolution at
+    # national scale. The distance_transform_edt below is GLOBAL (can't be
+    # windowed/chunked), so the whole array must fit in RAM. A 30m national grid
+    # (~2e9 px) OOMs; ~100m (~1.8e8 px) fits. Corridors/cities (e.g. Lobito,
+    # ~5e7 px) stay at native 30m — the cap doesn't trigger. Warp-reading also
+    # avoids ever materializing the full 10m tracker.
+    from rasterio.transform import from_origin
+    NAT_CAP = 3e8  # px; above this, coarsen so EDT fits
 
-    # Process evolution (30m, 1985-2015)
-    evo = evolution['band_data'].squeeze('band')
-    evo = evo.where(evo > 0)
-    evo = evo.rio.write_crs(4326)
+    with rasterio.open(evo_path) as esrc:
+        e_left, e_bottom, e_right, e_top = esrc.bounds
+        native_res = abs(esrc.transform.a)
+        target_res = native_res
+        if esrc.width * esrc.height > NAT_CAP:
+            target_res = max(native_res, 100 / 111320.0)  # ~100m in degrees
+            logger.info(f"National scale: harmonizing at ~{round(target_res * 111320)}m "
+                        f"(global EDT memory cap)")
+        cw = int(round((e_right - e_left) / target_res))
+        ch = int(round((e_top - e_bottom) / target_res))
+        dst_transform = from_origin(e_left, e_top, target_res, target_res)
+        evo_arr = np.empty((ch, cw), dtype=np.float32)
+        reproject(source=rasterio.band(esrc, 1), destination=evo_arr,
+                  src_transform=esrc.transform, src_crs=esrc.crs,
+                  dst_transform=dst_transform, dst_crs=esrc.crs,
+                  resampling=Resampling.mode)
 
-    # Process tracker (10m, 2016-2025) — band index 1 = 'era' (fractional years)
-    trk = tracker.isel(band=1 if tracker.sizes.get('band', 1) > 1 else 0)['band_data']
-    trk = trk.rio.write_crs(4326)
-    trk = np.floor(trk)
+    # Tracker 'era' band -> same shared grid (mode-resample, then floor to year).
+    # Note: at native res this matches the old floor-then-mode; the mode is over
+    # discrete half-year era values so flooring after is equivalent in practice.
+    with rasterio.open(tracker_path) as tsrc:
+        tband = 2 if tsrc.count >= 2 else 1
+        trk_arr = np.empty((ch, cw), dtype=np.float32)
+        reproject(source=rasterio.band(tsrc, tband), destination=trk_arr,
+                  src_transform=tsrc.transform, src_crs=tsrc.crs,
+                  dst_transform=dst_transform, dst_crs=esrc.crs,
+                  resampling=Resampling.mode)
 
-    # Mode resample tracker to 30m
-    trk_mode = trk.rio.reproject_match(evo, resampling=Resampling.mode)
+    ys = e_top - (np.arange(ch) + 0.5) * target_res
+    xs = e_left + (np.arange(cw) + 0.5) * target_res
+
+    def _da(arr):
+        return (xr.DataArray(arr, dims=('y', 'x'), coords={'y': ys, 'x': xs})
+                .rio.write_crs(4326).rio.write_transform(dst_transform))
+
+    evo = _da(np.where(evo_arr > 0, evo_arr, np.nan))
+    trk_mode = _da(np.floor(np.where(trk_arr >= 2016, trk_arr, np.nan)))
     trk_mode = trk_mode.where(trk_mode >= 2016)
 
     # Evo clipped to confirmed 2016 overlap
@@ -343,36 +385,6 @@ def compute_histogram(
 
     logger.info("Starting UBA area histogram analysis…")
 
-    # Load raster from disk if not provided
-    if clipped_image is None or clipped_meta is None:
-        raster_path = os.path.join(output_dir, "spatial", f"{city_name}_wsf_evolution.tif")
-
-        if not os.path.exists(raster_path):
-            logger.error(f"WSF evolution raster not found at: {raster_path}")
-            return None
-
-        try:
-            with rasterio.open(raster_path) as src:
-                clipped_image = src.read()
-                clipped_meta = src.meta
-        except Exception as e:
-            logger.error(f"Failed to load raster: {e}")
-            return None
-
-    # Prepare valid data
-    data = clipped_image.squeeze().astype(float)
-    nodata_value = clipped_meta.get("nodata")
-    if nodata_value is not None:
-        valid_data = data[data != nodata_value]
-    else:
-        valid_data = data[~np.isnan(data)]
-        valid_data = valid_data[np.isfinite(valid_data)]
-    valid_data = valid_data[(valid_data >= 1900) & (valid_data <= 2030)]
-
-    if valid_data.size == 0:
-        logger.error("No valid UBA year values.")
-        return None
-
     bins = [
         {"range": "Before 1985", "min_year": 0, "max_year": 1985},
         {"range": "1986-1995", "min_year": 1986, "max_year": 1995},
@@ -380,14 +392,53 @@ def compute_histogram(
         {"range": "2006-2015", "min_year": 2006, "max_year": 2015},
     ]
 
-    total_pixels = len(valid_data)
+    def _bin_counts(valid):
+        c = []
+        for b in bins:
+            if b["range"] == "Before 1985":
+                c.append(int(np.sum(valid <= b["max_year"])))
+            else:
+                c.append(int(np.sum((valid >= b["min_year"]) & (valid <= b["max_year"]))))
+        return np.array(c, dtype=np.int64)
+
+    def _valid(arr, nd):
+        v = arr[arr != nd] if nd is not None else arr[np.isfinite(arr)]
+        return v[(v >= 1900) & (v <= 2030)]
+
+    counts = np.zeros(len(bins), dtype=np.int64)
+    total_pixels = 0
+
+    if clipped_image is not None and clipped_meta is not None:
+        v = _valid(clipped_image.squeeze().astype(float), clipped_meta.get("nodata"))
+        counts += _bin_counts(v)
+        total_pixels += int(v.size)
+    else:
+        # Accumulate bin counts in ROW STRIPS — a full national evolution raster
+        # (~2e9 px) OOMs if read whole; a histogram is exact when windowed.
+        from rasterio.windows import Window
+        raster_path = os.path.join(output_dir, "spatial", f"{city_name}_wsf_evolution.tif")
+        if not os.path.exists(raster_path):
+            logger.error(f"WSF evolution raster not found at: {raster_path}")
+            return None
+        with rasterio.open(raster_path) as src:
+            nd = src.nodata
+            H, W = src.height, src.width
+            STRIP = 4096
+            for r in range(0, H, STRIP):
+                h = min(STRIP, H - r)
+                d = src.read(1, window=Window(0, r, W, h)).astype(float)
+                v = _valid(d, nd)
+                if v.size:
+                    counts += _bin_counts(v)
+                    total_pixels += int(v.size)
+
+    if total_pixels == 0:
+        logger.error("No valid UBA year values.")
+        return None
+
     bin_data = []
-    for b in bins:
-        if b["range"] == "Before 1985":
-            count = int(np.sum(valid_data <= b["max_year"]))
-        else:
-            count = int(np.sum((valid_data >= b["min_year"]) & (valid_data <= b["max_year"])))
-        representative_year = f"≤1985" if b["range"] == "Before 1985" else f"{b['min_year']}-{b['max_year']}"
+    for b, count in zip(bins, counts.tolist()):
+        representative_year = "≤1985" if b["range"] == "Before 1985" else f"{b['min_year']}-{b['max_year']}"
         bin_data.append({
             'bin': b["range"],
             'year': representative_year,

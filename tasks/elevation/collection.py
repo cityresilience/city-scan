@@ -214,22 +214,22 @@ def gee_fabdem(aoi, city_name, output_dir, return_raster=False, create_raster_bu
         spatial_dir = os.path.join(output_dir, "spatial")
         os.makedirs(spatial_dir, exist_ok=True)
 
-        elev_rio = fns.tiled_collection(fabdem, aoi, scale=30)
-        elev_rio = elev_rio.rio.clip(aoi.to_crs(elev_rio.rio.crs).geometry, drop=True)
         tif_path = os.path.join(spatial_dir, f"{city_name}_elevation.tif")
-        elev_rio.rio.to_raster(tif_path)
+        fns.tiled_collection(fabdem, aoi, tif_path, scale=30,
+                              dtype='float32', nodata=float('nan'), output_dir=output_dir)
         data_source = "FABDEM (GEE)"
         logger.info(f"Elevation raster saved to: {tif_path}")
 
+        tif_path_buf = None
         if create_raster_buffer:
             aoi_buf = gpd.GeoDataFrame(geometry=aoi.buffer(0.001), crs=aoi.crs)
-            elev_buf_rio = fns.tiled_collection(fabdem, aoi_buf, scale=30)
             tif_path_buf = os.path.join(spatial_dir, f"{city_name}_elevation_buf.tif")
-            elev_buf_rio.rio.to_raster(tif_path_buf)
+            fns.tiled_collection(fabdem, aoi_buf, tif_path_buf, scale=30,
+                                  dtype='float32', nodata=float('nan'), output_dir=output_dir)
             logger.info(f"Buffered elevation raster saved to: {tif_path_buf}")
 
         if return_raster:
-            return elev_rio, elev_buf_rio if create_raster_buffer else None
+            return tif_path, tif_path_buf
 
         return None
 
@@ -254,21 +254,21 @@ def gee_srtm(aoi, city_name, output_dir, return_raster=False, create_raster_buff
     spatial_dir = os.path.join(output_dir, "spatial")
     os.makedirs(spatial_dir, exist_ok=True)
 
-    elev_rio = fns.tiled_collection(elevation, aoi, scale=30)
-    elev_rio = elev_rio.rio.clip(aoi.to_crs(elev_rio.rio.crs).geometry, drop=True)
     tif_path = os.path.join(spatial_dir, f"{city_name}_elevation.tif")
-    elev_rio.rio.to_raster(tif_path)
+    fns.tiled_collection(elevation, aoi, tif_path, scale=30,
+                          dtype='float32', nodata=float('nan'), output_dir=output_dir)
     logger.info(f"Elevation raster saved to: {tif_path}")
 
+    tif_path_buf = None
     if create_raster_buffer:
         aoi_buf = gpd.GeoDataFrame(geometry=aoi.buffer(0.001), crs=aoi.crs)
-        elev_buf_rio = fns.tiled_collection(elevation, aoi_buf, scale=30)
         tif_path_buf = os.path.join(spatial_dir, f"{city_name}_elevation_buf.tif")
-        elev_buf_rio.rio.to_raster(tif_path_buf)
+        fns.tiled_collection(elevation, aoi_buf, tif_path_buf, scale=30,
+                              dtype='float32', nodata=float('nan'), output_dir=output_dir)
         logger.info(f"Buffered elevation raster saved to: {tif_path_buf}")
 
     if return_raster:
-        return elev_rio, elev_buf_rio if create_raster_buffer else None
+        return tif_path, tif_path_buf
 
     return None
 

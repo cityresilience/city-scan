@@ -4,7 +4,6 @@ import hashlib
 import numpy as np
 import geopandas as gpd
 import rasterio
-from rasterio.mask import mask
 from rasterio.io import MemoryFile
 from core.py.log_module import setup_logger
 from core.py.cache import get_cache_namespace_dir, read_bytes_with_cache
@@ -30,10 +29,12 @@ def _worldpop_cache_path(dataset, iso3, year, url):
     return cache_dir / fname
 
 def _wp_direct_download(iso3, years, dataset, aoi_bounds):
-    """Download WorldPop rasters, windowed read of AOI only, return list of (array, meta).
+    """Download WorldPop rasters, windowed read of AOI only. GENERATOR:
+    yields (year, array, meta) one at a time so the caller can write each band
+    to disk and free it — never all years in memory at once.
     Works for both Global 1 and Global 2 — pass dataset='g1' or 'g2'.
-    Downloads 3 files in parallel for speed."""
-    from concurrent.futures import ThreadPoolExecutor
+    Downloads 3 files in parallel for speed; yields as they complete."""
+    from concurrent.futures import ThreadPoolExecutor, as_completed
 
     iso_lower = iso3.lower()
     iso_upper = iso3.upper()
@@ -43,32 +44,43 @@ def _wp_direct_download(iso3, years, dataset, aoi_bounds):
     def _fetch(year):
         url = url_template.format(year=year, ISO=iso_upper, iso=iso_lower)
         cache_path = _worldpop_cache_path(dataset=dataset, iso3=iso3, year=year, url=url)
-        raw = read_bytes_with_cache(url=url, cache_path=cache_path, log_prefix="WorldPop")
-        with MemoryFile(raw) as memfile:
-            with memfile.open() as src:
-                window = rasterio.windows.from_bounds(*aoi_bounds, src.transform)
-                data = src.read(window=window)
-                transform = src.window_transform(window)
-                meta = src.meta.copy()
-                meta.update({"height": data.shape[1], "width": data.shape[2], "transform": transform})
+        if not cache_path.exists():
+            # populate the cache; drop the raw bytes immediately (the windowed
+            # read below comes from the DISK cache, not from RAM)
+            read_bytes_with_cache(url=url, cache_path=cache_path, log_prefix="WorldPop")
+        with rasterio.open(cache_path) as src:
+            window = rasterio.windows.from_bounds(*aoi_bounds, src.transform)
+            data = src.read(window=window)
+            transform = src.window_transform(window)
+            meta = src.meta.copy()
+            meta.update({"height": data.shape[1], "width": data.shape[2], "transform": transform})
         return year, data, meta
 
-    results_dict = {}
+    # Sliding window of 3 in-flight fetches: bounds memory to ~3 pending
+    # results even when the consumer (band writer) is slower than downloads
+    done = 0
     with ThreadPoolExecutor(max_workers=3) as pool:
-        for i, (year, data, meta) in enumerate(pool.map(_fetch, years), 1):
-            results_dict[year] = (data, meta)
-            print(f"  Downloading {dataset.upper()} from WorldPop... {i}/{total}", end="\r")
+        it = iter(years)
+        pending = {pool.submit(_fetch, y) for y in
+                   [y for y, _ in zip(it, range(3))]}
+        while pending:
+            fut = next(as_completed(pending))
+            pending.remove(fut)
+            nxt = next(it, None)
+            if nxt is not None:
+                pending.add(pool.submit(_fetch, nxt))
+            done += 1
+            print(f"  Downloading {dataset.upper()} from WorldPop... {done}/{total}", end="\r")
+            yield fut.result()
     print()
-
-    return [(results_dict[y][0], results_dict[y][1]) for y in years]
 
 
 def _wp_multi_country_download(iso3_list, years, dataset, aoi_bounds):
     """Download WorldPop rasters for multiple countries, windowed read of AOI only per country,
-    mosaic per year. Downloads full file but only keeps AOI window in memory."""
+    mosaic per year. GENERATOR: yields (year, array, meta) one year at a time so
+    the caller can write each band to disk and free it — never all years in memory."""
     from rasterio.merge import merge
 
-    all_bands = []
     total_years = len(years)
     logger.info(f"Multi-country download: {len(iso3_list)} countries ({', '.join(iso3_list)}), {total_years} years, {dataset.upper()}")
 
@@ -118,48 +130,50 @@ def _wp_multi_country_download(iso3_list, years, dataset, aoi_bounds):
                 "transform": transform,
             })
 
-        all_bands.append((data, meta))
-
-        # Clean up
+        # Clean up before yielding so the per-country handles free promptly
         for ds in datasets:
             ds.close()
         for mf in country_clips:
             mf.close()
 
         print(f"  Downloading {dataset.upper()} ({len(iso3_list)} countries)... {yi}/{total_years}", end="\r")
+        yield year, data, meta
     print()
 
-    return all_bands
 
+def _write_bands_streaming(band_gen, aoi_shapes, out_path, years, band_prefix="pop"):
+    """Write a multi-band TIF from a generator yielding (year, array, meta),
+    masking each year to the AOI polygon and freeing it before the next — so
+    peak memory is ONE year, not all of them. Years may arrive out of order;
+    each is placed at years.index(year). Outside-polygon pixels -> NaN
+    (nodata declared -99999, matching prior behaviour; downstream filters >0).
+    """
+    from rasterio.features import geometry_mask
 
-def _stack_mask(band_list, aoi_shapes):
-    """Stack list of (array, meta) into multi-band array and mask to AOI polygon.
-    Returns (clipped_image, clipped_meta)."""
-    # Collect single-band arrays and use first file's meta as reference
-    bands = [arr.squeeze() for arr, _ in band_list]  # each is (1, H, W) -> (H, W)
-    ref_meta = band_list[0][1].copy()
-
-    # Stack into multi-band: shape (n_years, H, W)
-    stacked = np.stack(bands, axis=0)
-    ref_meta.update({"count": len(bands)})
-
-    # Use MemoryFile so rasterio.mask can read without writing to disk
-    with MemoryFile() as memfile:
-        with memfile.open(**ref_meta) as mem_dst:
-            mem_dst.write(stacked)
-
-        with memfile.open() as mem_src:
-            clipped, clipped_transform = mask(mem_src, shapes=aoi_shapes, crop=True, nodata=np.nan)
-            clipped_meta = mem_src.meta.copy()
-            clipped_meta.update({
-                "height": clipped.shape[1],
-                "width": clipped.shape[2],
-                "transform": clipped_transform,
-                "nodata": -99999,
-                "count": len(bands),
-            })
-
-    return clipped, clipped_meta
+    n = len(years)
+    dst = None
+    inside = None
+    try:
+        for year, data, meta in band_gen:
+            band = data.squeeze().astype("float32")  # (H, W)
+            if dst is None:
+                profile = meta.copy()
+                profile.update({
+                    "count": n, "dtype": "float32", "nodata": -99999,
+                    "driver": "GTiff", "compress": "deflate", "BIGTIFF": "IF_SAFER",
+                })
+                dst = rasterio.open(out_path, "w", **profile)
+                inside = geometry_mask(aoi_shapes, out_shape=band.shape,
+                                       transform=profile["transform"], invert=True)
+            band[~inside] = np.nan
+            idx = years.index(year) + 1
+            dst.write(band, idx)
+            dst.set_band_description(idx, f"{band_prefix}_{year}")
+            del data, band
+    finally:
+        if dst is not None:
+            dst.close()
+    return dst is not None  # False if the generator yielded nothing
 
 
 def datacollection(
@@ -225,21 +239,17 @@ def datacollection(
 
     g1_years = list(range(2000, 2021))
 
-    # Download and crop each year into memory
+    # Download, mask, and write each year to disk one at a time (peak = 1 year)
     if multi_country:
-        g1_bands = _wp_multi_country_download(country_iso3_list, g1_years, "g1", aoi_bounds)
+        g1_gen = _wp_multi_country_download(country_iso3_list, g1_years, "g1", aoi_bounds)
     else:
-        g1_bands = _wp_direct_download(country_iso3, g1_years, "g1", aoi_bounds)
-    # Stack all years and mask to AOI polygon
-    g1_image, g1_meta = _stack_mask(g1_bands, aoi_shapes)
+        g1_gen = _wp_direct_download(country_iso3, g1_years, "g1", aoi_bounds)
 
-    # Save multi-band TIF
     g1_out = os.path.join(spatial_dir, f"{city_name}_worldpop_2000_2020.tif")
-    with rasterio.open(g1_out, "w", **g1_meta) as dst:
-        dst.write(g1_image)
-        for i, year in enumerate(g1_years):
-            dst.set_band_description(i + 1, f"pop_{year}")
-    logger.info(f"WorldPop Global 1 saved to: {g1_out} ({len(g1_years)} bands)")
+    if _write_bands_streaming(g1_gen, aoi_shapes, g1_out, g1_years):
+        logger.info(f"WorldPop Global 1 saved to: {g1_out} ({len(g1_years)} bands)")
+    else:
+        logger.warning("WorldPop Global 1: no data written.")
 
     # ==================================================================
     # Global 2 (R2025A) — 100m constrained, 2015-2030, multi-band TIF
@@ -249,52 +259,55 @@ def datacollection(
 
     g2_years = list(range(2015, 2031))
 
+    # G2 on GCS is ONE 16-band file per country (band i = year 2015+i)
+    g2_gcs_name = f"{iso_lower}_pop_2015_2030_CN_100m_R2025A_v1.tif"
+
+    def _g2_gcs_gen():
+        """Windowed per-band reads from the single multiband GCS file
+        (single-country fast path — one HTTP file, ~one band in memory)."""
+        with rasterio.open(f"{GCS_G2_BASE}/{g2_gcs_name}") as src:
+            window = rasterio.windows.from_bounds(*aoi_bounds, src.transform)
+            transform = src.window_transform(window)
+            for bi, year in enumerate(g2_years, start=1):
+                data = src.read(bi, window=window)[np.newaxis, :, :]
+                meta = src.meta.copy()
+                meta.update({"height": data.shape[1], "width": data.shape[2],
+                             "transform": transform, "count": 1})
+                yield year, data, meta
+
     if multi_country:
-        # Multi-country: download from WorldPop directly for all countries, mosaic per year
-        g2_bands = _wp_multi_country_download(country_iso3_list, g2_years, "g2", aoi_bounds)
+        g2_gen = _wp_multi_country_download(country_iso3_list, g2_years, "g2", aoi_bounds)
     else:
-        # Try GCS first (windowed reads, no full download needed)
+        # Probe the single GCS file; fall back to WorldPop direct download.
         try:
-            g2_bands = []
-            for year in g2_years:
-                fname = f"{iso_lower}_pop_{year}_CN_100m_R2025A_v1.tif"
-                with rasterio.open(f"{GCS_G2_BASE}/{fname}") as src:
-                    window = rasterio.windows.from_bounds(*aoi_bounds, src.transform)
-                    data = src.read(window=window)
-                    transform = src.window_transform(window)
-                    meta = src.meta.copy()
-                    meta.update({"height": data.shape[1], "width": data.shape[2], "transform": transform})
-                g2_bands.append((data, meta))
+            with rasterio.open(f"{GCS_G2_BASE}/{g2_gcs_name}"):
+                pass
+            g2_gen = _g2_gcs_gen()
         except Exception as e:
-            # GCS not available for this ISO, download all years from WorldPop
             logger.info(f"  GCS failed ({e}), downloading from WorldPop directly")
-            g2_bands = _wp_direct_download(country_iso3, g2_years, "g2", aoi_bounds)
+            g2_gen = _wp_direct_download(country_iso3, g2_years, "g2", aoi_bounds)
 
-    # Stack all years and mask to AOI polygon
-    g2_image, g2_meta = _stack_mask(g2_bands, aoi_shapes)
-
-    # Save multi-band TIF
     g2_out = os.path.join(spatial_dir, f"{city_name}_worldpop_2015_2030.tif")
-    with rasterio.open(g2_out, "w", **g2_meta) as dst:
-        dst.write(g2_image)
-        for i, year in enumerate(g2_years):
-            dst.set_band_description(i + 1, f"pop_{year}")
-    logger.info(f"WorldPop Global 2 saved to: {g2_out} ({len(g2_years)} bands)")
+    if _write_bands_streaming(g2_gen, aoi_shapes, g2_out, g2_years):
+        logger.info(f"WorldPop Global 2 saved to: {g2_out} ({len(g2_years)} bands)")
+    else:
+        logger.warning("WorldPop Global 2: no data written.")
 
     # ==================================================================
     # Single year population raster (current year, from Global 2)
+    # Re-read the one current-year band from the file just written (cheap)
     # ==================================================================
     from datetime import datetime
     current_year = datetime.now().year
-    # Clamp to G2 range (2015-2030)
-    pop_year = min(max(current_year, 2015), 2030)
+    pop_year = min(max(current_year, 2015), 2030)  # clamp to G2 range
 
     output_path = os.path.join(spatial_dir, f"{city_name}_population.tif")
     logger.info(f"Extracting {pop_year} population from Global 2 (100m)...")
 
     band_idx = g2_years.index(pop_year)
-    clipped_image = g2_image[band_idx:band_idx+1, :, :]
-    clipped_meta = g2_meta.copy()
+    with rasterio.open(g2_out) as src:
+        clipped_image = src.read(band_idx + 1)[np.newaxis, :, :]
+        clipped_meta = src.meta.copy()
     clipped_meta.update({"count": 1})
     with rasterio.open(output_path, "w", **clipped_meta) as dst:
         dst.write(clipped_image)
@@ -302,9 +315,7 @@ def datacollection(
 
     logger.info("WorldPop complete.")
 
-    if return_raster:
-        arrays = {"wp_2020": clipped_image, "g1_multiyear": g1_image, "g2": g2_image}
-        metas = {"wp_2020": clipped_meta, "g1_multiyear": g1_meta, "g2": g2_meta}
-        return arrays, metas
-
+    # Note: return_raster kept for signature compatibility but no longer returns
+    # the full multi-year arrays (they pinned ~30 GB and nothing consumed them —
+    # analysis.py reads the written files). Always returns None now.
     return None

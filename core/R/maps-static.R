@@ -1,6 +1,5 @@
 # Generating City Scan Maps
 
-# if ("frontend" %in% list.files()) setwd("frontend")
 if (!require("here", quietly = TRUE)) install.packages("here")
 library(here)
 

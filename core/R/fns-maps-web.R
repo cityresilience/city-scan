@@ -122,10 +122,15 @@ create_layer_function <- function(data, yaml_key = NULL, params = NULL, color_sc
 if (inherits(data, "SpatRaster")) v <- as.polygons(data, digits = 4)
 if (inherits(data, "SpatVector")) v <- data
 
+# squish out-of-range values into the end colours (oob = squish) instead of
+# transparent. colorBin censors on the BREAKS range (not the domain), so clamp
+# to the breaks when present, else the domain.
+clamp_range <- if (!is.null(params$breaks)) range(as.numeric(unlist(params$breaks)), na.rm = TRUE) else domain
 v_styled <- v %>%
   rename(value = 1) %>%
   mutate(
-    fillColor = color_scale(value),
+    fillColor = color_scale(if (isTRUE(params$factor)) value
+                            else pmax(min(clamp_range), pmin(max(clamp_range), value))),
     label = label_maker(
       x = value,
       levels = params$breaks,

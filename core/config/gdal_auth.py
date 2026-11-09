@@ -6,7 +6,9 @@ logger = setup_logger(__name__)
 
 
 def _on_cloud_run():
-    return os.environ.get("K_SERVICE") is not None
+    # K_SERVICE = Cloud Run services; CLOUD_RUN_JOB/CLOUD_RUN_EXECUTION = jobs
+    return any(os.environ.get(v) is not None
+               for v in ("K_SERVICE", "CLOUD_RUN_JOB", "CLOUD_RUN_EXECUTION"))
 
 
 def configure_gdal_gcs(service_account_file: str | None = None) -> None:

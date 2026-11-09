@@ -34,8 +34,27 @@ message("adc candidates: ", paste(adc_candidates, collapse = " | "))
 message("adc_path: ", adc_path)
 message("adc_path exists: ", file.exists(adc_path))
 
+# Cloud Run (jobs set CLOUD_RUN_JOB/CLOUD_RUN_EXECUTION, services set K_SERVICE):
+# no ADC file on disk — authenticate via the metadata server instead
+on_cloud_run <- any(nchar(Sys.getenv(c("CLOUD_RUN_JOB", "CLOUD_RUN_EXECUTION", "K_SERVICE"))) > 0)
+
 # If USE_GCS is true -> Authenticate & override file reading functions
-if (USE_GCS && file.exists(adc_path) ){
+if (USE_GCS && on_cloud_run && is.null(Find(file.exists, adc_candidates))) {
+  message("\nAuthenticating to GCS via metadata server (Cloud Run)...")
+  tryCatch({
+      gcs_auth(token = gargle::credentials_gce(scopes = "https://www.googleapis.com/auth/cloud-platform"))
+      Sys.setenv(CPL_MACHINE_IS_GCE = "YES") # GDAL /vsigs/ via metadata server
+      message("About to source gcs-overrides.R...")
+      source(here("core/R/gcs-overrides.R"))
+
+      message("GCS authentication successful - override functions loaded")
+
+        }, error = function(e) {
+          USE_GCS <- FALSE
+          message("GCS authentication failed: ", e$message)
+          message("Falling back to using local files.")
+    })
+} else if (USE_GCS && file.exists(adc_path) ){
   message("\nAuthenticating to GCS...")
   Sys.setenv(GOOGLE_APPLICATION_CREDENTIALS = adc_path, GCS_AUTH_FILE = adc_path)
   tryCatch({

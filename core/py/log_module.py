@@ -45,7 +45,11 @@ def set_log_dir(log_dir):
     os.makedirs(log_dir, exist_ok=True)
 
     file_format = "%(asctime)s | %(levelname)s | %(name)s | %(filename)s:%(lineno)d | %(message)s"
-    log_path = os.path.join(log_dir, "app.log")
+    # Parallel Cloud Run fan-out: each container gets its own log file so they
+    # don't clobber each other on the shared GCS-FUSE mount (stale file handle).
+    task_index = os.environ.get("CLOUD_RUN_TASK_INDEX")
+    log_name = f"app.{task_index}.log" if task_index is not None else "app.log"
+    log_path = os.path.join(log_dir, log_name)
     _file_handler = logging.FileHandler(log_path, mode='w')
     _file_handler.setFormatter(logging.Formatter(file_format))
 

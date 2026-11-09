@@ -105,3 +105,22 @@ label_maker <- function(x, levels = NULL, labels = NULL, suffix = NULL) {
   }
   return(x)
   }
+
+# Ported from roundtrippt gather-content.R (markdown rendering of content list,
+# e.g. for the unstyled-content.md review dump).
+collapse_with_line_breaks <- function(x) {
+  if (is.null(x)) return(NULL)
+  if (length(x) == 1) return(x)
+  line_breaks <- if_else(substr(x, 1, 1) == "-", "\n", "\n\n")
+  paste(x, line_breaks, collapse = "")
+}
+
+add_markdown_formatting <- function(slide) {
+  c(if (!is.null(slide$title)) glue("### {slide$title}\n\n"),
+    if (!is.null(slide$map_path)) glue("![Map of {slide$title}]({slide$map_path})\n\n"),
+    if (!is.null(slide$plot_path)) glue("![Chart for {slide$title}]({slide$plot_path})\n\n"),
+    if (!is.null(slide$takeaways)) collapse_with_line_breaks(slide$takeaways),
+    if (!is.null(slide$method)) collapse_with_line_breaks(slide$method),
+    if (!is.null(slide$footnote)) collapse_with_line_breaks(slide$footnote),
+    "\n\n")
+}

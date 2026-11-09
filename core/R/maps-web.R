@@ -1,9 +1,8 @@
 # Generating City Scan Maps
 
-if ("frontend" %in% list.files()) setwd("frontend")
-source(here("core/R/setup.R"))
+source(here::here("core/R/setup.R"))
 aspect_ratio <- 1.161589 # Need a better solution, but this is required for pre-mapping.
-source(here("core/R/pre-mapping.R"))
+source(here::here("core/R/pre-mapping.R"))
 
 # Set map visualization parameters
 # Switch to using yaml file, but requires renaming all variables
@@ -52,6 +51,7 @@ possible_layers %>%
 tryCatch_named("deforest", {
   deforest <- fuzzy_read(spatial_dir, layer_params$deforest$fuzzy_string)
   if (inherits(deforest, "SpatRaster")) {
+    deforest <- subst(deforest, 0, NA)   # 0 = no deforestation / crop nodata -> drop (don't colour whole box)
     values(deforest) <- values(deforest) + 2000
     deforest <- deforest %>%
       aggregate_if_too_fine(threshold = 2e4, fun = \(x) if (all(is.na(x))) NA else max(x, na.rm = T)) # %>%

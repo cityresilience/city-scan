@@ -10,6 +10,10 @@ This folder contains templates to be used in various parts of the City Scan proc
   - **what it is:** defines which components to run in the Job. (Multiple jobs can be run for the same city, with different components turned on or off, though some components are interdependent.)
   - **how to use it:** upload it to Google Cloud to define which components of the City Scan process to run
   - **where it belongs:** if using `scripts/backend.sh`, this file will be copied to the `gcs-user-input` directory
+- `cogify.yml`
+  - **what it is:** per-scan config for the `--cogify` delivery step — sets the delivery `target` (bucket/prefix) and the overview `resampling` per layer (`nearest` for categorical/class data, `average` for continuous)
+  - **how to use it:** copy to `inputs/cogify.yml`, set `target.bucket`/`prefix`, and add any scan-specific or uploaded layers under `layers:`
+  - **where it belongs:** `inputs/cogify.yml` locally; on `--cogify --scan-id` it's read from the scan's `01-user-input/cogify.yml`
 - `manual-text.md`
   - **what it is:** the city-specific text used in all City Scans, such as takeaway bullets and desk research
   - **how to use it:** after initially running the frontend process, write a version of this file (taking care to follow it's structure and keeping all of the headings that use `//`); it will be used to generate the text in the final report.

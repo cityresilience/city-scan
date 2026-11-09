@@ -6,7 +6,11 @@ def collect(scan):
     from . import collection
 
     logger.info("Collecting elevation data...")
-    collection.datacollection(
+    # Use FABDEM from GEE (full global coverage) rather than the GCS zip tiles,
+    # whose archives are incomplete for some AOIs (e.g. Uzbekistan's 56-60/70-73E
+    # edges) — the zip path silently drops missing tiles. gee_fabdem falls back to
+    # SRTM if GEE is unavailable. Same signature as datacollection().
+    collection.gee_fabdem(
         aoi=scan.aoi, city_name=scan.city_name,
         output_dir=scan.output_dir, return_raster=True,
         create_raster_buffer=True

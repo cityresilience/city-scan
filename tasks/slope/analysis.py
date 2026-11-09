@@ -48,8 +48,12 @@ def compute_slope_histogram(
     logger.info("Starting slope histogram computation…")
 
     # -----------------------------------------------------
-    # 1. Load raster from disk if not provided
+    # 1. Compute histogram — WINDOWED from disk (never holds the full national
+    #    grid in RAM) or from an in-memory array. `bins` are fixed edges, so a
+    #    single pass of per-block np.histogram sums cleanly.
     # -----------------------------------------------------
+    bins_arr = np.asarray(bins)
+
     if clipped_image is None or clipped_meta is None:
         raster_path = os.path.join(output_dir, "spatial", f"{city_name}_slope.tif")
 
@@ -57,33 +61,36 @@ def compute_slope_histogram(
             logger.error(f"Raster not found at: {raster_path}")
             return None
 
-        logger.info(f"Loading raster from disk: {raster_path}")
+        logger.info(f"Loading raster from disk (windowed): {raster_path}")
 
         try:
+            hist = np.zeros(len(bins_arr) - 1, dtype=np.int64)
             with rasterio.open(raster_path) as src:
-                clipped_image = src.read(1)
-                clipped_meta = src.meta
+                for _, window in src.block_windows(1):
+                    block = src.read(1, window=window).squeeze().astype(float)
+                    valid = block[block > 0]  # assume nodata = 0
+                    if valid.size == 0:
+                        continue
+                    hist += np.histogram(valid, bins=bins_arr)[0].astype(np.int64)
         except Exception as e:
             logger.error(f"Failed to load raster: {e}")
             return None
+
+        if hist.sum() == 0:
+            logger.error("Raster contains no valid values. Cannot compute histogram.")
+            return None
     else:
         logger.info("Using in-memory raster from datacollection().")
+        arr = clipped_image.squeeze().astype(float)
+        valid = arr[arr > 0]  # assume nodata = 0
 
-    # -----------------------------------------------------
-    # 2. Prepare raster data
-    # -----------------------------------------------------
-    arr = clipped_image.squeeze().astype(float)
-    valid = arr[arr > 0]  # assume nodata = 0
+        if valid.size == 0:
+            logger.error("Raster contains no valid values. Cannot compute histogram.")
+            return None
 
-    if valid.size == 0:
-        logger.error("Raster contains no valid values. Cannot compute histogram.")
-        return None
+        hist, _ = np.histogram(valid, bins=bins_arr)
 
-    # -----------------------------------------------------
-    # 3. Compute histogram
-    # -----------------------------------------------------
-    hist, bin_edges = np.histogram(valid, bins=bins)
-
+    bin_edges = bins_arr
     bin_labels = [
         f"{bin_edges[i]}-{bin_edges[i+1]}"
         for i in range(len(hist))

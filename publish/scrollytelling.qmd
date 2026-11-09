@@ -1,0 +1,154 @@
+
+```{ojs}
+//| output: false
+// Should this just be a javasript script instead of an OJS cell?
+// import and instantiate the scrollama
+// not sure if install is required, but here is how:
+// `$ npm install scrollama intersection-observer --save`
+scrollama = require("scrollama@3.1.1");
+scroller = scrollama();
+d3 = require("d3");
+
+// Define variables (taken from template, might not need all of them)
+$container = d3.select("main.content");
+$graphic = $container.select(".maps");
+// $chart = $graphic.select("#scrollama-test")
+$text = $container.select(".text-column");
+$step = $text.selectAll("section.level3");
+$layerControl = $graphic.select(".leaflet-control-layers-list");
+$overlaysControl = $layerControl.select(".leaflet-control-layers-overlays");
+
+inputs = $overlaysControl.node().getElementsByTagName("input")
+overlayLayers = Array.prototype.map
+  .call($overlaysControl.node().getElementsByTagName("span"), span => {
+    return(span.textContent.replace(/^\s/g, ""))
+  }) // Need to trim white space because .textContent returns a leading space
+
+// Hides all legends. I'm not sure why the legends continue to show
+// at the start even when I use `hideGroup`, so this is my workaround
+// (Should use overlayLayers but I don't feel like testing right now)
+// If this was a Quarto project (instead of document) I could uncheck
+// all the boxes as a post-render script
+arry = Array.from(document.getElementsByClassName("leaflet-control-layers-overlays")[0]
+  .getElementsByTagName("input"));
+arry.forEach(element => element.click())
+
+function handleStepEnter(response) {
+  // response = { element, direction, index }
+  
+  // When using js fillSlide, instead of QMD markdown headers, there is no element.id
+  console.log("Enter triggered: " + response.element.id)
+  // Set the entered section.level3 class to .is-active, turning text black
+  response.element.classList.add("is-active");
+  // Is this still needed?
+  // $graphic.classed("is-active", function (d, i) {
+  //   var colorRows = [1, 3]
+  //   return colorRows.includes(response.index)
+  // })
+  
+  // "Click" the layer controls relevant to the entered section.level3
+  // Ideally I'd find the index during build
+  // If data-layers is defined for section.level3
+  // var  layerList = response.element.dataset.layers
+  // If data-layers is in a child div with class "map-list"
+  var layerList = response.element.getElementsByClassName("map-list")
+  if (layerList.length > 0) layerList = layerList[0].dataset.layers
+  if (typeof layerList === 'string') {
+    layerList.split(";").forEach((x) => {
+      var layerIndex = overlayLayers.indexOf(x)
+      if (layerIndex > -1 && !inputs[layerIndex].checked) {
+        inputs[layerIndex].click()
+      }
+    })
+  }
+
+  // Method that would use a child div with a list of map layers instead; not working
+  // var listDiv = response.element.getElementsByClassName("map-list")[0]
+  // if (typeof listDiv === 'object') {
+  //   var layerList = listDiv.firstElementChild.children
+  //   for (var i = 0; i < layerList.length; i++) {
+  //     var layerIndex = overlayLayers.indexOf(layerList[i])
+  //     if (layerIndex > -1 && !inputs[layerIndex].checked) {
+  //       inputs[layerIndex].click()
+  //     }
+  //   }
+}
+
+function handleStepExit(response) {
+  console.log("Exit triggered: " + response.element.id)
+  response.element.classList.remove("is-active");
+  
+  // // "Click" the layer controls relevant to the entered section.level3
+  // If data-layers is defined for section.level3
+  // var  layerList = response.element.dataset.layers
+  // If data-layers is in a child div with class "map-list"
+  var layerList = response.element.getElementsByClassName("map-list")
+  if (layerList.length > 0) layerList = layerList[0].dataset.layers
+  if (typeof layerList === 'string') {
+    layerList.split(";").forEach((x) => {
+      var layerIndex = overlayLayers.indexOf(x)
+      if (layerIndex > -1 && inputs[layerIndex].checked) {
+        inputs[layerIndex].click()
+      }
+    })
+  }
+}
+// initialise the library and pass event handlers to 
+function initLevel3() {
+  scroller
+    .setup({
+			container: 'main.content', // our outermost scrollytelling element
+			graphic: '.maps', // the graphic
+			text: '.text-column', // the step container
+			step: '.text-column section.level3', // the step elements
+			offset: 0.5, // set the trigger to be 1/2 way down screen
+			debug: false, // display the trigger offset for testing
+    })
+    .onStepEnter(handleStepEnter)
+    .onStepExit(handleStepExit)
+}
+
+setTimeout(() => {
+  initLevel3();
+}, 4500);
+```
+
+
+```{ojs}
+// Show level 2 header above map
+$headerAboveMap = $container
+  .select(".navigation")
+  .select("ol")
+  .select("li")
+  .select("#dynamic-header")
+
+sections = document.getElementsByClassName("navigation")[0].getElementsByTagName("ol")[0].getElementsByTagName("ol")[0].innerText.split("\n")
+
+scrollerSectionTitle = scrollama();
+function initLevel2() {
+  scrollerSectionTitle
+    .setup({
+			step: '.text-column section.level2', // the step elements
+			offset: 0.5, // set the trigger to be 1/2 way down screen
+			debug: false, // display the trigger offset for testing
+    })
+    .onStepEnter(response => {
+      // I would like to include the section number but I would need to use a
+      // different method for setting section numbers than CSS's counter(), which
+      // can't be read by JS
+      var sect = response.element.firstElementChild.textContent
+      $headerAboveMap.text(sections.indexOf(sect) + " " + sect)
+    })
+}
+
+initLevel2();
+
+// Reinitialize scrollama after browser resize. Otherwise, in-view
+// sections are dropped from data-scrollama-index
+window.addEventListener("resize", () => {
+  initLevel2()
+  setTimeout(() => {
+    initLevel3();
+  }, 500);
+});
+```

@@ -1,0 +1,748 @@
+// Available sass variables from Bootstrap
+// $body-bg	The page background color.
+// $body-color	The page text color.
+// $link-color	The link color.
+// $input-bg	The background color for HTML inputs.
+// $popover-bg	The background color for popovers (for example, when a citation preview is shown).
+
+// $font-family-sans-serif	The sans-serif font family for the page.
+// $font-family-monospace	The monospace font family for the page.
+// $font-size-root	The base font size for the page.
+// $toc-font-size	The font size for the page TOC.
+// $h1-font-size Font sizes for the specified headings.
+// $h2-font-size
+// $h3-font-size
+// $h4-font-size
+// $h5-font-size
+
+/*-- scss:defaults --*/
+$presentation-font-size-root: 11pt;
+$font-size-root: 11pt;
+$pale-color: #5a6570;
+$side-padding: 1.5rem;
+
+// Print variables
+$column-gap: .125in;
+$page-margin-top: 0.5in;
+$page-margin-bottom: 0.5in;
+$page-margin-left: 0.5in;
+$page-margin-right: 0.5in;
+
+:root {
+  --topbar-height: 2em;
+}
+
+/*-- scss:rules --*/
+
+// Make OJS SVG plots responsive — prevent horizontal scroll on small windows
+.cell-output-display svg {
+  max-width: 100%;
+  height: auto;
+}
+
+// Make leaflet legend items circular for point layers
+.legend-circle i {
+  border-radius: 50% !important;
+  width: 8px !important;
+  height: 8px !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+  margin-right: 5px !important;
+}
+
+// SCROLLYTELLING LAYOUTz
+// Sets the page to full screen
+.page-columns#quarto-content main.content {
+  @media screen {
+    grid-column: screen-start / screen-end; // Maybe applies to print if I keep bootstrap style sheets
+    display: grid; // Overridden by print
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    grid-template-rows: var(--topbar-height) calc(100vh - var(--topbar-height)) auto auto;
+    min-height: 90vh;
+    padding-top: 0;
+    padding-bottom: 5vh;
+    border-bottom: 2px;
+    margin-top: 0;
+    margin-bottom: 5vh;
+  }
+  @media print { display: grid; grid-template-columns: 1fr 1fr 1fr;}
+}
+
+@media screen {
+  #cover-page {
+    grid-row: 2/3;
+    grid-column: 1/2;
+    min-height: calc(100vh - var(--topbar-height));
+    padding: $side-padding;
+    margin-right: -$side-padding;
+    background-image: radial-gradient(black 1px, transparent 0);
+    background-size: 20px 20px;
+    display: flex;
+    section.level1 {
+        width: 95%;
+      }
+
+    .donors {
+      height: 65vh;
+      padding-bottom: 2rem;
+      display: grid;
+      grid-template: auto auto / 1fr 1fr;
+      column-gap: 2ch;
+      align-content: end;
+      align-items: center;
+      justify-items: center;
+
+      figure p {
+        // text-align: left; // For if using flex instead of grid
+        width: 12vw;
+        padding-bottom: 1rem;
+      }
+
+      figcaption {display: none;}
+    }
+  }
+  #cover-map {
+    grid-row: 2/3;
+    grid-column: 2/3;
+    width: 100%;
+    // height: 100vh;
+    background: #000;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit:cover
+    }
+  }
+}
+@media print {
+  #cover-page {
+    // display: none;
+    // grid-row: 2/3;
+    grid-column: 1/2;
+    // min-height: calc(100vh - var(--topbar-height));
+    height: 8.5in - $page-margin-top - $page-margin-top - 0.05in;
+    // height: 7.25in;
+    padding: 0 $side-padding;
+    margin-right: -$side-padding;
+    background-image: radial-gradient(black 1px, transparent 0);
+    background-size: 20px 20px;
+    // display: flex;
+    // section.level1 {
+    //   display: flex;
+    //   flex-direction: column;
+    // }
+
+    .donors {
+      width: 3in;
+      position: absolute;
+      bottom: 0;
+      // display: none;
+      // height: 2in;
+  //     // padding: $side-padding;
+  //     // display: flex;
+  //     // flex-direction: column;
+  //     // justify-content: end;
+      display: grid;
+      grid-template: auto auto / 1fr 1fr;
+      place-items: center;
+      // align-content: end;
+      justify-content: center;
+  
+      figure {
+        margin: 0;
+        p {
+        // text-align: left; // For if using flex instead of grid
+        // width: 12vw;
+        width: 1.2in;
+        padding-bottom: 1rem;
+
+        img {width: 1.2in;}
+      }
+    }
+      figcaption {display: none;}
+    }
+  }
+  #cover-map {
+    // display: none;
+    // grid-row: 2/3;
+    grid-column: 2/4;
+    width: 100%;
+    height: 8.5in - $page-margin-top - $page-margin-top - 0.05in;
+    // height: 100vh;
+    // height: 5in;
+    // background: #000;
+
+    p {margin: 0}
+    img {
+      width: 100%;
+      height: 8.5in - $page-margin-top - $page-margin-top - 0.05in;
+      object-fit:cover
+    }
+  }
+}
+@media print {
+  .topbar { display: none;}
+}
+
+.text-column {
+  @media screen {
+    grid-column: 1 / 2;
+    grid-row: 3 / 4;
+    grid-column-gap: 2ch; // Set with sass variable? //Is this used / right
+    background-image: radial-gradient(black 1px, transparent 0);
+    background-size: 20px 20px;
+  }
+
+  @media screen {
+    h1 {margin: 10vh $side-padding}
+    h3 { // Where is this used? .text-column isn't a grid
+      grid-column: 1 / 2; // Overridden by print
+      grid-row-start: 1; // Overridden by print
+      margin-top: 0; // Also set in print
+    }
+  }
+
+  @media print {
+    grid-column: 1 / -1;
+    h2, h3 {
+      grid-column: 1 / -1;
+      grid-row: 1 / 2;
+      // margin-top: 0; // Already set for screen
+    }
+    h3 { align-self: start; }
+  }
+
+  section {
+    @media screen {
+      // Prevent map from scrolling up too much & ensuring all sections hit scrollama offset point
+        min-height: 50vh;
+        section.level4 {min-height: 0vh; padding-bottom: 1rem; } // When is this used?
+        // This is probably an overly complicated way to ensure each slide is vertically centered
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+    }
+
+    section.level2 {
+      @media screen {
+        background-color: white;
+        padding: $side-padding;
+      }
+    }
+
+    section.level3 {
+      @media screen {
+        margin-bottom: 3rem;
+      } // Use margin instead of padding so that scrollama has a gap between steps
+      @media print {
+        height: 8.5in - $page-margin-top - $page-margin-top - 0.05in;
+        max-height: .5in - $page-margin-top - $page-margin-top - 0.05in;
+
+        // height: 7.45in;
+        // min-height: 7.5in;
+        width: 100%;
+        display: grid; // I don't think this is ever actually used, overridden by flex above somehow
+        grid-template-columns: 1fr 1fr 1fr .6fr; // If we like this, switch to 5 columns, with text in 5th
+        grid-column-gap: $column-gap;
+        // grid-template-rows: 1fr repeat(2, min-content) minmax(.5in, max-content);
+        grid-template-rows: .25in (8.5in - $page-margin-top - $page-margin-top - 0.75in) .5in ;
+        align-items: end;
+        align-content: stretch;
+        // padding-bottom: 3rem;
+        // border: 1px solid black;
+      }
+    }
+
+  @media screen {
+    >section:last-child {
+      margin-bottom: 50vh;
+    }
+  }
+
+  @media screen { div.takeaways, div.method { grid-column: 1 / 2; } }
+  // @media print { div.takeaways, div.method { grid-column: -2 / -1; } }
+  @media print { section.level3 div.takeaways-method {
+    grid-column: -2 / -1;
+    grid-row: 2 / 3;
+    overflow: hidden;
+  } }
+
+  div.footnote {
+    @media screen {
+        grid-column: 1 / 2; // Overridden by print
+        grid-row: 3 / 4; // Overridden by print
+        // align-self: end; // Now that the divs are `display: flex`, `align-self: end` pushes to the rights
+      }
+
+    @media print {
+      grid-column: 1 / -1;
+      grid-row: -2 / -1;
+      align-self: end;
+      column-count: 3;
+      column-gap: $column-gap;
+      border-top: 1px solid $pale-color;
+      padding-top: 4px;
+      color: $pale-color;
+      // min-height: .5in;
+      height: .5in;
+  
+      p {
+        margin-top: 0;
+      }  
+    }
+  }
+
+  @media print {section#executive-summary section.level3 { // Ideally would use a class or :not(:has())
+    align-items: center;
+  }}
+
+  section#executive-summary .takeaways,
+  section#concluding-questions .takeaways {
+  @media print {
+    grid-column: 1 / 5;
+    grid-row: 2 / 4;
+    // align-self: end;
+    column-count: 3;
+    column-gap: $column-gap;
+    // border-top: 1px solid $pale-color;
+    // padding-top: 4px;
+    // color: $pale-color;
+    // min-height: .5in;
+    // height: .5in;
+  }
+
+    p {
+      margin-top: 0;
+    }  
+
+    // p:has(+ .pseudo-h4), p:last-child {display: none}  // Show Go to sections
+
+  }
+
+  form {
+    width: 100%
+  }
+}
+
+.foot {
+  grid-row: -2/-1;
+  grid-column: 1/-1;
+  // background-color: dodgerblue;
+  height: 50vh;
+  width: 60vw;
+  margin: auto;
+  margin-top: 10vh;
+}
+
+// TYPOGRAPHY
+#cover-page {
+  h1 {
+    font-size: 3rem;
+    font-weight: 600;
+    color: black;
+    // background-image: radial-gradient(black 1px, transparent 0);
+    // background-size: 10px 10px;
+    // min-height: 1em;k
+    padding: calc(25vh - 10rem) 0 0 0;
+    // margin-left: -1.5rem;
+    // margin-right: -1.5rem;
+    margin: 0;
+  }
+  p {
+    font-size: 2.4rem; margin-bottom: 0;
+  }
+}
+
+.text-column {
+  @media screen {
+  // Text is grey when not in focus, black when in focus
+  color: darkgrey;
+  section.is-active {color: black;};
+  section#executive-summary { color: black; };
+  }
+
+  h2, h3 {
+    color: black;
+    font-weight: 400;
+    text-transform: uppercase;
+  }
+
+  h2 { // Previously also applied to h2::before
+    font-size: 2rem;
+    color: black;
+    background-image: radial-gradient(black 1px, transparent 0);
+    background-size: 10px 10px;
+    padding: 15vh $side-padding 0.5rem $side-padding;
+    @media print{ padding: 2in $column-gap 4.5in $column-gap; }
+    margin-left: -$side-padding;
+    margin-right: -$side-padding;
+    @media print {margin-left: 0; margin-right: 0;}
+  }
+
+  h3 { // Previously also applied to h3::before 
+    font-size: 1.1rem;
+    border-bottom: 1px solid black;
+    @media print {font-size: 14pt; margin: 0; }
+  }
+  h4, .pseudo-h4 {
+    font-size: 1.1rem;
+    @media print {font-size: 12pt; margin: 0;}
+    font-weight: 500;
+    opacity: 0.9;
+    margin: 1.5rem 0 0.5rem 0;
+    line-height: 1.2;
+    color: var(--bs-heading-color);
+    text-transform: uppercase;
+  }
+  p { font-size: 1rem; }
+  .takeaways { 
+    font-size: 1.1rem; 
+    @media print {font-size: 13pt;}
+  }
+  @media print { .method p {font-size: 8pt;} }
+  div.footnote p {
+    font-size: 0.8rem;
+    @media print {font-size: 7pt;}
+    color: $pale-color;
+  }
+
+  ul {
+    padding-left: .25in;
+    margin-block-start: 1rem;
+    margin-block-end: 1rem;
+  }
+}
+
+// MAPS & FIGURES
+@media screen {
+  .maps {
+    grid-column: 2 / 3;
+    // While we aren't using a cover map, starting the leaflet map at the top
+    // grid-row: 3 / 4;
+    grid-row: 2 / 4;
+    // position: sticky;
+    // top: calc(var(--topbar-height) - 100vh);
+    min-height: calc(100vh - var(--topbar-height));
+    margin-bottom: calc(var(--topbar-height)/2); // Not quite sure why this is half and not fully topbar-height
+    background-image: radial-gradient(black 1px, transparent 0);
+    background-size: 10px 10px;
+  
+    div.cell {
+      position: sticky;
+      top: var(--topbar-height);
+      // background-color: coral;
+      height: calc(100vh - var(--topbar-height));
+   }
+
+    // I now set image height in R, but leaving this here to remember CSS tags
+    // img,
+    // .leaflet.html-widget {
+      // height: 100vh !important;
+    // }
+  }
+}
+
+@media print {
+  section.level3>p.map {
+    grid-column: 1 / 4;
+    grid-row: 2 / 3;
+    // grid-row-end: 4;
+    width: 100%;
+    // height: 1in;
+    
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+
+@media print {
+  section.level3 p.side-chart {
+    // grid-column: 1 / 4;
+    // grid-row: 2 / 3;
+    // grid-row-end: 4;
+    // width: 100%;
+    // height: 1in;
+    
+    img {
+      width: 100%;
+      // height: 100%;
+    }
+  }
+}
+
+@media screen {
+  // TOP BAR 
+  .topbar {
+    width: 100%;
+    height: var(--topbar-height);
+    background-color: white;
+    display: grid;
+    grid-template-columns: 2fr 2.5fr 1.5fr;
+    position: fixed;
+    z-index: 1;
+    text-align: left;
+    border-bottom: 1px solid black;
+    padding-top: 3px;
+
+    h1 {
+      // grid-column: 1/2;
+      padding: .25rem $side-padding;
+      font-size: 1.1rem;
+      font-weight: 400;
+      text-transform: uppercase;
+      margin: 0;
+    }
+
+    div:first-child {grid-column: 1/2;}
+    div:nth-child(3) {
+      grid-column: 3/4;
+      text-align: right;
+      padding-right: $side-padding;
+    }
+
+    a {
+      color: black;
+    //   padding: .25rem .5rem;
+    }
+  }
+}
+
+// Navigation Menu
+.navigation {
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+  display: flex;
+  flex-direction: row;
+  // justify-content: end;
+
+  #dynamic-header {
+    text-transform: uppercase;
+  }
+
+  // This puts "Inputs version" on the same line as the navigation menu 
+  div.cell+p {
+    margin-top: 0;
+    padding: .25rem .5rem;
+  }
+
+  > ol {list-style: none;}
+
+  ol {
+    // background: #FFF;
+    // list-style: none;
+    margin: 0;
+    padding-left: 0;
+  }
+
+  >ol>li {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  li {
+    color: #000;
+    // background: #FFF;
+    // display: ;
+    float: left;
+    padding: .25rem 0.5rem;
+    position: relative;
+    text-decoration: none;
+    // transition-duration: 0.5s;
+  }
+
+  li a {
+    color: #000;
+  }
+
+  li:hover,
+  li:focus-within {
+    cursor: pointer;
+  }
+
+  // To highlight the chain of selected items
+  li:focus-within,
+  li:hover {
+    background: #fff;
+  }
+
+  li li:hover a {color: $pale-color}
+
+  // But I don't want to highlight the whole table of contents
+  >ol>li:focus-within,
+  >ol>li:hover {
+    background-color: #FFF;
+    border: 1px solid black
+  }
+
+  li:focus-within a {
+    outline: none;
+  }
+
+  ol li ol,
+  ol li ol li ol {
+    background: #FFF;
+    visibility: hidden;
+    opacity: 0;
+    min-width: 5rem;
+    position: relative;
+    // transition: all 0.5s ease;
+    margin-top: .5rem;
+    display: none;
+  }
+
+  ol li ol {
+    position: relative;
+    left: 0;
+    margin-left: 1.5rem;
+  }
+
+  ol li ol li ol {
+    position: absolute;
+    left: 100%;
+    right: -105%;
+    top: -0.5em;
+    border: 1px solid black;
+  }
+
+  ol li:hover>ol,
+  ol li:focus-within>ol,
+  ol li ol:hover,
+  ol li ol:focus {
+    visibility: visible;
+    opacity: 1;
+    display: block;
+  }
+
+  ol li ol li {
+    clear: both;
+    width: 100%;
+  }
+}
+
+// Section & Slide Counters
+.text-column {
+  section.level1 {
+    counter-reset: section_count;
+    // counter-reset: slide_count;
+  }
+
+  section.level2 {
+    counter-increment: section_count;
+    counter-reset: slide_count;
+  }
+
+  section.level3 {
+    counter-increment: slide_count;
+  }
+
+  h2::before {
+      // content: "string";
+      color: $pale-color;
+      content: counter(section_count);
+      padding-right: 3ch;
+    }
+
+  h3::before {
+    // content: "string";
+    color: $pale-color;
+    content: counter(section_count) "." counter(slide_count);
+    padding-right: 1ch;
+    }
+}
+
+// HIDDEN ELEMENTS
+#title-block-header { display: none; }
+.setup section, .setup { display: none; }
+@media print {div.hidden {display: none;}}
+
+// Print specific; either move to above, or move above to here
+@media print {
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto, arial, sans-serif;
+    font-size: 10pt;
+    color: black;
+  }
+
+  div#cover-page h1 {string-set: city_name content(); }
+  h2 {
+    page-break-after: always;
+    string-set: section_title content(); 
+  }
+
+  // h3 {
+  //   display: none;
+  //   string-set: slide_title content(); 
+  // }
+  p { orphans: 3; }
+  
+  .text-column {
+    section.level2 {
+      page-break-before: always;
+      page-break-inside: avoid;
+    }
+
+    section.level3 {
+      page-break-after: always;
+      page-break-inside: avoid;
+    }
+  }
+  
+  @page {
+    
+    font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto, arial, sans-serif;
+    font-size: 11pt;
+    color: $pale-color;
+
+    size: letter landscape;
+    margin-top: $page-margin-top;
+    margin-bottom: $page-margin-bottom;
+    margin-left: $page-margin-left;
+    margin-right: $page-margin-right;
+    // padding: 0 .1in;
+    // border-left: 1px solid $pale-color;
+    // border-right: 1px solid $pale-color;
+    
+    // @top-left {
+    //   content: string(slide_title);
+    //   color: black;
+    //   font-weight: 400;
+    //   text-transform: uppercase;
+    //   font-size: 1.1rem;
+    //   border-bottom: 1px solid black;
+    // }
+    
+    @left-middle {
+      content: string(section_title);
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+    }
+    
+    @right-top {
+      content:  string(city_name); // "Goris, Armenia"; // This needs to be automated with string-set
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+    }
+    
+    @right-middle {
+      content: "City Scan";
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+    }
+    
+    @right-bottom {
+      content: "City Resilience Program";
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+    }
+    
+    @bottom-left-corner {
+      text-align: center;
+      content: counter(page);
+    }
+  }
+}

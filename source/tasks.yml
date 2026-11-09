@@ -11,6 +11,10 @@ gee_tasks:
   - ndmi
   - nightlight
   - water_risk
+  - dust
+  - aerosol
+  - precipitation
+  - glaciers
 
 # Tasks that require private GCS authentication
 gcs_tasks:

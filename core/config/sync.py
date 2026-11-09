@@ -34,7 +34,7 @@ def sync_project_files(city_root, sync_targets=None, sync_tasks=None):
         targets = set(sync_targets)
     elif not has_existing:
         # First run — copy everything
-        targets = {"tasks", "source", "core", "scan-calculations"}
+        targets = {"tasks", "source", "core", "scan-calculations", "web-version"}
     elif not sys.stdin.isatty():
         # Non-interactive — tasks only
         targets = {"tasks"}
@@ -52,11 +52,11 @@ def sync_project_files(city_root, sync_targets=None, sync_tasks=None):
         if choice == 'k':
             logger.info("Keeping existing project files.")
             return
-        targets = {"tasks", "source", "core", "scan-calculations"} if choice == 'o' else {"tasks"}
+        targets = {"tasks", "source", "core", "scan-calculations", "web-version"} if choice == 'o' else {"tasks"}
 
     # Sync non-task folders
     synced = []
-    for folder in ["core", "source", "scan-calculations"]:
+    for folder in ["core", "source", "scan-calculations", "web-version"]:
         if folder in targets:
             src = PROJECT_ROOT / folder
             dst = city_root / folder

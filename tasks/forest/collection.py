@@ -32,25 +32,20 @@ def datacollection(
 
     from rasterio.enums import Resampling
 
-    # Forest cover 2023
+    # Forest cover 2023 — streamed windowed (clip+fillna+cast per strip); never
+    # holds the national array in RAM.
     tif_fc23 = os.path.join(spatial_dir, f"{city_name}_forest_cover23.tif")
-    fc23_rio = fns.tiled_collection(forestCover23, aoi, scale=30, resampling=Resampling.nearest)
-    fc23_rio = fc23_rio.rio.clip(aoi.to_crs(fc23_rio.rio.crs).geometry, drop=True)
-    fc23_rio = fc23_rio.fillna(0).round().astype(np.int8)
-    fc23_rio.rio.write_nodata(0, inplace=True)
-    fc23_rio.rio.to_raster(tif_fc23)
+    fns.tiled_collection(forestCover23, aoi, tif_fc23, scale=30, dtype='int8',
+                          nodata=0, fillna=0, round_vals=True, resampling=Resampling.nearest, output_dir=output_dir)
     logger.info(f"Forest cover raster saved to: {tif_fc23}")
 
     # Deforestation year
     tif_defor = os.path.join(spatial_dir, f"{city_name}_deforestation.tif")
-    defor_rio = fns.tiled_collection(deforestation_year, aoi, scale=30, resampling=Resampling.nearest)
-    defor_rio = defor_rio.rio.clip(aoi.to_crs(defor_rio.rio.crs).geometry, drop=True)
-    defor_rio = defor_rio.fillna(0).round().astype(np.int16)
-    defor_rio.rio.write_nodata(0, inplace=True)
-    defor_rio.rio.to_raster(tif_defor)
+    fns.tiled_collection(deforestation_year, aoi, tif_defor, scale=30, dtype='int16',
+                          nodata=0, fillna=0, round_vals=True, resampling=Resampling.nearest, output_dir=output_dir)
     logger.info(f"Deforestation raster saved to: {tif_defor}")
 
     if return_raster:
-        return fc23_rio, defor_rio
+        return tif_fc23, tif_defor
 
     return None

@@ -1,6 +1,6 @@
 tryCatch_named("elevation", {
   elev_csv <- fuzzy_read(tabular_dir, "elevation.csv", read_csv, col_types = "cd")
-  elevation_breaks <- (elev_csv$Bin %||% elev_csv$Elevation_Band) %>%
+  elevation_breaks <- (elev_csv$bin %||% elev_csv$Bin %||% elev_csv$Elevation_Band) %>%
     str_extract_all("\\d+") %>% unlist() %>% unique() %>% as.numeric()
   elevation_data <- fuzzy_read(spatial_dir, layer_params$elevation$fuzzy_string) %>%
           crop(aoi, mask = TRUE) %>%

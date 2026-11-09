@@ -36,18 +36,16 @@ def datacollection(
 
     results = {}
 
-    linfit_rio = fns.tiled_collection(linear_fit.select('scale'), aoi, scale=463.83)
-    linfit_rio = linfit_rio.rio.clip(aoi.to_crs(linfit_rio.rio.crs).geometry, drop=True)
     linfit_path = os.path.join(spatial_dir, f"{city_name}_linfit.tif")
-    linfit_rio.rio.to_raster(linfit_path)
+    fns.tiled_collection(linear_fit.select('scale'), aoi, linfit_path, scale=463.83,
+                          dtype='float32', nodata=float('nan'), output_dir=output_dir)
     logger.info(f"Saved linear fit: {linfit_path}")
-    results['linfit'] = linfit_rio if return_raster else linfit_path
+    results['linfit'] = linfit_path
 
-    sum_rio = fns.tiled_collection(sum_of_light.select('avg_rad_sum'), aoi, scale=463.83)
-    sum_rio = sum_rio.rio.clip(aoi.to_crs(sum_rio.rio.crs).geometry, drop=True)
     sum_path = os.path.join(spatial_dir, f"{city_name}_avg_rad_sum.tif")
-    sum_rio.rio.to_raster(sum_path)
+    fns.tiled_collection(sum_of_light.select('avg_rad_sum'), aoi, sum_path, scale=463.83,
+                          dtype='float32', nodata=float('nan'), output_dir=output_dir)
     logger.info(f"Saved sum of lights: {sum_path}")
-    results['avg_rad_sum'] = sum_rio if return_raster else sum_path
+    results['avg_rad_sum'] = sum_path
 
     return results

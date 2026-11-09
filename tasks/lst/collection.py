@@ -62,13 +62,10 @@ def datacollection(
             # Convert Kelvin to Celsius server-side
             img = img.subtract(273.15)
 
-            lst_rio = fns.tiled_collection(img, aoi, scale=30)
-            lst_rio = lst_rio.rio.clip(aoi.to_crs(lst_rio.rio.crs).geometry, drop=True)
-            lst_rio.rio.write_nodata(np.nan, inplace=True)
-
             fname = f"{city_name}_lst_{comp_type}.tif"
             tif_path = os.path.join(spatial_dir, fname)
-            lst_rio.rio.to_raster(tif_path)
+            fns.tiled_collection(img, aoi, tif_path, scale=30,
+                                  dtype='float32', nodata=float('nan'), output_dir=output_dir)
             logger.info(f"Saved {comp_type} LST: {tif_path}")
 
             results[comp_type] = lst_rio if return_raster else tif_path

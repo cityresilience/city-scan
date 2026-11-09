@@ -40,5 +40,12 @@ solar: True
 water_risk: True
 wsf: True
 
+# Non-standard layers (off by default)
+dust: False
+aerosol: False
+precipitation: False
+glaciers: False
+wind: False
+
 # Compilation
 scan_calculations: True

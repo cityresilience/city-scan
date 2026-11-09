@@ -95,16 +95,13 @@ def datacollection(
             other = img.select(other_band)
             ndxi_img = nir.subtract(other).divide(nir.add(other)).rename(index_type)
 
-            ndxi_rio = fns.tiled_collection(ndxi_img, aoi, scale=10)
-            ndxi_rio = ndxi_rio.rio.clip(aoi.to_crs(ndxi_rio.rio.crs).geometry, drop=True)
-            ndxi_rio.name = index_type.upper()
-
             fname = f"{city_name}_{index_type}_season.tif"
             tif_path = os.path.join(spatial_dir, fname)
-            ndxi_rio.rio.to_raster(tif_path)
+            fns.tiled_collection(ndxi_img, aoi, tif_path, scale=10,
+                                 dtype='float32', nodata=float('nan'), output_dir=output_dir)
             logger.info(f"Saved {comp_type} composite: {tif_path}")
 
-            results[comp_type] = ndxi_rio if return_raster else tif_path
+            results[comp_type] = tif_path
 
         elif comp_type == 'yearly':
             # yearly() returns an ee.ImageCollection with time dim

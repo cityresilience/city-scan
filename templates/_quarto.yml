@@ -1,0 +1,15 @@
+project:
+  type: website
+  render:
+    - publish/index.qmd
+  resources:
+    - 02-process-output/tabular/*
+    - 02-process-output/spatial-fgb/*
+    - 03-render-output/plots/*
+
+website:
+  title: "City Scan"
+
+format:
+  html:
+    theme: source/custom.scss

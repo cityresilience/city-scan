@@ -35,68 +35,81 @@ def compute_histogram(
         logger.error(f"Deforestation raster not found at: {deforest_path}")
         return None
 
+    # Read both rasters WINDOWED (block by block) so the national-scale grids are
+    # never fully held in RAM. Deforestation is read on the forest grid via a
+    # WarpedVRT (nearest resampling, matching the old full-array reproject); an
+    # already-aligned deforestation raster passes straight through. Accumulate
+    # baseline forest, the full set of deforestation years, and per-year counts
+    # within forest pixels across blocks.
     try:
-        with rasterio.open(forest_path) as forest_src:
-            forest_data = forest_src.read(1)
+        from rasterio.vrt import WarpedVRT
+
+        with rasterio.open(forest_path) as forest_src, \
+             rasterio.open(deforest_path) as deforest_src:
             forest_nodata = forest_src.nodata
-            forest_transform = forest_src.transform
-            forest_crs = forest_src.crs
-            forest_shape = forest_src.shape
-            forest_bounds = forest_src.bounds
-
-        with rasterio.open(deforest_path) as deforest_src:
-            deforest_data_original = deforest_src.read(1)
             deforest_nodata = deforest_src.nodata
-            deforest_transform = deforest_src.transform
-            deforest_crs = deforest_src.crs
-            deforest_shape = deforest_src.shape
-            deforest_bounds = deforest_src.bounds
 
-        # Check alignment
-        same_crs = forest_crs == deforest_crs
-        same_shape = forest_shape == deforest_shape
-        same_bounds = (abs(forest_bounds.left - deforest_bounds.left) < 1e-6 and
-                      abs(forest_bounds.right - deforest_bounds.right) < 1e-6 and
-                      abs(forest_bounds.top - deforest_bounds.top) < 1e-6 and
-                      abs(forest_bounds.bottom - deforest_bounds.bottom) < 1e-6)
-        same_transform = forest_transform == deforest_transform
-        is_aligned = same_crs and same_shape and same_bounds and same_transform
+            # Check alignment
+            same_crs = forest_src.crs == deforest_src.crs
+            same_shape = forest_src.shape == deforest_src.shape
+            same_bounds = (abs(forest_src.bounds.left - deforest_src.bounds.left) < 1e-6 and
+                          abs(forest_src.bounds.right - deforest_src.bounds.right) < 1e-6 and
+                          abs(forest_src.bounds.top - deforest_src.bounds.top) < 1e-6 and
+                          abs(forest_src.bounds.bottom - deforest_src.bounds.bottom) < 1e-6)
+            same_transform = forest_src.transform == deforest_src.transform
+            is_aligned = same_crs and same_shape and same_bounds and same_transform
 
-        if not is_aligned:
-            if auto_align:
-                logger.info("Auto-aligning deforestation to match forest cover...")
-                deforest_data = np.empty(forest_shape, dtype=deforest_data_original.dtype)
-                reproject(
-                    source=deforest_data_original,
-                    destination=deforest_data,
-                    src_transform=deforest_transform,
-                    src_crs=deforest_crs,
-                    src_nodata=deforest_nodata,
-                    dst_transform=forest_transform,
-                    dst_crs=forest_crs,
-                    dst_nodata=deforest_nodata,
-                    resampling=Resampling.nearest
-                )
-            else:
+            if not is_aligned and not auto_align:
                 logger.error("TIF files are not aligned. Set auto_align=True.")
                 return None
-        else:
-            deforest_data = deforest_data_original
+            if not is_aligned:
+                logger.info("Auto-aligning deforestation to match forest cover (windowed)...")
 
-        # Use forest cover as primary mask
-        if forest_nodata is not None:
-            valid_mask = forest_data != forest_nodata
-        else:
-            valid_mask = ~np.isnan(forest_data) & np.isfinite(forest_data)
+            baseline_forest = 0
+            all_year_codes = set()
+            year_counts = {}
 
-        forest_valid = forest_data[valid_mask]
-        deforest_valid = deforest_data[valid_mask].copy()
+            with WarpedVRT(deforest_src, crs=forest_src.crs,
+                           transform=forest_src.transform,
+                           width=forest_src.width, height=forest_src.height,
+                           resampling=Resampling.nearest,
+                           src_nodata=deforest_nodata, nodata=deforest_nodata) as deforest_vrt:
+                for _, window in forest_src.block_windows(1):
+                    forest_block = forest_src.read(1, window=window)
+                    deforest_block = deforest_vrt.read(1, window=window)
 
-        if deforest_nodata is not None:
-            deforest_valid[deforest_valid == deforest_nodata] = 0
-        deforest_valid[np.isnan(deforest_valid)] = 0
+                    # Use forest cover as primary mask
+                    if forest_nodata is not None:
+                        valid_mask = forest_block != forest_nodata
+                    else:
+                        valid_mask = ~np.isnan(forest_block) & np.isfinite(forest_block)
 
-        baseline_forest = int(np.sum(forest_valid == 1))
+                    forest_valid = forest_block[valid_mask]
+                    if forest_valid.size == 0:
+                        continue
+
+                    deforest_valid = deforest_block[valid_mask]
+                    if deforest_nodata is not None:
+                        deforest_valid = np.where(deforest_valid == deforest_nodata, 0, deforest_valid)
+                    if np.issubdtype(deforest_valid.dtype, np.floating):
+                        deforest_valid = np.where(np.isnan(deforest_valid), 0, deforest_valid)
+
+                    # Every deforestation year present in valid pixels
+                    dv_all = deforest_valid[deforest_valid > 0]
+                    if dv_all.size:
+                        all_year_codes.update(np.unique(dv_all).tolist())
+
+                    # Deforestation within forest pixels, per year code
+                    is_forest = forest_valid == 1
+                    baseline_forest += int(np.sum(is_forest))
+                    dvals = deforest_valid[is_forest]
+                    dvals = dvals[dvals > 0]
+                    if dvals.size:
+                        uy, uc = np.unique(dvals, return_counts=True)
+                        for yc, cc in zip(uy.tolist(), uc.tolist()):
+                            year_counts[yc] = year_counts.get(yc, 0) + int(cc)
+
+        baseline_forest = int(baseline_forest)
 
     except Exception as e:
         logger.error(f"Error reading TIF files: {e}")
@@ -116,12 +129,12 @@ def compute_histogram(
         'percent_forest_lost': 0.0
     }]
 
-    deforest_years = np.unique(deforest_valid[deforest_valid > 0])
+    deforest_years = sorted(all_year_codes)
     cumulative_deforested = 0
 
-    for year_code in sorted(deforest_years):
+    for year_code in deforest_years:
         actual_year = base_year + int(year_code)
-        deforested_count = int(np.sum((forest_valid == 1) & (deforest_valid == year_code)))
+        deforested_count = int(year_counts.get(year_code, 0))
         cumulative_deforested += deforested_count
         forest_remaining = baseline_forest - cumulative_deforested
 

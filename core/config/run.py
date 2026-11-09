@@ -289,3 +289,144 @@ def run_multicity(multicity_path, args, flags):
     print(f"\n  {'═'*50}")
     print(f"  Multi-city batch complete: {len(cities)} cities")
     print(f"  {'═'*50}\n")
+
+
+# Cloud Run job coordinates — single place to rename/move the job
+CLOUDRUN_JOB = "cityscan"
+CLOUDRUN_REGION = "us-central1"
+CLOUDRUN_PROJECT = "city-scan-gee-test"
+
+
+def run_cloudrun(args, flags):
+    """
+    Execute this scan as a Cloud Run job instead of locally.
+
+    With --scan-id: inputs are assumed at gs://crp-city-scan/{scan_id}/01-user-input/.
+    Without: init Scan locally (derives scan_id from city_inputs.yml + AOI,
+    naming only), upload 01-user-input, then execute. Nothing runs locally.
+    """
+    import subprocess
+
+    scan_id = flags['scan_id']
+    if not scan_id:
+        from core.config.scan import Scan
+        from core.py.gcs_module import upload_inputs
+        scan = Scan(skip_sync=True, use_existing=True)
+        if not upload_inputs(scan):
+            logger.error("Input upload failed — not executing the cloud job.")
+            return
+        scan_id = scan.cityscan_id
+
+    # Rebuild the arg list for the container. The job mounts gs://crp-city-scan
+    # at /app/mnt (GCS FUSE), so mnt/{scan_id}/ IS the bucket: the container
+    # reads inputs and writes outputs straight through it. So we DROP
+    # --gcs/--download/--upload (no copy in/out needed) and add -k (skip the
+    # code-sync, which would otherwise write the whole codebase into the bucket).
+    passthrough = [a for a in args if a != "--cloudrun"]
+    if "--scan-id" in passthrough:
+        i = passthrough.index("--scan-id")
+        del passthrough[i:i + 2]
+    passthrough = [a for a in passthrough
+                   if a not in ("--gcs", "--upload", "-k", "--keep")
+                   and not a.startswith("--download")]
+
+    # --cloudrun ALWAYS fans out: one container per dependency chain, each with
+    # its own memory (32Gi). Running every task in a single container
+    # accumulates memory across tasks and OOMs (exit 137), so parallel is the
+    # default on Cloud Run — the --parallel flag is no longer required (it's
+    # still accepted and ignored here). Chains are computed here and passed via
+    # --chains=; each container picks its own by CLOUD_RUN_TASK_INDEX. Falls
+    # back to a single container when there are no task chains to fan out
+    # (e.g. --render / --cogify only).
+    import yaml
+    from core.config.tasks import TASK_REGISTRY, ALIASES, menu_enabled
+    from core.config.paths import INPUTS
+    if flags['run_all']:
+        menu = yaml.safe_load(open(INPUTS / "menu.yml"))
+        simple_aliases = {k for k, v in ALIASES.items() if isinstance(v, str)}
+        selected = [n for n in TASK_REGISTRY
+                    if menu_enabled(menu, n) and n not in simple_aliases]
+    else:
+        explicit = [a for a in passthrough if not a.startswith("-")]
+        selected = [ALIASES[t] if isinstance(ALIASES.get(t), str) else t for t in explicit]
+
+    n_tasks = 1
+    # Fan out only for the heavy per-task steps (collect/analyze/multianalysis, or
+    # a default full run) — a cogify-/render-/upload-only run stays ONE container
+    # so its once-per-delivery cogify actually runs. And only fan out when there's
+    # >1 chain: a single chain runs WITHOUT --chains so a bundled --cogify still
+    # runs in-container (the container-side cogify is skipped whenever --chains is
+    # set, to avoid running once per fan-out container).
+    heavy = bool(flags.get('steps')) or not (
+        flags.get('cogify') or flags.get('render_targets') or flags.get('upload_enabled'))
+    if selected and heavy:
+        chains = build_chains(selected)
+        if len(chains) > 1:
+            n_tasks = len(chains)
+            chain_spec = "|".join("+".join(c) for c in chains)
+            # chains replace task selection in the container: keep flags only
+            # (drop task names + --parallel; each chain runs serially — the
+            # chains ARE the parallelism)
+            passthrough = [a for a in passthrough if a.startswith("-") and a != "--parallel"]
+            passthrough.append(f"--chains={chain_spec}")
+            print(f"\n  Fan-out: {n_tasks} containers (one per dependency chain):")
+            for i, c in enumerate(chains):
+                print(f"    [{i}] {' -> '.join(c)}")
+
+    # Always (re)set the job's container count — resets a stale --tasks left
+    # over from a previous parallel run so a later single-container run can't
+    # silently re-execute N times.
+    upd = subprocess.run(["gcloud", "run", "jobs", "update", CLOUDRUN_JOB,
+                          f"--tasks={n_tasks}",
+                          f"--region={CLOUDRUN_REGION}", f"--project={CLOUDRUN_PROJECT}"],
+                         capture_output=True, text=True)
+    if upd.returncode != 0:
+        logger.error(f"gcloud jobs update failed:\n{upd.stderr.strip()}")
+        return
+    # -k = skip code-sync (mount makes mnt/ the bucket; don't write code into it)
+    exec_args = passthrough + ["--scan-id", scan_id, "-k"]
+
+    cmd = ["gcloud", "run", "jobs", "execute", CLOUDRUN_JOB,
+           f"--region={CLOUDRUN_REGION}", f"--project={CLOUDRUN_PROJECT}",
+           "--args=" + ",".join(exec_args),
+           "--format=value(metadata.name)"]
+    print(f"\n  Executing on Cloud Run ({CLOUDRUN_JOB}, {CLOUDRUN_REGION}):")
+    print(f"    {' '.join(exec_args)}")
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.returncode != 0:
+        logger.error(f"gcloud execute failed:\n{result.stderr.strip()}")
+        return
+    exec_name = result.stdout.strip()
+    print(f"\n  Started execution: {exec_name}")
+    print(f"  Monitor: https://console.cloud.google.com/run/jobs/executions/details/{CLOUDRUN_REGION}/{exec_name}?project={CLOUDRUN_PROJECT}")
+    print(f"  Logs:    gcloud run jobs executions describe {exec_name} --region={CLOUDRUN_REGION}")
+
+
+def build_chains(task_names):
+    """
+    Group tasks into dependency chains: connected components of the dependency
+    graph restricted to the selection, each topo-sorted. One chain = one
+    fan-out container, so dependents always share a container with their deps.
+    """
+    from core.config.tasks import TASK_DEPENDENCIES, topo_sort
+    sel = set(task_names)
+    adj = {t: set() for t in sel}
+    for t in sel:
+        for d in TASK_DEPENDENCIES.get(t, set()):
+            if d in sel:
+                adj[t].add(d)
+                adj[d].add(t)
+    seen, chains = set(), []
+    for t in sorted(sel):
+        if t in seen:
+            continue
+        comp, stack = [], [t]
+        while stack:
+            n = stack.pop()
+            if n in seen:
+                continue
+            seen.add(n)
+            comp.append(n)
+            stack.extend(adj[n] - seen)
+        chains.append(topo_sort(comp))
+    return chains

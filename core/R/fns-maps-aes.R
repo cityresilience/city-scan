@@ -143,6 +143,9 @@ fill_scale <- function(data_type, params) {
       rescaler = if (!is.null(params$center)) ~ scales::rescale_mid(.x, mid = params$center) else scales::rescale,
       labels = .smart_labels,
       na.value = "transparent",
+      # Default censor (out-of-domain -> NA) keeps prior behavior; a layer can set
+      # `oob: squish` in layers.yml to clamp extremes into the end colors instead.
+      oob = list(squish = scales::oob_squish, censor = scales::oob_censor, squish_any = scales::oob_squish_any, censor_any = scales::oob_censor_any)[[params$oob %||% "censor"]],
       name = format_title(params$title, params$subtitle))
   } else if (params$bins > 0) {
     .smart_labels <- if (!is.null(params$big_mark)) {

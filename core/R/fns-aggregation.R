@@ -26,7 +26,14 @@ aggregate_if_too_fine <- function(data, threshold = 1e5, fun = "modal", na.rm = 
   cell_count <- count_aoi_cells(data, aoi)
   if (cell_count > threshold) {
     factor <- round(sqrt(cell_count / threshold))
-    if (factor > 1) data <- terra::aggregate(data, fact = factor, fun = fun, na.rm = na.rm)
+    if (factor > 1) {
+      # Only forward na.rm to terra for built-in string funs. A custom fun
+      # (e.g. \(x) Mode(x, na.rm=T)) receives terra's na.rm as an extra arg and
+      # errors ("unused argument (na.rm = TRUE)") unless it declares it — such
+      # funs handle NA themselves, so don't pass na.rm through.
+      data <- if (is.function(fun)) terra::aggregate(data, fact = factor, fun = fun)
+              else terra::aggregate(data, fact = factor, fun = fun, na.rm = na.rm)
+    }
   }
   return(data)
 }

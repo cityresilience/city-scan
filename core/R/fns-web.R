@@ -184,3 +184,23 @@ print_slide_text <- function(slide) {
 }
 
 
+
+# Ported from roundtrippt gather-content.R (shared web+print content backbone).
+# Attaches map_path/plot_path to each slide in the content list.
+add_image_paths <- function(slide_texts, image_dir) {
+  slide_texts %>%
+    modify(\(section) {
+      imodify(section, \(slide, name) {
+        # Declare path to static map file
+        # Probably better for generic-text.yml to have a map boolean
+        map_path <- file.path(image_dir, "maps", paste0(name, ".png"))
+        if (file.exists(map_path)) slide$map_path <- map_path
+        # Declare path to plot file
+        if ("plot" %in% names(slide)) {
+          plot_path <- fuzzy_read(file.path(image_dir, "plots"), slide$plot, paste)
+          if (!is.na(plot_path)) slide$plot_path <- plot_path
+        }
+        return(slide)
+      })
+    })
+}

@@ -1,0 +1,4 @@
+layers:
+  - precip_trend
+  - precip_anomaly
+  - rainfall_deficit

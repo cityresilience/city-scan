@@ -1,0 +1,39 @@
+# Cloud Build: build + push the unified City Scan image.
+# Adapted from deploy/frontend/cloudbuild.yaml (old "nalgene" build).
+# Manual run:  gcloud builds submit  (from repo root)
+# Trigger:     push to unified branch (set substitution _SHA_TAG: $SHORT_SHA)
+
+substitutions:
+  _IMAGE: us-central1-docker.pkg.dev/city-scan-gee-test/cityscan/cityscan
+  _SHA_TAG: manual  # trigger overrides with $SHORT_SHA
+
+steps:
+# Docker Pull — Cloud Build machines start empty; previous image = layer cache
+- name: 'gcr.io/cloud-builders/docker'
+  entrypoint: 'bash'
+  args: ['-c', 'docker pull ${_IMAGE}:latest || exit 0']
+  id: 'pull'
+  waitFor: ['-']  # Start immediately
+
+# Docker Build — reuse unchanged layers from the pulled image
+- name: 'gcr.io/cloud-builders/docker'
+  args: [
+            'build',
+            '-t', '${_IMAGE}:latest',
+            '-t', '${_IMAGE}:${_SHA_TAG}',
+            '--cache-from', '${_IMAGE}:latest',
+            '.'
+        ]
+  id: 'build'
+  waitFor: ['pull']
+  timeout: '5400s'  # cold build compiles the R stack (~1h); cached builds take minutes
+
+# Docker Push — both tags (:latest = cache + what the job runs; :sha = provenance)
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', '--all-tags', '${_IMAGE}']
+  id: 'push'
+  waitFor: ['build']
+
+timeout: '7200s'  # total pipeline timeout
+options:
+  machineType: 'E2_HIGHCPU_8'  # faster cold builds; negligible cost when cached
