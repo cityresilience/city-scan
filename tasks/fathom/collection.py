@@ -262,9 +262,14 @@ def _process_year(
                 for lon in lon_tiles:
                     tile = f"{lat.lower()}{lon.lower()}.tif"
                     if naming == "flat":
-                        p = (f"{GCS_FATHOM_BASE}/"
-                             f"1in{rp}-{flood_type_folder_dict[flood_type]}-{year}"
-                             f"_{lat.lower()}{lon.lower()}.tif")
+                        if year <= 2020:
+                            p = (f"{GCS_FATHOM_BASE}/"
+                                f"1in{rp}-{flood_type_folder_dict[flood_type]}-{year}"
+                                f"_{lat.lower()}{lon.lower()}.tif")
+                        else:
+                            p = (f"{GCS_FATHOM_BASE}/"
+                                f"1in{rp}-{flood_type_folder_dict[flood_type]}-{year}-"
+                                f"SSP{flood_ssp_labels[ssp]}_{lat.lower()}{lon.lower()}.tif")
                     else:
                         if year <= 2020:
                             p = (f"{GCS_FATHOM_BASE}/"
