@@ -1,6 +1,15 @@
 # Changelog
 
 ---
+
+## 2026-11-20
+
+### Changed
+- Flood maps use return periods set in `city_inputs.yml`: `map-flooding.R` reads `city_inputs.yml` and overwrites labels and breakpoints in `layers.yml`; flood layers now use `factor: true`
+
+### Fixed
+- Flood maps no longer use incorrect return periods
+
 ## 2026-06-05
 
 ### Added
