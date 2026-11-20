@@ -8,7 +8,7 @@ prepare_parameters <- function(yaml_key, ...) {
   layer_params <- read_yaml(layer_params_file)
   if (yaml_key %ni% names(layer_params)) stop(paste(yaml_key, "is not a key in", layer_params_file))
   yaml_params <- layer_params[[yaml_key]]
-  new_params <- list(...)
+  new_params <- rlang::list2(...)
   kept_params <- yaml_params[!names(yaml_params) %in% names(new_params)]
   params <- c(new_params, kept_params)
 

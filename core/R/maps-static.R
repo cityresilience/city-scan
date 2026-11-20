@@ -18,6 +18,13 @@ aspect_ratio <- map_width / map_height
 map_portions <- c(7, 2) # First number is map width, second is legend width
 include_captions <- FALSE
 
+# Set project root
+# If this is run from parent city-scan directory, auto_root_here() uses the
+# function definition provided there, not that of the individual city
+# Not broadly tested and maybe not very important
+source("core/R/fns-util.R")
+root <- auto_root_here()
+
 # Load libraries and pre-process rasters
 source(here("core/R/setup.R"), local = T)
 if (!exists("render_tasks")) source(here("core/R/pre-mapping.R"), local = T)
