@@ -1,0 +1,8 @@
+inputs/
+outputs/
+__pycache__/
+.venv/
+*:Zone.Identifier
+.DS_Store
+.env
+.env.*
