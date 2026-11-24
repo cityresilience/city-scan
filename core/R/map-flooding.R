@@ -14,7 +14,14 @@ plot_flooding <- function(flood_type) {
       breaks = rev(100/city_params$flood$return_period),
       labels = paste0('1-in-', rev(scales::label_comma()(city_params$flood$return_period)), ' year')
     )
-    stopifnot("Flood values do not match expected breaks" = length(setdiff(unique(values(flood_data)), c(flood_params$breaks, NaN, NA))) == 0)    
+    unique_values <- unique(values(flood_data))
+    if (length(setdiff(unique_values, c(flood_params$breaks, 0, NaN, NA))) > 0) {
+      stop(glue(.sep = "\n", .trim = F,
+      "Flood values do not match expected breaks:",
+      "   - Probabilities in city_params.yml set to    {paste(sort(flood_params$breaks), collapse = ', ')}",
+      "   - Flood raster includes                      {paste(sort(unique_values), collapse = ', ')}",
+      "   - 0, NaN, NA do not count as unexpected values"))
+    }
     
     plots[[flood_type]] <<- plot_static_layer(
       flood_data, yaml_key = flood_type,
