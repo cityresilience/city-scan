@@ -113,7 +113,8 @@ plot_static_layer <- function(
   } else if (is.character(baseplot)) {
     ggplot() +
       geom_spatvector(data = static_map_bounds, fill = NA, color = NA) +
-      annotation_map_tile(type = baseplot, zoom = get_zoom_level(static_map_bounds) + zoom_adj, progress = "none")
+      # I don't think api_key works here; need to register with rosm, as done in maps-transit.R for Baku
+      annotation_map_tile(type = baseplot, zoom = get_zoom_level(static_map_bounds) + zoom_adj, progress = "none", api_key = if (str_detect(baseplot, "carto")) Sys.getenv("CARTO_API_KEY") else NULL)
   } else { baseplot + ggnewscale::new_scale_fill() }
   p <- baseplot +
     layer + 
@@ -128,7 +129,25 @@ plot_static_layer <- function(
   return(p)
 }
 
-
+# Register Carto Light No Labels tile source with rosm for use in static maps
+if (nchar(Sys.getenv("CARTO_API_KEY")) < 1) {
+  warning(paste(sep = "\n",
+    "  No CARTO_API_KEY found in environment. A Carto API key is required to use Carto",
+    "  basemaps without watermarks. Check .env file at city or project root. You may",
+    "  need to request a new API key from Carto."))
+} else {
+  rosm::register_tile_source(
+    cartolight_nolabels = rosm::source_from_url_format(
+      paste0(
+        "https://basemaps.cartocdn.com/rastertiles/",
+        "light_nolabels/${z}/${x}/${y}.png?key=",
+        curl::curl_escape(Sys.getenv("CARTO_API_KEY"))
+      ),
+      extension = "png",
+      attribution = "© OpenStreetMap contributors © CARTO"
+    )
+  )
+}
 
 # =========================================================
 # WARDS / LANDMARKS OVERVIEW PLOTS
@@ -262,6 +281,8 @@ get_angle <- function(crds, positive = T) {
 }
 
 rotate_crs_to_short_axis <- function(x) {
+  # TODO Instead of aligning short axis of the AOI with the short axis of the
+  # map frame, rotate to maximize the AOI's coverage within the map frame
   rect_ll <- hull(project(x, "epsg:4326"), "rectangle")
   ctr <- crds(centroids(rect_ll))
   lon0 <- ctr[1,1]

@@ -16,6 +16,7 @@ map_portions <- c(7, 2) # First number is map width, second is legend width. Typ
 include_captions <- FALSE
 zoom_adjustment <- 0
 rotate_to_fit <- FALSE # Rotates CRS so short axis of the AOI aligns with the frame's short axis
+basemap_default <- "cartolight" # Ready options include  "cartolight" and  "cartolight_nolabels"
 
 ##############################################################################
 ############# Standardized code begins here (no edits required) ##############
@@ -132,7 +133,7 @@ standard_layers %>%
       raster_data <- vectorize_if_coarse(data)
       if (nrow(raster_data) > 0) {
         plot <- plot_static_layer(
-          data = raster_data, yaml_key = yaml_key,
+          data = raster_data, yaml_key = yaml_key, baseplot = basemap_default,
           plot_aoi = T, plot_wards = !is.null(wards), zoom_adj = zoom_adjustment)
         plots[[yaml_key]] <<- plot
         message(paste("Success:", yaml_key))
