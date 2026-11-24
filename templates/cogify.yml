@@ -1,0 +1,75 @@
+# Cogify config template. Copy to `inputs/cogify.yml` (and it's copied into a scan's
+# 01-user-input like menu.yml), then customize `target` and add any scan-specific layers.
+#
+# The --cogify step turns each 02-process-output raster into a Cloud-Optimized GeoTIFF (COG)
+# and writes it to `target`. Vectors (.gpkg/.geojson) and tabular (.csv/.yml) are copied
+# as-is (can't be COGs). A manifest.csv is written last.
+#
+# Per layer (keyed by the raster stem after `{city}_`, before `.tif`):
+#   resampling: overview method — `nearest` for categorical/class data (landcover, hazard
+#               classes, year-of-*, flood bands), `average` for continuous data (elevation,
+#               temp, population). `average` on categorical data corrupts the zoom-out
+#               overviews, so this is the one field that must be right.
+#   name:       OPTIONAL clean output name (omit -> keep the original name).
+
+target:
+  # bucket: `local` -> same scan folder: {scan}/02-process-output/cogs/ + manifest.csv
+  #         <name>  -> gs://<name>/<prefix>/spatial/ + /tabular/ + manifest.csv
+  # prefix: folder in the bucket (default: scan_id). Ignored when bucket is local.
+  bucket: local
+  prefix:
+
+cog:
+  compress: DEFLATE
+  default_resampling: nearest  # safe default for any layer not listed below
+
+layers:
+  # --- continuous -> average ---
+  air_quality_pm2_5:  {resampling: average}    # PM2.5 concentration
+  avg_rad_sum:        {resampling: average}    # nightlights, summed radiance
+  linfit:             {resampling: average}    # nightlights, linear-fit trend
+  elevation:          {resampling: average}    # FABDEM elevation (m)
+  elevation_buf:      {resampling: average}    # buffered elevation (slope input)
+  slope:              {resampling: average}    # slope (deg)
+  slope_proj:         {resampling: average}    # slope, projected (intermediate)
+  lst_summer:         {resampling: average}    # land surface temp, summer
+  lst_winter:         {resampling: average}    # land surface temp, winter
+  population:         {resampling: average}    # WorldPop current-year pop
+  worldpop_2000_2020: {resampling: average}    # WorldPop 1km, 2000-2020
+  worldpop_2015_2030: {resampling: average}    # WorldPop 100m, 2015-2030
+  seismic_hazard:     {resampling: average}    # PGA (g)
+  solar:              {resampling: average}    # PV potential
+  solar_monthly:      {resampling: average}    # PV potential, monthly
+
+  # --- categorical / class / year-of -> nearest ---
+  lc:                 {resampling: nearest}    # ESA WorldCover class codes
+  lc_burn:            {resampling: nearest}    # landcover burnability factor (per-class)
+  landslide:          {resampling: nearest}    # landslide susceptibility class
+  liquefaction:       {resampling: nearest}    # liquefaction susceptibility class
+  forest_cover23:     {resampling: nearest}    # forest cover 2023 (binary)
+  deforestation:      {resampling: nearest}    # year of forest loss
+  wsf_evolution:      {resampling: nearest}    # year of built-up (30m)
+  wsf_tracker:        {resampling: nearest}    # year of built-up (10m era)
+  wsf_harmonized:     {resampling: nearest}    # harmonized year of built-up
+
+  # --- flood: mixed bands (max_probability + binary return-period) -> nearest to preserve
+  #     the 0/1 return-period bands. Applies to *_utm variants via fallback.
+  comb_2020:          {resampling: nearest}
+  comb_2050_ssp5:     {resampling: nearest}
+  fluvial_2020:       {resampling: nearest}
+  fluvial_2050_ssp5:  {resampling: nearest}
+  pluvial_2020:       {resampling: nearest}
+  pluvial_2050_ssp5:  {resampling: nearest}
+
+  # --- non-standard layers (dust/aerosol/precipitation/wind/glaciers tasks) ---
+  dust:               {resampling: average}    # CAMS dust AOD (yearly bands)
+  aerosol:            {resampling: average}    # S5P absorbing aerosol index
+  precip_trend:       {resampling: average}    # TerraClimate precip trend
+  precip_anomaly:     {resampling: average}    # precip anomaly
+  rainfall_deficit:   {resampling: average}    # PDSI rainfall deficit
+  wind:               {resampling: average}    # GWA wind power density
+  glacier_extent:     {resampling: nearest}    # RGI glacier mask (binary)
+  glacier_ndsi:       {resampling: average}    # glacier NDSI (yearly bands)
+  glacier_ratio:      {resampling: average}    # glacier band ratio (yearly bands)
+
+  # --- add any scan-specific / uploaded layers below (e.g. a partner's atlas products) ---

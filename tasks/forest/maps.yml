@@ -1,0 +1,5 @@
+layers:
+  - forest
+  - deforest
+custom:
+  - core/R/map-deforestation.R

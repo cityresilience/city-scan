@@ -1,0 +1,45 @@
+.
+├── __init__.py
+├── __pycache__
+│   ├── __init__.cpython-311.pyc
+│   └── main.cpython-311.pyc
+├── air_quality
+│   ├── __init__.py
+│   ├── __pycache__
+│   ├── dataanalysis.py
+│   ├── datacollection.py
+│   └── datavisualization.py
+├── landslide
+│   ├── __init__.py
+│   ├── __pycache__
+│   ├── dataanalysis.py
+│   ├── datacollection.py
+│   └── datavisualization.py
+├── liquefaction
+│   ├── __init__.py
+│   ├── __pycache__
+│   ├── dataanalysis.py
+│   ├── datacollection.py
+│   └── datavisualization.py
+├── main.py
+├── population_worldpop
+│   ├── __init__.py
+│   ├── __pycache__
+│   ├── dataanalysis.py
+│   ├── datacollection.py
+│   └── datavisualization.py
+├── rwi
+│   ├── __init__.py
+│   ├── __pycache__
+│   ├── dataanalysis.py
+│   ├── datacollection.py
+│   └── datavisualization.py
+├── solar
+│   ├── __init__.py
+│   ├── __pycache__
+│   ├── dataanalysis.py
+│   ├── datacollection.py
+│   └── datavisualization.py
+└── structure.txt
+
+14 directories, 29 files

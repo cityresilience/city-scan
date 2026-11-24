@@ -1,0 +1,73 @@
+---
+df-print: paged
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+## Basic Information
+
+```{r}
+#| label: setup-basic-info
+#| include: false
+if (file.exists("_quarto.yml")) here::i_am("tasks/basic_info/charts/index.qmd")
+if (!exists("aoi")) source(here::here("core/R/setup.R"))
+```
+
+### User Input Variables
+
+```{r}
+#| label: setting-title
+#| results: asis
+
+print_text(paste("scan-ID", paste_bold(scan_id), ' | GCS: ', paste_bold(USE_GCS)), 2)
+
+print_text(paste("City:", paste_bold(city)), 1)
+print_text(paste("Country:", paste_bold(country)), 1)
+if (length(bm_cities_manual) == 0) {
+  print_text(paste("Manual benchmark cities:", paste_bold("None defined - using automatic detection from nearby countries")), 1)
+} else {
+  print_text(paste("Manual benchmark cities:", paste_bold(paste_and(bm_cities_manual))), 1)
+}
+```
+
+### Area and Climate Zone
+
+```{r}
+#| label: koeppen-classification
+#| results: asis
+
+aoi <- aoi %>% st_as_sf() %>% st_make_valid()
+area <- units::set_units(st_area(st_combine(aoi)), km^2)
+print_text(paste("AOI Area:", paste_bold(round(area, 1)), "sq km"), 1)
+
+coords <- st_centroid(aoi) %>% st_coordinates() %>% suppressWarnings()
+names(coords) <- c("Lon", "Lat")
+koeppen_city <- tryCatch({
+  koeppen <- read_csv(koeppen_file, col_types = "ddc")
+  subset(koeppen, between(Lon, coords["Lon"] - .5, coords["Lon"] + .5) &
+                    between(Lat, coords["Lat"] - .5, coords["Lat"] + .5)) %>%
+    .$Cls %>% unique()
+}, error = function(e) NULL)
+
+if (!is.null(koeppen_city)) {
+  print_text(paste("Köppen climate classification:", paste_bold(koeppen_city), "(See https://en.wikipedia.org/wiki/Köppen_climate_classification for classes)"), 1)
+}
+
+# Population estimate — use G2 CSV (closest to current year), fallback to raster
+pop_estimate <- tryCatch({
+  wpop_csv <- fuzzy_read(tabular_dir, "worldpop_2015_2030.csv", read_csv)
+  current_year <- as.numeric(format(Sys.Date(), "%Y"))
+  wpop_csv %>%
+    mutate(year = as.numeric(str_extract(year, "\\d{4}"))) %>%
+    slice_min(abs(year - current_year), n = 1)
+}, error = function(e) NULL)
+
+if (!is.null(pop_estimate) && nrow(pop_estimate) > 0) {
+  pop_year <- pop_estimate$year[1]
+  pop_val <- round(pop_estimate$population[1])
+  print_text(paste("Population estimate:", paste_bold(scales::comma(pop_val)),
+    paste0("(WorldPop Global 2, ", pop_year, ")")), 1)
+}
+```

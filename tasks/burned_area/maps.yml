@@ -1,0 +1,5 @@
+layers:
+  - burnable
+  - burnt_area
+custom:
+  - core/R/map-historical-burnt-area.R

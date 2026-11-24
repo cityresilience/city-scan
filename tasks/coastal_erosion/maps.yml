@@ -1,0 +1,6 @@
+layers:
+  - coastal_erosion_snap
+  - coastal_erosion_baseline
+  - transect_coastline
+custom:
+  - core/R/map-coastal-erosion.R

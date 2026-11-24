@@ -1,38 +1,51 @@
 accessibility: True
-# accessibility analysis parameters
+air_quality: True
 basic_info: True
+benchmark: True
+buildings: True
 burned_area: True
+coastal_erosion: True
+cyclones: True
 demographics: True
-# The City Scan standardly uses WorldPop for population data;
-# to use GHSL instead, set population: False & ghs_population: True
-population: True
-ghs_population: False
-wsf: True
-earthquake: False   # under development
+earthquake: True
 elevation: True
-# if slope is set to True, please also set elevation to True
-# because slope is derived from elevation
-# unless the elevation raster file is already on cloud storage
-slope: True
 flood_coastal: True
 flood_fluvial: True
 flood_pluvial: True
 flood_comb: True
-flood_event: False
+flood_events: True
+forest: True
 fwi: True
+ghs_builtup: True
+ghs_population: True
+green: True
+gdp_gridded: True
+gdp_sectoral: True
+groundwater: True
+landcover: True
 landcover_burn: True
-road_network: True
-rwi: True
-air: True
 landslide: True
 liquefaction: True
-oe_plot: False
-solar: True
-forest: True
-green: True
-landcover: True
 lst_summer: True
-lst_winter: False
+lst_winter: True
 ndmi: True
 nightlight: True
-ghs_builtup: True
+oxford: True
+population: True
+rwi: True
+sea_level_rise: True
+seismic_hazard: True
+slope: True
+solar: True
+water_risk: True
+wsf: True
+
+# Non-standard layers (off by default)
+dust: False
+aerosol: False
+precipitation: False
+glaciers: False
+wind: False
+
+# Compilation
+scan_calculations: True

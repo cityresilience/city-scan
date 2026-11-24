@@ -1,0 +1,1180 @@
+# Symbology YAML for maps, could be made into a larger YAML for all slide data
+template:
+  fuzzy_string: NULL
+  title: NULL
+  subtitle: NULL
+  palette: NULL
+  labels: NULL
+  breaks: for binned maps, the cut points (including limits), for factors, the factor levels
+  factor: NULL
+  bins: NULL
+  min: NULL
+  max: NULL
+  center: NULL
+  group_id: NULL
+  fill: defaults to T, only use if you want to set fill to FALSE
+  stroke: 'TRUE if variable, color if static (defaults to FALSE)'
+  weight: stroke weight
+  suffix: NULL
+  domain: NULL
+  # Potentially: NULL
+  # labFormat: NULL
+  # crop: crop domain to layer values - default of resolution or resolution_factor
+
+# SECTION 3 DEMOGRAPHICS
+population: # <-- We refer to this as the "YAML key" and is used to match generic and manual text
+  fuzzy_string: (?<!dense_)population.tif$
+  title: 'Population density'
+  subtitle: 'Number of persons per 10,000 m<sup>2</sup>'
+  palette: ['#ECEB72', '#8E3933']
+  basemap: 'satellite'
+  group_id: Population density # <-- This is the name shown in the leaflet layer control
+  bins: 5
+  caption: 'Map data from WorldPop Global2.'
+# population_2030:
+#   fuzzy_string: worldpop_2015_2030.tif$
+#   data_variable: pop_2030
+#   title: 'Population density, 2030 projection'
+#   subtitle: 'Number of persons per 10,000 m<sup>2</sup>'
+#   palette: ['#ECEB72', '#8E3933']
+#   basemap: 'satellite'
+#   group_id: Population density 2030
+#   bins: 5
+#   caption: 'Map data from WorldPop Global2.'
+# # SECTION 4 ECONOMIC ACTIVITY
+rwi_standardized:
+  fuzzy_string: rwi(?=.shp$|.gpkg$|$)
+  data_variable: rwi
+  title: 'Relative wealth'
+  subtitle: 'Standard deviations of estimated household wealth from national mean'
+  palette: ['#009E7A', '#70C5AD', '#FFFFBA', '#FF9169', '#ED431B' ]
+  breaks: [-999, -1, -0.5, 0.5, 1, 999]
+  labels: ['< -1.0', '-1.0 – -0.5', '-0.5 – 0.5', '0.5 – 1.0', '> 1.0']
+  group_id: Relative wealth index
+  caption: 'Map data from Meta Data for Good (2021).'
+rwi:
+  fuzzy_string: rwi(?=.shp$|.gpkg$|$)
+  data_variable: rwi
+  title: 'Relative wealth'
+  subtitle: 'Standard deviations of estimated household wealth from national mean'
+  palette: ['#009E7A', '#70C5AD', '#FFFFBA', '#FF9169', '#ED431B' ]
+  bins: 5
+  binning_method: interval
+  group_id: Relative wealth index (city-relative)
+  caption: 'Map data from Meta Data for Good (2021).'
+gdp_total:
+  fuzzy_string: gdp_total.tif$
+  data_variable: gdp_2020
+  title: 'Total GDP, 2020'
+  subtitle: 'Gross Domestic Product (PPP, million USD)'
+  palette: ['#2D1160', '#721F81', '#B63679', '#FB8861', '#FCFDBF']
+  bins: 5
+  basemap: 'satellite'
+  group_id: Total GDP
+  caption: 'Map data from Kummu et al. (2025), 30 arc-sec gridded GDP.'
+gdp_per_capita:
+  fuzzy_string: gdp_per_capita.tif$
+  data_variable: gdp_pc_2022
+  title: 'GDP per capita, 2022'
+  subtitle: 'Gross Domestic Product per capita (PPP, USD)'
+  palette: ['#2D1160', '#721F81', '#B63679', '#FB8861', '#FCFDBF']
+  bins: 5
+  basemap: 'satellite'
+  group_id: GDP per capita
+  caption: 'Map data from Kummu et al. (2025), downscaled gridded GDP per capita.'
+gdp_agriculture:
+  fuzzy_string: gdp_agriculture.tif$
+  data_variable: gdp_agriculture_2020
+  title: 'Agriculture GDP, 2020'
+  subtitle: 'Sectoral GDP (thousand USD, nominal)'
+  palette: ['#c7e9c0', '#a1d99b', '#74c476', '#41ab5d', '#238b45', '#005a32']
+  bins: 5
+  group_id: Agriculture GDP
+  caption: 'Map data from Chen et al. (2025), SectGDP30 v2.'
+gdp_industry:
+  fuzzy_string: gdp_industry.tif$
+  data_variable: gdp_industry_2020
+  title: 'Industry GDP, 2020'
+  subtitle: 'Sectoral GDP (thousand USD, nominal)'
+  palette: ['#fdd0a2', '#fdae6b', '#fd8d3c', '#ec7014', '#cc4c02', '#8c2d04']
+  bins: 5
+  group_id: Industry GDP
+  caption: 'Map data from Chen et al. (2025), SectGDP30 v2.'
+gdp_service:
+  fuzzy_string: gdp_service.tif$
+  data_variable: gdp_service_2015
+  title: 'Service GDP, 2015'
+  subtitle: 'Sectoral GDP (thousand USD, nominal)'
+  palette: ['#fcbba1', '#fc9272', '#fb6a4a', '#ef3b2c', '#cb181d', '#67000d']
+  bins: 5
+  group_id: Service GDP
+  caption: 'Map data from Chen et al. (2025), SectGDP30 v2.'
+gdp_combined:
+  fuzzy_string: gdp_combined.tif$
+  data_variable: gdp_combined_2020
+  title: 'Subnational GDP'
+  subtitle: 'Thousand USD, nominal'
+  palette: ['#fee391', '#fec44f', '#fe9929', '#ec7014', '#cc4c02', '#8c2d04']
+  bins: 5
+  group_id: Subnational GDP
+  caption: 'Map data from Chen et al. (2025), SectGDP30 v2. Sectors use the most recent year available (2020 where present, otherwise 2015).'
+economic_activity:
+  fuzzy_string: avg_rad_sum.*.tif$
+  title: Economic activity
+  subtitle: 'Average nighttime light radiance'
+  group_id: Economic hotspots
+  palette: ['#00a884', '#f0f0f0', '#e64c00']
+  bins: 5
+economic_change:
+  fuzzy_string: linfit.tif$
+  title: Change in economic activity
+  subtitle: 'Rate of change in nighttime radiance'
+  group_id: Economic change
+  palette: ['#404040', '#bababa', '#FFFFFF', '#f4a582', '#ca0020']
+  center: 0
+  bins: 0
+# # SECTION 5 BUILT FORM
+wsf:
+  fuzzy_string: wsf-edit.tif$
+  title: Built-up area change, 1985–2015
+  subtitle: Era of urban expansion
+  breaks: [1985, 1986, 1996, 2006, 2015]
+  oob: censor
+  # labels: ['Before 1986', '1986', '1996', '2006', '2015']
+  # breaks: [1986, 1996, 2006, 2015] # Confusingly, if we are using discrete labels, need to remove minimum break
+  labels: ['Before 1986', '1986-1995', '1996-2005', '2006-2015']
+  palette: ['#FBF9CD', '#E3B854', '#BF4A3B', '#25110B']
+  group_id: Urban extent
+  caption: 'Map data from World Settlement Footprint.'
+wsf_tracker:
+  fuzzy_string: wsf_tracker.tif$
+  title: Built-up area change, 2016–2025
+  subtitle: Era of urban expansion
+  breaks: [2016.5, 2017, 2020, 2023, 2026]
+  data_variable: era
+  labels: ['Before July 2016', 'By July 2019', 'By July 2022', 'By July 2025']
+  palette: ['#FBF9CD', '#D18158', '#25115B']
+  group_id: Urban extent, 2016–2024
+wsf_harmonized:
+  fuzzy_string: wsf_harmonized.tif$
+  title: Built-up area change, 1985–2025
+  subtitle: Era of urban expansion
+  breaks: [1985, 1986, 1996, 2006, 2015, 2025]
+  oob: censor
+  labels: ['Before 1986', '1986-1995', '1996-2005', '2006-2015', '2016-2025']
+  palette: ['#FBF9CD', '#E3B854', '#D18158', '#BF4A3B', '#25110B']
+  group_id: Urban extent harmonized
+  caption: 'Map data from World Settlement Footprint.'
+ghs_builtup:
+  fuzzy_string: built_over_time.tif$
+  title: Built-up area
+  subtitle: Year of urban expansion, 1980–2020
+  breaks: [1970, 1980, 1995, 2010, 2025]
+  oob: censor
+  # labels: ['Before 1986', '1986', '1996', '2006', '2015']
+  # breaks: [1986, 1996, 2006, 2015] # Confusingly, if we are using discrete labels, need to remove minimum break
+  labels: ['Before 1980', '1980-1995', '1995-2010', '2010-2025']
+  palette: ['#FBF9CD', '#E3B854', '#BF4A3B', '#25110B']
+  group_id: Urban extent (GHSL)
+  caption: 'Map data from GHSL (GHS-BUILT-S R2023A).'
+builtup_projected:
+  fuzzy_string: built_2030-edit.tif$
+  title: Projected urban expansion
+  subtitle: 2025–2030
+  breaks: [2030]
+  labels: ['Expansion']
+  factor: TRUE
+  palette: ['#75147C']
+  caption: 'Map data from GHSL: GHS-BUILT-S R2023A).'
+  group_id: Urban extent (GHSL, projected)
+impervious:
+  title: Impervious Surfaces
+  min: 0
+  max: 100
+  suffix: '%'
+  group_id: Built-up density
+land_cover:
+  fuzzy_string: lc.tif$
+  title: Land Cover
+  group_id: Land cover
+  factor: TRUE
+  palette: ['transparent', '#277242', '#DEBA59', '#79A54F', '#E88B39', '#C62421', '#9C9085', '#DDDDDD', '#2491D7', '#707CBA', '#00C86E', '#f6e8a1']
+  breaks: ['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '95', '100']
+  labels: ['No data',  'Tree cover',  'Shrubland',  'Grassland',  'Cropland',  'Built-up',  'Bare/sparse vegetation',  'Snow and ice',  'Permanent water bodies',  'Herbaceous wetland',  'Mangroves',  'Moss and Lichen']
+intersections:
+  fuzzy_string: intersection-density.tif$
+  title: Intersection Density
+  subtitle: Number of intersections per 1 km^2^
+  palette: ['transparent', '#9F4830']
+  group_id: Intersection density
+  domain: [0, 1]
+school_zones:
+  fuzzy_string: schools-journeys
+  data_variable: distance
+  title: Travel distance to nearest school
+  subtitle: Distance along road network in meters
+  palette: ['#577156', '#7DA953', '#DAE7AE']
+  breaks: [800, 1600, 2400]
+  labels: ['<800 m', '800–1,600 m', '1,600–2,400 m']
+  bins: 3
+  factor: TRUE
+  # How do I indicate shading?
+  # suffix: ' m'
+  group_id: School proximity
+  caption: 'Map data from OpenStreetMap.'
+school_points:
+  fuzzy_string: school-points
+  title: Schools
+  subtitle: Kindergartens, schools, colleges, and universities
+  data_variable: Feature # To show individual school types, use `amenity` and set factor: FALSE (but also requires changes to fns.R)
+  palette: ['#FBAF00']
+  alpha: 1
+  breaks: ['School']
+  labels: ['School (kindergarten, school, \ncollege, or university)']
+  factor: TRUE
+  group_id: School proximity
+  caption: 'Map data from OpenStreetMap.'
+health_zones:
+  fuzzy_string: health-journeys
+  data_variable: distance
+  title: Travel distance to nearest health facility
+  subtitle: Distance along road network
+  palette: ['#577156', '#7DA953', '#DAE7AE']
+  breaks: [1000, 2000, 3000]
+  labels: ['<1 km', '1–2 km', '2–3 km']
+  bins: 3
+  factor: TRUE
+  # How do I indicate shading?
+  group_id: Healthcare proximity
+  caption: 'Map data from OpenStreetMap.'
+health_points:
+  fuzzy_string: health-points
+  title: Health facilities
+  data_variable: Feature # To show individual health facility types, use `amenity` and set factor: FALSE (but also requires changes to fns.R)
+  palette: ['#523249']
+  alpha: 1
+  breaks: ['Health facility']
+  labels: ['Health clinic or hospital']
+  factor: TRUE
+  group_id: Healthcare proximity
+  caption: 'Map data from OpenStreetMap.'
+# # SECTION 6 CLIMATE CONDITIONS
+solar:
+  fuzzy_string: solar(?!.*monthly).tif$
+  title: 'Photovoltaic Potential'
+  subtitle: Power potential of a theoretical 1 kWp PV system (kWh)
+  bins: 3
+  palette: ['#ffebcc', '#f07605']
+  group_id: Solar PV potential
+  caption: 'Map data from Global Solar Atlas.'
+air_quality:
+  fuzzy_string: air_quality_pm2_5.tif$
+  title: 'Concentrations of PM2.5 particles in 2022'
+  subtitle: 'Micrograms per cubic meter (µg/m<sup>3</sup>)'
+  data_variable: sdei-global-annual-gwr-pm2-5-modis-misr-seawifs-viirs-aod-v5-gl-04-2022-geotiff
+  palette: ['#fff4d1', '#f5cbab', '#e6a58c', '#d48172', '#c46673', '#ba6685', '#a86595', '#9467ab']
+  breaks: [0, 5, 10, 15, 20, 30, 40, 50, 100]
+  group_id: Air quality
+air_quality_local:
+  fuzzy_string: air_quality_pm2_5.tif$
+  title: 'Concentrations of PM2.5 particles in 2022'
+  subtitle: 'Micrograms per cubic meter (µg/m<sup>3</sup>)'
+  data_variable: sdei-global-annual-gwr-pm2-5-modis-misr-seawifs-viirs-aod-v5-gl-04-2022-geotiff
+  palette: ['#fff4d1', '#f5cbab', '#e6a58c', '#d48172', '#c46673', '#ba6685', '#a86595', '#9467ab']
+  bins: 5
+  group_id: Air quality (local)
+air_quality_trend:
+  fuzzy_string: air_quality_pm2_5.tif$
+  title: 'Concentrations of PM2.5 particles, 10-year trend'
+  subtitle: 'Change in micrograms per cubic meter (µg/m<sup>3</sup>) per year by linear fit (2013–2022)'
+  data_variable: trend_2013_2022
+  palette: ['#fff4d1', "#FFFFFF", '#9467ab']
+  center: 0
+  bins: 5
+  group_id: Air quality (trend)
+summer_lst:
+  fuzzy_string: summer.*edit.tif$
+  # palette: 'Spectral'
+  palette: ['#5290C2', '#F0EE80', '#D33837']
+  # domain: 'minmax'
+  title: 'Summer surface temperature' # Need a way to get parameters from city_inputs into legends, such as years of LST
+  subtitle: 'Mean temperature (°C)'
+  suffix: '°C'
+  group_id: Summer surface temperature
+  caption: 'Map data from USGS (Landsat 9, Collection 2).'
+vegetation:
+  fuzzy_string: ndvi_season.*.tif$
+  title: Vegetated areas
+  subtitle: 'Normalized difference vegetation index (NDVI)'
+  palette: ['#c2e3b8', '#87c27e', '#54a159', '#2e6a34']
+  breaks: [0.14, 0.18, 0.27, 0.36, 1]
+  labels: ['Barren (0.14 to 0.18)', 'Shrub and Grassland (0.18 to 0.27)', 'Sparse (0.27 to 0.36)', 'Dense (0.36 to 1)']
+  group_id: Vegetation
+  caption: 'Map data from ESA, Sentinel-2.'
+  oob: censor
+forest: # Requires preprocessing to combine forest and deforestation?
+  fuzzy_string: forest_cover.*.tif$
+  title: 'Forest cover'
+  breaks: [1]
+  palette: ['#8CC056']
+  labels: ['Current forest']
+  factor: TRUE
+  group_id: Forests
+deforest: # Requires preprocessing to combine forest and deforestation?
+  fuzzy_string: deforestation-edit.tif$
+  title: Deforestation
+  subtitle: Year of deforestation
+  breaks: [2000, 2005, 2010, 2020, 2023]
+  palette: ['#ECEC5E', '#B3B373', '#81818D', '#535388', '#393958']
+  group_id: Deforestation
+infrastructure:
+  fuzzy_string: infrastructure.gpkg$
+  title: Infrastructure and Services
+  data_variable: Feature
+  factor: TRUE
+  palette: ['#523249', '#FF3838', '#619CFF', '#FBAF00']
+  labels:  ['Hospital or clinic', 'Fire station', 'Police station', 'School']
+  alpha: 1
+  size: 2
+  group_id: Infrastructure
+  caption: 'Map data from OpenStreetMap.'
+fluvial:
+  fuzzy_string: fluvial_2020.tif$
+  data_variable: max_probability
+  palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+  # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+  # breaks: [0, 0.11, 1.1, 10.1]  # Values are slightly greater than their intended (0.1, 1, 10)
+  # labels: ['1-in-100 year', '1-in-100 year', '1-in-10 year']
+  title: 'Fluvial flood return period'
+  subtitle: 'Minimum return period of a flood event within a 3-arc-second area'
+  group_id: Riverine flooding
+pluvial:
+  fuzzy_string: pluvial_2020.tif$
+  data_variable: max_probability
+  palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+  # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+  # breaks: [0, 0.11, 1.1, 10.1]  # Values are slightly greater than their intended (0.1, 1, 10)
+  # labels: ['1-in-100 year', '1-in-100 year', '1-in-10 year']
+  title: 'Pluvial flood return period'
+  subtitle: 'Minimum return period of a flood event within a 3-arc-second area'
+  group_id: Surface water flooding
+coastal:
+  fuzzy_string: coastal_2020.tif$
+  data_variable: max_probability
+  palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+  # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+  # breaks: [0, 0.11, 1.1, 10.1]  # Values are slightly greater than their intended (0.1, 1, 10)
+  # labels: ['1-in-100 year', '1-in-100 year', '1-in-10 year']
+  title: 'Coastal flood return period'
+  # subtitle: 'Probability of a flood event within a 3-arc-second area in a given year'
+  subtitle: 'Minimum return period of a flood event within a 3-arc-second area'
+  group_id: Coastal flooding
+combined_flooding:
+  fuzzy_string: comb_2020.tif$
+  data_variable: max_probability
+  palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+  # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+  # breaks: [0, 0.11, 1.1, 10.1]  # Values are slightly greater than their intended (0.1, 1, 10)
+  # labels: ['1-in-100 year', '1-in-100 year', '1-in-10 year']
+  title: 'Combined flood return period'
+  # subtitle: 'Probability of a flood event within a 3-arc-second area in a given year'
+  subtitle: 'Minimum return period of a flood event within a 3-arc-second area'
+  group_id: Combined flooding
+  # caption: 'Map data from Fathom. Flood probabilities are modeled for 2020.'
+  caption: 'Map data from Fathom. Flood depth modeled for 2020.'
+elevation:
+  title: Elevation
+  subtitle: Meters above sea level (MASL)
+  fuzzy_string: elevation.tif$
+  palette: ['#f5c4c0', '#762175']
+  bins: 5
+  group_id: Elevation
+# # elevation: # For using contour lines file
+# #   fuzzy_string: contour.shp$
+# #   palette: NULL
+# #   bins: 5
+# #   stroke: 
+# #     title: Elevation
+# #     subtitle: 'Meters above sea level (MASL)'
+# #     variable: elev
+# #     palette: ['#f5c4c0', '#762175']
+# #   weight: 1
+# #   group_id: Elevation
+slope:
+  fuzzy_string: slope.tif$
+  title: Slope
+  subtitle: 'Angle of hillside in degrees'
+  breaks: [0, 2, 5, 10, 20, 90]
+  labels: ['<2°', '2–5°', '5–10', '10–20°', '>20°']
+  palette: ['#ffffd4', '#993404']
+  bins: 5
+  suffix: '°'
+  group_id: Slope
+landslides:
+  fuzzy_string: landslide-edit.tif$
+  title: Landslide susceptibility
+  palette: ['#FCEFE2', '#F2C08C', '#E89251', '#D66136', '#993F2B']
+  labels: ['Very low', 'Low', 'Medium', 'High', 'Very high']
+  breaks: [0, 1, 2, 3, 4, 5]
+  group_id: Landslides
+liquefaction:
+  fuzzy_string: liquefaction-edit.tif$
+  title: Liquefaction susceptibility
+  subtitle: Proneness to liquefaction given the occurrence of a trigger event
+  palette: ['#FCEFE2', '#F2C08C', '#E89251', '#D66136', '#993F2B']
+  labels: ['Very low', 'Low', 'Medium', 'High', 'Very high']
+  breaks: [0, 1, 2, 3, 4, 5]
+  group_id: Liquefaction
+  caption: 'Map data from Zorn, Conrad, and Elco Koks (2019).'
+roads:
+  fuzzy_string: edges-edit.gpkg
+  palette: NULL
+  stroke:
+    title: Road network criticality
+    subtitle: Percentage of all hypothetical in-city trips using this road segment
+    variable: edge_centrality
+    palette: ['#C5D1E9', '#8696C8', '#516BAE', '#9C2F76', '#CE3737']
+  weight: 
+    title: Road type
+    variable: road_type
+    factor: TRUE
+    range: [0.25, 1]
+    palette: [0.5, 1]
+    # breaks: [FALSE, TRUE]
+    labels: ['Secondary', 'Primary']
+  group_id: Road network criticality
+  caption: 'Map data from OpenStreetMap.'
+roads_network:
+  fuzzy_string: major_roads.gpkg
+  title: Road network
+  subtitle: All mapped roads from OpenStreetMap
+  group_id: Road network
+  caption: 'Map data from OpenStreetMap.'
+burnable:
+  fuzzy_string: burn-edit.tif$
+  title: Burnability factor
+  palette: ['#FFFFFF', '#EFAD42', '#681A17']
+  breaks: [-1, 0, .17, .33, .5, .67, .83, 1]
+  labels: [0, 0.17, 0.33, 0.5, 0.67, 0.83, 1]
+  group_id: Burnable area
+  oob: squish
+burnt_area:
+  fuzzy_string: burnt-area-density.tif
+  title: History of fire
+  palette: ['#4B90C1', '#A6C19D', '#FBFA7C', '#EB9148', '#D63228']
+  breaks: [0.008, 0.064, 0.216, 0.512, 1.000]
+  labels: ['Lowest', 'Low', 'Medium', 'High', 'Highest']
+  group_id: History of fire
+  caption: 'Map data from Global Wildfire Information System.'
+drought:
+  fuzzy_string: ndmi_season.*.tif$
+  title: Moisture
+  subtitle: 'Normalized difference moisture index (NDMI)'
+  palette: ['#F6F7F9', '#48A747']
+  bins: 5
+  breaks: [-1, -0.2, 0.1, 0.4, 0.7, 1]
+  labels: ['Dry (-1–-0.2)', 'More water stress (-0.2–0.1)', 'Water stress (0.1–0.4)', 'Wet (0.4–0.7)', 'Wetter (0.–1)']
+  group_id: Moisture
+coastal_erosion_snap:
+  fuzzy_string: shoreline_snap.fgb$
+  data_variable: changerate
+  title: 'Coastline Change (snapped to AOI)'
+  subtitle: 'Average meters per year, 1984–2016'
+  palette: ['#C62421', '#E88B39', '#f6e8a1', '#90C050', '#277242']
+  breaks: [-3, -1.5, 0, 1.5, 3]
+  labels: ['-3', '-1.5', '0', '+1.5', '+3']
+  basemap: 'satellite'
+  group_id: Coastal erosion snap
+  caption: 'Delft University of Technology, Long-term Shoreline Changes (1984-2016).'
+coastal_erosion_baseline:
+  fuzzy_string: shoreline_baseline.fgb$
+  data_variable: changerate
+  title: 'Coastline Change (transect baseline)'
+  subtitle: 'Average meters per year, 1984–2016'
+  palette: ['#C62421', '#E88B39', '#f6e8a1', '#90C050', '#277242']
+  breaks: [-3, -1.5, 0, 1.5, 3]
+  labels: ['-3', '-1.5', '0', '+1.5', '+3']
+  basemap: 'satellite'
+  group_id: Coastal erosion baseline
+  caption: 'Delft University of Technology, Long-term Shoreline Changes (1984-2016).'
+transect_coastline:
+  fuzzy_string: transect_coastline.fgb$
+  title: 'Transect Coastline Baseline'
+  subtitle: 'Coastline derived from transect intersection points'
+  palette: ['#FFFFFF']
+  basemap: 'satellite'
+  group_id: Transect coastline
+  caption: 'Delft University of Technology, Long-term Shoreline Changes (1984-2016).'
+seismic_hazard:
+  fuzzy_string: seismic_hazard.tif$
+  title: Seismic hazard
+  subtitle: 'Peak ground acceleration (PGA)'
+  palette: ['#FFFFFF', '#D7E3EE', '#B5CAFF', '#8FB3FF', '#7F97FF', '#ABCF63', '#E8F59E', '#FFFA14', '#FFD121', '#FFA30A', '#FF4C00']
+  breaks: [0.00, 0.115, 0.401, 1.50]
+  labels: ['Low (< 0.115g)', 'Moderate (0.115g – 0.401g)', 'High (> 0.401g)']
+  group_id: Seismic hazard
+  caption: 'Map data from Global Earthquake Model (2023).'
+
+# # 2030 projections
+# coastal_2030_ssp1:
+#   fuzzy_string: coastal_2030_ssp1.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Coastal flood return period in 2030 under SSP1'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2030 under SSP1'
+#   group_id: Coastal flooding 2030 SSP1
+# fluvial_2030_ssp1:
+#   fuzzy_string: fluvial_2030_ssp1.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Fluvial flood return period in 2030 under SSP1'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2030 under SSP1'
+#   group_id: Riverine flooding 2030 SSP1
+# pluvial_2030_ssp1:
+#   fuzzy_string: pluvial_2030_ssp1.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Pluvial flood return period in 2030 under SSP1'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2030 under SSP1'
+#   group_id: Surface water flooding 2030 SSP1
+# combined_flooding_2030_ssp1:
+#   fuzzy_string: comb_2030_ssp1.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Combined flood return period in 2030 under SSP1'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2030 under SSP1'
+#   group_id: Combined flooding 2030 SSP1
+# coastal_2030_ssp2:
+#   fuzzy_string: coastal_2030_ssp2.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Coastal flood return period in 2030 under SSP2'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2030 under SSP2'
+#   group_id: Coastal flooding 2030 SSP2
+# fluvial_2030_ssp2:
+#   fuzzy_string: fluvial_2030_ssp2.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Fluvial flood return period in 2030 under SSP2'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2030 under SSP2'
+#   group_id: Riverine flooding 2030 SSP2
+# pluvial_2030_ssp2:
+#   fuzzy_string: pluvial_2030_ssp2.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Pluvial flood return period in 2030 under SSP2'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2030 under SSP2'
+#   group_id: Surface water flooding 2030 SSP2
+# combined_flooding_2030_ssp2:
+#   fuzzy_string: comb_2030_ssp2.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Combined flood return period in 2030 under SSP2'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2030 under SSP2'
+#   group_id: Combined flooding 2030 SSP2
+# coastal_2030_ssp3:
+#   fuzzy_string: coastal_2030_ssp3.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Coastal flood return period in 2030 under SSP3'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2030 under SSP3'
+#   group_id: Coastal flooding 2030 SSP3
+# fluvial_2030_ssp3:
+#   fuzzy_string: fluvial_2030_ssp3.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Fluvial flood return period in 2030 under SSP3'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2030 under SSP3'
+#   group_id: Riverine flooding 2030 SSP3
+# pluvial_2030_ssp3:
+#   fuzzy_string: pluvial_2030_ssp3.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Pluvial flood return period in 2030 under SSP3'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2030 under SSP3'
+#   group_id: Surface water flooding 2030 SSP3
+# combined_flooding_2030_ssp3:
+#   fuzzy_string: comb_2030_ssp3.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Combined flood return period in 2030 under SSP3'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2030 under SSP3'
+#   group_id: Combined flooding 2030 SSP3
+# coastal_2030_ssp5:
+#   fuzzy_string: coastal_2030_ssp5.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Coastal flood return period in 2030 under SSP5'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2030 under SSP5'
+#   group_id: Coastal flooding 2030 SSP5
+# fluvial_2030_ssp5:
+#   fuzzy_string: fluvial_2030_ssp5.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Fluvial flood return period in 2030 under SSP5'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2030 under SSP5'
+#   group_id: Riverine flooding 2030 SSP5
+# pluvial_2030_ssp5:
+#   fuzzy_string: pluvial_2030_ssp5.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Pluvial flood return period in 2030 under SSP5'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2030 under SSP5'
+#   group_id: Surface water flooding 2030 SSP5
+# combined_flooding_2030_ssp5:
+#   fuzzy_string: comb_2030_ssp5.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Combined flood return period in 2030 under SSP5'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2030 under SSP5'
+#   group_id: Combined flooding 2030 SSP5
+# # 2050 projections
+# coastal_2050_ssp1:
+#   fuzzy_string: coastal_2050_ssp1.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Coastal flood return period in 2050 under SSP1'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2050 under SSP1'
+#   group_id: Coastal flooding 2050 SSP1
+# fluvial_2050_ssp1:
+#   fuzzy_string: fluvial_2050_ssp1.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Fluvial flood return period in 2050 under SSP1'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2050 under SSP1'
+#   group_id: Riverine flooding 2050 SSP1
+# pluvial_2050_ssp1:
+#   fuzzy_string: pluvial_2050_ssp1.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Pluvial flood return period in 2050 under SSP1'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2050 under SSP1'
+#   group_id: Surface water flooding 2050 SSP1
+# combined_flooding_2050_ssp1:
+#   fuzzy_string: comb_2050_ssp1.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Combined flood return period in 2050 under SSP1'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2050 under SSP1'
+#   group_id: Combined flooding 2050 SSP1
+# coastal_2050_ssp2:
+#   fuzzy_string: coastal_2050_ssp2.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Coastal flood return period in 2050 under SSP2'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2050 under SSP2'
+#   group_id: Coastal flooding 2050 SSP2
+# fluvial_2050_ssp2:
+#   fuzzy_string: fluvial_2050_ssp2.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Fluvial flood return period in 2050 under SSP2'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2050 under SSP2'
+#   group_id: Riverine flooding 2050 SSP2
+# pluvial_2050_ssp2:
+#   fuzzy_string: pluvial_2050_ssp2.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Pluvial flood return period in 2050 under SSP2'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2050 under SSP2'
+#   group_id: Surface water flooding 2050 SSP2
+# combined_flooding_2050_ssp2:
+#   fuzzy_string: comb_2050_ssp2.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Combined flood return period in 2050 under SSP2'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2050 under SSP2'
+#   group_id: Combined flooding 2050 SSP2
+# coastal_2050_ssp3:
+#   fuzzy_string: coastal_2050_ssp3.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Coastal flood return period in 2050 under SSP3'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2050 under SSP3'
+#   group_id: Coastal flooding 2050 SSP3
+# fluvial_2050_ssp3:
+#   fuzzy_string: fluvial_2050_ssp3.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Fluvial flood return period in 2050 under SSP3'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2050 under SSP3'
+#   group_id: Riverine flooding 2050 SSP3
+# pluvial_2050_ssp3:
+#   fuzzy_string: pluvial_2050_ssp3.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Pluvial flood return period in 2050 under SSP3'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2050 under SSP3'
+#   group_id: Surface water flooding 2050 SSP3
+# combined_flooding_2050_ssp3:
+#   fuzzy_string: comb_2050_ssp3.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Combined flood return period in 2050 under SSP3'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2050 under SSP3'
+#   group_id: Combined flooding 2050 SSP3
+# coastal_2050_ssp5:
+#   fuzzy_string: coastal_2050_ssp5.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Coastal flood return period in 2050 under SSP5'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2050 under SSP5'
+#   group_id: Coastal flooding 2050 SSP5
+# fluvial_2050_ssp5:
+#   fuzzy_string: fluvial_2050_ssp5.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Fluvial flood return period in 2050 under SSP5'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2050 under SSP5'
+#   group_id: Riverine flooding 2050 SSP5
+# pluvial_2050_ssp5:
+#   fuzzy_string: pluvial_2050_ssp5.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Pluvial flood return period in 2050 under SSP5'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2050 under SSP5'
+#   group_id: Surface water flooding 2050 SSP5
+# combined_flooding_2050_ssp5:
+#   fuzzy_string: comb_2050_ssp5.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Combined flood return period in 2050 under SSP5'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2050 under SSP5'
+#   group_id: Combined flooding 2050 SSP5
+# # 2080 projections
+# coastal_2080_ssp1:
+#   fuzzy_string: coastal_2080_ssp1.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Coastal flood return period in 2080 under SSP1'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2080 under SSP1'
+#   group_id: Coastal flooding 2080 SSP1
+# fluvial_2080_ssp1:
+#   fuzzy_string: fluvial_2080_ssp1.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Fluvial flood return period in 2080 under SSP1'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2080 under SSP1'
+#   group_id: Riverine flooding 2080 SSP1
+# pluvial_2080_ssp1:
+#   fuzzy_string: pluvial_2080_ssp1.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Pluvial flood return period in 2080 under SSP1'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2080 under SSP1'
+#   group_id: Surface water flooding 2080 SSP1
+# combined_flooding_2080_ssp1:
+#   fuzzy_string: comb_2080_ssp1.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Combined flood return period in 2080 under SSP1'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2080 under SSP1'
+#   group_id: Combined flooding 2080 SSP1
+# coastal_2080_ssp2:
+#   fuzzy_string: coastal_2080_ssp2.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Coastal flood return period in 2080 under SSP2'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2080 under SSP2'
+#   group_id: Coastal flooding 2080 SSP2
+# fluvial_2080_ssp2:
+#   fuzzy_string: fluvial_2080_ssp2.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Fluvial flood return period in 2080 under SSP2'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2080 under SSP2'
+#   group_id: Riverine flooding 2080 SSP2
+# pluvial_2080_ssp2:
+#   fuzzy_string: pluvial_2080_ssp2.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Pluvial flood return period in 2080 under SSP2'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2080 under SSP2'
+#   group_id: Surface water flooding 2080 SSP2
+# combined_flooding_2080_ssp2:
+#   fuzzy_string: comb_2080_ssp2.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Combined flood return period in 2080 under SSP2'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2080 under SSP2'
+#   group_id: Combined flooding 2080 SSP2
+# coastal_2080_ssp3:
+#   fuzzy_string: coastal_2080_ssp3.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Coastal flood return period in 2080 under SSP3'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2080 under SSP3'
+#   group_id: Coastal flooding 2080 SSP3
+# fluvial_2080_ssp3:
+#   fuzzy_string: fluvial_2080_ssp3.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Fluvial flood return period in 2080 under SSP3'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2080 under SSP3'
+#   group_id: Riverine flooding 2080 SSP3
+# pluvial_2080_ssp3:
+#   fuzzy_string: pluvial_2080_ssp3.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Pluvial flood return period in 2080 under SSP3'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2080 under SSP3'
+#   group_id: Surface water flooding 2080 SSP3
+# combined_flooding_2080_ssp3:
+#   fuzzy_string: comb_2080_ssp3.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Combined flood return period in 2080 under SSP3'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2080 under SSP3'
+#   group_id: Combined flooding 2080 SSP3
+# coastal_2080_ssp5:
+#   fuzzy_string: coastal_2080_ssp5.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Coastal flood return period in 2080 under SSP5'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2080 under SSP5'
+#   group_id: Coastal flooding 2080 SSP5
+# fluvial_2080_ssp5:
+#   fuzzy_string: fluvial_2080_ssp5.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Fluvial flood return period in 2080 under SSP5'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2080 under SSP5'
+#   group_id: Riverine flooding 2080 SSP5
+# pluvial_2080_ssp5:
+#   fuzzy_string: pluvial_2080_ssp5.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Pluvial flood return period in 2080 under SSP5'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2080 under SSP5'
+#   group_id: Surface water flooding 2080 SSP5
+# combined_flooding_2080_ssp5:
+#   fuzzy_string: comb_2080_ssp5.tif$
+#   data_variable: max_probability
+#   palette: ['#A7BCEE', '#6178D9', '#1B35C4'] # Changing color instead of opacity
+#   # Flooding breaks are now set in map-flooding.R based on city_inputs.yml
+#   breaks: [0, .11, 1.1, 10.1]
+#   labels: ['1-in-1,000 year', '1-in-100 year', '1-in-10 year']
+#   title: 'Combined flood return period in 2080 under SSP5'
+#   subtitle: 'Minimum return period of a flood event within a 3-arc-second area in 2080 under SSP5'
+#   group_id: Combined flooding 2080 SSP5
+
+
+## Water Risk - WRI Aqueduct v4
+water_risk_overall:
+  fuzzy_string: water_risk.geojson$
+  data_variable: w_awr_def_tot_raw
+  title: 'Overall Water Risk'
+  subtitle: 'WRI Aqueduct v4'
+  palette: ['#fef0d9', '#fdcc8a', '#fc8d59', '#e34a33']
+  breaks: [0, 1, 2, 3, 4, 5]
+  # bins: 3
+  # quantiles: [0, 0.25, 0.5, 1]
+  group_id: Overall Water Risk
+
+water_risk_quantity:
+  fuzzy_string: water_risk.geojson$
+  data_variable: w_awr_def_qan_raw
+  title: 'Physical Quantity Risk'
+  subtitle: 'WRI Aqueduct v4'
+  palette: ['#fef0d9', '#fdcc8a', '#fc8d59', '#e34a33']
+  breaks: [0, 1, 2, 3, 4, 5]
+  group_id: Physical Quantity Risk
+
+water_risk_groundwater:
+  fuzzy_string: water_risk.geojson$
+  data_variable: gtd_cat
+  title: 'Groundwater Table Decline'
+  subtitle: 'WRI Aqueduct v4'
+  palette: ['#fef0d9', '#fdcc8a', '#fc8d59', '#e34a33', '#b30000']
+  breaks: [0, 1, 2, 3, 4]
+  labels: ['Low', 'Low-Medium', 'Medium-High', 'High', 'Extremely High']
+  factor: TRUE
+  # oob: censor
+  group_id: Groundwater Decline
+
+water_risk_depletion:
+  fuzzy_string: water_risk.geojson$
+  data_variable: bwd_raw
+  title: 'Water Depletion'
+  subtitle: 'WRI Aqueduct v4 (ratio of consumption to supply)'
+  palette: ['#fef0d9', '#fdcc8a', '#fc8d59', '#e34a33', '#b30000']
+  breaks: [0, 0.25, 0.5, 0.75, 1.0]
+  labels: ['<25%', '25-50%', '50-75%', '>75%']
+  # oob: censor
+  group_id: Water Depletion
+
+# Sea Level Rise - Climate Central
+# Combined 1-10m layer (minimum flood level for each cell)
+slr_1_10m:
+  fuzzy_string: slr_1_10m.tif$
+  title: 'Sea Level Rise Exposure'
+  subtitle: 'Minimum sea level rise causing inundation'
+  palette: ['#deebf7', '#c6dbef', '#9ecae1', '#6baed6', '#4292c6', '#2171b5', '#08519c', '#08306b', '#062449', '#041733']
+  breaks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+  labels: ['1m', '2m', '3m', '4m', '5m', '6m', '7m', '8m', '9m', '10m']
+  factor: TRUE
+  group_id: Sea Level Rise
+  caption: 'Map data from Climate Central.'
+
+# # AR6 SSP2-4.5 projections (combined by year)
+slr_ssp245_50_hightide:
+  fuzzy_string: slr_ssp245_50.0_hightide.tif$
+  title: 'Sea Level Rise Projection'
+  subtitle: 'SSP2-4.5, 50th percentile, high tide'
+  palette: ['#9ecae1', '#2171b5', '#041733']
+  breaks: [2020, 2050, 2100]
+  labels: ['2020', '2050', '2100']
+  factor: TRUE
+  group_id: SLR SSP2-4.5 50% High Tide
+
+slr_ssp245_50_RL1:
+  fuzzy_string: slr_ssp245_50.0_RL1.tif$
+  title: 'Sea Level Rise Projection'
+  subtitle: 'SSP2-4.5, 50th percentile, 1-year flood'
+  palette: ['#9ecae1', '#2171b5', '#041733']
+  breaks: [2020, 2050, 2100]
+  labels: ['2020', '2050', '2100']
+  factor: TRUE
+  group_id: SLR SSP2-4.5 50% RL1
+
+slr_ssp245_50_RL10:
+  fuzzy_string: slr_ssp245_50.0_RL10.tif$
+  title: 'Sea Level Rise Projection'
+  subtitle: 'SSP2-4.5, 50th percentile, 10-year flood'
+  palette: ['#9ecae1', '#2171b5', '#041733']
+  breaks: [2020, 2050, 2100]
+  labels: ['2020', '2050', '2100']
+  factor: TRUE
+  group_id: SLR SSP2-4.5 50% RL10
+
+slr_ssp245_83_hightide:
+  fuzzy_string: slr_ssp245_83.3_hightide.tif$
+  title: 'Sea Level Rise Projection'
+  subtitle: 'SSP2-4.5, 83rd percentile, high tide'
+  palette: ['#9ecae1', '#2171b5', '#041733']
+  breaks: [2020, 2050, 2100]
+  labels: ['2020', '2050', '2100']
+  factor: TRUE
+  group_id: SLR SSP2-4.5 83% High Tide
+
+slr_ssp245_83_RL1:
+  fuzzy_string: slr_ssp245_83.3_RL1.tif$
+  title: 'Sea Level Rise Projection'
+  subtitle: 'SSP2-4.5, 83rd percentile, 1-year flood'
+  palette: ['#9ecae1', '#2171b5', '#041733']
+  breaks: [2020, 2050, 2100]
+  labels: ['2020', '2050', '2100']
+  factor: TRUE
+  group_id: SLR SSP2-4.5 83% RL1
+
+slr_ssp245_83_RL10:
+  fuzzy_string: slr_ssp245_83.3_RL10.tif$
+  title: 'Sea Level Rise Projection'
+  subtitle: 'SSP2-4.5, 83rd percentile, 10-year flood'
+  palette: ['#9ecae1', '#2171b5', '#041733']
+  breaks: [2020, 2050, 2100]
+  labels: ['2020', '2050', '2100']
+  factor: TRUE
+  group_id: SLR SSP2-4.5 83% RL10
+
+# # AR6 SSP5-8.5 projections (combined by year)
+slr_ssp585_50_hightide:
+  fuzzy_string: slr_ssp585_50.0_hightide.tif$
+  title: 'Sea Level Rise Projection'
+  subtitle: 'SSP5-8.5, 50th percentile, high tide'
+  palette: ['#9ecae1', '#2171b5', '#041733']
+  breaks: [2020, 2050, 2100]
+  labels: ['2020', '2050', '2100']
+  factor: TRUE
+  group_id: SLR SSP5-8.5 50% High Tide
+
+slr_ssp585_50_RL1:
+  fuzzy_string: slr_ssp585_50.0_RL1.tif$
+  title: 'Sea Level Rise Projection'
+  subtitle: 'SSP5-8.5, 50th percentile, 1-year flood'
+  palette: ['#9ecae1', '#2171b5', '#041733']
+  breaks: [2020, 2050, 2100]
+  labels: ['2020', '2050', '2100']
+  factor: TRUE
+  group_id: SLR SSP5-8.5 50% RL1
+
+slr_ssp585_50_RL10:
+  fuzzy_string: slr_ssp585_50.0_RL10.tif$
+  title: 'Sea Level Rise Projection'
+  subtitle: 'SSP5-8.5, 50th percentile, 10-year flood'
+  palette: ['#9ecae1', '#2171b5', '#041733']
+  breaks: [2020, 2050, 2100]
+  labels: ['2020', '2050', '2100']
+  factor: TRUE
+  group_id: SLR SSP5-8.5 50% RL10
+
+slr_ssp585_83_hightide:
+  fuzzy_string: slr_ssp585_83.3_hightide.tif$
+  title: 'Sea Level Rise Projection'
+  subtitle: 'SSP5-8.5, 83rd percentile, high tide'
+  palette: ['#9ecae1', '#2171b5', '#041733']
+  breaks: [2020, 2050, 2100]
+  labels: ['2020', '2050', '2100']
+  factor: TRUE
+  group_id: SLR SSP5-8.5 83% High Tide
+
+slr_ssp585_83_RL1:
+  fuzzy_string: slr_ssp585_83.3_RL1.tif$
+  title: 'Sea Level Rise Projection'
+  subtitle: 'SSP5-8.5, 83rd percentile, 1-year flood'
+  palette: ['#9ecae1', '#2171b5', '#041733']
+  breaks: [2020, 2050, 2100]
+  labels: ['2020', '2050', '2100']
+  factor: TRUE
+  group_id: SLR SSP5-8.5 83% RL1
+
+slr_ssp585_83_RL10:
+  fuzzy_string: slr_ssp585_83.3_RL10.tif$
+  title: 'Sea Level Rise Projection'
+  subtitle: 'SSP5-8.5, 83rd percentile, 10-year flood'
+  palette: ['#9ecae1', '#2171b5', '#041733']
+  breaks: [2020, 2050, 2100]
+  labels: ['2020', '2050', '2100']
+  factor: TRUE
+  group_id: SLR SSP5-8.5 83% RL10

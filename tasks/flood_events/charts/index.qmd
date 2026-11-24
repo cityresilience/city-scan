@@ -1,0 +1,106 @@
+---
+df-print: paged
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+## Flood Events
+
+```{r}
+#| label: setup-flood-events
+#| include: false
+if (file.exists("_quarto.yml")) here::i_am("tasks/flood_events/charts/index.qmd")
+if (!exists("aoi")) {
+  source(here::here("core/R/setup.R"))
+}
+```
+
+```{r}
+#| label: data-loading-flood-events
+#| include: false
+flood_text_all <- tryCatch(
+  read_csv(file.path(tabular_dir, paste0(city_string, "_flood_events.csv")), show_col_types = FALSE),
+  error = function(e) { message("Flood events not available: ", e$message); NULL })
+
+if (!is.null(flood_text_all) && nrow(flood_text_all) > 0) {
+  floods <- flood_text_all %>% select(BEGAN, ENDED, DEAD, DISPLACED, MAINCAUSE, SEVERITY)
+  flood_archive <- flood_text_all  # chart uses flood_archive for the null check
+} else {
+  floods <- tibble()
+  flood_archive <- tibble()
+}
+```
+
+```{r}
+#| label: flood-events
+#| results: asis
+#| fig.width: 12
+
+if (is.null(flood_archive) || nrow(flood_archive) == 0) print_text(paste_bold('No flood archive data available')) else {
+  print_text("Tally of flood events")
+
+  summarize(floods, count = n(), across(.cols = c(DEAD, DISPLACED), sum), .groups = "drop") %>%
+    print_paged_df()
+
+  print_text("Median flood event")
+
+  floods %>% mutate(
+    duration = as.numeric(ENDED - BEGAN)) %>%
+    summarize(across(.cols = c(DEAD, DISPLACED, duration), median), .groups = "drop") %>%
+    print_paged_df()
+
+  print_text("Causes of flood events")
+
+  count(floods, MAINCAUSE) %>% print_paged_df()
+
+
+  month_labels <- cumsum(c("Jan" = 31, "Feb" = 28, "Mar"= 31, "Apr" = 30, "May" = 31, "Jun" = 30,
+    "Jul" = 31, "Aug" = 31, "Sep"= 30, "Oct" = 31, "Nov" = 30, "Dec" = 31))
+
+  flood_event_plot <- flood_text_all %>%
+    ggplot(aes(y = begin_year, x = begin_day)) +
+    geom_text_repel(
+      aes(label = text),
+      hjust = 0, size = 4, lineheight = 0.9,
+      min.segment.length = 0, force_pull = .25, box.padding = .5,
+      xlim = c(370, 700), direction = "y",
+      segment.color = "grey46", segment.size = .25,
+      segment.curvature = 1e-20, segment.square = T) +
+    geom_point(aes(size = DISPLACED, alpha = severity), color = "darkblue") +
+    scale_x_continuous(
+      limits = c(0, 366), expand = c(0, 0),
+      breaks = month_labels - 15,
+      labels = names(month_labels),
+      minor_breaks = c(0, month_labels)) +
+    scale_y_reverse(
+      limits = c(lubridate::year(Sys.Date()), 1985),
+      breaks = seq(1985, 2030, by = 5), minor_breaks = 1985:2030 - 0.5) +
+    scale_alpha_discrete(range = c(0.3, 1)) +
+    scale_size_continuous(
+      range = c(3, 10),
+      breaks = range(flood_text_all$DISPLACED),
+      labels = scales::label_number(scale_cut = scales::cut_short_scale())) +
+    labs(y = "Year", alpha = "Severity", size = "Displaced") +
+    theme_minimal() +
+    coord_cartesian(clip = 'off') +
+    theme(
+      axis.line = element_line(linewidth = .5, color = "black"),
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_line(linewidth = .5, color = "grey92"),
+      axis.text = element_text(size = 12),
+      axis.title.y = element_text(size = 12),
+      axis.title.x = element_blank(),
+      legend.position = "bottom",
+      plot.margin = margin(5.5, 300, 5.5, 5.5, "pt"),
+      plot.background = element_rect(fill = "white", color = NULL))
+
+  print(flood_event_plot)
+  cat("\n\n")
+
+  ggsave(here("03-render-output", "plots", "darthmouth_flood_events.pdf"), device = "pdf",
+    width = 15, height = 4.36, units = "in", dpi = "print")
+
+}
+```

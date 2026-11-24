@@ -1,0 +1,104 @@
+---
+df-print: paged
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+## Cyclones
+
+```{r}
+#| label: setup-cyclones
+#| include: false
+if (file.exists("_quarto.yml")) here::i_am("tasks/cyclones/charts/index.qmd")
+if (!exists("aoi")) {
+  source(here::here("core/R/setup.R"))
+}
+```
+
+```{r}
+#| label: data-loading-cyclones
+#| include: false
+cyclones_near <- tryCatch(
+  read_csv(file.path(tabular_dir, paste0(city_string, "_cyclones.csv")), show_col_types = FALSE),
+  error = function(e) { message("Cyclone data not available: ", e$message); NULL })
+```
+
+```{r}
+#| label: cyclones_near-plot
+#| results: asis
+
+if (is.null(cyclones_near) || nrow(cyclones_near) == 0) {
+  print_text(paste_bold('No cyclone data available'))
+} else {
+    as.Date("2020-12-31") - as.Date("1984-01-01") # 13514
+    as.Date("2025-12-31") - as.Date("1975-01-01") # 18627
+    y_ratio <-1.49 # ratio should be 1.378 but doesn't quite work
+
+    cyclones_text <- cyclones_near %>%
+      st_drop_geometry() %>%
+      summarize(.by = c(SID, NAME),
+        year = min(year),
+        month_start = min(month),
+        month_start_name = month.name[month_start],
+        month = paste(unique(c(min(month), max(month))), collapse = "-"),
+        BEGAN = as.Date(paste(year, month_start, "15", sep = "-")),
+        USA_SSHS = max(USA_SSHS, na.rm = T),
+        min_distance = min(distance_km, na.rm = T)) %>%
+      arrange(-USA_SSHS) %>%
+      mutate(
+        max_scale = case_when(
+          USA_SSHS < 0 ~ "Tropical depression",
+          USA_SSHS == 0 ~ "Tropical storm",
+          T ~ paste("Category", USA_SSHS)),
+        text = paste0(toupper(month_start_name), " ", year, "\n", NAME, " - ", max_scale))
+
+    cyclones_text_select <- cyclones_text %>% slice_min(min_distance, n = 10) %>%
+      arrange(BEGAN) %>%
+      mutate(above_line = (2*(row_number() %% 2) - 1)*-1,
+        node_x = BEGAN + y_ratio * 1460*above_line,
+        node_y = above_line * (1460 * tanpi(1/6) + 466/2) * y_ratio )
+
+    cyclones_lines <- cyclones_text_select %>%
+      select(SID, BEGAN, above_line, node_x, node_y) %>%
+      mutate(id = row_number()) %>%
+      { bind_rows(.,
+                  mutate(., node_x = BEGAN, node_y = above_line * 466 / 2),
+                  mutate(., node_x = BEGAN, node_y = 0)) }
+
+    x_axis_ticks <- tibble(date = seq(as.Date("1980-01-01"),as.Date("2020-12-31"), by = "10 year"), year = lubridate::year(date)) %>%
+      bind_rows(tibble(date = seq(as.Date("1985-01-01"),as.Date("2020-12-31"), by = "10 year"), year = NA))
+
+    x_axis_years <- data.frame(x = seq(as.Date("1975-01-01"), as.Date("2025-12-31"), by = "years"), y = 0)
+    x_axis_months <- data.frame(x = seq(as.Date("1975-01-01"), as.Date("2025-12-31"), by = "2 months"), y = 0)
+
+    cyclone_plot <- ggplot(cyclones_text) +
+      geom_point(aes(x = BEGAN), y = 0) +
+      geom_text(
+        data = cyclones_text_select,
+        aes(x = node_x + 0 * y_ratio, y = node_y - 0 * y_ratio, label = text, hjust = (above_line + 1)/2),
+        angle = 30, lineheight = 1) +
+      scale_x_date(limits = c(as.Date("1974-01-01"),as.Date("2025-12-31")), expand = c(0,0)) +
+      scale_y_continuous(limits = c(-1800, 1800) * y_ratio, breaks = c(1825,3650)) +
+      geom_path(data = cyclones_lines, aes(x = node_x, y = node_y, group = SID))  +
+      geom_point(data = x_axis_years, aes(x = x, y = y), pch = "|", size = 2) +
+      geom_point(data = x_axis_months, aes(x = x, y = y), size = 0.25) +
+      geom_point(data = x_axis_ticks, aes(x = date-15, y = 0), pch = "|", size = 4) +
+      geom_point(data = x_axis_ticks, aes(x = date+15, y = 0), pch = "|", size = 4) +
+      geom_text(data = x_axis_ticks, aes(x = date, y = -0.25 * 466 * y_ratio, label = year)) +
+      theme_minimal() +
+      theme(axis.text = element_blank(), axis.title = element_blank(), panel.grid = element_blank()) +
+      force_panelsizes(rows = unit(5.833, "in"), cols = unit(20, "in"))
+    ggsave(here("03-render-output", "plots", "ncei-cyclones.pdf"), device = "pdf",
+          width = 20, height = 5.833, units = "in", dpi = "print")
+
+    cyclones_text_select %>% print_paged_df()
+
+    print(cyclone_plot)
+  cat("\n\n")
+
+    cyclones_text %>% filter(min_distance <250) %>% count(USA_SSHS)  %>% print_paged_df()
+    cyclones_text %>% mutate(distance_bin = cut_width(min_distance, width = 50, boundary = 0)) %>% count(distance_bin) %>% print_paged_df()
+}
+```

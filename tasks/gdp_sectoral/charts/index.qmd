@@ -1,0 +1,199 @@
+---
+df-print: paged
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+## Sectoral GDP Flood Exposure
+
+High GDP areas are defined as pixels above the 60th percentile of GDP values within the AOI.
+
+```{r}
+#| label: setup-gdp-sectoral
+#| message: false
+#| warning: false
+#| results: hide
+if (file.exists("_quarto.yml")) here::i_am("tasks/gdp_sectoral/charts/index.qmd")
+if (!exists("aoi")) {
+  source(here::here("core/R/setup.R"))
+}
+```
+
+```{r}
+#| label: data-loading-gdp-sectoral
+#| message: false
+#| warning: false
+#| results: hide
+flood_gdp_sect <- tryCatch(
+  read_csv(file.path(tabular_dir, "flood_gdp_sectoral.csv"), show_col_types = FALSE),
+  error = function(e) tibble(flood_type = character(), sector = character(),
+                             year = integer(), pct_high_gdp_in_flood = numeric()))
+
+sector_colors <- c(Agriculture = "#2ca02c", Industry = "#ff7f0e", Service = "#800000")
+sector_linetypes <- c(Agriculture = "solid", Industry = "dashed", Service = "dotted")
+
+.plot_flood_sector <- function(ft_data, ft) {
+  p <- ggplot(ft_data, aes(x = year, y = pct_high_gdp_in_flood, color = sector, linetype = sector, group = sector)) +
+    geom_line(linewidth = 0.8) +
+    geom_point(size = 2) +
+    scale_x_continuous(breaks = c(2010, 2015, 2020)) +
+    scale_y_continuous(limits = c(0, NA), expand = expansion(c(0, 0.1)),
+                       labels = scales::label_percent(scale = 1)) +
+    scale_color_manual(values = sector_colors) +
+    scale_linetype_manual(values = sector_linetypes) +
+    theme_minimal() +
+    labs(title = paste("High GDP areas per sector exposed by", ft, "flooding"),
+         x = "", y = "% of high GDP pixels in flood zone", color = NULL, linetype = NULL) +
+    theme(
+      axis.line = element_line(linewidth = .5, color = "black"),
+      legend.position = "bottom")
+  ggsave(here("03-render-output", "plots", paste0("sectoral-gdp-flood-", tolower(ft), ".png")),
+         plot = p, device = "png", width = 6, height = 4, units = "in", dpi = "print")
+  p
+}
+```
+
+### River Flooding
+
+```{r}
+#| label: chart-gdp-river-flood
+#| message: false
+#| warning: false
+#| results: asis
+ft_data <- flood_gdp_sect %>% filter(flood_type == "River", sector != "Combined")
+if (nrow(ft_data) > 0) {
+  print(.plot_flood_sector(ft_data, "River"))
+  cat("\n\n")
+  print_paged_df(ft_data %>% select(year, sector, pct_high_gdp_in_flood, exposed_gdp_M, pct_gdp_exposed))
+} else {
+  print_text(paste_bold("No river flood data available"))
+}
+```
+
+### Rainwater Flooding
+
+```{r}
+#| label: chart-gdp-rainwater-flood
+#| message: false
+#| warning: false
+#| results: asis
+ft_data <- flood_gdp_sect %>% filter(flood_type == "Rainwater", sector != "Combined")
+if (nrow(ft_data) > 0) {
+  print(.plot_flood_sector(ft_data, "Rainwater"))
+  cat("\n\n")
+  print_paged_df(ft_data %>% select(year, sector, pct_high_gdp_in_flood, exposed_gdp_M, pct_gdp_exposed))
+} else {
+  print_text(paste_bold("No rainwater flood data available"))
+}
+```
+
+### Coastal Flooding
+
+```{r}
+#| label: chart-gdp-coastal-flood
+#| message: false
+#| warning: false
+#| results: asis
+ft_data <- flood_gdp_sect %>% filter(flood_type == "Coastal", sector != "Combined")
+if (nrow(ft_data) > 0) {
+  print(.plot_flood_sector(ft_data, "Coastal"))
+  cat("\n\n")
+  print_paged_df(ft_data %>% select(year, sector, pct_high_gdp_in_flood, exposed_gdp_M, pct_gdp_exposed))
+} else {
+  print_text(paste_bold("No coastal flood data available"))
+}
+```
+
+## Total Sectoral GDP Flood Exposure
+
+Total sectoral GDP is the sum of agriculture, industry, and service GDP per pixel. High GDP areas below are defined using the 60th percentile of this total.
+
+### River Flooding
+
+```{r}
+#| label: chart-gdp-combined-river-flood
+#| message: false
+#| warning: false
+#| results: asis
+ft_data <- flood_gdp_sect %>% filter(flood_type == "River", sector == "Combined")
+if (nrow(ft_data) > 0) {
+  p <- ggplot(ft_data, aes(x = year, y = pct_high_gdp_in_flood, group = 1)) +
+    geom_line(linewidth = 0.8, color = "#543005") +
+    geom_point(size = 2, color = "#543005") +
+    scale_x_continuous(breaks = c(2010, 2015, 2020)) +
+    scale_y_continuous(limits = c(0, NA), expand = expansion(c(0, 0.1)),
+                       labels = scales::label_percent(scale = 1)) +
+    theme_minimal() +
+    labs(title = "High total GDP areas exposed by River flooding",
+         x = "", y = "% of high GDP pixels in flood zone") +
+    theme(axis.line = element_line(linewidth = .5, color = "black"))
+  ggsave(here("03-render-output", "plots", "combined-gdp-flood-river.png"), plot = p,
+         device = "png", width = 6, height = 4, units = "in", dpi = "print")
+  print(p)
+  cat("\n\n")
+  print_paged_df(ft_data %>% select(year, pct_high_gdp_in_flood, exposed_gdp_M, pct_gdp_exposed))
+} else {
+  print_text(paste_bold("No river flood data available"))
+}
+```
+
+### Rainwater Flooding
+
+```{r}
+#| label: chart-gdp-combined-rainwater-flood
+#| message: false
+#| warning: false
+#| results: asis
+ft_data <- flood_gdp_sect %>% filter(flood_type == "Rainwater", sector == "Combined")
+if (nrow(ft_data) > 0) {
+  p <- ggplot(ft_data, aes(x = year, y = pct_high_gdp_in_flood, group = 1)) +
+    geom_line(linewidth = 0.8, color = "#543005") +
+    geom_point(size = 2, color = "#543005") +
+    scale_x_continuous(breaks = c(2010, 2015, 2020)) +
+    scale_y_continuous(limits = c(0, NA), expand = expansion(c(0, 0.1)),
+                       labels = scales::label_percent(scale = 1)) +
+    theme_minimal() +
+    labs(title = "High total GDP areas exposed by Rainwater flooding",
+         x = "", y = "% of high GDP pixels in flood zone") +
+    theme(axis.line = element_line(linewidth = .5, color = "black"))
+  ggsave(here("03-render-output", "plots", "combined-gdp-flood-rainwater.png"), plot = p,
+         device = "png", width = 6, height = 4, units = "in", dpi = "print")
+  print(p)
+  cat("\n\n")
+  print_paged_df(ft_data %>% select(year, pct_high_gdp_in_flood, exposed_gdp_M, pct_gdp_exposed))
+} else {
+  print_text(paste_bold("No rainwater flood data available"))
+}
+```
+
+### Coastal Flooding
+
+```{r}
+#| label: chart-gdp-combined-coastal-flood
+#| message: false
+#| warning: false
+#| results: asis
+ft_data <- flood_gdp_sect %>% filter(flood_type == "Coastal", sector == "Combined")
+if (nrow(ft_data) > 0) {
+  p <- ggplot(ft_data, aes(x = year, y = pct_high_gdp_in_flood, group = 1)) +
+    geom_line(linewidth = 0.8, color = "#543005") +
+    geom_point(size = 2, color = "#543005") +
+    scale_x_continuous(breaks = c(2010, 2015, 2020)) +
+    scale_y_continuous(limits = c(0, NA), expand = expansion(c(0, 0.1)),
+                       labels = scales::label_percent(scale = 1)) +
+    theme_minimal() +
+    labs(title = "High total GDP areas exposed by Coastal flooding",
+         x = "", y = "% of high GDP pixels in flood zone") +
+    theme(axis.line = element_line(linewidth = .5, color = "black"))
+  ggsave(here("03-render-output", "plots", "combined-gdp-flood-coastal.png"), plot = p,
+         device = "png", width = 6, height = 4, units = "in", dpi = "print")
+  print(p)
+  cat("\n\n")
+  print_paged_df(ft_data %>% select(year, pct_high_gdp_in_flood, exposed_gdp_M, pct_gdp_exposed))
+} else {
+  print_text(paste_bold("No coastal flood data available"))
+}
+```
+

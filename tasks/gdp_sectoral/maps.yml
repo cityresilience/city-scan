@@ -1,0 +1,9 @@
+layers:
+  - gdp_agriculture
+  - gdp_industry
+  - gdp_service
+  - gdp_combined
+depends:
+  - fathom
+custom:
+  - core/R/map-sectoral-gdp-flood.R

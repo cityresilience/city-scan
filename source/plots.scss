@@ -1,0 +1,190 @@
+/*-- scss:rules --*/
+
+// ==========================================
+// D3 PLOT STYLING - plots.scss
+// ==========================================
+
+
+
+// ==========================================
+// CSS VARIABLES
+// ==========================================
+// (change these to update all plots!)
+
+   :root {
+    // font families
+    --plot-font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    
+    // colors - main
+    --plot-bg: white;
+    --plot-text-primary: #6c757d;
+    --plot-text-secondary: #6c757d;
+    
+    // colors - axes & grid
+    --plot-grid-line: #f0f0f0;
+    --plot-axis-line: currentColor;
+    --plot-axis-domain: currentColor;
+    
+    // colors - tooltip
+    --tooltip-bg: white;
+    --tooltip-border: #000000;
+    --tooltip-border-width: 1.8px;
+    --tooltip-text: black;
+    --tooltip-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    
+    // spacing & sizing
+    --plot-border-radius: 0px;
+    --tooltip-padding: 8px 12px;
+  }
+  
+
+  // ==========================================
+  // RESPONSIVE PLOT CONTAINER
+  // ==========================================
+
+  .responsive-plot {
+    width: 100%;
+    position: relative;
+    
+    svg {
+      font-family: var(--plot-font-family);
+      background: var(--plot-bg);
+      display: block;
+    }
+  }
+  
+
+  // ==========================================
+  // AXIS STYLING
+  // ==========================================
+// (applies to all plots)
+
+  .y-axis, .x-axis {
+    // axis domain line
+    .domain {
+      stroke: var(--plot-axis-domain);
+      stroke-width: 1;
+    }
+    
+    // tick marks
+    .tick line {
+      stroke: var(--plot-grid-line);
+      stroke-width: 1;
+    }
+    
+    // tick labels
+    .tick text {
+      fill: var(--plot-text-primary);
+      font-family: var(--plot-font-family);
+      font-weight: normal;
+    }
+  }
+  
+  // remove y-axis domain line (common pattern)
+  .y-axis .domain {
+    display: none;
+  }
+  
+
+  //  ==========================================
+  // TOOLTIP STYLING
+  // ==========================================
+  // (applies to all plots)
+
+  .d3-tooltip {
+    position: absolute;
+    background: var(--tooltip-bg);
+    color: var(--tooltip-text);
+    padding: var(--tooltip-padding);
+    border: var(--tooltip-border-width) solid var(--tooltip-border);
+    border-radius: var(--plot-border-radius);
+    font-family: var(--plot-font-family);
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 1.4;
+    box-shadow: var(--tooltip-shadow);
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 200ms ease;
+  }  
+  
+
+  // ==========================================
+  // TEXT ELEMENTS (titles, labels, captions)
+  //  ==========================================
+
+  .plot-title {
+    fill: var(--plot-text-primary);
+    font-family: var(--plot-font-family);
+    font-weight: normal;
+  }
+  
+  .plot-subtitle {
+    fill: var(--plot-text-primary);
+    font-family: var(--plot-font-family);
+    font-style: italic;
+    font-weight: normal;
+  }
+  
+  .plot-axis-label {
+    fill: var(--plot-text-primary);
+    font-family: var(--plot-font-family);
+    font-weight: normal;
+  }
+  
+  .plot-caption {
+    fill: var(--plot-text-secondary);
+    font-family: var(--plot-font-family);
+    font-weight: normal;
+  }
+  
+  .plot-bar-label {
+    fill: var(--plot-text-primary);
+    font-family: var(--plot-font-family);
+    font-weight: normal;
+  }
+  
+
+  // ==========================================
+  // BACKGROUND ELEMENTS
+  // ==========================================
+
+  .background-bar {
+    fill: #f8f9fa;
+    stroke: #dee2e6;
+    stroke-width: 0.5;
+    fill-opacity: 0.3;
+  }
+  
+
+  // ==========================================
+  // PRINT STYLES
+  // ==========================================
+  // (optional - for better printing)
+  @media print {
+    .responsive-plot svg {
+      max-width: 100%;
+      height: auto;
+    }
+    
+    .d3-tooltip {
+      display: none;
+    }
+  }
+
+
+  // ==========================================
+  // ANNOTATION STYLING
+  // ==========================================
+
+.plot-annotation-line {
+  stroke: gray;
+  stroke-dasharray: 5,5;
+}
+
+.plot-annotation-text {
+  fill: gray;
+  font-family: var(--plot-font-family);
+  font-weight: bold;
+}

@@ -1,0 +1,68 @@
+---
+title: "Output Check"
+df-print: paged
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+if (!exists("aoi")) source(here::here("core/R/setup.R"))
+```
+
+```{r}
+#| label: output-check
+#| results: asis
+
+slide_list <- read_csv(here("source", "slide-list.csv"), col_types = "cccddcc")
+
+plots_dir <- here("03-render-output", "plots")
+maps_dir <- here("03-render-output", "maps")
+
+existing_plots <- list.files(plots_dir)
+existing_maps <- list.files(maps_dir)
+
+# Split by type
+all_maps <- slide_list %>% filter(type == "map", conditions != "none")
+all_plots <- slide_list %>% filter(type == "plot", conditions != "none")
+
+created_maps <- all_maps %>% filter(filename %in% existing_maps)
+missing_maps <- all_maps %>% filter(filename %ni% existing_maps)
+
+created_plots <- all_plots %>% filter(filename %in% existing_plots)
+missing_plots <- all_plots %>% filter(filename %ni% existing_plots)
+
+# --- Created Maps ---
+print_text(paste_bold(paste0("Created Maps: ", nrow(created_maps), "/", nrow(all_maps))))
+if (nrow(created_maps) > 0) {
+  created_maps %>% select(slide, filename) %>% print_paged_df()
+}
+
+# --- Missing Maps ---
+print_text(paste_bold(paste0("Missing Maps: ", nrow(missing_maps), "/", nrow(all_maps))))
+if (nrow(missing_maps) > 0) {
+  missing_maps %>% select(slide, filename, warning_text) %>% print_paged_df()
+}
+
+# --- Created Plots ---
+print_text(paste_bold(paste0("Created Plots: ", nrow(created_plots), "/", nrow(all_plots))))
+if (nrow(created_plots) > 0) {
+  created_plots %>% select(slide, filename) %>% print_paged_df()
+}
+
+# --- Missing Plots ---
+print_text(paste_bold(paste0("Missing Plots: ", nrow(missing_plots), "/", nrow(all_plots))))
+if (nrow(missing_plots) > 0) {
+  missing_plots %>% select(slide, filename, warning_text) %>% print_paged_df()
+}
+
+# --- Summary ---
+print_text(paste0(
+  paste_bold("Summary: "),
+  nrow(created_maps), " maps + ", nrow(created_plots), " plots created, ",
+  nrow(missing_maps), " maps + ", nrow(missing_plots), " plots missing"
+))
+```

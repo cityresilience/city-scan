@@ -1,0 +1,487 @@
+---
+df-print: paged
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+## WorldPop
+
+```{r}
+#| label: setup-worldpop
+#| message: false
+#| warning: false
+#| results: hide
+if (file.exists("_quarto.yml")) here::i_am("tasks/worldpop/charts/index.qmd")
+if (!exists("aoi")) source(here::here("core/R/setup.R"))
+source("https://raw.githubusercontent.com/compoundrisk/monitor/databricks/src/fns/helpers.R")
+```
+
+```{r}
+#| label: data-loading-worldpop
+#| message: false
+#| warning: false
+#| results: hide
+# All data comes from CSVs produced by dataanalysis.R
+wp_ridge <- tryCatch(
+  read_csv(file.path(tabular_dir, paste0(city_string, "_pop_density_pixels.csv")), show_col_types = FALSE),
+  error = function(e) tibble())
+
+empty_pop_tbl <- tibble(Year = integer(), Population = numeric(), Location = character(),
+                        Country = character(), Group = character(), Source = character())
+
+pop_longitude <- tryCatch(
+  read_csv(file.path(tabular_dir, paste0(city_string, "_pop_benchmark.csv")), show_col_types = FALSE),
+  error = function(e) empty_pop_tbl)
+
+density <- tryCatch(
+  read_csv(file.path(tabular_dir, paste0(city_string, "_density_benchmark.csv")), show_col_types = FALSE),
+  error = function(e) tibble())
+
+pop_growth <- tryCatch(
+  read_csv(file.path(tabular_dir, paste0(city_string, "_pop_growth.csv")), show_col_types = FALSE),
+  error = function(e) empty_pop_tbl)
+```
+
+### Population Growth
+
+```{r}
+#| label: chart-population-growth
+#| message: false
+#| warning: false
+#| results: asis
+
+if (nrow(pop_growth) > 0 && "Year" %in% names(pop_growth)) {
+  pop_min_year <- min(pop_growth$Year)
+  pop_max_year <- max(pop_growth$Year)
+
+  # Detect if we have multiple sources (G1 + G2)
+  has_source <- "Source" %in% names(pop_growth)
+  sources <- if (has_source) unique(pop_growth$Source) else "WorldPop"
+  multi_source <- has_source && length(sources) > 1
+
+  source_colors <- c("WorldPop Global 1" = "#4292C6", "WorldPop Global 2" = "#08306B")
+  source_linetypes <- c("WorldPop Global 1" = "dashed", "WorldPop Global 2" = "solid")
+
+  pop_growth_plot <- ggplot(pop_growth,
+    aes(x = Year, y = Population,
+        group = if (multi_source) Source else Location,
+        color = if (multi_source) Source else NULL,
+        linetype = if (multi_source) Source else NULL)) +
+    geom_line(linewidth = 0.8) +
+    geom_point(size = 1) +
+    scale_x_continuous(
+      breaks = if (pop_max_year - pop_min_year > 15)
+        seq(floor(pop_min_year/5)*5, ceiling(pop_max_year/5)*5, by = 5)
+      else
+        seq(floor(pop_min_year/2)*2, ceiling(pop_max_year/2)*2, by = 2),
+      minor_breaks = seq(pop_min_year, pop_max_year, 1)) +
+    scale_y_continuous(limits = c(0, max(pop_growth$Population)),
+      labels = scales::label_comma(scale_cut = scales::cut_short_scale()),
+      expand = expansion(c(0, .1))) +
+    theme_minimal() +
+    labs(title = paste0(city, " Population Growth, ", pop_min_year, "-", pop_max_year),
+         x = "", color = NULL, linetype = NULL) +
+    theme(
+      axis.line = element_line(linewidth = .5, color = "black"),
+      panel.grid.major = element_line(linewidth = .125, color = "dark gray"),
+      panel.grid.minor = element_line(linewidth = .125, linetype = 2, color = "dark gray"),
+      legend.position = if (multi_source) "bottom" else "none")
+
+  if (multi_source) {
+    pop_growth_plot <- pop_growth_plot +
+      scale_color_manual(values = source_colors) +
+      scale_linetype_manual(values = source_linetypes)
+  }
+
+  ggsave(here("03-render-output", "plots", "worldpop-pop-growth.png"), plot = pop_growth_plot, device = "png",
+         width = 8, height = 5, units = "in", dpi = "print")
+  print(pop_growth_plot)
+  cat("\n\n")
+
+  pop_growth_summary <- pop_growth %>%
+    arrange(Year) %>%
+    summarize(.by = c(Location, Source),
+      year_1 = head(Year, 1),
+      pop_1 = head(Population, 1),
+      year_last = tail(Year, 1),
+      pop_last = tail(Population, 1),
+      span = year_last - year_1,
+      change = pop_last - pop_1,
+      change_pct = scales::percent(pop_last/pop_1 - 1, accuracy = 0.1),
+      growth_rate = scales::percent((pop_last/pop_1)^(1/span) - 1,  accuracy = 0.1))
+
+  print_paged_df(pop_growth_summary)
+
+  pmap(pop_growth_summary, \(...) {
+    row <- tibble(...)
+    src_label <- if (multi_source) paste0(" (", row$Source, ")") else ""
+    print_text(glue("{paste_bold(row$Location)}{src_label}'s population grew by {paste_bold(row$change_pct)} from {paste_bold(scales::comma(row$pop_1))} in {paste_bold(row$year_1)} to {paste_bold(scales::comma(row$pop_last))} in {paste_bold(row$year_last)} for an average annual growth rate of {paste_bold(scales::percent(((row$pop_last/row$pop_1)^(1/(row$year_last-row$year_1)) - 1), accuracy = 0.1))}"))
+  })
+
+  print_text(paste0(paste_bold("Yearly population"), " - sorted by absolute growth"))
+
+  pop_growth %>% select(Year, Population, Location, Country, Group, Source) %>%
+    group_by(Source) %>%
+    mutate(growth = Population - lag(Population)) %>%
+    ungroup() %>%
+    arrange(Source, desc(growth)) %>%
+    print_paged_df()
+
+  print_text(paste0(paste_bold("Yearly population"), " - sorted by percentage growth"))
+
+  pop_growth %>% select(Year, Population, Location, Country, Group, Source) %>%
+    group_by(Source) %>%
+    mutate(growth_pct = (Population - lag(Population))/lag(Population)) %>%
+    ungroup() %>%
+    arrange(Source, desc(growth_pct)) %>%
+    print_paged_df()
+}
+```
+
+### WorldPop Global 1 (2000-2020)
+
+```{r}
+#| label: chart-population-growth-g1
+#| message: false
+#| warning: false
+#| results: asis
+
+pop_g1 <- pop_growth %>% filter(Source == "WorldPop Global 1")
+if (nrow(pop_g1) > 0) {
+  g1_plot <- ggplot(pop_g1, aes(x = Year, y = Population)) +
+    geom_line(linewidth = 0.8) +
+    geom_point(size = 1.5) +
+    scale_x_continuous(breaks = seq(2000, 2020, 5), minor_breaks = seq(2000, 2020, 1)) +
+    scale_y_continuous(limits = c(0, max(pop_g1$Population)),
+      labels = scales::label_comma(scale_cut = scales::cut_short_scale()),
+      expand = expansion(c(0, .1))) +
+    theme_minimal() +
+    labs(title = "Population growth, 2000–2020", x = "", y = "Population") +
+    theme(
+      axis.line = element_line(linewidth = .5, color = "black"),
+      panel.grid.major = element_line(linewidth = .125, color = "dark gray"),
+      panel.grid.minor = element_line(linewidth = .125, linetype = 2, color = "dark gray"))
+
+  ggsave(here("03-render-output", "plots", "worldpop-g1-growth.png"), plot = g1_plot, device = "png",
+         width = 8, height = 5, units = "in", dpi = "print")
+  print(g1_plot)
+
+  print_paged_df(pop_g1 %>% select(Year, Population, Source))
+}
+```
+
+### WorldPop Global 2 (2015-2030)
+
+```{r}
+#| label: chart-population-growth-g2
+#| message: false
+#| warning: false
+#| results: asis
+
+pop_g2 <- pop_growth %>% filter(Source == "WorldPop Global 2")
+if (nrow(pop_g2) > 0) {
+  g2_plot <- ggplot(pop_g2, aes(x = Year, y = Population)) +
+    geom_line(linewidth = 0.8) +
+    geom_point(size = 1.5) +
+    scale_x_continuous(breaks = seq(2015, 2030, 5), minor_breaks = seq(2015, 2030, 1)) +
+    scale_y_continuous(limits = c(0, max(pop_g2$Population)),
+      labels = scales::label_comma(scale_cut = scales::cut_short_scale()),
+      expand = expansion(c(0, .1))) +
+    theme_minimal() +
+    labs(title = "Population growth, 2015–2030", x = "", y = "Population") +
+    theme(
+      axis.line = element_line(linewidth = .5, color = "black"),
+      panel.grid.major = element_line(linewidth = .125, color = "dark gray"),
+      panel.grid.minor = element_line(linewidth = .125, linetype = 2, color = "dark gray"))
+
+  ggsave(here("03-render-output", "plots", "worldpop-g2-growth.png"), plot = g2_plot, device = "png",
+         width = 8, height = 5, units = "in", dpi = "print")
+  print(g2_plot)
+
+  print_paged_df(pop_g2 %>% select(Year, Population, Source))
+}
+```
+
+### Population Density Distribution
+
+```{r}
+#| label: chart-worldpop-density-ridge
+#| message: false
+#| warning: false
+
+if (nrow(wp_ridge) > 0) {
+  librarian::shelf(ggridges)
+
+  # Calculate x-axis limit (cap at 99th percentile)
+  x_max <- quantile(wp_ridge$pop, 0.99)
+
+  # Create ridge plot with quantile coloring
+  p_density <- wp_ridge %>%
+    ggplot(aes(x = pop, y = 1, fill = factor(after_stat(quantile)) )) +
+    stat_density_ridges(
+      geom = "density_ridges_gradient",
+      calc_ecdf = TRUE,
+      quantiles = 1:4/5,
+      quantile_lines = FALSE,
+      alpha = 0.6,
+      scale = 0.9
+    ) +
+    scale_x_continuous(
+      limits = c(0, x_max),
+      breaks = seq(0, ceiling(x_max/10)*10, by = max(10, ceiling(x_max/100)*10)),
+      minor_breaks = seq(0, ceiling(x_max/10)*10, by = max(5, ceiling(x_max/200)*10))
+    ) +
+    scale_fill_manual(
+      name = "Percentile",
+      values = c('#ECEB72', '#D4BE62', '#BD9252', '#A56542', '#8E3933'),
+      labels = c("0-20th", "20-40th", "40-60th", "60-80th", "80-100th")
+    ) +
+    labs(x = "Population density (people/hectare)") +
+    theme_minimal() +
+    theme(
+      axis.title.y = element_blank(),
+      axis.text.y = element_blank(),
+      axis.ticks.y = element_blank(),
+      legend.position = "bottom",
+      panel.grid.major = element_line(linewidth = .125, color = "dark gray"),
+      panel.grid.minor = element_blank()
+    )
+
+  ggsave(here("03-render-output", "plots", "worldpop-pop-density-distribution.png"),
+         plot = p_density, width = 8, height = 4, dpi = 300)
+  p_density
+}
+```
+
+### Population Density
+
+```{r}
+#| label: chart-population-density
+#| message: false
+#| warning: false
+#| results: asis
+
+if (nrow(density) > 0 && any(!is.na(density$Density))) {
+  # If many siblings and only 1 Oxford city, skip Oxford
+  n_sibling <- density %>% filter(str_detect(Group, "sibling")) %>% nrow()
+  n_oxford <- density %>% filter(str_detect(Group, "Oxford")) %>% nrow()
+  if (n_sibling > 1 && n_oxford == 1) {
+    density <- density %>% filter(!str_detect(Group, "Oxford"))
+  }
+
+  bm_groups <- setdiff(unique(density$Group), city)
+  hues <- c("#000000", rep("dark grey", length(bm_groups))) %>% setNames(c(city, bm_groups))
+
+  density_plot <- density %>%
+    filter(!is.na(Density)) %>%
+    ggplot() +
+    geom_point(aes(x = Population, y = Density, color = Group)) +
+    ggrepel::geom_text_repel(
+      aes(x = Population, y = Density, label = Location, color = Group),
+      box.padding = 0.25, min.segment.length = 0.001, point.padding = 1,
+      segment.linetype = "dotted") +
+    theme_minimal() +
+    theme(
+      legend.position = "none",
+      axis.line = element_line(linewidth = .5, color = "black"),
+      panel.grid.major = element_line(linewidth = .125, color = "dark gray"),
+      panel.grid.minor = element_line(linewidth = .125, linetype = 2, color = "dark gray")) +
+    labs(title = "Population density comparison",
+         y = bquote('Population density, people per '~km^2),
+         x = "Population") +
+    scale_y_continuous(labels = scales::label_comma(),
+                       expand = expansion(mult = c(0, .03))) +
+    scale_x_continuous(labels = scales::label_comma()) +
+    scale_color_manual(values = hues) +
+    expand_limits(y = 0)
+
+  ggsave(here("03-render-output", "plots", "worldpop-pop-density-scatter.png"), plot = density_plot, device = "png",
+         width = 8, height = 5, units = "in", dpi = "print")
+  print(density_plot)
+  cat("\n\n")
+
+  density %>% arrange(-Density) %>% print_paged_df()
+}
+```
+
+### Benchmark Cities Population (WorldPop Global 1)
+
+```{r}
+#| label: chart-multi-city-pop-g1
+#| message: false
+#| warning: false
+#| results: asis
+
+city_g1 <- pop_longitude %>% filter(Group == city & Source == "WorldPop Global 1")
+bm_g1 <- pop_longitude %>% filter(Group != city & Source == "WorldPop Global 1")
+pop_g1_bm <- bind_rows(city_g1, bm_g1)
+
+if (nrow(pop_g1_bm) > 0 && nrow(city_g1) > 0) {
+  bm_groups <- setdiff(unique(pop_g1_bm$Group), city)
+  hues <- c("black", rep("dark grey", length(bm_groups))) %>% setNames(c(city, bm_groups))
+
+  multi_g1_plot <- ggplot(pop_g1_bm) +
+    geom_line(aes(x = Year, y = Population, group = Location, color = Group)) +
+    scale_color_manual(values = hues) +
+    theme_minimal() +
+    theme(panel.grid.major = element_line(linewidth = .125, color = "dark gray"),
+          panel.grid.minor = element_line(linewidth = .125, linetype = 2, color = "dark gray"),
+          axis.line = element_line(linewidth = .5, color = "black"),
+          legend.position = "none") +
+    labs(title = paste("Population of", city, "and benchmark cities"), x = "") +
+    scale_y_continuous(limits = c(0, NA),
+      labels = scales::label_comma(scale_cut = scales::cut_short_scale()),
+      expand = c(0,0)) +
+    scale_x_continuous(
+      breaks = seq(min(pop_g1_bm$Year), max(pop_g1_bm$Year), 5),
+      minor_breaks = seq(2000, 2035, 1), expand = c(0,0)) +
+    ggrepel::geom_text_repel(
+      data = \(x) slice_max(x, order_by = Year, by = Location),
+      aes(label = Location, x = max(pop_g1_bm$Year), y = Population, color = Group),
+      hjust = 0, size = 2.5, xlim = c(max(pop_g1_bm$Year) + 0.25, NA), box.padding = 0.05,
+      direction = "y", segment.linetype = "dotted", max.overlaps = 20, force_pull = 1) +
+    coord_cartesian(xlim = c(max(2000, min(pop_g1_bm$Year)), max(pop_g1_bm$Year) + 7))
+
+  ggsave(here("03-render-output", "plots", "worldpop-pop-g1-benchmark.png"), device = "png",
+         width = 5, height = 4.6, units = "in", dpi = "print")
+  print(multi_g1_plot)
+
+  # Find comparison year: mode year across locations, closest to current year
+  current_year <- as.numeric(format(Sys.Date(), "%Y"))
+  common_years <- pop_g1_bm %>% count(Year) %>% filter(n == max(n)) %>%
+    mutate(dist = abs(Year - current_year)) %>% slice_min(dist, n = 1) %>% pull(Year)
+  compare_year <- common_years[1]
+
+  pop_g1_bm %>%
+    group_by(Location) %>%
+    slice_min(abs(Year - compare_year), n = 1) %>%
+    ungroup() %>%
+    arrange(-Population) %>%
+    select(Group, Location, Year, Population, Source) %>%
+    arrange(Group, Population) %>%
+    print_paged_df()
+}
+```
+
+### Benchmark Cities Population (WorldPop G1 + Oxford)
+
+```{r}
+#| label: chart-multi-city-pop-g1-oxford
+#| message: false
+#| warning: false
+#| results: asis
+
+# Combine WorldPop G1 (city + siblings) with Oxford (non-sibling benchmarks)
+city_g1 <- pop_longitude %>% filter(Group == city & Source == "WorldPop Global 1")
+bm_g1 <- pop_longitude %>% filter(Group != city & Source == "WorldPop Global 1")
+bm_oxford <- pop_longitude %>% filter(Group != city & Source == "Oxford")
+pop_g1_ox <- bind_rows(city_g1, bm_g1, bm_oxford) %>%
+  distinct(Location, Year, .keep_all = TRUE)
+
+if (nrow(pop_g1_ox) > 0 && nrow(city_g1) > 0 && (nrow(bm_g1) > 0 || nrow(bm_oxford) > 0)) {
+  bm_groups <- setdiff(unique(pop_g1_ox$Group), city)
+  hues <- c("black", rep("dark grey", length(bm_groups))) %>% setNames(c(city, bm_groups))
+
+  g1_ox_plot <- ggplot(pop_g1_ox) +
+    geom_line(aes(x = Year, y = Population, group = Location, color = Group)) +
+    scale_color_manual(values = hues) +
+    theme_minimal() +
+    theme(panel.grid.major = element_line(linewidth = .125, color = "dark gray"),
+          panel.grid.minor = element_line(linewidth = .125, linetype = 2, color = "dark gray"),
+          axis.line = element_line(linewidth = .5, color = "black"),
+          legend.position = "none") +
+    labs(title = paste("Population of", city, "and benchmark cities"), x = "") +
+    scale_y_continuous(limits = c(0, NA),
+      labels = scales::label_comma(scale_cut = scales::cut_short_scale()),
+      expand = c(0,0)) +
+    scale_x_continuous(
+      breaks = seq(min(pop_g1_ox$Year), max(pop_g1_ox$Year), 5),
+      minor_breaks = seq(1995, 2025, 1), expand = c(0,0)) +
+    ggrepel::geom_text_repel(
+      data = \(x) slice_max(x, order_by = Year, by = Location),
+      aes(label = Location, x = max(pop_g1_ox$Year), y = Population, color = Group),
+      hjust = 0, size = 2.5, xlim = c(max(pop_g1_ox$Year) + 0.25, NA), box.padding = 0.05,
+      direction = "y", segment.linetype = "dotted", max.overlaps = 20, force_pull = 1) +
+    coord_cartesian(xlim = c(min(pop_g1_ox$Year), max(pop_g1_ox$Year) + 7))
+
+  ggsave(here("03-render-output", "plots", "worldpop-pop-g1-oxford-benchmark.png"), device = "png",
+         width = 5, height = 4.6, units = "in", dpi = "print")
+  print(g1_ox_plot)
+  cat("\n\n")
+
+  current_year <- as.numeric(format(Sys.Date(), "%Y"))
+  common_years <- pop_g1_ox %>% count(Year) %>% filter(n == max(n)) %>%
+    mutate(dist = abs(Year - current_year)) %>% slice_min(dist, n = 1) %>% pull(Year)
+  compare_year <- common_years[1]
+
+  pop_g1_ox %>%
+    group_by(Location) %>%
+    slice_min(abs(Year - compare_year), n = 1) %>%
+    ungroup() %>%
+    arrange(-Population) %>%
+    select(Group, Location, Year, Population, Source) %>%
+    arrange(Group, Population) %>%
+    print_paged_df()
+}
+```
+
+### Benchmark Cities Population (WorldPop Global 2)
+
+```{r}
+#| label: chart-multi-city-pop-g2
+#| message: false
+#| warning: false
+#| results: asis
+
+city_g2 <- pop_longitude %>% filter(Group == city & Source == "WorldPop Global 2")
+bm_g2 <- pop_longitude %>% filter(Group != city & Source == "WorldPop Global 2")
+pop_g2_bm <- bind_rows(city_g2, bm_g2)
+
+if (nrow(pop_g2_bm) > 0 && nrow(city_g2) > 0) {
+  bm_groups <- setdiff(unique(pop_g2_bm$Group), city)
+  hues <- c("black", rep("dark grey", length(bm_groups))) %>% setNames(c(city, bm_groups))
+
+  multi_g2_plot <- ggplot(pop_g2_bm) +
+    geom_line(aes(x = Year, y = Population, group = Location, color = Group)) +
+    scale_color_manual(values = hues) +
+    theme_minimal() +
+    theme(panel.grid.major = element_line(linewidth = .125, color = "dark gray"),
+          panel.grid.minor = element_line(linewidth = .125, linetype = 2, color = "dark gray"),
+          axis.line = element_line(linewidth = .5, color = "black"),
+          legend.position = "none") +
+    labs(title = paste("Population of", city, "and benchmark cities"), x = "") +
+    scale_y_continuous(limits = c(0, NA),
+      labels = scales::label_comma(scale_cut = scales::cut_short_scale()),
+      expand = c(0,0)) +
+    scale_x_continuous(
+      breaks = seq(min(pop_g2_bm$Year), max(pop_g2_bm$Year), 5),
+      minor_breaks = seq(2000, 2035, 1), expand = c(0,0)) +
+    ggrepel::geom_text_repel(
+      data = \(x) slice_max(x, order_by = Year, by = Location),
+      aes(label = Location, x = max(pop_g2_bm$Year), y = Population, color = Group),
+      hjust = 0, size = 2.5, xlim = c(max(pop_g2_bm$Year) + 0.25, NA), box.padding = 0.05,
+      direction = "y", segment.linetype = "dotted", max.overlaps = 20, force_pull = 1) +
+    coord_cartesian(xlim = c(max(2000, min(pop_g2_bm$Year)), max(pop_g2_bm$Year) + 7))
+
+  ggsave(here("03-render-output", "plots", "worldpop-pop-g2-benchmark.png"), device = "png",
+         width = 5, height = 4.6, units = "in", dpi = "print")
+  print(multi_g2_plot)
+
+  # Find comparison year: mode year across locations, closest to current year
+  current_year <- as.numeric(format(Sys.Date(), "%Y"))
+  common_years <- pop_g2_bm %>% count(Year) %>% filter(n == max(n)) %>%
+    mutate(dist = abs(Year - current_year)) %>% slice_min(dist, n = 1) %>% pull(Year)
+  compare_year <- common_years[1]
+
+  pop_g2_bm %>%
+    group_by(Location) %>%
+    slice_min(abs(Year - compare_year), n = 1) %>%
+    ungroup() %>%
+    arrange(-Population) %>%
+    select(Group, Location, Year, Population, Source) %>%
+    arrange(Group, Population) %>%
+    print_paged_df()
+}
+```

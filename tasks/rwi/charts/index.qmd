@@ -1,0 +1,131 @@
+---
+df-print: paged
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+## Relative Wealth Index
+
+```{r}
+#| label: setup-rwi
+#| include: false
+if (file.exists("_quarto.yml")) here::i_am("tasks/rwi/charts/index.qmd")
+if (!exists("aoi")) {
+  source(here::here("core/R/setup.R"))
+}
+```
+
+```{r}
+#| label: rwi-data
+#| include: false
+
+rwi_gpkg <- list.files(spatial_dir, pattern = "rwi\\.gpkg$", full.names = TRUE, ignore.case = TRUE)[1]
+rwi_data <- if (!is.na(rwi_gpkg) && file.exists(rwi_gpkg)) {
+  sf::st_read(rwi_gpkg, quiet = TRUE)
+} else NULL
+
+rwi_area_file <- list.files(tabular_dir, pattern = "rwi_area\\.csv$", full.names = TRUE)[1]
+rwi_area_std_file <- list.files(tabular_dir, pattern = "rwi_area_standardized\\.csv$", full.names = TRUE)[1]
+
+rwi_area <- if (!is.na(rwi_area_file) && file.exists(rwi_area_file)) {
+  read_csv(rwi_area_file, col_types = cols())
+} else NULL
+
+rwi_area_std <- if (!is.na(rwi_area_std_file) && file.exists(rwi_area_std_file)) {
+  read_csv(rwi_area_std_file, col_types = cols())
+} else NULL
+
+# Map palette and breaks from layers.yml
+rwi_palette <- layer_params$rwi_standardized$palette
+rwi_breaks <- layer_params$rwi_standardized$breaks
+rwi_labels <- layer_params$rwi_standardized$labels
+```
+
+### Standardized RWI Distribution
+
+```{r}
+#| label: rwi-histogram-standardized
+#| results: asis
+
+if (!is.null(rwi_data) && "rwi" %in% names(rwi_data) && nrow(rwi_data) > 0) {
+
+  rwi_std_plot <- filled_histo(
+    x = rwi_data$rwi,
+    breaks = c(-Inf, -1, -0.5, 0.5, 1, Inf),
+    palette = rwi_palette,
+    labels = rwi_labels,
+    domain = c(-2, 2)
+  ) +
+    labs(
+      title = paste("Relative Wealth Index Distribution in", city),
+      x = "Standard deviations from national mean",
+      y = "Count",
+      fill = "RWI"
+    ) +
+    theme(
+      axis.line = element_line(linewidth = .5, color = "black"),
+      legend.position = "right")
+
+  ggsave(here("03-render-output", "plots", "rwi-histogram-standardized.png"), plot = rwi_std_plot, device = "png",
+         width = 6, height = 4, units = "in", dpi = "print")
+  print(rwi_std_plot)
+  cat("\n\n")
+
+  print_text(glue("{paste_bold(round(min(rwi_data$rwi), 2))} to {paste_bold(round(max(rwi_data$rwi), 2))} (mean: {paste_bold(round(mean(rwi_data$rwi), 2))})"))
+  print_text(glue("{paste_bold(nrow(rwi_data))} grid cells in AOI"))
+
+  if (!is.null(rwi_area_std)) {
+    print_paged_df(rwi_area_std)
+  }
+
+} else {
+  print_text(paste_bold("No RWI data available"))
+}
+```
+
+### City-Relative RWI Distribution
+
+```{r}
+#| label: rwi-histogram-relative
+#| results: asis
+
+if (!is.null(rwi_data) && "rwi" %in% names(rwi_data) && nrow(rwi_data) > 0) {
+
+  # High-resolution histogram with equal interval coloring
+  rwi_range <- range(rwi_data$rwi)
+  eq_breaks <- seq(rwi_range[1], rwi_range[2], length.out = 6)
+  eq_labels <- paste0(round(eq_breaks[-6], 2), " – ", round(eq_breaks[-1], 2))
+  eq_palette <- c('#009E7A', '#70C5AD', '#FFFFBA', '#FF9169', '#ED431B')
+
+  rwi_data$eq_bin <- cut(rwi_data$rwi, breaks = eq_breaks, labels = eq_labels, include.lowest = TRUE)
+
+  rwi_rel_plot <- ggplot(rwi_data, aes(x = rwi, fill = eq_bin)) +
+    geom_histogram(binwidth = 0.1, boundary = 0, color = "white", linewidth = 0.2) +
+    scale_fill_manual(values = setNames(eq_palette, eq_labels), drop = FALSE) +
+    scale_x_continuous(breaks = round(eq_breaks, 1)) +
+    labs(
+      title = paste("Relative Wealth Index Distribution in", city),
+      x = "RWI",
+      y = "Count",
+      fill = "RWI"
+    ) +
+    theme_minimal() +
+    theme(
+      axis.line = element_line(linewidth = .5, color = "black"),
+      legend.position = "right")
+
+  print(rwi_rel_plot)
+  cat("\n\n")
+  ggsave(here("03-render-output", "plots", "rwi-histogram-relative.png"), plot = rwi_rel_plot, device = "png",
+         width = 6, height = 4, units = "in", dpi = "print")
+
+  if (!is.null(rwi_area)) {
+    print_paged_df(rwi_area)
+  }
+
+} else {
+  print_text(paste_bold("No RWI data available"))
+}
+```

@@ -1,0 +1,12 @@
+# Build-context excludes for `gcloud builds submit` (mirrors .dockerignore)
+mnt
+.git
+.archived
+.notes
+backend
+frontend
+deploy
+publish
+web-version
+**/__pycache__
+**/.DS_Store

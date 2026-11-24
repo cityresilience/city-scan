@@ -1,0 +1,210 @@
+---
+df-print: paged
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+## Urban Built-up Area
+
+### WSF Evolution 
+
+```{r}
+#| label: setup-wsf
+#| include: false
+if (file.exists("_quarto.yml")) here::i_am("tasks/wsf/charts/index.qmd")
+if (!exists("aoi")) {
+  source(here::here("core/R/setup.R"))
+}
+```
+
+```{r}
+#| label: data-loading-wsf
+#| include: false
+# WSF Evolution — standardize to cumulative_sq_km
+wsf <- tryCatch({
+  read_csv(file.path(tabular_dir, paste0(city_string, "_wsf_evolution.csv")), col_types = "dd") %>%
+    rename(year = 1) %>%
+    rename(cumulative_sq_km = any_of(c("AREA_sq_km", "cumulative sq km", "cumulative_sq_km"))) %>%
+    mutate(growth_pct = (cumulative_sq_km / lag(cumulative_sq_km) - 1), growth_km2 = cumulative_sq_km - lag(cumulative_sq_km))
+}, error = function(e) { message("WSF Evolution not available: ", e$message); NULL })
+
+# WSF Tracker — standardize to cumulative_sq_km
+wsf_tracker <- tryCatch({
+  read_csv(file.path(tabular_dir, paste0(city_string, "_wsf_tracker.csv")), col_types = "cdd") %>%
+    mutate(date = if ("month" %in% names(.)) zoo::as.yearmon(paste(.data$year, .data$month, sep = "-")) else zoo::as.yearmon(.data$year)) %>%
+    rename(cumulative_sq_km = any_of(c("AREA_sq_km", "cumulative sq km", "cumulative_sq_km"))) %>%
+    mutate(growth_pct = (cumulative_sq_km / lag(cumulative_sq_km) - 1), growth_km2 = cumulative_sq_km - lag(cumulative_sq_km))
+}, error = function(e) { message("WSF Tracker not available: ", e$message); NULL })
+
+# WSF Harmonized — read raw CSV as-is
+wsf_harm <- tryCatch({
+  read_csv(file.path(tabular_dir, paste0(city_string, "_wsf_harmonized.csv")), col_types = "ddcd")
+}, error = function(e) { message("WSF Harmonized not available: ", e$message); NULL })
+```
+
+```{r}
+#| label: WSF-Evolution
+#| results: asis
+
+if (is.null(wsf) || nrow(wsf) == 0) print_text(paste_bold("No WSF file available")) else {
+  uba_plot <- wsf %>%
+    ggplot +
+    geom_line(aes(x = year, y = cumulative_sq_km)) +
+    scale_x_continuous(
+      breaks = seq(1985, 2020, 5),
+      minor_breaks = seq(1985, 2021, 1)) +
+    scale_y_continuous(labels = scales::comma, limits = c(0, max(wsf$cumulative_sq_km)), expand = c(0, NA)) +
+    theme_minimal() +
+    labs(title = "Built-up area expansion, 1985–2015",
+         y = bquote('Urban built-up area,'~km^2)) +
+    theme(axis.line = element_line(linewidth = .5, color = "black"))
+  ggsave(here("03-render-output", "plots", "wsf-uba-plot.png"), plot = uba_plot, device = "png",
+         width = 4, height = 3.5, units = "in", dpi = "print")
+  print(uba_plot)
+  cat("\n\n")
+
+  first_area <- wsf$cumulative_sq_km[1]
+  latest_area <- tail(wsf$cumulative_sq_km, 1)
+  first_year <- wsf$year[1]
+  latest_year <- tail(wsf$year, 1)
+  pct_growth <- 100 * (latest_area - first_area)/first_area
+
+  print_text(paste0("\nThe city's built-up area grew from ", paste_bold(round(first_area, 2)), " km² in ", first_year, " to ", paste_bold(round(latest_area, 2)), " in ", paste_bold(latest_year), " for ", paste_bold(round(pct_growth, 2)), "% growth"))
+
+  print_paged_df(wsf)
+}
+```
+
+### WSF Tracker
+
+```{r}
+#| label: wsf-tracker
+#| results: asis
+
+if (is.null(wsf_tracker) || nrow(wsf_tracker) == 0) print_text(paste_bold("No WSF tracker file available")) else {
+  uba_tracker_plot <- wsf_tracker %>%
+    ggplot() +
+    geom_line(aes(x = date, y = cumulative_sq_km)) +
+    scale_x_yearmon(breaks = 2016.5 + 0:4*2) +
+    scale_y_continuous(labels = scales::comma, limits = c(0, NA), expand = expansion(c(0, 0.05))) +
+    theme_minimal() +
+    labs(title = "Built-up area expansion, 2016–2025",
+         y = bquote('Urban built-up area,'~km^2)) +
+    theme(
+      axis.line = element_line(linewidth = .5, color = "black"),
+      axis.title.x = element_blank())
+  ggsave(here("03-render-output", "plots", "wsf-uba-tracker-plot.png"), plot = uba_tracker_plot, device = "png",
+         width = 4, height = 3.5, units = "in", dpi = "print")
+  print(uba_tracker_plot)
+  cat("\n\n")
+
+  first_area <- wsf_tracker$cumulative_sq_km[1]
+  latest_area <- tail(wsf_tracker$cumulative_sq_km, 1)
+  first_date <- wsf_tracker$date[1]
+  latest_date <- tail(wsf_tracker$date, 1)
+  pct_growth <- 100 * (latest_area - first_area)/first_area
+  print_text(paste0("\nThe city's built-up area grew from ", paste_bold(round(first_area, 2)), " km² in ", paste_bold(first_date), " to ", paste_bold(round(latest_area, 2)), " in ", paste_bold(latest_date), " for ", paste_bold(round(pct_growth, 2)), "% growth"))
+
+  print_paged_df(wsf_tracker)
+}
+```
+
+### WSF Harmonized
+
+```{r}
+#| label: wsf-harmonized
+#| results: asis
+
+if (is.null(wsf_harm) || nrow(wsf_harm) == 0) print_text(paste_bold("No WSF harmonized file available")) else {
+
+  # Plot 1: Evolution + Tracker as separate lines
+  separate_data <- wsf_harm %>% filter(source %in% c("WSF Evolution (masked)", "WSF Tracker"))
+
+  uba_separate_plot <- separate_data %>%
+    ggplot() +
+    geom_line(aes(x = year, y = cumulative_sq_km, color = source, linetype = source)) +
+    scale_x_continuous(
+      breaks = seq(1985, 2025, 5),
+      minor_breaks = seq(1985, 2025, 1)) +
+    scale_y_continuous(labels = scales::comma, limits = c(0, NA), expand = expansion(c(0, 0.05))) +
+    scale_color_manual(values = c("WSF Evolution (masked)" = "#2166ac", "WSF Tracker" = "#b2182b")) +
+    scale_linetype_manual(values = c("WSF Evolution (masked)" = "dashed", "WSF Tracker" = "dashed")) +
+    theme_minimal() +
+    labs(title = "Built-up area expansion, 1985–2025 (separate sources)",
+         y = bquote('Urban built-up area,'~km^2),
+         x = "Year",
+         color = NULL, linetype = NULL) +
+    theme(
+      axis.line = element_line(linewidth = .5, color = "black"),
+      legend.position = "bottom")
+
+      
+  ggsave(here("03-render-output", "plots", "wsf-uba-separate-plot.png"), plot = uba_separate_plot, device = "png",
+         width = 5, height = 4, units = "in", dpi = "print")
+  print(uba_separate_plot)
+  cat("\n\n")
+
+  # Plot 2: Harmonized connected line
+  harmonized_data <- wsf_harm %>% filter(source == "WSF Harmonized")
+
+  if (nrow(harmonized_data) > 0) {
+    uba_harm_plot <- harmonized_data %>%
+      ggplot() +
+      geom_line(aes(x = year, y = cumulative_sq_km)) +
+      scale_x_continuous(
+        breaks = seq(1985, 2025, 5),
+        minor_breaks = seq(1985, 2025, 1)) +
+      scale_y_continuous(labels = scales::comma, limits = c(0, NA), expand = expansion(c(0, 0.05))) +
+      theme_minimal() +
+      labs(title = "Built-up area expansion, 1985–2025",
+           y = bquote('Urban built-up area,'~km^2),
+           x = "Year") +
+      theme(
+        axis.line = element_line(linewidth = .5, color = "black"))
+    ggsave(here("03-render-output", "plots", "wsf-uba-harmonized-plot.png"), plot = uba_harm_plot, device = "png",
+           width = 5, height = 4, units = "in", dpi = "print")
+    print(uba_harm_plot)
+  cat("\n\n")
+    cat("\n\n")
+
+    first_area <- harmonized_data$cumulative_sq_km[1]
+    latest_area <- tail(harmonized_data$cumulative_sq_km, 1)
+    first_year <- harmonized_data$year[1]
+    latest_year <- tail(harmonized_data$year, 1)
+    pct_growth <- 100 * (latest_area - first_area)/first_area
+
+    print_text(paste0("\nThe city's built-up area grew from ", paste_bold(round(first_area, 2)), " km² in ", first_year, " to ", paste_bold(round(latest_area, 2)), " in ", paste_bold(latest_year), " for ", paste_bold(round(pct_growth, 2)), "% growth"))
+
+    # Plot 3: Growth rate (3-year rolling average)
+    smooth_window <- 3
+    growth_data <- harmonized_data %>%
+      filter(!is.na(growth_percentage)) %>%
+      mutate(growth_smooth = zoo::rollmean(growth_percentage, k = smooth_window, fill = NA, align = "center"))
+
+    uba_growth_plot <- growth_data %>%
+      ggplot() +
+      geom_line(aes(x = year, y = growth_smooth)) +
+      scale_x_continuous(
+        breaks = seq(1985, 2025, 5),
+        minor_breaks = seq(1985, 2025, 1)) +
+      scale_y_continuous(labels = scales::comma, limits = c(0, NA), expand = expansion(c(0, 0.05))) +
+      theme_minimal() +
+      labs(title = paste0("Urban Growth Rate (", smooth_window, "-year average)"),
+           y = "Growth Rate (%)",
+           x = "Year") +
+      theme(
+        axis.line = element_line(linewidth = .5, color = "black"))
+    ggsave(here("03-render-output", "plots", "wsf-growth-rate-plot.png"), plot = uba_growth_plot, device = "png",
+           width = 5, height = 4, units = "in", dpi = "print")
+    print(uba_growth_plot)
+  cat("\n\n")
+
+  } else {
+    print_text(paste_bold("No 'WSF Harmonized' source in CSV — re-run wsf_harmonize.py"))
+  }
+
+  print_paged_df(wsf_harm)
+}
+```

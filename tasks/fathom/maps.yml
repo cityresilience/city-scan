@@ -1,0 +1,11 @@
+layers:
+  - fluvial
+  - pluvial
+  - coastal
+  - combined_flooding
+depends:
+  - worldpop
+  - wsf
+  - accessibility
+custom:
+  - core/R/map-flooding.R

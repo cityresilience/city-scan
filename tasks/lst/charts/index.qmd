@@ -1,0 +1,41 @@
+---
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+## Land Surface Temperature
+
+```{r}
+#| label: setup-lst
+#| include: false
+if (file.exists("_quarto.yml")) here::i_am("tasks/lst/charts/index.qmd")
+if (!exists("aoi")) {
+  source(here::here("core/R/setup.R"))
+}
+```
+
+```{r}
+#| label: lst-data
+#| output: false
+summer_file <- list.files(tabular_dir, pattern = "summer_area\\.csv$", full.names = TRUE)
+if (length(summer_file) > 0) {
+  ojs_define(summer_area = read.csv(summer_file[1]))
+  ojs_define(lst_city = city)
+} else {
+  ojs_define(summer_area = NULL)
+  ojs_define(lst_city = city)
+}
+```
+
+```{ojs}
+//| label: lst-plot
+//| output: true
+import { plot_summer_area, setCity, setWidth } from "../core/ojs/plots.js"
+
+setCity(lst_city)
+setWidth(640)
+
+summer_area ? plot_summer_area(summer_area, {height: 350}) : html`<p><strong>No LST data available</strong></p>`
+```

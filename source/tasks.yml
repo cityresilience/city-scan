@@ -1,0 +1,57 @@
+# Task configuration
+# Used by core/config/tasks.py — no code changes needed to add/modify tasks
+
+# Tasks that require GEE authentication
+gee_tasks:
+  - elevation
+  - forest
+  - landcover
+  - lst
+  - green
+  - ndmi
+  - nightlight
+  - water_risk
+  - dust
+  - aerosol
+  - precipitation
+  - glaciers
+
+# Tasks that require private GCS authentication
+gcs_tasks:
+  - wsf
+  - fathom
+  - landcover_burn
+  - basic_info
+  - benchmark
+  - oxford
+  - coastal_erosion
+  - sea_level_rise
+  - elevation
+
+# CLI aliases: when CLI/menu name != folder name
+aliases:
+  population: worldpop
+  slr: sea_level_rise
+  green:
+    folder: ndxi
+    collect: collect_ndvi
+    analyze: analyze_ndvi
+    run: run_ndvi
+  ndmi:
+    folder: ndxi
+    collect: collect_ndmi
+    run: run_ndmi
+
+# Menu keys: when one task maps to multiple menu entries
+menu_keys:
+  lst: [lst_summer, lst_winter]
+  fathom: [flood_pluvial, flood_fluvial, flood_coastal, flood_comb]
+  worldpop: [population]
+
+# Task dependencies: task runs after its dependencies
+dependencies:
+  fathom: [wsf, worldpop, accessibility]
+  slope: [elevation]
+  worldpop: [wsf, oxford]
+  benchmark: [basic_info, oxford, worldpop]
+  landcover_burn: [landcover]

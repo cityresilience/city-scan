@@ -1,0 +1,94 @@
+---
+df-print: paged
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+## Groundwater
+
+```{r}
+#| label: setup-groundwater
+#| include: false
+if (file.exists("_quarto.yml")) here::i_am("tasks/groundwater/charts/index.qmd")
+if (!exists("aoi")) {
+  source(here::here("core/R/setup.R"))
+}
+```
+
+```{r}
+#| label: data-loading-groundwater
+#| include: false
+gwsa_file <- list.files(tabular_dir, pattern = "gwsa_aquifers.*\\.csv$", full.names = TRUE)
+sws_file <- list.files(tabular_dir, pattern = "sws_aquifers.*\\.csv$", full.names = TRUE)
+
+gwsa <- tryCatch({
+  if (length(gwsa_file) == 0) stop("No GWSA file found")
+  read_csv(gwsa_file[1], col_types = "ccdd") %>%
+    select(date = 2, gwsa = 3) %>%
+    mutate(date = as.Date(date)) %>%
+    arrange(date) %>%
+    mutate(
+      gap = c(0, diff(date)) > 120,
+      group = cumsum(gap)
+    )
+}, error = function(e) { message("GWSA not available: ", e$message); NULL })
+
+sws <- tryCatch({
+  if (length(sws_file) == 0) stop("No SWS file found")
+  read_csv(sws_file[1], col_types = "ccdd") %>%
+    select(date = 2, sws = 3) %>%
+    mutate(date = as.Date(date))
+}, error = function(e) { message("SWS not available: ", e$message); NULL })
+```
+
+```{r}
+#| label: groundwater-flood
+#| results: asis
+
+if (is.null(gwsa) || nrow(gwsa) == 0) print_text(paste_bold("No groundwater storage data available")) else {
+
+  gwsa_plot <- ggplot(gwsa, aes(x = date, y = gwsa)) +
+    geom_line(aes(group = group), alpha = 0.6) +
+    geom_smooth(method = "loess", span = 0.2, se = FALSE, linewidth = 0.6, linetype = 2) +
+    scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
+    labs(title = "Groundwater Storage Anomaly",
+         subtitle = "Baseline is the average from April 2002 to September 2023",
+         y = "Storage anomaly (mm)", x = "Year") +
+    theme_minimal() +
+    theme(axis.line = element_line(linewidth = .5, color = "black"),
+          axis.title.x = element_blank())
+
+  ggsave(here("03-render-output", "plots", "groundwater-timeseries.png"), device = "png",
+        width = 5, height = 4.6, units = "in", dpi = "print")
+
+  if (!is.null(sws) && nrow(sws) > 0) {
+    aquifer_name <- gsub(".*aquifers_(.+)\\.csv$", "\\1", basename(gwsa_file[1]))
+
+    combined_plot <- ggplot(gwsa, aes(x = date, y = gwsa)) +
+      geom_line(aes(group = group, color = "Groundwater Storage"), alpha = 0.6) +
+      geom_line(data = sws, aes(y = sws, color = "Surface Water Storage"), alpha = 0.6) +
+      scale_color_manual(values = c("Groundwater Storage" = "steelblue",
+                                     "Surface Water Storage" = "darkred")) +
+      scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
+      labs(title = "Water Storage Anomaly",
+           subtitle = paste0(aquifer_name, " (GRACE/GRACE-FO)"),
+           y = "Storage anomaly (mm)", x = "Year", color = NULL) +
+      theme_minimal() +
+      theme(axis.line = element_line(linewidth = 0.5, color = "black"),
+            plot.background = element_rect(fill = "white", color = NA),
+            legend.position = "bottom")
+
+    print(combined_plot)
+  cat("\n\n")
+
+    ggsave(here("03-render-output", "plots", "groundwater-surfacewater-timeseries.png"), device = "png",
+          width = 5, height = 4.6, units = "in", dpi = "print")
+  } else {
+    print(gwsa_plot)
+  cat("\n\n")
+  }
+
+}
+```

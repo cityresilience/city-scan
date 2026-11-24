@@ -1,0 +1,729 @@
+---
+df-print: paged
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+## Oxford Economics
+
+```{r}
+#| label: setup-oxford
+#| message: false
+#| warning: false
+#| results: hide
+if (file.exists("_quarto.yml")) here::i_am("tasks/oxford/charts/index.qmd")
+if (!exists("aoi")) source(here::here("core/R/setup.R"))
+
+# Self-contained: render Oxford charts only if the oxford task produced CSVs
+oxford_csvs <- list.files(tabular_dir, pattern = "_oxford_", full.names = FALSE)
+in_oxford <- length(oxford_csvs) > 0
+
+hues <- c("#000000", "dark grey") %>% setNames(c(city, "Benchmark - Oxford"))
+
+# Load CSVs produced by oxford/datacollection.R
+if (in_oxford) {
+  pop_dist_group <- tryCatch(read_csv(file.path(tabular_dir, paste0(city_string, "_oxford_pop_dist.csv")), show_col_types = FALSE), error = function(e) tibble())
+  pop_dist_structure <- tryCatch(read_csv(file.path(tabular_dir, paste0(city_string, "_oxford_age_structure.csv")), show_col_types = FALSE), error = function(e) tibble())
+  national_shares_long <- tryCatch(read_csv(file.path(tabular_dir, paste0(city_string, "_oxford_national_shares.csv")), show_col_types = FALSE), error = function(e) tibble())
+  pop_growth_years <- tryCatch(read_csv(file.path(tabular_dir, paste0(city_string, "_oxford_pop_growth.csv")), show_col_types = FALSE), error = function(e) tibble())
+  emp_growth_years <- tryCatch(read_csv(file.path(tabular_dir, paste0(city_string, "_oxford_emp_growth.csv")), show_col_types = FALSE), error = function(e) tibble())
+  gdp_growth_years <- tryCatch(read_csv(file.path(tabular_dir, paste0(city_string, "_oxford_gdp_growth.csv")), show_col_types = FALSE), error = function(e) tibble())
+  emp_longitude <- tryCatch(read_csv(file.path(tabular_dir, paste0(city_string, "_oxford_emp.csv")), show_col_types = FALSE), error = function(e) tibble())
+  gdp_longitude <- tryCatch(read_csv(file.path(tabular_dir, paste0(city_string, "_oxford_gdp.csv")), show_col_types = FALSE), error = function(e) tibble())
+  gdppc <- tryCatch(read_csv(file.path(tabular_dir, paste0(city_string, "_oxford_gdppc.csv")), show_col_types = FALSE), error = function(e) tibble())
+  gdppc_longitude <- tryCatch(read_csv(file.path(tabular_dir, paste0(city_string, "_oxford_gdppc_timeseries.csv")), show_col_types = FALSE), error = function(e) tibble())
+  emp_shares2 <- tryCatch(read_csv(file.path(tabular_dir, paste0(city_string, "_oxford_emp_sectors.csv")), show_col_types = FALSE), error = function(e) tibble())
+  emp_shares <- tryCatch(read_csv(file.path(tabular_dir, paste0(city_string, "_oxford_emp_sectors_individual.csv")), show_col_types = FALSE), error = function(e) tibble())
+  gva_shares2 <- tryCatch(read_csv(file.path(tabular_dir, paste0(city_string, "_oxford_gva_sectors.csv")), show_col_types = FALSE), error = function(e) tibble())
+  gva_shares <- tryCatch(read_csv(file.path(tabular_dir, paste0(city_string, "_oxford_gva_sectors_individual.csv")), show_col_types = FALSE), error = function(e) tibble())
+  incomes_city2 <- tryCatch(read_csv(file.path(tabular_dir, paste0(city_string, "_oxford_incomes.csv")), show_col_types = FALSE), error = function(e) tibble())
+  incomes <- tryCatch(read_csv(file.path(tabular_dir, paste0(city_string, "_oxford_incomes_all.csv")), show_col_types = FALSE), error = function(e) tibble())
+
+  # Restore factor ordering lost in CSV
+  # Group factor: focus city first, Benchmark second (affects bar dodge order
+  # and position_nudge targeting on shares charts)
+  .restore_group <- function(df) {
+    if (nrow(df) > 0 && "Group" %in% names(df)) {
+      df <- df %>% mutate(Group = factor(Group, levels = c(city, "Benchmark - Oxford")))
+    }
+    df
+  }
+  pop_dist_group <- .restore_group(pop_dist_group)
+  national_shares_long <- .restore_group(national_shares_long)
+  pop_growth_years <- .restore_group(pop_growth_years)
+  emp_growth_years <- .restore_group(emp_growth_years)
+  gdp_growth_years <- .restore_group(gdp_growth_years)
+  emp_longitude <- .restore_group(emp_longitude)
+  gdp_longitude <- .restore_group(gdp_longitude)
+  gdppc <- .restore_group(gdppc)
+  gdppc_longitude <- .restore_group(gdppc_longitude)
+  emp_shares2 <- .restore_group(emp_shares2)
+  emp_shares <- .restore_group(emp_shares)
+  gva_shares2 <- .restore_group(gva_shares2)
+  gva_shares <- .restore_group(gva_shares)
+  incomes <- .restore_group(incomes)
+  incomes_city2 <- .restore_group(incomes_city2)
+
+  if (nrow(pop_dist_group) > 0 && "order" %in% names(pop_dist_group)) {
+    pop_dist_group <- pop_dist_group %>% arrange(order) %>%
+      mutate(Age_Bracket = factor(Age_Bracket, levels = unique(Age_Bracket)))
+  }
+  if (nrow(pop_dist_structure) > 0) {
+    pop_dist_structure <- pop_dist_structure %>%
+      mutate(Group = factor(Group, levels = c("Young", "Working", "65+")))
+  }
+  if (nrow(national_shares_long) > 0) {
+    # Restore Location order: focus city first, then benchmark cities by
+    # descending Population Share (matches collection.R line 170)
+    loc_order <- national_shares_long %>%
+      filter(Indicator == "Population Share") %>%
+      arrange(desc(Group), desc(Percentage)) %>%
+      pull(Location) %>% unique()
+    national_shares_long <- national_shares_long %>%
+      mutate(Location = factor(Location, levels = loc_order),
+             Indicator = factor(Indicator, levels = c("GDP Share", "Employment Share", "Population Share")))
+  }
+  if (nrow(emp_shares2) > 0) {
+    sector_order <- emp_shares2 %>% filter(Group == city) %>% arrange(desc(Share)) %>% pull(Indicator) %>% unique()
+    emp_shares2 <- emp_shares2 %>% mutate(Indicator = factor(Indicator, levels = sector_order))
+    if (nrow(emp_shares) > 0) emp_shares <- emp_shares %>% mutate(Indicator = factor(Indicator, levels = sector_order))
+    if (nrow(gva_shares2) > 0) gva_shares2 <- gva_shares2 %>% mutate(Indicator = factor(Indicator, levels = sector_order))
+    if (nrow(gva_shares) > 0) gva_shares <- gva_shares %>% mutate(Indicator = factor(Indicator, levels = sector_order))
+  }
+  ylims_shares <- if (nrow(emp_shares2) > 0 && nrow(gva_shares2) > 0) c(0, max(c(emp_shares2$Share, gva_shares2$Share), na.rm = T) * 1.1) else c(0, 0.4)
+
+  # Restore Band factor levels lost in CSV
+  if (nrow(incomes_city2) > 0) {
+    band_levels <- c("Under $5K", "$7.5K-10K", "$10K-20K", "$20K-35K", "$35K-70K", "Over $70K")
+    incomes_city2 <- incomes_city2 %>% mutate(Band = factor(Band, levels = band_levels))
+  }
+  if (nrow(incomes) > 0) {
+    incomes <- incomes %>% mutate(Band = factor(Band, levels = unique(Band)))
+  }
+}
+```
+
+```{r}
+#| label: oxford-availability-check
+#| results: asis
+if (!in_oxford) {
+  cat("**City is not in Oxford Economics database — skipping economic indicators.**\n\n")
+}
+```
+
+### Population Growth (Oxford)
+
+```{r}
+#| label: chart-oxford-pop-growth
+#| message: false
+#| warning: false
+#| results: asis
+
+if (in_oxford && nrow(pop_growth_years) > 0 && "Value" %in% names(pop_growth_years)) {
+  pop_oxford_city <- pop_growth_years %>%
+    filter(Location == city) %>%
+    mutate(Population = Value * 1000, Source = "Oxford") %>%
+    arrange(Year)
+
+  if (nrow(pop_oxford_city) > 0) {
+    oxford_city_plot <- ggplot(pop_oxford_city, aes(x = Year, y = Population)) +
+      geom_line(linewidth = 0.8) +
+      geom_point(size = 1.5) +
+      scale_x_continuous(
+        breaks = seq(min(pop_oxford_city$Year), max(pop_oxford_city$Year), 5),
+        minor_breaks = seq(min(pop_oxford_city$Year), max(pop_oxford_city$Year), 1)) +
+      scale_y_continuous(
+        limits = c(0, max(pop_oxford_city$Population)),
+        labels = scales::label_comma(scale_cut = scales::cut_short_scale()),
+        expand = expansion(c(0, .1))) +
+      theme_minimal() +
+      labs(title = paste0(city, " population growth, ", min(pop_oxford_city$Year), "–", max(pop_oxford_city$Year)),
+           x = "", y = "Population") +
+      theme(
+        axis.line = element_line(linewidth = .5, color = "black"),
+        panel.grid.major = element_line(linewidth = .125, color = "dark gray"),
+        panel.grid.minor = element_line(linewidth = .125, linetype = 2, color = "dark gray"))
+
+    ggsave(here("03-render-output", "plots", "oxford-pop-growth.png"),
+           plot = oxford_city_plot, device = "png",
+           width = 8, height = 5, units = "in", dpi = "print")
+    print(oxford_city_plot)
+    cat("\n\n")
+
+    print_paged_df(pop_oxford_city %>% select(Year, Population, Source))
+  }
+}
+```
+
+### Population (Oxford)
+
+```{r}
+#| label: chart-oxford-pop-line
+#| message: false
+#| warning: false
+#| results: asis
+
+if (in_oxford && nrow(pop_growth_years) > 0 && "Value" %in% names(pop_growth_years)) {
+  # Oxford stores population in thousands
+  pop_oxford <- pop_growth_years %>%
+    mutate(Population = Value * 1000, Source = "Oxford")
+
+  print_text("Total population in 2021 (Oxford)")
+  pop_oxford %>% slice_max(Year) %>% arrange(-Population) %>%
+    select(Group, Location, Population, Source) %>%
+    print_paged_df()
+
+  multi_city_pop_plot <- ggplot(pop_oxford) +
+    geom_line(aes(x = Year, y = Population, group = Location, color = Group)) +
+    scale_color_manual(values = hues) +
+    theme_minimal() +
+    theme(panel.grid.major = element_line(linewidth = .125, color = "dark gray"),
+          panel.grid.minor = element_line(linewidth = .125, linetype = 2, color = "dark gray"),
+          axis.line = element_line(linewidth = .5, color = "black"),
+          legend.position = "none") +
+    labs(title = paste("Population of", city, "and benchmark cities"), x = "") +
+    scale_y_continuous(
+      limits = c(0, NA), expand = c(0,0),
+      labels = scales::label_comma(scale_cut = scales::cut_short_scale())) +
+    scale_x_continuous(
+      breaks = seq(min(pop_oxford$Year), 2021, 5),
+      minor_breaks = seq(2000, 2030, 1),
+      limits = c(min(pop_oxford$Year), 2028), expand = c(0,0)) +
+    geom_text_repel(
+      data = \(x) subset(x, Year == 2021),
+      aes(label = Location, x = 2021, y = Population, color = Group),
+      hjust = 0, size = 3, xlim = c(2021.25, 2030), box.padding = 0.05,
+      direction = "y", segment.linetype = "dotted")
+
+  ggsave(here("03-render-output", "plots", "oxford-pop-line.png"), device = "png", plot = multi_city_pop_plot,
+         width = 5, height = 4.6, units = "in", dpi = "print")
+  print(multi_city_pop_plot)
+  cat("\n\n")
+}
+```
+
+### Population Density (Oxford)
+
+```{r}
+#| label: chart-oxford-pop-density
+#| message: false
+#| warning: false
+#| results: asis
+
+# Build an all-Oxford density scatter:
+#   - benchmark cities: use Area_km + Population already in density_benchmark.csv
+#     (those rows are already Oxford-sourced)
+#   - main city: override Population with Oxford latest year (from pop_growth_years),
+#     keep Area_km from density_benchmark (AOI area)
+density_oxford <- tryCatch(
+  read_csv(file.path(tabular_dir, paste0(city_string, "_density_benchmark.csv")),
+           show_col_types = FALSE),
+  error = function(e) tibble())
+
+if (in_oxford && nrow(density_oxford) > 0 && nrow(pop_growth_years) > 0 &&
+    "Value" %in% names(pop_growth_years)) {
+  # Latest Oxford year for main city
+  city_oxford_latest <- pop_growth_years %>%
+    filter(Location == city) %>%
+    slice_max(Year, n = 1)
+
+  if (nrow(city_oxford_latest) > 0) {
+    city_row <- density_oxford %>% filter(Location == city)
+    if (nrow(city_row) > 0 && !is.na(city_row$Area_km[1]) && city_row$Area_km[1] > 0) {
+      density_oxford <- density_oxford %>% filter(Location != city)
+      city_row$Year <- city_oxford_latest$Year[1]
+      city_row$Population <- city_oxford_latest$Value[1] * 1000
+      city_row$Source <- "Oxford"
+      city_row$Method <- "Oxford"
+      city_row$Density <- city_row$Population / city_row$Area_km
+      density_oxford <- bind_rows(city_row, density_oxford)
+    }
+  }
+
+  # Keep only rows with valid density
+  density_oxford <- density_oxford %>% filter(!is.na(Density) & Density > 0)
+
+  if (nrow(density_oxford) > 0) {
+    bm_groups <- setdiff(unique(density_oxford$Group), city)
+    hues_density <- c("#000000", rep("dark grey", length(bm_groups))) %>%
+      setNames(c(city, bm_groups))
+
+    density_oxford_plot <- density_oxford %>%
+      ggplot() +
+      geom_point(aes(x = Population, y = Density, color = Group)) +
+      ggrepel::geom_text_repel(
+        aes(x = Population, y = Density, label = Location, color = Group),
+        box.padding = 0.25, min.segment.length = 0.001, point.padding = 1,
+        segment.linetype = "dotted") +
+      theme_minimal() +
+      theme(
+        legend.position = "none",
+        axis.line = element_line(linewidth = .5, color = "black"),
+        panel.grid.major = element_line(linewidth = .125, color = "dark gray"),
+        panel.grid.minor = element_line(linewidth = .125, linetype = 2, color = "dark gray")) +
+      labs(title = "Population density comparison",
+           y = bquote('Population density, people per '~km^2),
+           x = "Population") +
+      scale_y_continuous(labels = scales::label_comma(),
+                         expand = expansion(mult = c(0, .03))) +
+      scale_x_continuous(labels = scales::label_comma(),
+                         expand = expansion(mult = c(0.02, 0.12))) +
+      scale_color_manual(values = hues_density) +
+      expand_limits(y = 0)
+
+    ggsave(here("03-render-output", "plots", "oxford-pop-density-scatter.png"),
+           plot = density_oxford_plot, device = "png",
+           width = 8, height = 5, units = "in", dpi = "print")
+    print(density_oxford_plot)
+    cat("\n\n")
+
+    density_oxford %>% arrange(-Density) %>%
+      select(any_of(c("Group", "Location", "Year", "Population", "Area_km", "Density", "Source"))) %>%
+      print_paged_df()
+  }
+}
+```
+
+### Population Distribution
+
+```{r}
+#| label: chart-oxford-pop-distribution
+#| message: false
+#| warning: false
+#| results: asis
+
+if (in_oxford && nrow(pop_dist_group) > 0) {
+  print_paged_df(pop_dist_group %>% mutate(Source = "Oxford"))
+
+  pop_distro_plot <- ggplot(pop_dist_group, aes(x = Age_Bracket, y = Percentage)) +
+    geom_col(aes(fill = Group), position = "dodge") +
+    labs(title = paste("Population distribution in", city, "and benchmark cities"),
+         y = "Percentage", x = "Age Bracket", fill = "") +
+    theme_minimal() +
+    theme(legend.position = "bottom",
+          legend.key.height = unit(1/8, "in"),
+          axis.line = element_line(linewidth = .5, color = "black"),
+          panel.grid.major.x = element_blank(),
+          panel.grid.minor.x = element_blank(),
+          panel.grid.major.y = element_line(linewidth = .125, color = "dark gray"),
+          panel.grid.minor.y = element_line(linewidth = .125, linetype = 2, color = "dark gray")
+    ) +
+    scale_y_continuous(breaks = seq(0, .2, .01),
+                       labels = scales::percent_format(accuracy = 1),
+                       limits = c(0, ceiling(max(pop_dist_group$Percentage) * 100) /100),
+                       expand = c(0,0)) +
+    scale_fill_manual(values = hues)
+
+  ggsave(here("03-render-output", "plots", "oxford-pop-distro.png"), plot = pop_distro_plot, device = "png",
+         width = 8, height = 6.5, units = "in", dpi = "print")
+  print(pop_distro_plot)
+  cat("\n\n")
+}
+```
+
+### Age Structure
+
+```{r}
+#| label: chart-oxford-age-structure
+#| message: false
+#| warning: false
+#| results: asis
+
+if (in_oxford && nrow(pop_dist_structure) > 0) {
+  print_paged_df(pop_dist_structure %>% mutate(Source = "Oxford"))
+
+  hues_age_structure <- c("black", "dark grey", "dark grey") %>%
+    setNames(c("Working", "Young", "65+"))
+  hues_age_structure[1] <- "#000000"
+
+  pop_dist_plot <- ggplot(pop_dist_structure) +
+    geom_area(aes(x = Year, y = Percent, fill = forcats::fct_rev(Group)), alpha = 0.8) +
+    geom_text_repel(
+      data = subset(pop_dist_structure, Year == 2021),
+      aes(label = paste0(Group, "\n", scales::label_percent()(Percent)),
+          x = 2021, y = (pct_sum - Percent/2), color = forcats::fct_rev(Group)),
+      hjust = 0, size = 2.5, xlim = c(2021.25, 2025), box.padding = 0.05,
+      segment.linetype = "dotted") +
+    scale_y_continuous(labels = scales::label_percent(), expand = c(0,0)) +
+    scale_x_continuous(
+      minor_breaks = 2000:2025,
+      breaks = c(2000, 2005, 2010, 2015, 2020),
+      limits = c(2000, 2025), expand = c(0,0)) +
+    scale_fill_manual(values = hues_age_structure) +
+    scale_color_manual(values = hues_age_structure) +
+    theme_minimal() +
+    theme(axis.line = element_line(linewidth = .5, color = "black"),
+          legend.position = "none") +
+    labs(title = "Age Structure, 2000-2021",
+         y = "Percent of Population",
+         x = "Year")
+
+  ggsave(here("03-render-output", "plots", "oxford-age-structure-area.png"), plot = pop_dist_plot, device = "png",
+         width = 4, height = 3.5, units = "in", dpi = "print")
+  print(pop_dist_plot)
+  cat("\n\n")
+}
+```
+
+### Share of GDP, Employment, Population
+
+```{r}
+#| label: chart-oxford-national-shares
+#| message: false
+#| warning: false
+#| results: asis
+
+if (in_oxford && nrow(national_shares_long) > 0) {
+  national_shares_plot <- national_shares_long %>%
+    ggplot(aes(x = Percentage, y = Location, fill = Indicator)) +
+    geom_col(position = "dodge") +
+    geom_text(data = filter(national_shares_long, Group == city),
+              aes(x = Percentage, y = Location, group = Indicator,
+                  label = paste0("------", Indicator, ": ", round(Percentage * 100,1),"%")),
+              position = position_dodge(width = 1), hjust = 0, size = 2.5) +
+    theme_minimal() +
+    theme(axis.line = element_line(linewidth = .5, color = "black"),
+          panel.grid.major = element_line(linewidth = .125, color = "dark gray"),
+          panel.grid.minor = element_line(linewidth = .125, linetype = 2, color = "dark gray"),
+          panel.grid.major.y = element_blank(),
+          legend.position = "bottom",
+          legend.key.height = unit(1/8, "in"),
+          axis.title.y = element_blank()) +
+    labs(title = "Cities' shares of national population, employment & GDP",
+         y = "City",
+         fill = "") +
+    scale_x_continuous(breaks = seq(0, 1, .05),
+                       labels = scales::percent_format(accuracy = 1),
+                       expand = expansion(c(0, NA))) +
+    expand_limits(x = 1.2 * max(filter(national_shares_long, Group == city)$Percentage))
+
+  ggsave(here("03-render-output", "plots", "oxford-national-shares.png"), plot = national_shares_plot, device = "png",
+         width = 8, height = 6.5, units = "in", dpi = "print")
+  print(national_shares_plot)
+  cat("\n\n")
+}
+```
+
+### GDP, Population, Employment Growth
+
+```{r}
+#| label: chart-oxford-growth-tables
+#| message: false
+#| warning: false
+#| results: asis
+
+if (in_oxford) {
+  if (nrow(pop_growth_years) > 0) {
+    pop_growth2 <- pop_growth_years %>%
+      group_by(Group, Location) %>%
+      summarize(`Population Growth` = mean(Growth, na.rm = T), .groups = "drop") %>%
+      mutate(Source = "Oxford") %>%
+      arrange(desc(`Population Growth`))
+    print_text("Population growth from 2000 to 2021")
+    print_paged_df(pop_growth2)
+  }
+
+  if (nrow(emp_growth_years) > 0) {
+    emp_growth <- emp_growth_years %>%
+      group_by(Group, Location) %>%
+      summarize(`Employment Growth` = mean(Growth, na.rm = T), .groups = "drop") %>%
+      arrange(desc(`Employment Growth`))
+    print_text("Employment growth from 2000 to 2021")
+    print_paged_df(emp_growth)
+
+    print_text("Employment growth in focus city for each year")
+    filter(emp_growth_years, Location == city) %>% print_paged_df()
+  }
+
+  if (nrow(gdp_growth_years) > 0) {
+    gdp_growth <- gdp_growth_years %>%
+      group_by(Group, Location) %>%
+      summarize(`GDP Growth` = mean(Growth, na.rm = T), .groups = "drop") %>%
+      arrange(desc(`GDP Growth`))
+    print_text("GDP growth from 2000 to 2021")
+    print_paged_df(gdp_growth)
+
+    print_text("GDP growth in focus city for each year")
+    print_paged_df(filter(gdp_growth_years, Location == city))
+  }
+}
+```
+
+### Employment
+
+```{r}
+#| label: chart-oxford-emp-line
+#| message: false
+#| warning: false
+#| results: asis
+
+if (in_oxford && nrow(emp_longitude) > 0) {
+  print_text("Total employed in 2021")
+  emp_longitude %>% slice_max(Year) %>% arrange(-`Total employed`) %>% select(Group, Location, `Total employed`) %>%
+    print_paged_df()
+
+  multi_city_emp_plot <- ggplot(emp_longitude) +
+    geom_line(aes(x = Year, y = `Total employed`, group = Location, color = Group)) +
+    scale_color_manual(values = hues) +
+    theme_minimal() +
+    theme(panel.grid.major = element_line(linewidth = .125, color = "dark gray"),
+          panel.grid.minor = element_line(linewidth = .125, linetype = 2, color = "dark gray"),
+          axis.line = element_line(linewidth = .5, color = "black"),
+          legend.position = "none",
+          plot.title = element_text(size = 10)) +
+    labs(title = paste("Employment of", city, "and benchmark cities"), x = "") +
+    scale_y_continuous(
+      limits = c(0, NA), expand = c(0,0),
+      labels = scales::label_comma(scale_cut = scales::cut_short_scale())) +
+    scale_x_continuous(breaks = seq(min(emp_longitude$Year), 2021, 5), minor_breaks = seq(2000,2030,1), limits = c(min(emp_longitude$Year), 2028), expand = c(0,0)) +
+    geom_text_repel(
+      data = \(x) subset(x, Year == 2021),
+      aes(label = Location, x = 2021, y = `Total employed`, color = Group),
+      hjust = 0, size = 3, xlim = c(2021.25, 2030), box.padding = 0.05,
+      direction = "y", segment.linetype = "dotted")
+
+  ggsave(here("03-render-output", "plots", "oxford-emp-line.png"), device = "png", plot = multi_city_emp_plot,
+         width = 5, height = 4.6, units = "in", dpi = "print")
+  print(multi_city_emp_plot)
+  cat("\n\n")
+}
+```
+
+### GDP
+
+```{r}
+#| label: chart-oxford-gdp-line
+#| message: false
+#| warning: false
+#| results: asis
+
+if (in_oxford && nrow(gdp_longitude) > 0) {
+  print_text("Total GDP in 2021")
+  gdp_longitude %>% slice_max(Year) %>% arrange(-GDP) %>% select(Group, Location, GDP) %>%
+    print_paged_df()
+
+  multi_city_gdp_plot <- ggplot(gdp_longitude) +
+    geom_line(aes(x = Year, y = `GDP`, group = Location, color = Group)) +
+    scale_color_manual(values = hues) +
+    theme_minimal() +
+    theme(panel.grid.major = element_line(linewidth = .125, color = "dark gray"),
+          panel.grid.minor = element_line(linewidth = .125, linetype = 2, color = "dark gray"),
+          axis.line = element_line(linewidth = .5, color = "black"),
+          legend.position = "none") +
+    labs(title = paste("GDP of", city, "and benchmark cities"), x = "") +
+    scale_y_continuous(
+      limits = c(0, NA), expand = c(0,0),
+      labels = scales::label_dollar(scale_cut = scales::cut_short_scale())) +
+    scale_x_continuous(
+      breaks = seq(min(gdp_longitude$Year), 2021, 5),
+      minor_breaks = seq(2000,2030,1),
+      limits = c(min(gdp_longitude$Year), 2028), expand = c(0,0)) +
+    geom_text_repel(data = \(x) subset(x, Year == 2021), aes(label = Location, x = 2022, y = `GDP`, color = Group),
+                    hjust = 0, size = 3, xlim = c(2021.25, 2030), box.padding = 0.05,
+                    direction = "y", segment.linetype = "dotted")
+
+  ggsave(here("03-render-output", "plots", "oxford-gdp-line.png"), device = "png",
+         width = 5, height = 4.6, units = "in", dpi = "print")
+  print(multi_city_gdp_plot)
+  cat("\n\n")
+}
+```
+
+### GDP per Capita
+
+```{r}
+#| label: chart-oxford-gdppc
+#| message: false
+#| warning: false
+#| results: asis
+
+if (in_oxford && nrow(gdppc) > 0) {
+  gdppc_plot <- ggplot(gdppc) +
+    geom_col(aes(y = fct_reorder(Location, -`GDP per capita`), x = `GDP per capita`, fill = Group)) +
+    theme_minimal() +
+    theme(panel.grid.major = element_line(linewidth = .125, color = "dark gray"),
+          panel.grid.minor = element_line(linewidth = .125, linetype = 2, color = "dark gray"),
+          axis.line = element_line(linewidth = .5, color = "black"),
+          legend.position = "none") +
+    labs(title = paste("GDP per capita in", city, "and benchmark cities"),
+         y = "City") +
+    scale_x_continuous(labels = scales::dollar_format(scale_cut = scales::cut_short_scale()), expand = expansion(mult = c(0,0.05)))
+
+  ggsave(here("03-render-output", "plots", "oxford-gdp-per-capita.png"), plot = gdppc_plot, device = "png",
+         width = 8, height = 5, units = "in", dpi = "print")
+  print(gdppc_plot)
+  cat("\n\n")
+
+  print_paged_df(subset(gdppc, Location == city))
+
+  if (nrow(gdppc_longitude) > 0) {
+    gdppc_longitude %>%
+      slice_max(Year, n = 10) %>%
+      summarize(`growth_pct` = mean(growth_pct), .groups = "drop") %>%
+      arrange(desc(`growth_pct`)) %>%
+      print_paged_df()
+  }
+}
+```
+
+### GDP per Capita Over Time
+
+```{r}
+#| label: chart-oxford-gdppc-line
+#| message: false
+#| warning: false
+#| results: asis
+
+if (in_oxford && nrow(gdppc_longitude) > 0) {
+  gdppc_longitude_plot <- ggplot(gdppc_longitude) +
+    geom_line(aes(x = Year, y = `GDP per capita`, group = Location, color = Group)) +
+    scale_color_manual(values = hues) +
+    theme_minimal() +
+    theme(panel.grid.major = element_line(linewidth = .125, color = "dark gray"),
+          panel.grid.minor = element_line(linewidth = .125, linetype = 2, color = "dark gray"),
+          axis.line = element_line(linewidth = .5, color = "black"),
+          legend.position = "none") +
+    labs(title = paste("GDP per capita of", city, "and benchmark cities"), x = "") +
+    scale_y_continuous(labels = scales::label_dollar(scale_cut = scales::cut_short_scale()), expand = c(0,0)) +
+    scale_x_continuous(breaks = seq(min(gdppc_longitude$Year), 2021, 5), minor_breaks = seq(2000,2030,1), limits = c(min(gdppc_longitude$Year), 2027), expand = c(0,0)) +
+    geom_text_repel(
+      data = \(x) subset(x, Year == 2021), aes(label = Location, x = 2021, y = `GDP per capita`, color = Group),
+      hjust = 0, size = 3, xlim = c(2021.25, 2030), box.padding = 0.05,
+      direction = "y", segment.linetype = "dotted")
+
+  ggsave(here("03-render-output", "plots", "oxford-gdp-per-capita-line.png"), gdppc_longitude_plot, device = "png",
+         width = 8, height = 6.5, units = "in", dpi = "print")
+  print(gdppc_longitude_plot)
+  cat("\n\n")
+}
+```
+
+### Share of Employment by Sector
+
+```{r}
+#| label: chart-oxford-emp-sectors
+#| message: false
+#| warning: false
+#| results: asis
+
+if (in_oxford && nrow(emp_shares2) > 0) {
+  print_text("Sectors by employment")
+  print_paged_df(emp_shares2)
+
+  emp_shares_plot <- emp_shares2 %>%
+    ggplot() +
+    geom_col(aes(x = Indicator, y = Share, fill = Group),
+             position = "dodge") +
+    { if (nrow(emp_shares) > 0) geom_point(data = emp_shares %>% filter(Location != city), aes(x = Indicator, y = Share, group = Group), shape = 21, color = "white", fill="dark grey", position = position_nudge(x = .25)) } +
+    scale_y_continuous(
+      breaks = seq(0, 1, .05), minor_breaks = seq(0, 1, .01),
+      limits = ylims_shares, expand = c(0,0),
+      labels = scales::percent_format(accuracy = 1)) +
+    scale_fill_manual(values = hues) +
+    theme_minimal() +
+    theme(axis.line = element_line(linewidth = .5, color = "black"),
+          legend.position = "bottom",
+          legend.key.height = unit(1/8, "in")) +
+    labs(title = paste("Share of employment by sector in", city, "and median benchmark city"),
+         x = "Sector",
+         fill = "")
+
+  ggsave(here("03-render-output", "plots", "oxford-employment-sectors.png"), plot = emp_shares_plot, device = "png",
+         width = 16, height = 5, units = "in", dpi = "print")
+  print(emp_shares_plot)
+  cat("\n\n")
+}
+```
+
+### Share of GVA by Sector
+
+```{r}
+#| label: chart-oxford-gva-sectors
+#| message: false
+#| warning: false
+#| results: asis
+
+if (in_oxford && nrow(gva_shares2) > 0) {
+  print_text("Sectors by GVA")
+  print_paged_df(gva_shares2)
+
+  gva_shares_plot <- gva_shares2 %>%
+    ggplot() +
+    geom_col(aes(x = Indicator, y = Share, fill = Group),
+             position = "dodge") +
+    { if (nrow(gva_shares) > 0) geom_point(data = gva_shares %>% filter(Location != city), aes(x = Indicator, y = Share, group = Group), shape = 21, color = "white", fill="dark grey", position = position_nudge(x = .25)) } +
+    scale_y_continuous(breaks = seq(0, 1, .05),
+                       minor_breaks = seq(0, 1, .01),
+                       limits = ylims_shares, expand = c(0,0),
+                       labels = scales::percent_format(accuracy = 1)) +
+    scale_fill_manual(values = hues) +
+    theme_minimal() +
+    theme(axis.line = element_line(linewidth = .5, color = "black"),
+          legend.position = "bottom",
+          legend.key.height = unit(1/8, "in")) +
+    labs(title = paste("Share of GVA by sector in", city, "and median benchmark city"),
+         x = "Sector",
+         fill = "")
+
+  ggsave(here("03-render-output", "plots", "oxford-gva-sectors.png"), plot = gva_shares_plot, device = "png",
+         width = 16, height = 5, units = "in", dpi = "print")
+  print(gva_shares_plot)
+  cat("\n\n")
+}
+```
+
+### Economic Inequality
+
+```{r}
+#| label: chart-oxford-incomes-area
+#| message: false
+#| warning: false
+#| results: asis
+
+if (in_oxford && nrow(incomes) > 0) {
+  household_incomes_bar_plot <- incomes %>% group_by(Location) %>%
+    subset(Year == 2021) %>%
+    mutate(Percent = Households / sum(Households), sum = sum(Households)) %>%
+    ungroup() %>%
+    group_by(Group, Band) %>%
+    summarize(Percent = median(Percent), .groups = "drop") %>%
+    ggplot(aes(y = Band, x = Percent, fill = Group)) +
+    geom_col(position = "dodge") +
+    scale_fill_manual(values = hues) +
+    scale_x_continuous(labels = scales::label_percent()) +
+    theme_minimal() +
+    theme(axis.line = element_line(linewidth = .5, color = "black")) +
+    labs(title = "Household income distribution (PPP constant 2015 dollars)",
+         x = "Percent of Households",
+         y = "Income Group")
+  ggsave(here("03-render-output", "plots", "oxford-household-incomes-bar.png"), plot = household_incomes_bar_plot, device = "png",
+         width = 8, height = 5, units = "in", dpi = "print")
+  print(household_incomes_bar_plot)
+  cat("\n\n")
+}
+
+if (in_oxford && nrow(incomes_city2) > 0) {
+  household_incomes_area_plot <- ggplot(incomes_city2) +
+    geom_area(aes(x = Year, y = Percent, fill = forcats::fct_rev(Band)), color = "black", alpha = 0.8) +
+    geom_text_repel(
+      data = \(x) subset(x, Year == 2021),
+      aes(label = Band, x = 2021, y = (pct_sum - Percent/2), color = forcats::fct_rev(Band)),
+      hjust = 0, size = 3, xlim = c(2021.25, 2030), box.padding = 0.02) +
+    scale_y_continuous(labels = scales::label_percent(),
+                       expand = expansion(mult = c(0,0))) +
+    scale_x_continuous(minor_breaks = 2002:2030, limits = c(min(incomes_city2$Year), max(incomes_city2$Year) + 3),
+                       expand = expansion(mult = c(0,0))) +
+    theme_minimal() +
+    theme(axis.line = element_line(linewidth = .5, color = "black"), legend.position = "none") +
+    labs(title = paste0("Household income distribution, ", min(incomes_city2$Year), "-2021 (PPP constant 2015 dollars)"),
+         y = "Percent of Households",
+         x = "Year")
+
+  ggsave(here("03-render-output", "plots", "oxford-household-incomes-area.png"), plot = household_incomes_area_plot, device = "png",
+         width = 4, height = 3.5, units = "in", dpi = "print")
+  print(household_incomes_area_plot)
+  cat("\n\n")
+}
+```

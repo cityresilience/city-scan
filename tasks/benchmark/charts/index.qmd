@@ -1,0 +1,57 @@
+---
+df-print: paged
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+## Benchmark Cities
+
+Benchmark cities are selected as cities in neighboring countries with a population of 50% to 150% of the focus city's population, plus any manually specified cities.
+
+```{r}
+#| label: setup-benchmark
+#| include: false
+if (file.exists("_quarto.yml")) here::i_am("tasks/benchmark/charts/index.qmd")
+if (!exists("aoi")) source(here::here("core/R/setup.R"))
+
+pop_longitude <- tryCatch(
+  read_csv(file.path(tabular_dir, paste0(city_string, "_pop_benchmark.csv")), show_col_types = FALSE),
+  error = function(e) tibble(Year = integer(), Population = numeric(),
+                             Location = character(), Country = character(),
+                             Group = character(), Area_km = numeric(),
+                             Source = character(), Method = character()))
+```
+
+```{r}
+#| label: benchmark-cities-table
+#| results: asis
+
+if (nrow(pop_longitude) > 0 && "Group" %in% names(pop_longitude)) {
+  print_text("Benchmark cities")
+
+  pop_longitude %>%
+      subset(Group != city) %>%
+      group_by(Location) %>%
+      slice_min(abs(Year - 2021), n = 1, with_ties = FALSE) %>%
+      ungroup() %>%
+      arrange(Location) %>%
+      print_paged_df()
+
+  # Footnote: which benchmark cities came from Oxford Economics
+  oxford_bm <- pop_longitude %>% subset(Group == "Benchmark - Oxford")
+  if (nrow(oxford_bm) > 0) {
+    print_text(paste_bold("Benchmark footnote text:"))
+    print_text("Following cities are included in Oxford Economics dataset:", 1)
+    oxford_bm %>%
+      select(Location, Country) %>% distinct() %>%
+      arrange(Country) %>% group_by(Country) %>%
+      summarize(text = paste_and(Location), .groups = "drop") %>%
+      mutate(text = paste0(text, " (", Country, ")")) %>%
+      .$text %>% paste_and() %>%
+      paste_bold() %>%
+      print_text()
+  }
+}
+```

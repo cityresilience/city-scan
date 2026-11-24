@@ -186,19 +186,53 @@ multi-scan-materials/.DS_Store
 *.gpkg
 *.zip
 *.csv
+!source/*.csv
 *.png
+!docs/**/*.png
 output/*_road_network/*
 data/flood/*
 mnt/**
+inputs/secrets.yml
+*_cache
 
-# other
-backend/temp.ipynb
-backend/temp.py
-backend/city_inputs.yml
-backend/fathom_aws_credentials.yml
-backend/menu.yml
-backend/global_inputs.yml
-backend/cache/*
+# IDE / tooling
+.vscode/
+.claude/
 
+# Legacy directories (removed from unified branch)
+backend/
+backend-local/
+data/
+gcs-user-input/
+README_files/
+building-tiles/
+cache/
+temp/
+# scripts/
+
+# Notes files
+# *.notes
+
+# Other
+outputs/
+config/secure/
+# logs/
+check_files.ipynb
+firebase-debug.log
 # GitHub Wiki
-city-scan-automation.wiki.git
+city-scan-automation.wiki.gitoutputs/
+
+# Old folders (migrated to core/ and tasks/)
+# config/
+utils/
+frontend/
+backend/
+backend-local/
+cache/
+temp/
+data/
+gcs-user-input/
+# docs/
+.here
+.egg-info
+

@@ -1,0 +1,16 @@
+project:
+  type: default
+  pre-render: Rscript generate-index.R
+  render:
+    - index.qmd
+
+engine: knitr
+
+format:
+  html:
+    output-file: scan-calculations.html
+    theme: [default, ../source/pagedtable-fix.scss]
+    self-contained: true
+    toc: true
+    toc-location: left
+    toc-depth: 3

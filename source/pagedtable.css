@@ -1,0 +1,77 @@
+/* Reset Bootstrap 5 table styles inside pagedtable wrappers to match RMarkdown/Bootstrap 3 look */
+.pagedtable-wrapper table,
+[data-pagedtable] table {
+  --bs-table-bg: transparent !important;
+  --bs-table-border-color: transparent !important;
+  --bs-table-color: inherit !important;
+  border-collapse: collapse !important;
+  margin: 0 !important;
+}
+
+.pagedtable-wrapper table > :not(caption) > * > *,
+[data-pagedtable] table > :not(caption) > * > * {
+  padding: 0 4px 0 4px !important;
+  border-bottom-width: 0 !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+}
+
+.pagedtable-wrapper table > thead > tr > th,
+[data-pagedtable] table > thead > tr > th {
+  padding: 0 5px 0 5px !important;
+  border: none !important;
+  border-bottom: 2px solid #dddddd !important;
+}
+
+.pagedtable-wrapper table > tbody,
+[data-pagedtable] table > tbody {
+  border-top: none !important;
+}
+
+/* Restore rmarkdown pagedtable styles */
+.pagedtable-wrapper {
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+  margin-bottom: 10px !important;
+}
+
+.pagedtable {
+  overflow: auto;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.pagedtable .even td {
+  background-color: rgba(140, 140, 140, 0.1) !important;
+}
+
+.pagedtable-not-empty .pagedtable-footer {
+  border-top: 2px solid #dddddd !important;
+}
+
+.pagedtable-footer {
+  padding-top: 4px;
+  padding-bottom: 5px;
+}
+
+.pagedtable-info {
+  overflow: hidden;
+  color: #999;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.pagedtable-header-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pagedtable-header-type {
+  color: #999;
+  font-weight: 400;
+}
+
+.pagedtable-na-cell {
+  font-style: italic;
+  opacity: 0.3;
+}

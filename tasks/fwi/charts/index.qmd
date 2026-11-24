@@ -1,0 +1,78 @@
+---
+df-print: paged
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+## FWI
+
+```{r}
+#| label: setup-fwi
+#| include: false
+if (file.exists("_quarto.yml")) here::i_am("tasks/fwi/charts/index.qmd")
+if (!exists("aoi")) {
+  source(here::here("core/R/setup.R"))
+}
+```
+
+```{r}
+#| label: data-loading-fwi
+#| include: false
+fwi <- tryCatch({
+  read_csv(file.path(tabular_dir, paste0(city_string, "_fwi_weekly_95.csv")), col_types = "dd")
+}, error = function(e) { message("FWI not available: ", e$message); NULL })
+
+month_starts <- cumsum(c("Jan" = 31, "Feb" = 28, "Mar"= 31, "Apr" = 30, "May" = 31, "Jun" = 30,
+  "Jul" = 31, "Aug" = 31, "Sep"= 30, "Oct" = 31, "Nov" = 30, "Dec" = 31)/7) - 31/7
+```
+
+```{r}
+#| label: FWI-plot
+#| results: asis
+
+if (is.null(fwi) || nrow(fwi) == 0) print_text(paste_bold('No FWI data available')) else {
+
+  # FWI risk category thresholds
+  risk_categories <- data.frame(
+    name = c("Very Low", "Low", "Moderate", "High", "Very High", "Extreme"),
+    ymin = c(0, 5.2, 11.2, 21.3, 38.0, 50),
+    ymax = c(5.2, 11.2, 21.3, 38.0, 50, Inf),
+    color = c("#4CAF50", "#8BC34A", "#FFC107", "#FF9800", "#F44336", "#8B0000")
+  )
+  y_max <- max(fwi$pctile_95, na.rm = TRUE) * 1.1
+  risk_categories$ymax <- pmin(risk_categories$ymax, y_max)
+  risk_categories <- risk_categories[risk_categories$ymin < y_max, ]
+  risk_categories$y_label <- (risk_categories$ymin + risk_categories$ymax) / 2
+  label_categories <- risk_categories[risk_categories$ymax - risk_categories$ymin > y_max * 0.06, ]
+
+  fwi_plot <- ggplot(fwi, aes(x = week - 1, y = pctile_95)) +
+    geom_rect(
+      data = risk_categories,
+      aes(xmin = -Inf, xmax = Inf, ymin = ymin, ymax = ymax, fill = color),
+      inherit.aes = FALSE, alpha = 0.4) +
+    scale_fill_identity() +
+    geom_text(
+      data = label_categories,
+      aes(x = max(fwi$week) - 2, y = y_label, label = name),
+      inherit.aes = FALSE, hjust = 1, fontface = "bold", size = 2.5,
+      color = ifelse(label_categories$color == "#FFC107", "#B8860B", label_categories$color)) +
+    geom_line(linewidth = 0.5) +
+    scale_x_continuous(breaks = month_starts + 31/7/2, labels = names(month_starts), minor_breaks = month_starts,
+                      expand = c(0,0)) +
+    scale_y_continuous(limits = c(0, y_max), expand = expansion(c(0, 0))) +
+    theme_minimal() +
+    labs(title = paste("FWI in", city, "2016-2021"),
+        y = "95th percentile FWI") +
+    theme(axis.line = element_line(linewidth = .5, color = "black"),
+          panel.grid.major.x = element_blank(),
+          panel.grid.minor = element_line(linewidth = .125, color = "dark gray"),
+          axis.title.x = element_blank()) +
+    geom_vline(xintercept = 0)
+  print(fwi_plot)
+  cat("\n\n")
+  ggsave(here("03-render-output", "plots", "nasa-fwi.png"), plot = fwi_plot, device = "png",
+        width = 4, height = 3.5, units = "in", dpi = "print")
+}
+```

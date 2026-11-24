@@ -1,0 +1,47 @@
+/*-- scss:rules --*/
+
+/* Match RMarkdown/Bootstrap 3 paged table look */
+[data-pagedtable],
+.pagedtable-wrapper {
+  font-size: 12px;
+
+  table {
+    --bs-table-bg: transparent;
+    --bs-table-border-color: transparent;
+    --bs-table-striped-bg: transparent;
+    border: none;
+
+    > :not(caption) > * > * {
+      padding: 1px 5px;
+      border-bottom: none;
+      box-shadow: none;
+      background-color: transparent;
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    > thead > tr > th {
+      padding: 1px 5px;
+      border: none;
+      border-bottom: 2px solid #dddddd;
+      font-size: 12px;
+    }
+
+    > tbody {
+      border-top: none;
+    }
+  }
+
+  .pagedtable-footer {
+    font-size: 11px;
+  }
+}
+
+.pagedtable .even td {
+  background-color: rgba(140, 140, 140, 0.1) !important;
+}
+
+/* Match RMarkdown body text size */
+body {
+  font-size: 14px;
+}

@@ -1,0 +1,56 @@
+---
+df-print: paged
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+## Slope
+
+```{r}
+#| label: setup-slope
+#| include: false
+if (file.exists("_quarto.yml")) here::i_am("tasks/slope/charts/index.qmd")
+if (!exists("aoi")) {
+  source(here::here("core/R/setup.R"))
+}
+```
+
+```{r}
+#| label: data-loading-slope
+#| include: false
+slope <- tryCatch({
+  read_csv(file.path(tabular_dir, paste0(city_string, "_slope.csv")), col_types = "cd") %>%
+    rename(Bin = 1, Count = 2) %>%
+    filter(!is.na(Bin), Count > 0) %>%
+    mutate(Slope = as.numeric(str_replace(Bin, "[-+].*", "")),
+           percent = Count / sum(Count),
+           Bin = factor(Bin, levels = Bin))
+}, error = function(e) { message("slope not available: ", e$message); NULL })
+```
+
+```{r}
+#| label: slope-donut
+#| results: asis
+
+if (is.null(slope) || nrow(slope) == 0) print_text(paste_bold("No Slope file available")) else {
+
+  slope_names <- arrange(slope, Slope)$Bin
+  slope_colors <- c(
+    "#F9F9DF",
+    "#E8D6B9",
+    "#D5B495",
+    "#BE9172",
+    "#A86E50") %>%
+    setNames(slope_names)
+
+  slope_plot <- ggdonut(slope, "Bin", "percent", colors = slope_colors)
+  ggsave(here("03-render-output", "plots", "wsf-slope-pieplot.png"), device = "png",
+        width = 8, height = 5, units = "in", dpi = "print")
+  print(slope_plot)
+  cat("\n\n")
+
+  print_paged_df(slope)
+}
+```

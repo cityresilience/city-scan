@@ -1,0 +1,11 @@
+layers:
+  - intersections
+  - school_zones
+  - school_points
+  - health_zones
+  - health_points
+  - infrastructure
+  - roads
+  - roads_network
+custom:
+  - core/R/map-schools-health-proximity.R

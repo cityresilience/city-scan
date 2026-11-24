@@ -1,0 +1,7 @@
+layers:
+  - gdp_total
+  - gdp_per_capita
+depends:
+  - fathom
+custom:
+  - core/R/map-gdp-flood.R

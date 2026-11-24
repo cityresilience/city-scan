@@ -1,0 +1,68 @@
+---
+df-print: paged
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+## Land Cover
+
+```{r}
+#| label: setup-landcover
+#| include: false
+if (file.exists("_quarto.yml")) here::i_am("tasks/landcover/charts/index.qmd")
+if (!exists("aoi")) {
+  source(here::here("core/R/setup.R"))
+}
+```
+
+```{r}
+#| label: data-loading-landcover
+#| include: false
+lc <- tryCatch({
+  read_csv(file.path(tabular_dir, paste0(city_string, "_lc.csv")), col_types = "cd") %>%
+    filter(!is.na(`Land Cover Type`), `Pixel Count` > 0) %>%
+    mutate(Percent = `Pixel Count` / sum(`Pixel Count`)) %>%
+    arrange(desc(Percent)) %>%
+    mutate(`Land Cover Type` = factor(`Land Cover Type`, levels = `Land Cover Type`))
+}, error = function(e) { message("lc not available: ", e$message); NULL })
+```
+
+```{r}
+#| label: landcover
+#| results: asis
+
+if (is.null(lc) || nrow(lc) == 0) print_text(paste_bold("No Landcover file available")) else {
+
+  print_paged_df(lc)
+
+  lc_colors <- c(
+    "Tree cover" = "#397e48",
+    "Built-up" = "#c4281b",
+    "Grassland" = "#88af52",
+    "Bare / sparse vegetation" = "#a59b8f",
+    "Cropland" = "#e49634",
+    "Permanent water bodies" = "#429bdf",
+    "Shrubland" = "#dfc25a",
+    "Herbaceous wetland" = "#7d87c4",
+    "Mangroves" = "#00cf75")
+
+  lc_plot <- ggdonut(lc, "Land Cover Type", "Percent", colors = lc_colors, show_legend = TRUE)
+  ggsave(here("03-render-output", "plots", "wsf-lc-pieplot.png"), plot = lc_plot, device = "png",
+        width = 8, height = 5, units = "in", dpi = "print")
+  print(lc_plot)
+  cat("\n\n")
+
+  lc1 <- lc$`Land Cover Type`[1]
+  lc1_pct <- lc$Percent[1] %>% scales::percent(0.1)
+  lc2 <- lc$`Land Cover Type`[2]
+  lc2_pct <- lc$Percent[2] %>% scales::percent(0.1)
+  lc3 <- lc$`Land Cover Type`[3]
+  lc3_pct <- lc$Percent[3] %>% scales::percent(0.1)
+
+  print_text(paste0(paste_bold(lc1), " comprises the majority of land in the ", paste_bold(city), " area of interest (", paste_bold(lc1_pct), ")."))
+  print_text(paste0("The next largest land classes are ", paste_bold( lc2), " (", paste_bold(lc2_pct), ") and ", paste_bold(lc3), " (", paste_bold(lc3_pct), ")"))
+
+}
+```

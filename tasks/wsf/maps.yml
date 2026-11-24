@@ -1,0 +1,4 @@
+layers:
+  - wsf
+  - wsf_tracker
+  - wsf_harmonized

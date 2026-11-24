@@ -1,0 +1,12 @@
+# Keep the build context tiny — mnt/ alone is ~250 GB of city data
+mnt
+.git
+.archived
+.notes
+backend
+frontend
+deploy
+publish
+web-version
+**/__pycache__
+**/.DS_Store

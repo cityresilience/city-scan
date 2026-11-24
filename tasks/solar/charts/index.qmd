@@ -1,0 +1,60 @@
+---
+df-print: paged
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+## Photovoltaic Potential (PV)
+
+```{r}
+#| label: setup-solar
+#| include: false
+if (file.exists("_quarto.yml")) here::i_am("tasks/solar/charts/index.qmd")
+if (!exists("aoi")) {
+  source(here::here("core/R/setup.R"))
+}
+```
+
+```{r}
+#| label: data-loading-solar
+#| include: false
+monthly_pv <- tryCatch({
+  pv_file <- str_subset(list.files(tabular_dir, full = T), "solar_monthly_stats\\.csv")
+  if (length(pv_file) == 0) stop("No solar monthly stats file found")
+  read_csv(pv_file[1], col_types = "dddd")
+}, error = function(e) { message("Monthly PV not available: ", e$message); NULL })
+```
+
+```{r}
+#| label: solar-pv
+#| results: asis
+
+if (is.null(monthly_pv) || nrow(monthly_pv) == 0) print_text(paste_bold('No PV data available')) else {
+
+  pv_plot <- monthly_pv %>%
+    ggplot(aes(x = month, y = mean)) +
+    annotate("text", x = 1, y = 4.6, label = "Excellent Conditions", vjust = 0, hjust = 0, color = "dark grey") +
+    annotate("text", x = 1, y = 3.6, label = "Favorable Conditions", vjust = 0, hjust = 0, color = "dark grey") +
+    geom_line() +
+    geom_point() +
+    scale_x_continuous(breaks = 1:12, labels = lubridate::month(1:12, label = T) %>% as.character) +
+    scale_y_continuous(labels = scales::label_comma(), limits = c(0, NA), expand = expansion(mult = c(0,.05))) +
+    labs(title = "Seasonal availability of solar energy",
+        x = "Month", y = "Daily PV energy yield (kWh/kWp") +
+    geom_hline(yintercept = c(3.5, 4.5), linetype = "dotted") +
+    theme_minimal() +
+    theme(
+      axis.title.x = element_blank(),
+      axis.line = element_line(linewidth = .5, color = "black"),
+      panel.grid.minor.x = element_blank())
+
+  ggsave(here("03-render-output", "plots", "monthly-pv.png"), device = "png",
+        width = 4, height = 3.5, units = "in", dpi = "print")
+  print(pv_plot)
+  cat("\n\n")
+
+  monthly_pv %>% print_paged_df()
+}
+```

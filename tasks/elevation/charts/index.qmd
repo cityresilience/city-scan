@@ -1,0 +1,53 @@
+---
+df-print: paged
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+## Elevation
+
+```{r}
+#| label: setup-elevation
+#| include: false
+if (file.exists("_quarto.yml")) here::i_am("tasks/elevation/charts/index.qmd")
+if (!exists("aoi")) {
+  source(here::here("core/R/setup.R"))
+}
+```
+
+```{r}
+#| label: data-loading-elevation
+#| include: false
+elevation <- tryCatch({
+  read_csv(file.path(tabular_dir, paste0(city_string, "_elevation.csv")), col_types = "cd") %>%
+    rename(Bin = 1, Count = 2) %>%
+    filter(!is.na(Bin), Count > 0) %>%
+    mutate(percent = Count / sum(Count),
+           Bin = factor(Bin, levels = Bin))
+}, error = function(e) { message("elevation not available: ", e$message); NULL })
+```
+
+```{r}
+#| label: elevation-donut
+#| results: asis
+
+if (is.null(elevation) || nrow(elevation) == 0) print_text(paste_bold("No Elevation file available")) else {
+
+  elevation_names <- elevation$Bin
+  # Match map palette from source/layers.yml `elevation`
+  .elev_pal <- layer_params$elevation$palette %||% c("#f5c4c0", "#762175")
+  elevation_colors <- grDevices::colorRampPalette(unlist(.elev_pal))(length(elevation_names)) %>%
+    setNames(elevation_names)
+
+  elevation_plot <- ggdonut(elevation, "Bin", "percent", colors = elevation_colors)
+
+  ggsave(here("03-render-output", "plots", "wsf-elevation-pieplot.png"), device = "png",
+        width = 8, height = 5, units = "in", dpi = "print")
+  print(elevation_plot)
+  cat("\n\n")
+
+  print_paged_df(elevation)
+}
+```

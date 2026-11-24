@@ -1,0 +1,4 @@
+layers:
+  - seismic_hazard
+custom:
+  - core/R/map-seismic-hazard.R
