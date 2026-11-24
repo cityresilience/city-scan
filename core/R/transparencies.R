@@ -1,46 +1,76 @@
-# Generating City Scan maps for transparencies
+###############################################################################
+############## GENERATE CITY SCAN MAPS FOR TRANSPARENCY EXERCISE ##############
+###############################################################################
 
-if ("frontend" %in% list.files()) setwd("frontend")
+# This script creates maps to be used in City Scan workshops. Its maps feature
+# no basemap, as they are intended to be printed on transparent acetate film 
+# and stacked atop each other. The legends are positioned so that most are all
+# visible. While the code positions all of the legends correctly, final steps
+# are required in InDesign to 1) combine the map and legend files and 2) mask
+# the unneeded legends for a given map.
 
-# This file is currently set to use layers-with-french.yml instead of layers.yml.
-# Change in R/setup.R
+###############################################################################
+#### USER PARAMETERS: All in-file parameters are set here.  ###################
+#### For layer-specific parameters, see source/layer.yml    ###################
+###############################################################################
 
-# Set static map visualization parameters --------------------------------------
-
-# Frequently used parameters:
-# For a single legend per map, use
-#   map_width <- 12.56; map_height <- 9.7; map_portions <- c(map_width, 2.6)
-# For two columns of legends (and captions), use
-#   map_width <- 11.2; map_height <- 9.7; map_portions <- c(map_width, 4.06)
-
+# Set static map visualization parameters -------------------------------------
 layer_alpha <- 0.7
-map_width <- 11.2 # 15.16 is total width (map_width + legend width)
-map_height <- 9.7
+map_width <- 11.1 # Typically 12.56 for one legend column, 11.1 for two columns
+map_height <- 9.7 # Typically, 9.7
 aspect_ratio <- map_width / map_height
-map_portions <- c(map_width, 4.06) # First number is map width, second is legend width
+legend_width <- 15.16 - map_width # Total width is typically 15.16
+map_portions <- c(map_width, legend_width)
+include_captions <- FALSE
+zoom_adjustment <- 1
+rotate_to_fit <- FALSE # Rotates CRS so short axis of the AOI aligns with the frame's short axis
+
+##############################################################################
+##### Standard code begins here (some title edits required) ##################
+##############################################################################
+
+# WARNING: Some raster plotting breaks with terra 1.8+, when reprojected, such
+# as to EPSG: 3857. It results in the following error. Would upgrading tidyterra
+# also solve this?
+# Caused by error:
+# ! [spatSample] at least one of 'values', 'cells', or 'xy' must be TRUE; or 'as.points' must be TRUE 
+# 2: No shared levels found between `names(values)` of the manual scale and the data's fill values.
+
+# Set project root
+# If this is run from parent city-scan directory, auto_root_here() uses the
+# function definition provided there, not that of the individual city
+# Not broadly tested and maybe not very important
+if (!require("here", quietly = TRUE)) install.packages("here")
+library(here)
+source("core/R/fns-util.R")
+root <- auto_root_here()
 
 # Load libraries and pre-process rasters
 source(here("core/R/setup.R"), local = T)
 source(here("core/R/pre-mapping.R"), local = T)
 
-# If you want to change the layers.yml file, change it here
+# Two methods for using alternate layer parameter files (specifically for
+# translating legends): changing layer_params_file here or in setup.R
+# Past examples include layers-with-french.yml and layers-uzbek.yml
 # layer_params_file <- 'source/layers-uzbek.yml' # Also used by fns.R
 # layer_params <- read_yaml(layer_params_file)
 
-# Define map extent and zoom level adjustment
+# Define aesthetic adjustments ------------------------------------------------
 
 # Rotate CRS to maximize AOI space in map frame
-crs_rot <- rotate_crs_to_short_axis(aoi)
-
-# static_map_bounds <- aspect_buffer(aoi, aspect_ratio, buffer_percent = 0.05)
+if (rotate_to_fit) crs_rot <- rotate_crs_to_short_axis(aoi) else crs_rot <- "EPSG:3857"
 static_map_bounds <- aspect_buffer(aoi, aspect_ratio, buffer_percent = 0.05, to_crs = crs_rot, keep_crs = F)
-zoom_adjustment <- 1
 
-# Custom themes
+# Set custom themes
 theme_title <- \(...) theme(plot.title = element_text(size = 20, margin = margin(6, 0, 3.5, 40)), ...)
 
+###############################################################################
+#### Map generation ###########################################################
+###############################################################################
+message("\n=== Generating City Scan Transparency Maps ===")
+
 # Static maps
-message("Creating standard maps...")
+
 # Initiate plots list ----------------------------------------------------------
 plots <- list()
 packets <- list()
@@ -78,6 +108,7 @@ plots$scale_bar <- plot_static_layer(aoi_only = T, plot_aoi = F, plot_wards = F,
   annotation_scale(style = "ticks", aes(unit_category = "metric", width_hint = 0.33), height = unit(0.25, "cm"))
 
 # Standard plots ---------------------------------------------------------------
+message("Creating standard maps...")
 unlist(lapply(layer_params, \(x) x$fuzzy_string)) %>%
   discard_at(c("burnt_area", "elevation")) %>%
   map2(names(.), \(fuzzy_string, yaml_key) {
@@ -129,6 +160,7 @@ if (!is.null(plots$roads)) plots$roads <- plots$roads +
     layer_params[["roads"]]$stroke$title_fr),
     collapse = "   /   "))
 
+# Adjust plots ----------------------------------------------------------------
 # Rotate, remove grey background, add titles, remove scale bar and north arrow
 for (name in names(plots)) {
   if (name != "scale_bar") {
@@ -140,14 +172,16 @@ for (name in names(plots)) {
       geom_spatvector(data = aoi, fill = NA, linewidth = 0.4)
   }
   # Rotate maps to maximize AOI space in map frame (see crs_rot above)
-  plots[[name]] <- plots[[name]] +
-    coord_sf(
-      crs = sf::st_crs(crs_rot),
-      default_crs = sf::st_crs(crs_rot),
-      xlim = ext(static_map_bounds)[1:2] %>% { (. - mean(.)) * 1 + mean(.)},
-      ylim = ext(static_map_bounds)[3:4] %>% { (. - mean(.)) * 1 + mean(.)},
-      expand = F
-      )
+  if (rotate_to_fit) {
+    plots[[name]] <- plots[[name]] +
+      coord_sf(
+        crs = sf::st_crs(crs_rot),
+        default_crs = sf::st_crs(crs_rot),
+        xlim = ext(static_map_bounds)[1:2] %>% { (. - mean(.)) * 1 + mean(.)},
+        ylim = ext(static_map_bounds)[3:4] %>% { (. - mean(.)) * 1 + mean(.)},
+        expand = F
+        )
+  }
   if (name == "vector") next
   if (name == "aerial") next
   # Remove grey background

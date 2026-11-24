@@ -1,8 +1,26 @@
-# Generating City Scan Maps
+###############################################################################
+#### GENERATE CITY SCAN MAPS                                  #################
+#### Includes features not in maps-static.R, like hex mapping #################
+###############################################################################
 
-# if ("frontend" %in% list.files()) setwd("frontend")
-if (!require("here", quietly = TRUE)) install.packages("here")
-library(here)
+###############################################################################
+#### USER PARAMETERS: All in-file parameters are set here.  ###################
+#### For layer-specific parameters, see source/layer.yml    ###################
+###############################################################################
+
+# Set static map visualization parameters -------------------------------------
+layer_alpha <- 0.7
+map_width <- 8.77 # Width of the map itself, excluding legend. Typically 8.77
+map_height <- 7.55 # Typically 7.55
+aspect_ratio <- map_width / map_height
+map_portions <- c(7, 2) # First number is map width, second is legend width. Typically c(7, 2)
+include_captions <- FALSE
+zoom_adjustment <- 0
+rotate_to_fit <- FALSE # Rotates CRS so that the short axis of the AOI aligns with the map frame's short axis
+
+##############################################################################
+##### Standard code begins here (no edits required) ##########################
+##############################################################################
 
 # WARNING: Some raster plotting breaks with terra 1.8+, when reprojected, such
 # as to EPSG: 3857. It results in the following error. Would upgrading tidyterra
@@ -11,21 +29,32 @@ library(here)
 # ! [spatSample] at least one of 'values', 'cells', or 'xy' must be TRUE; or 'as.points' must be TRUE 
 # 2: No shared levels found between `names(values)` of the manual scale and the data's fill values.
 
-# Set static map visualization parameters
-layer_alpha <- 0.7
-map_width <- 8.77 # Width of the map itself, excluding legend
-map_height <- 7.55
-aspect_ratio <- map_width / map_height
-map_portions <- c(7, 2) # First number is map width, second is legend width
-include_captions <- FALSE
+# Set project root
+# If this is run from parent city-scan directory, auto_root_here() uses the
+# function definition provided there, not that of the individual city
+# Not broadly tested and maybe not very important
+if (!require("here", quietly = TRUE)) install.packages("here")
+library(here)
+source("core/R/fns-util.R")
+root <- auto_root_here()
 
 # Load libraries and pre-process rasters
 source(here("core/R/setup.R"), local = T)
 if (!exists("render_tasks")) source(here("core/R/pre-mapping.R"), local = T)
 
-# Define map extent and zoom level adjustment
-# static_map_bounds <- aspect_buffer(aoi, aspect_ratio, buffer_percent = 0.05)
+# Define map extent and zoom level adjustment ---------------------------------
 
+# Rotate CRS to maximize AOI space in map frame
+if (rotate_to_fit) crs_rot <- rotate_crs_to_short_axis(aoi) else crs_rot <- "EPSG:3857"
+static_map_bounds <- aspect_buffer(aoi, aspect_ratio, buffer_percent = 0.05, to_crs = crs_rot, keep_crs = F)
+
+# Autozoom (disabled for now; does not include rotation)
+# see autozoom_bounds() in fns.R — centers on the built-up core when urban
+# pixels cover <10% of the AOI, else frames full AOI.
+# static_map_bounds <- autozoom_bounds(aoi, aspect_ratio)
+
+#### Used by CLI (Command Line Interface) tool only ###########################
+# Identify which layers and custom scripts to run -----------------------------
 # Task-specific rendering: if render_tasks is set (from CLI), load maps.yml per task
 # and filter to only those layers/custom scripts
 render_layers <- NULL
@@ -40,14 +69,10 @@ if (exists("render_tasks") && length(render_tasks) > 0) {
   if (length(render_custom)  > 0) message("  Custom: ", paste(render_custom, collapse = ", "))
 }
 
+###############################################################################
+#### Map generation ###########################################################
+###############################################################################
 message("\n=== Generating City Scan Static Maps ===")
-
-# Autozoom (disabled for now): see autozoom_bounds() in fns.R — centers on the
-# built-up core when urban pixels cover <10% of the AOI, else frames full AOI.
-# static_map_bounds <- autozoom_bounds(aoi, aspect_ratio)
-static_map_bounds <- aspect_buffer(aoi, aspect_ratio, buffer_percent = 0.05)
-
-zoom_adjustment <- 0
 
 # Static maps
 
@@ -89,6 +114,7 @@ if (exists("render_tasks") && length(render_tasks) > 0) {
   standard_layers <- standard_layers[names(standard_layers) %in% render_layers]
 }
 
+message("Creating standard maps...")
 standard_layers %>%
   map2(names(.), \(fuzzy_string, yaml_key) {
     tryCatch_named(yaml_key, {
@@ -185,6 +211,20 @@ for (script in render_custom) {
   source(here(script), local = T)
 }
 
+# Adjust plots ----------------------------------------------------------------
+for (name in names(plots)) {
+  if (rotate_to_fit) {
+  # Rotate maps to maximize AOI space in map frame (see crs_rot above)
+  plots[[name]] <- plots[[name]] +
+    coord_sf(
+      crs = sf::st_crs(crs_rot),
+      default_crs = sf::st_crs(crs_rot),
+      xlim = ext(static_map_bounds)[1:2] %>% { (. - mean(.)) * 1 + mean(.)},
+      ylim = ext(static_map_bounds)[3:4] %>% { (. - mean(.)) * 1 + mean(.)},
+      expand = F
+      )
+  }
+}
 # Save plots -------------------------------------------------------------------
 # Switched to for loop because walk required too much memory; uncertain if helps
 # For Algeria, reduced time from 1,100 seconds to 1,000 seconds

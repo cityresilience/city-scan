@@ -18,7 +18,6 @@ library(here)
 source(here("core/R/fns.R"), local = T)    # helper functions
 source(here("core/R/deps.R"), local = T)   # packages + layer_params
 
-
 # ---------- INIT SCAN ENVIRONMENT (root, scan_id, dirs, GCS) ----------
 # Scan-specific plumbing that does NOT read city data: locate the project root,
 # derive + validate scan_id, create the 01/02/03 subdirs, and (when USE_GCS)
